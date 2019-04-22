@@ -23,10 +23,10 @@ let submodule_path t = List.rev_map ~f:(fun located -> located.txt) t.submodule_
 let value t = Option.map ~f:(fun located -> located.txt) t.value
 
 let fully_qualified_path t = 
-  let value = value t in
-  let submodule_path = List.rev_map ~f:(fun located -> Some located.txt) t.submodule_path in
-  let names = (Some t.main_module_name)::submodule_path @ [value] in
-  String.concat ~sep:"." @@ List.filter_opt names
+  let rev_path = Option.fold ~f:(fun acc a -> a::acc) ~init:t.submodule_path t.value in
+  let submodule_path = List.rev_map ~f:(fun located -> located.txt) rev_path in
+  let names = t.main_module_name::submodule_path in
+  String.concat ~sep:"." names
 
 let enter_expr t = {t with in_expr = true}
 
