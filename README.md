@@ -1,4 +1,8 @@
-# Ppxlib - Meta-programming for OCaml
+# Ppx - Meta-programming for OCaml
+
+**This project is under construction**
+
+For more info, see [this blog post](https://discuss.ocaml.org/t/the-future-of-ppx/).
 
 [![Travis status][travis-img]][travis] [![AppVeyor status][appveyor-img]][appveyor]
 
