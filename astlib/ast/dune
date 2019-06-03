@@ -1,0 +1,7 @@
+(library
+ (name astlib_ast)
+ (public_name astlib.ast)
+ (libraries
+  ocaml-compiler-libs.shadow
+  ocaml-compiler-libs.common)
+ (flags :standard -open Ocaml_shadow -safe-string))

@@ -1,0 +1,31 @@
+opam-version: "2.0"
+maintainer: "opensource@janestreet.com"
+authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+homepage: "https://github.com/ocaml-ppx/astlib"
+bug-reports: "https://github.com/ocaml-ppx/ppxlib/issues"
+dev-repo: "git+https://github.com/ocaml-ppx/ppxlib.git"
+doc: "https://ocaml-ppx.github.io/astlib/"
+license: "MIT"
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+]
+run-test: [
+  ["dune" "runtest" "-p" name "-j" jobs] { ocaml >= "4.06" }
+]
+depends: [
+  # "ocaml"                   {>= "4.04.1"}
+  # "base"                    {>= "v0.11.0"}
+  # "dune"                    {build}
+  # "ocaml-compiler-libs"     {>= "v0.11.0"}
+  # "ocaml-migrate-parsetree" {>= "1.0.9"}
+  # "ppx_derivers"            {>= "1.0"}
+  # "stdio"                   {>= "v0.11.0"}
+  # "ocamlfind"               {with-test}
+]
+synopsis: "Compatibility layer for OCaml compiler AST"
+description: """
+Provides types for the OCaml compiler AST, along with versioned interfaces for
+constructing and deconstructing them so that ppx transformers can be easily
+migrated to new versions of the compiler.
+"""
