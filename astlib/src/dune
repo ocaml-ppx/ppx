@@ -1,0 +1,9 @@
+(library
+ (name astlib)
+ (public_name astlib)
+ (libraries astlib.ast base)
+ (flags (:standard -open Ocaml_shadow -safe-string)))
+
+(cinaps
+ (files *.ml *.mli)
+ (libraries astlib.cinaps))

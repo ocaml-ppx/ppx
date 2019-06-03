@@ -1,0 +1,16 @@
+(library
+ (name astlib_test)
+ (public_name astlib.test)
+ (libraries
+  astlib.ast
+  astlib
+  base_quickcheck
+  expect_test_helpers_kernel.expect_test_helpers_base
+  sexplib)
+ (flags (:standard -open Ocaml_shadow -safe-string))
+ (preprocess (pps ppx_expect ppx_here ppx_let ppx_sexp_conv ppx_sexp_message ppx_sexp_value))
+ (inline_tests))
+
+(cinaps
+ (files *.ml *.mli)
+ (libraries astlib.cinaps))
