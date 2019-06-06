@@ -1,7 +1,5 @@
 open! Import
 
-module Printexc = Caml.Printexc
-
 (* Small helper to find out who is the caller of a function *)
 
 type t = Printexc.location option
@@ -21,7 +19,7 @@ let get ~skip =
       with
       | None -> None
       | Some loc ->
-        if List.mem ~equal:String.equal skip loc.filename then
+        if List.mem ~set:skip loc.filename then
           loop (pos + 1)
         else
           Some loc

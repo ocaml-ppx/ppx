@@ -285,3 +285,9 @@ let findi =
       loop s len ~f (i + 1)
   in
   fun s ~f -> loop s (String.length s) ~f 0
+
+let rindex_opt s c =
+  try Some (rindex s c) with Not_found -> None
+
+let index_from_opt s i c =
+  try Some (index_from s i c) with Not_found -> None

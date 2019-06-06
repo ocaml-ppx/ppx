@@ -105,3 +105,27 @@ let to_dyn (type key) f g t =
 
 let to_sexp f g t =
   Dyn.to_sexp (to_dyn (Dyn.Encoder.via_sexp f) (Dyn.Encoder.via_sexp g) t)
+
+let of_list ?size l =
+  let size =
+    match size with
+    | Some s -> s
+    | None -> List.length l
+  in
+  let tbl = create size in
+  let rec go = function
+    | [] -> `Ok tbl
+    | (key, data)::tl ->
+      if mem tbl key then
+        `Duplicate_key key
+      else (
+        add tbl key data;
+        go tl
+      )
+  in
+  go l
+
+let of_list_exn ?size l =
+  match of_list ?size l with
+  | `Ok tbl -> tbl
+  | `Duplicate_key _ -> invalid_arg "Hashtbl.of_list_exn: duplicate key"

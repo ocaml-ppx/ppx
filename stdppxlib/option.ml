@@ -80,6 +80,10 @@ let try_with f =
   | exception _ -> None
   | s -> Some s
 
+let fold ~f ~init = function
+  | None -> init
+  | Some a -> f init a
+
 module List = struct
   let all =
     let rec loop acc = function

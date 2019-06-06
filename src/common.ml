@@ -1,10 +1,6 @@
 open! Import
 open Ast_builder.Default
 
-module Buffer = Caml.Buffer
-
-module Format = Caml.Format
-
 let lident x = Longident.Lident x
 
 let core_type_of_type_declaration td =
@@ -64,13 +60,13 @@ class type_is_recursive rec_flag tds = object(self)
 
   val type_names : string list = List.map tds ~f:(fun td -> td.ptype_name.txt)
 
-  method return_true () = Exn.raise_without_backtrace Type_is_recursive
+  method return_true () = Exn.raise_notrace Type_is_recursive
 
   method! core_type ctype =
     match ctype.ptyp_desc with
     | Ptyp_arrow _ -> ()
     | Ptyp_constr ({ txt = Longident.Lident id; _ }, _)
-      when List.mem ~equal:String.equal type_names id ->
+      when List.mem ~set:type_names id ->
       self#return_true ()
     | _ -> super#core_type ctype
 
@@ -113,7 +109,7 @@ let loc_of_attribute ((name, _) as attr) =
   (* TODO: fix this in the compiler *)
   (* "ocaml.doc" attributes are generated with [Location.none], which is not helpful for
      error messages. *)
-  if Poly.(=) name.loc Location.none then
+  if name.loc = Location.none then
     loc_of_payload attr
   else
     { name.loc with loc_end = (loc_of_payload attr).loc_end }
@@ -170,7 +166,7 @@ let is_polymorphic_variant =
 let mk_named_sig ~loc ~sg_name ~handle_polymorphic_variant = function
   | [ td ] when String.equal td.ptype_name.txt "t" && List.is_empty td.ptype_cstrs ->
     if not handle_polymorphic_variant &&
-       Poly.(=) (is_polymorphic_variant td ~sig_:true) `Definitely
+       (is_polymorphic_variant td ~sig_:true) = `Definitely
     then
       None
     else

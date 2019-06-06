@@ -68,6 +68,10 @@ val enumerate_one_of : t list -> t
 (** Find index of first character satisfying [f] *)
 val findi : string -> f:(char -> bool) -> int option
 
+val rindex_opt : string -> char -> int option
+
+val index_from_opt : string -> int -> char -> int option
+
 module Set : sig
   include Set.S with type elt = t
 

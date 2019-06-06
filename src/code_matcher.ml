@@ -1,10 +1,6 @@
 (*$ #use "cinaps_helpers" $*)
 open! Import
 
-module Format = Caml.Format
-
-module Filename = Caml.Filename
-
 (* TODO: make the "deriving." depend on the matching attribute name. *)
 let end_marker_sig =
   Attribute.Floating.declare "deriving.end" Signature_item Ast_pattern.(pstr nil) ()
@@ -67,7 +63,7 @@ struct
 
   let diff_asts ~generated ~round_trip =
     let with_temp_file f =
-      Exn.protectx (Filename.temp_file "ppxlib" "") ~finally:Caml.Sys.remove ~f
+      Exn.protectx (Filename.temp_file "ppxlib" "") ~finally:Sys.remove ~f
     in
     with_temp_file (fun fn1 ->
       with_temp_file (fun fn2 ->
@@ -75,7 +71,7 @@ struct
           let dump fn ast =
             Out_channel.with_file fn ~f:(fun oc ->
               let ppf = Format.formatter_of_out_channel oc in
-              Sexp.pp_hum ppf (M.to_sexp ast);
+              Sexp.pp ppf (M.to_sexp ast);
               Format.pp_print_flush ppf ())
           in
           dump fn1 generated;
@@ -87,14 +83,14 @@ struct
               (Filename.quote fn1) (Filename.quote fn2) (Filename.quote out)
           in
           let ok =
-            Caml.Sys.command cmd = 1 || (
+            Sys.command cmd = 1 || (
               let cmd =
                 Printf.sprintf
                   "diff --label generated --label 'generated->printed->parsed' \
                    %s %s &> %s"
                   (Filename.quote fn1) (Filename.quote fn2) (Filename.quote out)
               in
-              Caml.Sys.command cmd = 1
+              Sys.command cmd = 1
             )
           in
           if ok then
@@ -121,9 +117,9 @@ struct
       let loc = M.get_loc y in
       let x = remove_loc x in
       let y = remove_loc y in
-      if Poly.(<>) x y then begin
+      if x <> y then begin
         let round_trip = remove_loc (parse_string (Format.asprintf "%a@." M.pp x)) in
-        if Poly.(<>) x round_trip then
+        if x <> round_trip then
           Location.raise_errorf ~loc
             "ppxlib: the corrected code doesn't round-trip.\n\
              This is probably a bug in the OCaml printer:\n%s"

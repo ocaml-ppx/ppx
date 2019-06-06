@@ -1,13 +1,11 @@
 open! Import
 
-module Format = Caml.Format
-
 let fold_dot_suffixes name ~init:acc ~f =
   let rec collapse_after_at = function
     | [] -> []
     | part :: parts ->
       if not (String.is_empty part) && Char.equal part.[0] '@' then
-        [String.concat (String.drop_prefix part 1 :: parts) ~sep:"."]
+        [String.concat (String.drop part 1 :: parts) ~sep:"."]
       else
         part :: collapse_after_at parts
   in
@@ -39,7 +37,7 @@ let split_path =
     else
       match s.[i] with
       | 'A'..'Z' ->
-        (String.prefix s (i - 1), Some (String.drop_prefix s i))
+        (String.take s (i - 1), Some (String.drop s i))
       | '.' -> after_dot s (i + 1)
       | _ -> loop s (i + 1)
   in
@@ -48,24 +46,22 @@ let split_path =
 module Pattern = struct
   module Str = struct
     type t = string
-    let sexp_of_t = String.sexp_of_t
     let compare a b =
-      let d = Int.compare (String.length a) (String.length b) in
-      if d <> 0 then
-        d
-      else
-        String.compare a b
-    include (val Comparator.make ~compare ~sexp_of_t)
+      match Int.compare (String.length a) (String.length b) with
+      | Eq -> String.compare a b
+      | Lt | Gt as d -> d
   end
+
+  module Set = Set.Make(Str)
 
   type t =
     { name : string
-    ; dot_suffixes : Set.M(Str).t
+    ; dot_suffixes : Set.t
     }
 
   let make name =
     { name
-    ; dot_suffixes = Set.of_list (module Str) (dot_suffixes name)
+    ; dot_suffixes = Set.of_list (dot_suffixes name)
     }
 
   let name t = t.name
@@ -90,8 +86,8 @@ module Whitelisted = struct
  let create_set fully_qualified_names =
     List.fold_left
       ~f:(fun acc name ->
-        fold_dot_suffixes name ~init:acc ~f:(fun x acc -> Set.add acc x))
-      ~init:(Set.empty (module String))
+        fold_dot_suffixes name ~init:acc ~f:(fun x acc -> String.Set.add acc x))
+      ~init:(String.Set.empty)
       fully_qualified_names
 
  let attributes =
@@ -137,17 +133,17 @@ module Whitelisted = struct
 
   let is_whitelisted ~kind name =
     match kind with
-    | `Attribute -> Set.mem attributes name
-    | `Extension -> Set.mem extensions name
+    | `Attribute -> String.Set.mem attributes name
+    | `Extension -> String.Set.mem extensions name
 
-  let get_attribute_list () = Set.elements attributes
-  let get_extension_list () = Set.elements extensions
+  let get_attribute_list () = String.Set.to_list attributes
+  let get_extension_list () = String.Set.to_list extensions
 end
 
 module Reserved_namespaces = struct
-  let tbl : (string, unit) Hashtbl.t = Hashtbl.create (module String)
+  let tbl : (string, unit) Hashtbl.t = Hashtbl.create 0
 
-  let reserve ns = Hashtbl.add_exn tbl ~key:ns ~data:()
+  let reserve ns = Hashtbl.add tbl ns ()
 
   let () = reserve "merlin"
   let () = reserve "reason"
@@ -166,7 +162,7 @@ module Reserved_namespaces = struct
       | `Attribute -> "attribute", Whitelisted.attributes
       | `Extension -> "extension", Whitelisted.extensions
     in
-    if Set.mem list name then
+    if String.Set.mem list name then
       Printf.ksprintf failwith
         "Cannot register %s with name '%s' as it matches an \
          %s reserved by the compiler"
@@ -189,7 +185,7 @@ module Registrar = struct
     ; declared_at          : Caller_id.t
     }
 
-  type all_for_context = { mutable all : element Map.M(String).t }
+  type all_for_context = { mutable all : element String.Map.t }
 
   type 'a t =
     { all_by_context    : ('a, all_for_context) Hashtbl.t
@@ -199,27 +195,26 @@ module Registrar = struct
     }
 
   let create ~kind ~current_file ~string_of_context =
-    { all_by_context = Hashtbl.Poly.create ()
+    { all_by_context = Hashtbl.create 0
     ; skip           = [current_file; __FILE__]
     ; kind
     ; string_of_context
     }
 
   let get_all_for_context t context =
-    Hashtbl.find_or_add t.all_by_context context ~default:(fun () ->
-      { all = Map.empty (module String) })
+    Hashtbl.find_or_add t.all_by_context context ~f:(fun _ -> { all = String.Map.empty })
   ;;
 
   let register ~kind t context name =
     Reserved_namespaces.check_not_reserved ~kind name;
     let caller = Caller_id.get ~skip:t.skip in
     let all = get_all_for_context t context in
-    (match Map.find all.all name with
+    (match String.Map.find all.all name with
      | None -> ()
      | Some e ->
        let declared_at = function
          | None -> ""
-         | Some (loc : Caml.Printexc.location) ->
+         | Some (loc : Printexc.location) ->
            Printf.sprintf " declared at %s:%d" loc.filename loc.line_number
        in
        let context =
@@ -238,20 +233,20 @@ module Registrar = struct
       }
     in
     all.all <- fold_dot_suffixes name ~init:all.all ~f:(fun name acc ->
-      Map.set acc ~key:name ~data:t);
+      String.Map.add acc name t);
   ;;
 
   let spellcheck t context ?(white_list=[]) name =
     let all =
       let all = get_all_for_context t context in
-      Map.fold all.all ~init:[] ~f:(fun ~key ~data:_ acc -> key :: acc)
+      String.Map.foldi all.all ~init:[] ~f:(fun key _ acc -> key :: acc)
     in
     match Spellcheck.spellcheck (all @ white_list) name with
     | Some _ as x -> x
     | None ->
       let other_contexts =
-        Hashtbl.fold t.all_by_context ~init:[] ~f:(fun ~key:ctx ~data:{ all } acc ->
-          if Poly.(<>) context ctx && Map.mem all name then
+        Hashtbl.foldi t.all_by_context ~init:[] ~f:(fun ctx { all } acc ->
+          if context <> ctx && String.Map.mem all name then
             match t.string_of_context ctx with
             | None -> acc
             | Some s -> (s ^ "s") :: acc
@@ -271,7 +266,7 @@ module Registrar = struct
           Format.fprintf ppf "@ but@ is@ used@ here@ in@ the@ context@ of@ %s@ %a"
             a_or_an pp_text s
       in
-      match List.sort ~compare:(fun x y -> - (String.compare x y)) other_contexts with
+      match List.sort ~compare:(fun x y -> Ordering.rev (String.compare x y)) other_contexts with
       | [] -> None
       | [c] ->
         Some

@@ -33,7 +33,7 @@ let of_lexbuf (lexbuf : Lexing.lexbuf) =
   }
 
 let print ppf t =
-  Caml.Format.fprintf ppf "File \"%s\", line %d, characters %d-%d:"
+  Format.fprintf ppf "File \"%s\", line %d, characters %d-%d:"
     t.loc_start.pos_fname
     t.loc_start.pos_lnum
     (t.loc_start.pos_cnum - t.loc_start.pos_bol)
@@ -80,6 +80,6 @@ end
 exception Error of Error.t
 
 let () =
-  Caml.Printexc.register_printer (function
+  Printexc.register_printer (function
     | Error e -> Some (Error.message e)
     | _ -> None)

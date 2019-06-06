@@ -159,3 +159,12 @@ let rec equal eq xs ys =
   | _, _ -> false
 
 let hash f xs = Ppxlib_caml.Hashtbl.hash (map ~f xs)
+
+let find_a_dup ~compare l =
+  let sorted = sort ~compare l in
+  let rec loop = function
+    | [] -> None
+    | [_] -> None
+    | hd::(hd'::_ as tl) -> if compare hd hd' = Eq then Some hd else loop tl
+  in
+  loop sorted

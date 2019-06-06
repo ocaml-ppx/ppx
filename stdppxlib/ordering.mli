@@ -14,3 +14,5 @@ val to_string : t -> string
 val neq : t -> bool
 
 val is_eq : t -> bool
+
+val rev : t -> t

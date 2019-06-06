@@ -30,3 +30,5 @@ let to_string i = string_of_int i
 module Infix = Comparable.Operators(T)
 
 let of_string s = Option.try_with (fun () -> int_of_string s)
+
+let max_value = max_int

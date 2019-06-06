@@ -10,9 +10,9 @@ module Kind = struct
   type t = Intf | Impl
 
   let of_filename fn : t option =
-    if Caml.Filename.check_suffix fn ".ml" then
+    if Filename.check_suffix fn ".ml" then
       Some Impl
-    else if Caml.Filename.check_suffix fn ".mli" then
+    else if Filename.check_suffix fn ".mli" then
       Some Intf
     else
       None
@@ -23,7 +23,7 @@ module Kind = struct
     | Intf -> "interface"
   ;;
 
-  let equal : t -> t -> bool = Poly.equal
+  let equal : t -> t -> bool = (=)
 end
 
 module Some_intf_or_impl = struct

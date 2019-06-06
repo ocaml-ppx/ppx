@@ -40,6 +40,8 @@ val compare : ('a -> 'a -> Ordering.t) -> 'a t -> 'a t -> Ordering.t
 
 val try_with : (unit -> 'a) -> 'a option
 
+val fold : f:('acc -> 'a -> 'acc) -> init: 'acc -> 'a t -> 'acc
+
 module List : sig
   val all : 'a option list -> 'a list option
 end

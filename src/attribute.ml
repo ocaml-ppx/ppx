@@ -4,7 +4,7 @@ let poly_equal a b =
   let module Poly = struct
     type t = T : _ -> t
   end in
-  Base.Poly.equal (Poly.T a) (Poly.T b)
+  (Poly.T a) = (Poly.T b)
 ;;
 
 module Context = struct
@@ -294,10 +294,10 @@ let declare name context pattern k =
   declare_with_name_loc name context pattern (fun ~name_loc:_ -> k)
 ;;
 
-module Attribute_table = Caml.Hashtbl.Make(struct
+module Attribute_table = Hashtbl.Make(struct
     type t = string loc
     let hash : t -> int = Hashtbl.hash
-    let equal : t -> t -> bool = Poly.equal
+    let equal : t -> t -> bool = (=)
   end)
 
 let not_seen = Attribute_table.create 128
@@ -357,7 +357,7 @@ let consume t x =
   match get_internal t attrs with
   | None -> None
   | Some attr ->
-    let attrs = List.filter attrs ~f:(fun attr' -> not (phys_equal attr attr')) in
+    let attrs = List.filter attrs ~f:(fun attr' -> not (attr == attr')) in
     let x = Context.set_attributes t.context x attrs in
     Some (x, convert t.payload attr)
 ;;
@@ -383,8 +383,7 @@ let remove_seen (type a) (context : a Context.t) packeds (x : a) =
     loop [] packeds
   in
   let attrs =
-    List.filter attrs ~f:(fun attr' ->
-      not (List.mem matched attr' ~equal:phys_equal))
+    List.filter attrs ~f:(fun attr' -> not (List.memq ~set:matched attr'))
   in
   Context.set_attributes context x attrs
 ;;
@@ -554,12 +553,12 @@ let collect = object
 end
 
 let check_all_seen () =
-  let fail name loc =
+  let fail ~key:name ~data:loc =
     let txt = name.txt in
     if not (Name.ignore_checks txt) then
       Location.raise_errorf ~loc "Attribute `%s' was silently dropped" txt
   in
-  Attribute_table.iter fail not_seen
+  Attribute_table.iter ~f:fail not_seen
 ;;
 
 let remove_attributes_present_in table = object
@@ -572,18 +571,18 @@ end
 
 let copy_of_not_seen () =
   let copy = Attribute_table.create (Attribute_table.length not_seen) in
-  Attribute_table.iter (Attribute_table.add copy) not_seen;
+  Attribute_table.iter ~f:(fun ~key ~data -> Attribute_table.add copy key data) not_seen;
   copy
 ;;
 
 let dropped_so_far_structure st =
   let table = copy_of_not_seen () in
   (remove_attributes_present_in table)#structure st;
-  Attribute_table.fold (fun name loc acc -> { txt = name.txt; loc } :: acc) table []
+  Attribute_table.foldi ~f:(fun name loc acc -> { txt = name.txt; loc } :: acc) table ~init:[]
 ;;
 
 let dropped_so_far_signature sg =
   let table = copy_of_not_seen () in
   (remove_attributes_present_in table)#signature sg;
-  Attribute_table.fold (fun name loc acc -> { txt = name.txt; loc } :: acc) table []
+  Attribute_table.foldi ~f:(fun name loc acc -> { txt = name.txt; loc } :: acc) table ~init:[]
 ;;

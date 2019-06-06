@@ -19,16 +19,16 @@ val none : t
 
 (** Raise a located error. The exception is caught by driver and handled
     appropriately *)
-val raise_errorf : ?loc:t -> ('a, Caml.Format.formatter, unit, 'b) format4 -> 'a
+val raise_errorf : ?loc:t -> ('a, Format.formatter, unit, 'b) format4 -> 'a
 
 (** Return the location corresponding to the last matched regular expression *)
 val of_lexbuf : Lexing.lexbuf -> t
 
 (** Report an exception on the given formatter *)
-val report_exception : Caml.Format.formatter -> exn -> unit
+val report_exception : Format.formatter -> exn -> unit
 
 (** Prints [File "...", line ..., characters ...-...:] *)
-val print : Caml.Format.formatter -> t -> unit
+val print : Format.formatter -> t -> unit
 
 type nonrec 'a loc = 'a loc =
   { txt : 'a
@@ -39,7 +39,7 @@ module Error : sig
   type location = t
   type t = Ocaml_common.Location.error
 
-  val createf : loc:location -> ('a, Caml.Format.formatter, unit, t) format4 -> 'a
+  val createf : loc:location -> ('a, Format.formatter, unit, t) format4 -> 'a
 
   val message : t -> string
   val set_message : t -> string -> t

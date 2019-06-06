@@ -11,8 +11,8 @@ type t =
 let top_level ~file_path =
   let main_module_name =
     file_path
-    |> Caml.Filename.basename
-    |> Caml.Filename.remove_extension
+    |> Filename.basename
+    |> Filename.remove_extension
     |> String.capitalize
   in
   {file_path; main_module_name; submodule_path = []; value = None; in_expr = false}

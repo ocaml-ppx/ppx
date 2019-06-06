@@ -43,6 +43,8 @@ val        sort : 'a t -> compare:('a -> 'a -> Ordering.t) -> 'a t
 val stable_sort : 'a t -> compare:('a -> 'a -> Ordering.t) -> 'a t
 val   sort_uniq : 'a t -> compare:('a -> 'a -> Ordering.t) -> 'a t
 
+val find_a_dup : compare:('a -> 'a -> Ordering.t) -> 'a t -> 'a option
+
 val compare : 'a t -> 'a t -> compare:('a -> 'a -> Ordering.t) -> Ordering.t
 
 val assoc : ('a * 'b) t -> 'a -> 'b option

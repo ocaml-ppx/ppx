@@ -28,3 +28,8 @@ let neq = function
 let is_eq = function
   | Eq -> true
   | Lt | Gt -> false
+
+let rev = function
+  | Eq -> Eq
+  | Lt -> Gt
+  | Gt -> Lt
