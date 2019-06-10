@@ -1,4 +1,3 @@
-include Stdio
 include Stdppxlib
 include Ppxlib_ast
 

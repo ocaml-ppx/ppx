@@ -10,7 +10,6 @@
   ppxlib_print_diff
   ppx_derivers
   ppxlib_traverse_builtins
-  stdio
   stdppxlib)
  (flags (:standard -open Ocaml_shadow -safe-string))
  (ppx.driver

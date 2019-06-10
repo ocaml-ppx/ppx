@@ -69,7 +69,7 @@ struct
       with_temp_file (fun fn2 ->
         with_temp_file (fun out ->
           let dump fn ast =
-            Out_channel.with_file fn ~f:(fun oc ->
+            Io.String_path.with_file_out fn ~f:(fun oc ->
               let ppf = Format.formatter_of_out_channel oc in
               Sexp.pp ppf (M.to_sexp ast);
               Format.pp_print_flush ppf ())
@@ -94,7 +94,7 @@ struct
             )
           in
           if ok then
-            In_channel.read_all out
+            Io.String_path.read_file out
           else
             "<no differences produced by diff>")))
 

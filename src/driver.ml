@@ -81,8 +81,8 @@ module Transform = struct
 
   let print_caller_id oc (caller_id : Caller_id.t) =
     match caller_id with
-    | None -> Out_channel.output_string oc "<unknown location>"
-    | Some loc -> Out_channel.fprintf oc "%s:%d" loc.filename loc.line_number
+    | None -> output_string oc "<unknown location>"
+    | Some loc -> Printf.fprintf oc "%s:%d" loc.filename loc.line_number
   ;;
 
   let register ?(extensions=[]) ?(rules=[]) ?enclose_impl ?enclose_intf
@@ -95,9 +95,9 @@ module Transform = struct
     begin match List.filter !all ~f:(fun ct -> has_name ct name) with
     | [] -> ()
     | ct :: _ ->
-      eprintf "Warning: code transformation %s registered twice.\n" name;
-      eprintf "  - first time was at %a\n" print_caller_id ct.registered_at;
-      eprintf "  - second time is at %a\n" print_caller_id caller_id;
+      Printf.eprintf "Warning: code transformation %s registered twice.\n" name;
+      Printf.eprintf "  - first time was at %a\n" print_caller_id ct.registered_at;
+      Printf.eprintf "  - second time is at %a\n" print_caller_id caller_id;
     end;
     let ct =
       { name
@@ -292,7 +292,7 @@ let debug_dropped_attribute name ~old_dropped ~new_dropped =
         not (List.exists b ~f:(fun (name' : _ Location.loc) -> name.txt == name'.txt)))
     in
     if not (List.is_empty diff) then begin
-      eprintf "The following attributes %s after applying %s:\n"
+      Printf.eprintf "The following attributes %s after applying %s:\n"
         what name;
       List.iter diff ~f:(fun { Location. txt; loc } ->
         Format.eprintf "- %a: %s\n" Location.print loc txt);
@@ -450,13 +450,13 @@ let print_passes () =
   let omp_config = config ~hook ~expect_mismatch_handler in
   let cts = get_whole_ast_passes ~hook ~expect_mismatch_handler ~omp_config in
   if !perform_checks then
-    printf "<builtin:freshen-and-collect-attributes>\n";
-  List.iter cts ~f:(fun ct -> printf "%s\n" ct.Transform.name);
+    Printf.printf "<builtin:freshen-and-collect-attributes>\n";
+  List.iter cts ~f:(fun ct -> Printf.printf "%s\n" ct.Transform.name);
   if !perform_checks then
     begin
-      printf "<builtin:check-unused-attributes>\n";
+      Printf.printf "<builtin:check-unused-attributes>\n";
       if !perform_checks_on_extensions
-      then printf "<builtin:check-unused-extensions>\n"
+      then Printf.printf "<builtin:check-unused-extensions>\n"
     end
 ;;
 
@@ -582,8 +582,8 @@ let as_ppx_rewriter_main argv =
       (fun _ -> raise (Arg.Bad "anonymous arguments not accepted"))
       usage
   with
-  | exception Arg.Bad  msg -> eprintf "%s" msg; exit 2
-  | exception Arg.Help msg -> eprintf "%s" msg; exit 0
+  | exception Arg.Bad  msg -> Printf.eprintf "%s" msg; exit 2
+  | exception Arg.Help msg -> Printf.eprintf "%s" msg; exit 0
   | () -> mapper
 
 let run_as_ppx_rewriter () =
@@ -645,7 +645,7 @@ let with_preprocessed_input fn ~f =
     if String.equal fn "-" then
       f stdin
     else
-      In_channel.with_file fn ~f)
+      Io.String_path.with_file_in fn ~f)
 ;;
 
 let relocate_mapper = object
@@ -712,7 +712,7 @@ let load_input (kind : Kind.t) fn input_name ~relocate ic =
 ;;
 
 let load_source_file fn =
-  let s = In_channel.read_all fn in
+  let s = Io.String_path.read_file fn in
   if string_contains_binary_ast s then
     Location.raise_errorf ~loc:(Location.in_file fn)
       "ppxlib_driver: cannot use -reconcile with binary AST files";
@@ -894,11 +894,12 @@ let process_file (kind : Kind.t) fn ~input_name ~relocate ~output_mode ~embed_er
 
     Option.iter !output_metadata_filename ~f:(fun fn ->
       let metadata = File_property.dump_and_reset_all () in
-      Out_channel.write_all fn
-        ~data:(
-          List.map metadata ~f:(fun (s, sexp) ->
-            Sexp.to_string (Sexp.List [Atom s; sexp]) ^ "\n")
-          |> String.concat ~sep:""));
+      let data =
+        List.map metadata ~f:(fun (s, sexp) ->
+          Sexp.to_string (Sexp.List [Atom s; sexp]) ^ "\n")
+        |> String.concat ~sep:""
+      in
+      Io.String_path.write_file fn data);
 
     let input_contents = lazy (load_source_file fn) in
     let corrected = fn ^ !corrected_suffix in
@@ -998,7 +999,7 @@ let set_output_mode mode =
 
 let print_transformations () =
   List.iter !Transform.all ~f:(fun (ct : Transform.t) ->
-    printf "%s\n" ct.name);
+    Printf.printf "%s\n" ct.name);
 ;;
 
 let parse_apply_list s =
@@ -1139,8 +1140,8 @@ let standalone_args =
     " Print the actual passes over the whole AST in the order they are applied"
   ; "-ite-check",
     Arg.Unit (fun () ->
-      eprintf "Warning: the -ite-check flag is deprecated \
-               and has no effect.\n%!";
+      Printf.eprintf
+        "Warning: the -ite-check flag is deprecated and has no effect.\n%!";
       Extra_warnings.care_about_ite_branch := true),
     " (no effect -- kept for compatibility)"
   ; "-pp", Arg.String (fun s -> preprocessor := Some s),
@@ -1203,7 +1204,7 @@ let standalone_main () =
   end;
   match !input with
   | None    ->
-    eprintf "%s: no input file given\n%!" exe_name;
+    Printf.eprintf "%s: no input file given\n%!" exe_name;
     exit 2
   | Some fn ->
     let kind =
@@ -1213,7 +1214,7 @@ let standalone_main () =
         match Kind.of_filename fn with
         | Some k -> k
         | None ->
-          eprintf "%s: don't know what to do with '%s', use -impl or -intf.\n"
+          Printf.eprintf "%s: don't know what to do with '%s', use -impl or -intf.\n"
             exe_name fn;
           exit 2
     in
@@ -1230,7 +1231,7 @@ let standalone_run_as_ppx_rewriter () =
   let n = Array.length Sys.argv in
   let usage = Printf.sprintf "%s -as-ppx [extra_args] <infile> <outfile>" exe_name in
   if n < 4 then begin
-    eprintf "Usage: %s\n%!" usage;
+    Printf.eprintf "Usage: %s\n%!" usage;
     exit 2
   end;
   let argv = Array.make (n - 3) "" in
@@ -1249,8 +1250,8 @@ let standalone_run_as_ppx_rewriter () =
       (fun _ -> raise (Arg.Bad "anonymous arguments not accepted"))
       usage
   with
-  | exception Arg.Bad  msg -> eprintf "%s" msg; exit 2
-  | exception Arg.Help msg -> eprintf "%s" msg; exit 0
+  | exception Arg.Bad  msg -> Printf.eprintf "%s" msg; exit 2
+  | exception Arg.Help msg -> Printf.eprintf "%s" msg; exit 0
   | () ->
     interpret_mask ();
     Ocaml_common.Ast_mapper.apply

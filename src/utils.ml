@@ -3,7 +3,7 @@ open Import
 let with_output fn ~binary ~f =
   match fn with
   | None | Some "-" -> f stdout
-  | Some fn -> Out_channel.with_file fn ~binary ~f
+  | Some fn -> Io.String_path.with_file_out fn ~binary ~f
 ;;
 
 module Kind = struct
