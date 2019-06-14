@@ -46,6 +46,12 @@ module Merlin_helpers      = Merlin_helpers
 module Reserved_namespaces = Name.Reserved_namespaces
 module Spellcheck          = Spellcheck
 
+module Sexp : sig
+  type t =
+    | Atom of string
+    | List of t list
+end = Exposed_sexp
+
 include Common
 
 (**/**)

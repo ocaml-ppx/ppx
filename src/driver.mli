@@ -159,7 +159,7 @@ module Create_file_property
     (Name : sig val name : string end)
     (T : sig
        type t
-       val sexp_of_t : t -> Sexp.t
+       val sexp_of_t : t -> Exposed_sexp.t
      end) : sig
   val set : T.t -> unit
 end
