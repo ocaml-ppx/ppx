@@ -645,7 +645,7 @@ let with_preprocessed_input fn ~f =
     if String.equal fn "-" then
       f stdin
     else
-      Io.String_path.with_file_in fn ~f)
+      Io.with_file_in fn ~f)
 ;;
 
 let relocate_mapper = object
@@ -712,7 +712,7 @@ let load_input (kind : Kind.t) fn input_name ~relocate ic =
 ;;
 
 let load_source_file fn =
-  let s = Io.String_path.read_file fn in
+  let s = Io.read_file fn in
   if string_contains_binary_ast s then
     Location.raise_errorf ~loc:(Location.in_file fn)
       "ppxlib_driver: cannot use -reconcile with binary AST files";
@@ -899,7 +899,7 @@ let process_file (kind : Kind.t) fn ~input_name ~relocate ~output_mode ~embed_er
           Sexp.to_string (Sexp.List [Atom s; sexp]) ^ "\n")
         |> String.concat ~sep:""
       in
-      Io.String_path.write_file fn data);
+      Io.write_file fn data);
 
     let input_contents = lazy (load_source_file fn) in
     let corrected = fn ^ !corrected_suffix in
