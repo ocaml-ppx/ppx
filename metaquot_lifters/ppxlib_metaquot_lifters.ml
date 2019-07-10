@@ -1,5 +1,5 @@
-open Base
 open Ppxlib
+open Stdppxlib
 open Ast_builder.Default
 
 class expression_lifters loc = object

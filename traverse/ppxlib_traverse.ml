@@ -1,10 +1,10 @@
-open Base
 open Ppxlib
+open Stdppxlib
 open Ast_builder.Default
 
 let alphabet =
-  Array.init (Char.to_int 'z' - Char.to_int 'a' + 1)
-    ~f:(fun i -> String.make 1 (Char.of_int_exn (i + Char.to_int 'a')))
+  Array.init (Char.code 'z' - Char.code 'a' + 1)
+    ~f:(fun i -> String.make 1 (Char.chr (i + Char.code 'a')))
 ;;
 
 let vars_of_list ~get_loc l =
@@ -156,7 +156,7 @@ module Backends = struct
       inherit Ast_traverse.iter as super
       method! expression_desc = function
         | Pexp_ident { txt = Lident id; _ } when String.equal id var ->
-          Exn.raise_without_backtrace Found
+          Exn.raise_notrace Found
         | e -> super#expression_desc e
     end in
     fun e ->
@@ -310,7 +310,7 @@ let rec type_expr_mapper ~(what:what) te =
   | _ -> what#any ~loc
 
 and map_variables ~(what:what) vars tes =
-  List.map2_exn tes vars ~f:(fun te var ->
+  List.map2 tes vars ~f:(fun te var ->
     (var,
      what#apply ~loc:te.ptyp_loc (type_expr_mapper ~what te)
        [evar_of_var var]))
@@ -356,7 +356,7 @@ let erase_type_variables = object
 end
 
 let gen_variant ~(what:what) ~loc cds =
-  if String.(<>) what#name "lift" &&
+  if not (String.equal what#name "lift") &&
      List.for_all cds ~f:is_constant_constructor then
     what#any ~loc
   else
@@ -419,19 +419,21 @@ let gen_mapper ~(what:what) td =
       pexp_fun ~loc Nolabel None (ppat_any ~loc) acc)
 ;;
 
+module Longident_map = Map.Make(Longident)
+
 let type_deps =
   let collect = object
-    inherit [int Map.M(Longident).t] Ast_traverse.fold as super
+    inherit [int Longident_map.t] Ast_traverse.fold as super
     method! core_type t acc =
       let acc =
         match t.ptyp_desc with
-        | Ptyp_constr (id, vars) -> Map.set acc ~key:id.txt ~data:(List.length vars)
+        | Ptyp_constr (id, vars) -> Longident_map.add acc id.txt (List.length vars)
         | _ -> acc
       in
       super#core_type t acc
   end in
   fun tds ->
-    let empty = Map.empty (module Longident) in
+    let empty = Longident_map.empty in
     let map =
       List.fold_left tds ~init:empty ~f:(fun map td ->
         let map = collect#type_kind td.ptype_kind map in
@@ -441,20 +443,20 @@ let type_deps =
     in
     let map =
       List.fold_left tds ~init:map ~f:(fun map td ->
-        Map.remove map (Lident td.ptype_name.txt))
+        Longident_map.remove map (Lident td.ptype_name.txt))
     in
-    Map.to_alist map
+    Longident_map.to_list map
 
 let lift_virtual_methods ~loc methods =
   let collect = object
-    inherit [Set.M(String).t] Ast_traverse.fold as super
+    inherit [String.Set.t] Ast_traverse.fold as super
 
     method! expression_desc x acc =
       match x with
-      | Pexp_send (_, ({ txt = "tuple"|"record"|"constr"|"other" as s; loc = _; })) -> Set.add acc s
+      | Pexp_send (_, ({ txt = "tuple"|"record"|"constr"|"other" as s; loc = _; })) -> String.Set.add acc s
       | _ -> super#expression_desc x acc
   end in
-  let used = collect#list collect#class_field methods (Set.empty (module String)) in
+  let used = collect#list collect#class_field methods String.Set.empty in
   let all_virtual_methods =
     match
       [%stri
@@ -478,7 +480,7 @@ let lift_virtual_methods ~loc methods =
   in
   List.filter all_virtual_methods ~f:(fun m ->
     match m.pcf_desc with
-    | Pcf_method (s, _, _) -> Set.mem used s.txt
+    | Pcf_method (s, _, _) -> String.Set.mem used s.txt
     | _ -> false)
 
 let map_lident id ~f =

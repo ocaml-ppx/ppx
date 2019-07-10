@@ -1,15 +1,8 @@
 open! Import
 
-let chop_prefix ~prefix x =
-  if String.is_prefix ~prefix x then
-    Some (String.drop_prefix x (String.length prefix))
-  else
-    None
-;;
-
 let get_default_path (loc : Location.t) =
   let fname = loc.loc_start.pos_fname in
-  match chop_prefix ~prefix:"./" fname with
+  match String.drop_prefix ~prefix:"./" fname with
   | Some fname -> fname
   | None       -> fname
 ;;

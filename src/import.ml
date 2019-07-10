@@ -1,5 +1,4 @@
-include Base
-include Stdio
+include Stdppxlib
 include Ppxlib_ast
 
 (* This is not re-exported by Base and we can't use [%here] in ppxlib *)

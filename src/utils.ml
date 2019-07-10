@@ -3,16 +3,16 @@ open Import
 let with_output fn ~binary ~f =
   match fn with
   | None | Some "-" -> f stdout
-  | Some fn -> Out_channel.with_file fn ~binary ~f
+  | Some fn -> Io.with_file_out fn ~binary ~f
 ;;
 
 module Kind = struct
   type t = Intf | Impl
 
   let of_filename fn : t option =
-    if Caml.Filename.check_suffix fn ".ml" then
+    if Filename.check_suffix fn ".ml" then
       Some Impl
-    else if Caml.Filename.check_suffix fn ".mli" then
+    else if Filename.check_suffix fn ".mli" then
       Some Intf
     else
       None
@@ -23,7 +23,7 @@ module Kind = struct
     | Intf -> "interface"
   ;;
 
-  let equal : t -> t -> bool = Poly.equal
+  let equal : t -> t -> bool = (=)
 end
 
 module Some_intf_or_impl = struct

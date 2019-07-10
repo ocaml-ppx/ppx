@@ -220,15 +220,15 @@ module Default = struct
         begin
           match
             List.for_all2 args params ~f:(fun (arg_label, arg) (param_label, param, _) ->
-              Poly.(=) (arg_label : arg_label) param_label
+              (arg_label : arg_label) = param_label
               && match arg with
               | { pexp_desc = Pexp_ident { txt = Lident name'; _ }; pexp_attributes = []; pexp_loc = _ }
-                -> String.(=) name' param.txt
+                -> String.equal name' param.txt
               | _ -> false)
           with
-          | Unequal_lengths -> assert false
-          | Ok false -> None
-          | Ok true -> Some (annotate ~loc:expr.pexp_loc f_ident params)
+          | false -> None
+          | true -> Some (annotate ~loc:expr.pexp_loc f_ident params)
+          | exception Invalid_argument _ -> assert false
         end
       | _ -> None
   ;;

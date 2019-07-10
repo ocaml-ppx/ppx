@@ -1,7 +1,7 @@
 open Import
 
 (** Add one argument to the command line *)
-val add_arg : Caml.Arg.key -> Caml.Arg.spec -> doc:string -> unit
+val add_arg : Arg.key -> Arg.spec -> doc:string -> unit
 
 (** Error reported by linters *)
 module Lint_error : sig
@@ -155,7 +155,12 @@ val register_process_file_hook : (unit -> unit) -> unit
     In the future we could also use this to directly compute the dependencies and pass
     them here, to avoid calling ocamldep separately.
 *)
-module Create_file_property(Name : sig val name : string end)(T : Sexpable.S) : sig
+module Create_file_property
+    (Name : sig val name : string end)
+    (T : sig
+       type t
+       val sexp_of_t : t -> Exposed_sexp.t
+     end) : sig
   val set : T.t -> unit
 end
 

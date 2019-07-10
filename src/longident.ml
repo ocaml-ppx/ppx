@@ -6,7 +6,7 @@ module T = struct
     | Ldot of t * string
     | Lapply of t * t
 
-  let compare : t -> t -> int = Poly.compare
+  let compare = compare
 
   let is_normal_ident_char = function
     | 'A' .. 'Z' | 'a' .. 'z' | '0' .. '9' | '_' | '\'' -> true
@@ -27,12 +27,8 @@ module T = struct
     | Lident s -> short_name s
     | Ldot (a, b) -> name a ^ "." ^ short_name b
     | Lapply (a, b) -> Printf.sprintf "%s(%s)" (name a) (name b)
-
-  let sexp_of_t t = Sexp.Atom (name t)
 end
 include T
-
-include Comparable.Make(T)
 
 let rec flat accu = function
     Lident s -> s :: accu
@@ -59,14 +55,14 @@ let parse_simple s =
 let parse s =
   match String.index s '(' with
   | None -> parse_simple  s
-  | Some l -> match String.rindex s ')' with
+  | Some l -> match String.rindex_opt s ')' with
     | None -> invalid_arg "Ppxlib.Longident.parse"
     | Some r ->
-      if Int.( r <> String.length s - 1 ) then
+      if not (Int.equal r (String.length s - 1)) then
         invalid_arg "Ppxlib.Longident.parse";
-      let group = if Int.(r = l + 1) then "()" else
-          String.strip (String.sub s ~pos:(l+1) ~len:(r-l-1)) in
-      if Int.(l = 0) then Lident group else
+      let group = if Int.equal r (l + 1) then "()" else
+          String.trim (String.sub s ~pos:(l+1) ~len:(r-l-1)) in
+      if Int.equal l 0 then Lident group else
         let before = String.sub s ~pos:0 ~len:(l-1) in
         match String.split before ~on:'.' with
         | [] -> Lident group

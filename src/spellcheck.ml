@@ -21,7 +21,7 @@ let spellcheck names name =
           else
             (dist, registered_name :: names_at_best_distance))
   in
-  match List.rev suggestions |> List.filter ~f:(String.(<>) name) with
+  match List.rev suggestions |> List.filter ~f:(fun s -> not (String.equal name s)) with
   | [] -> None
   | last :: rev_rest ->
     Some

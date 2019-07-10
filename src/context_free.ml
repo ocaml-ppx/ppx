@@ -23,7 +23,7 @@ module Rule = struct
 
     let attr_name (T t) = Attribute.name t.attribute
 
-    let split_normal_and_expect l = List.partition_tf l ~f:(fun (T t) -> not t.expect)
+    let split_normal_and_expect l = List.partition l ~f:(fun (T t) -> not t.expect)
   end
 
   module Attr_inline = struct
@@ -39,7 +39,7 @@ module Rule = struct
     type ('a, 'b) t = T : ('a, 'b, _) unpacked -> ('a, 'b) t
     let attr_name (T t) = Attribute.name t.attribute
 
-    let split_normal_and_expect l = List.partition_tf l ~f:(fun (T t) -> not t.expect)
+    let split_normal_and_expect l = List.partition l ~f:(fun (T t) -> not t.expect)
   end
 
   module Special_function = struct
@@ -263,18 +263,17 @@ let table_of_special_functions special_functions =
       (ident, expand))
     (* We expect the lookup to fail most of the time, by making the table big (and
        sparse), we make it more likely to fail quickly *)
-    |> Hashtbl.Poly.of_alist ~size:(max 1024 (List.length special_functions * 2))
+    |> Hashtbl.of_list ~size:(max 1024 (List.length special_functions * 2))
   with
   | `Ok table -> table
   | `Duplicate_key ident ->
+    let duplicate_special_function =
+      List.find_exn ~f:(fun r -> r.ident = ident) special_functions
+    in
     Printf.ksprintf invalid_arg
       "Context_free.V1.map_top_down: \
        %s present twice in list of special functions"
-      (List.find_map_exn special_functions ~f:(fun r ->
-         if Poly.equal r.ident ident then
-           Some r.name
-         else
-           None))
+       duplicate_special_function.name
 ;;
 
 let rec get_group attr l =
@@ -352,7 +351,7 @@ class map_top_down ?(expect_mismatch_handler=Expect_mismatch_handler.nop)
   let constants =
     Rule.filter Constant rules
     |> List.map ~f:(fun (c:Rule.Constant.t) -> ((c.suffix,c.kind),c.expand))
-    |> Hashtbl.Poly.of_alist_exn
+    |> Hashtbl.of_list_exn
   in
   let extensions = Rule.filter Extension rules in
   let class_expr       = E.filter_by_context EC.class_expr       extensions

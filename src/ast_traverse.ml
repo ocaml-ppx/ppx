@@ -107,9 +107,9 @@ class map_with_expansion_context = object (self)
 
   method! value_binding ctxt {pvb_pat; pvb_expr; pvb_attributes; pvb_loc} =
     let all_var_names = var_names_of#pattern pvb_pat [] in
-    let var_name = Base.List.last all_var_names in
+    let var_name = List.last all_var_names in
     let in_binding_ctxt =
-      Base.Option.fold var_name
+      Option.fold var_name
         ~init:ctxt
         ~f:(fun ctxt var_name -> Expansion_context.Base.enter_value ~loc:pvb_loc var_name ctxt)
     in
@@ -123,18 +123,18 @@ end
 class sexp_of = object
   inherit [Sexp.t] Ast.lift
 
-  method int       = sexp_of_int
-  method string    = sexp_of_string
-  method bool      = sexp_of_bool
-  method char      = sexp_of_char
-  method float     = sexp_of_float
-  method int32     = sexp_of_int32
-  method int64     = sexp_of_int64
-  method nativeint = sexp_of_nativeint
-  method unit      = sexp_of_unit
-  method option    = sexp_of_option
-  method list      = sexp_of_list
-  method array : 'a. ('a -> Sexp.t) -> 'a array -> Sexp.t = sexp_of_array
+  method int       = Sexp.Encoder.int
+  method string    = Sexp.Encoder.string
+  method bool      = Sexp.Encoder.bool
+  method char      = Sexp.Encoder.char
+  method float     = Sexp.Encoder.float
+  method int32     = Sexp.Encoder.int32
+  method int64     = Sexp.Encoder.int64
+  method nativeint = Sexp.Encoder.nativeint
+  method unit      = Sexp.Encoder.unit
+  method option    = Sexp.Encoder.option
+  method list      = Sexp.Encoder.list
+  method array : 'a. ('a -> Sexp.t) -> 'a array -> Sexp.t = Sexp.Encoder.array
 
   method other : 'a. 'a -> Sexp.t = fun _ -> Sexp.Atom "_"
 
