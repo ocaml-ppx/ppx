@@ -56,12 +56,10 @@ let v3_of_v2 : History.conversion =
       match node with
       | { kind = "Expression"
         ; clause = "Ident"
-        ; loc
         ; fields = [ { name = "name"; value = name } ]
         } ->
         { kind = "Expression"
         ; clause = "Ident"
-        ; loc
         ; fields =
             [ { name = "id"
               ; value =
@@ -69,7 +67,6 @@ let v3_of_v2 : History.conversion =
                     (of_node
                        { kind = "Identifier"
                        ; clause = "Var"
-                       ; loc
                        ; fields = [ { name = "name"; value = name } ]
                        })
               }
@@ -84,20 +81,17 @@ let v2_of_v3 : History.conversion =
       match node with
       | { kind = "Expression"
         ; clause = "Ident"
-        ; loc
         ; fields = [ { name = "id" ; value = Tree id } ]
         }
         ->
         (match to_node id with
          | { kind = "Identifier"
            ; clause = "Var"
-           ; loc = _
            ; fields = [ { name = "name"; value = name } ]
            }
            ->
            { kind = "Expression"
            ; clause = "Ident"
-           ; loc
            ; fields = [ { name = "name"; value = name } ]
            }
          | _ -> node)
@@ -127,7 +121,6 @@ let v2_of_v1 : History.conversion =
       match node with
       | { kind = "Case"
         ; clause = "Case"
-        ; loc
         ; fields =
             [ { name = "lhs"; value = lhs }
             ; { name = "guard"; value = Option guard }
@@ -143,7 +136,6 @@ let v2_of_v1 : History.conversion =
               (of_node
                  { kind = "Pattern"
                  ; clause = "Guard"
-                 ; loc
                  ; fields =
                      [ { name = "body"; value = lhs }
                      ; { name = "guard"; value = guard }
@@ -152,7 +144,6 @@ let v2_of_v1 : History.conversion =
         in
         { kind = "Case"
         ; clause = "Case"
-        ; loc
         ; fields =
             [ { name = "lhs"; value = lhs }
             ; { name = "rhs"; value = rhs }
@@ -167,7 +158,6 @@ let v1_of_v2 : History.conversion =
       match node with
       | { kind = "Case"
         ; clause = "Case"
-        ; loc
         ; fields =
             [ { name = "lhs"; value = Tree lhs }
             ; { name = "rhs"; value = rhs }
@@ -178,7 +168,6 @@ let v1_of_v2 : History.conversion =
           match to_node lhs with
           | { kind = "Pattern"
             ; clause = "Guard"
-            ; loc = _
             ; fields =
                 [ { name = "body"; value = lhs }
                 ; { name = "guard"; value = guard }
@@ -191,7 +180,6 @@ let v1_of_v2 : History.conversion =
         in
         { kind = "Case"
         ; clause = "Case"
-        ; loc
         ; fields =
             [ { name = "lhs"; value = lhs }
             ; { name = "guard"; value = Option guard }

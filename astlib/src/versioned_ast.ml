@@ -1,31 +1,24 @@
-open Base
+open StdLabels
 
 type t =
-  { version : String.t
+  { version : string
   ; ast : t Astlib_ast.Ast.node
   }
 
 let version t = t.version
 
-let rec sexp_of_t { version; ast } =
-  Sexp.List [Atom version; Ast.sexp_of_node sexp_of_t ast]
-
-let rec equal x y =
-  String.equal x.version y.version
-  && Ast.equal_node equal x.ast y.ast
-
 let create ast ~version = { ast; version }
 
 let rec iterate_to_fixed_point x ~f =
   let y = f x in
-  if phys_equal x y
+  if x == y
   then y
   else iterate_to_fixed_point y ~f
 
 let rec convert t ~version:final_version =
   match
     Astlib_ast.History.conversion_steps
-      Astlib_ast.For_testing.history
+      Astlib_ast.History.history
       ~from_version:t.version
       ~to_version:final_version
   with

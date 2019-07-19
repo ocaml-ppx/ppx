@@ -1,0 +1,7 @@
+(library
+ (name astlib_parsetree_types)
+ (public_name astlib.parsetree_types)
+ (libraries
+  ocaml-compiler-libs.shadow
+  ocaml-compiler-libs.common)
+ (flags (:standard -open Ocaml_shadow -safe-string)))

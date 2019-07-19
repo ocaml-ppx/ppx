@@ -8,9 +8,9 @@
   expect_test_helpers_kernel.expect_test_helpers_base
   sexplib)
  (flags (:standard -open Ocaml_shadow -safe-string))
- (preprocess (pps ppx_expect ppx_here ppx_let ppx_sexp_conv ppx_sexp_message ppx_sexp_value))
+ (preprocess (pps ppx_jane))
  (inline_tests))
 
 (cinaps
  (files *.ml *.mli)
- (libraries astlib.cinaps))
+ (libraries astlib.test_cinaps))

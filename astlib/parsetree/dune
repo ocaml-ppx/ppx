@@ -1,0 +1,10 @@
+(library
+ (name astlib_parsetree)
+ (public_name astlib.parsetree)
+ (libraries
+  ocaml-compiler-libs.common)
+ (flags :standard -safe-string))
+
+(cinaps
+ (files *.ml *.mli)
+ (libraries astlib.parsetree_cinaps))
