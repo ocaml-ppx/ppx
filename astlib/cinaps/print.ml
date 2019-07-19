@@ -12,7 +12,7 @@ let print string =
   let indentation = 2 * !indentation_depth in
   String.split_on_char string ~sep:'\n'
   |> List.iter ~f:(fun line ->
-    Printf.printf "%*s%s\n" indentation "" line)
+    Printf.printf "%*s%s\n%!" indentation "" line)
 
 let format fmt = Printf.ksprintf print fmt
 

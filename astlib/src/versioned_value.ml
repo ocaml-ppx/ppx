@@ -1,4 +1,4 @@
-open Base
+open StdLabels
 
 type t = Versioned_ast.t Astlib_ast.Ast.value
 
@@ -13,10 +13,10 @@ let of_list list ~f = Astlib_ast.Ast.List (List.map list ~f)
 
 let to_list t ~f =
   match (t : t) with
-  | List list -> List.map list ~f |> Option.all
+  | List list -> List.map list ~f |> Optional.all
   | _ -> None
 
-let of_option option ~f = Astlib_ast.Ast.Option (Option.map option ~f)
+let of_option option ~f = Astlib_ast.Ast.Option (Optional.map option ~f)
 
 let to_option t ~f =
   match (t : t) with
@@ -29,9 +29,30 @@ let to_option t ~f =
         | None -> None))
   | _ -> None
 
+let of_location x = Astlib_ast.Ast.Location x
+
+let to_location t =
+  match (t : t) with
+  | Location x -> Some x
+  | _ -> None
+
 let of_string x = Astlib_ast.Ast.String x
 
 let to_string t =
   match (t : t) with
   | String x -> Some x
+  | _ -> None
+
+let of_char x = Astlib_ast.Ast.Char x
+
+let to_char t =
+  match (t : t) with
+  | Char x -> Some x
+  | _ -> None
+
+let of_bool x = Astlib_ast.Ast.Bool x
+
+let to_bool t =
+  match (t : t) with
+  | Bool x -> Some x
   | _ -> None

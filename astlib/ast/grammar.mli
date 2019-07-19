@@ -18,6 +18,7 @@ and data =
   | Bool
   | Char
   | String
+  | Location
   | List   of data
   | Option of data
 
