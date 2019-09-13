@@ -53,10 +53,13 @@ let parse_simple s =
 
 (* handle ["A.B.(+.+)"] or ["Vec.(.%.()<-)"] *)
 let parse s =
+  let invalid () =
+    invalid_arg (Printf.sprintf "Ppx.Longident.parse: %S" s)
+  in
   match String.index s '(' with
   | None -> parse_simple  s
   | Some l -> match String.rindex_opt s ')' with
-    | None -> invalid_arg "Ppx.Longident.parse"
+    | None -> invalid ()
     | Some r ->
       if r <> String.length s - 1 then
         invalid_arg "Ppx.Longident.parse";
@@ -64,7 +67,7 @@ let parse s =
           String.trim (String.sub s ~pos:(l+1) ~len:(r-l-1))
       in
       if l = 0 then Lident group
-      else if s.[l - 1] <> '.' then invalid_arg "Ppx.Longident.parse"
+      else if s.[l - 1] <> '.' then invalid ()
       else
         let before = String.sub s ~pos:0 ~len:(l-1) in
         match String.split before ~on:'.' with
