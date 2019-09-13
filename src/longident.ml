@@ -58,12 +58,15 @@ let parse s =
   | Some l -> match String.rindex_opt s ')' with
     | None -> invalid_arg "Ppx.Longident.parse"
     | Some r ->
-      if not (Int.equal r (String.length s - 1)) then
+      if r <> String.length s - 1 then
         invalid_arg "Ppx.Longident.parse";
-      let group = if Int.equal r (l + 1) then "()" else
-          String.trim (String.sub s ~pos:(l+1) ~len:(r-l-1)) in
-      if Int.equal l 0 then Lident group else
+      let group = if r = l + 1 then "()" else
+          String.trim (String.sub s ~pos:(l+1) ~len:(r-l-1))
+      in
+      if l = 0 then Lident group
+      else if s.[l - 1] <> '.' then invalid_arg "Ppx.Longident.parse"
+      else
         let before = String.sub s ~pos:0 ~len:(l-1) in
         match String.split before ~on:'.' with
-        | [] -> Lident group
+        | [] -> assert false
         | s :: l -> Ldot(unflatten ~init:(Lident s) l, group)
