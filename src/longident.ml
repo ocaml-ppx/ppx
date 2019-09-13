@@ -1,4 +1,17 @@
 open! Import
+open Astlib.V4_07.Longident
+
+let to_astlib = Astlib.Conversions.longident_to_ast
+
+let to_concrete_exn t =
+  match to_concrete t with
+  | Some t -> t
+  | None -> failwith "Malformed Longident"
+
+module Builder = struct
+  let lident a = of_concrete (Lident {a})
+  let ldot a b = of_concrete (Ldot {a; b})
+end
 
 module T = struct
   type t = longident =
@@ -23,36 +36,47 @@ module T = struct
     then string
     else "( " ^ string ^ " )"
 
-  let rec name = function
-    | Lident s -> short_name s
-    | Ldot (a, b) -> name a ^ "." ^ short_name b
-    | Lapply (a, b) -> Printf.sprintf "%s(%s)" (name a) (name b)
+  let rec name lident =
+    match to_concrete_exn lident with
+    | Lident {a} -> short_name a
+    | Ldot {a; b} -> name a ^ "." ^ short_name b
+    | Lapply {a; b} -> Printf.sprintf "%s(%s)" (name a) (name b)
+
+  let name lident =
+    let lident = to_astlib lident in
+    name lident
 end
 include T
 
-let rec flat accu = function
-    Lident s -> s :: accu
-  | Ldot(lid, s) -> flat (s :: accu) lid
-  | Lapply(_, _) -> invalid_arg "Ppx.Longident.flatten"
+let rec flat accu lident =
+  match to_concrete_exn lident with
+  | Lident {a} -> a :: accu
+  | Ldot {a = lid; b} -> flat (b :: accu) lid
+  | Lapply _ -> invalid_arg "Ppx.Longident.flatten"
 
-let flatten_exn lid = flat [] lid
+let flatten_exn lident =
+  let lident = to_astlib lident in
+  flat [] lident
 
-let last_exn = function
-    Lident s -> s
-  | Ldot(_, s) -> s
-  | Lapply(_, _) -> invalid_arg "Ppx.Longident.flatten"
+let last_exn lident =
+  let lident = to_astlib lident in
+  match to_concrete_exn lident with
+  | Lident {a} -> a
+  | Ldot {b; _} -> b
+  | Lapply _ -> invalid_arg "Ppx.Longident.last"
 
 let unflatten ~init l =
-  List.fold_left l ~init ~f:(fun acc s -> Ldot (acc, s))
+  List.fold_left l ~init ~f:(fun acc b -> (Builder.ldot acc b))
 
 (* for cases without dotted operators (e.g. [parse "A.B.C"]) *)
 let parse_simple s =
   match String.split s ~on:'.' with
   | [] -> assert false
-  | s :: l -> unflatten ~init:(Lident s) l
+  | a :: l -> unflatten ~init:(Builder.lident a) l
 
 (* handle ["A.B.(+.+)"] or ["Vec.(.%.()<-)"] *)
 let parse s =
+  let open Builder in
   let invalid () =
     invalid_arg (Printf.sprintf "Ppx.Longident.parse: %S" s)
   in
@@ -64,10 +88,15 @@ let parse s =
       let group = if r = l + 1 then "()" else
           String.trim (String.sub s ~pos:(l+1) ~len:(r-l-1))
       in
-      if l = 0 then Lident group
+      if l = 0 then lident group
       else if s.[l - 1] <> '.' then invalid ()
       else
         let before = String.sub s ~pos:0 ~len:(l-1) in
         match String.split before ~on:'.' with
         | [] -> assert false
-        | s :: l -> Ldot(unflatten ~init:(Lident s) l, group)
+        | s :: l -> ldot (unflatten ~init:(lident s) l) group
+
+let parse s =
+  match Astlib.Conversions.longident_of_ast (parse s) with
+  | Some lident -> lident
+  | None -> failwith "Built a malformed Longident"
