@@ -112,6 +112,11 @@ let _ = convert_longident "A.B(C)"
 Exception: Invalid_argument "Ppx.Longident.parse: \"A.B(C)\"".
 |}]
 
+let _ = convert_longident ")"
+[%%expect{|
+- : string * longident = ("( ) )", Ppx.Longident.Lident ")")
+|}]
+
 let _ = Ppx.Code_path.(file_path @@ top_level ~file_path:"dir/main.ml")
 [%%expect{|
 - : string = "dir/main.ml"
