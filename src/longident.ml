@@ -56,13 +56,11 @@ let parse s =
   let invalid () =
     invalid_arg (Printf.sprintf "Ppx.Longident.parse: %S" s)
   in
-  match String.index s '(' with
-  | None -> parse_simple  s
-  | Some l -> match String.rindex_opt s ')' with
-    | None -> invalid ()
-    | Some r ->
-      if r <> String.length s - 1 then
-        invalid_arg "Ppx.Longident.parse";
+  match String.index s '(', String.rindex_opt s ')' with
+  | None, None -> parse_simple  s
+  | None, _ | _, None -> invalid ()
+  | Some l, Some r ->
+      if r <> String.length s - 1 then invalid ();
       let group = if r = l + 1 then "()" else
           String.trim (String.sub s ~pos:(l+1) ~len:(r-l-1))
       in
