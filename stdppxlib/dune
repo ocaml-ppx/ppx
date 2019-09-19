@@ -1,5 +1,5 @@
 (library
  (name stdppxlib)
- (public_name ppxlib._stdppxlib)
+ (public_name ppx._stdppx)
  (preprocess future_syntax)
  (libraries ppxlib_caml unix))

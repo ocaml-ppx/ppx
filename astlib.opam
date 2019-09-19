@@ -2,8 +2,8 @@ opam-version: "2.0"
 maintainer: "opensource@janestreet.com"
 authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
 homepage: "https://github.com/ocaml-ppx/astlib"
-bug-reports: "https://github.com/ocaml-ppx/ppxlib/issues"
-dev-repo: "git+https://github.com/ocaml-ppx/ppxlib.git"
+bug-reports: "https://github.com/ocaml-ppx/ppx/issues"
+dev-repo: "git+https://github.com/ocaml-ppx/ppx.git"
 doc: "https://ocaml-ppx.github.io/astlib/"
 license: "MIT"
 build: [

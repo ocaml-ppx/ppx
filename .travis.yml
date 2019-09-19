@@ -6,7 +6,7 @@ services:
 env:
   global:
   - DISTRO="debian-stable"
-  - PACKAGE="ppxlib"
+  - PACKAGE="ppx"
   matrix:
   - OCAML_VERSION="4.04"
   - OCAML_VERSION="4.05"
