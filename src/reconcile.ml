@@ -97,7 +97,7 @@ module Replacements = struct
       if not (String.equal repl.start.pos_fname input_name) ||
          not (String.equal repl.stop .pos_fname input_name) then
         Location.raise_errorf ~loc:(Location.in_file input_filename)
-          "ppxlib_driver: the rewriting contains parts from another file.\n\
+          "ppx_driver: the rewriting contains parts from another file.\n\
            It is too complicated to reconcile it with the source";
       assert (repl.start.pos_cnum <= repl.stop.pos_cnum));
     let repls =
@@ -119,7 +119,7 @@ module Replacements = struct
             filter prev repls ~acc
           else
             Location.raise_errorf
-              "ppxlib_driver: locations of generated code are overlapping, cannot reconcile"
+              "ppx_driver: locations of generated code are overlapping, cannot reconcile"
               ~loc:{ loc_start = repl.start; loc_end = prev.stop; loc_ghost = false };
         end else
           filter repl repls ~acc:(prev :: acc)
@@ -173,7 +173,7 @@ let with_output ~styler ~(kind:Kind.t) fn ~f =
   | None -> with_output fn ~binary:false ~f
   | Some cmd ->
     let tmp_fn, oc =
-      Filename.open_temp_file "ppxlib_driver"
+      Filename.open_temp_file "ppx_driver"
         (match kind with Impl -> ".ml" | Intf -> ".mli")
     in
     let cmd =

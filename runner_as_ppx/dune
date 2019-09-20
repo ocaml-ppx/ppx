@@ -1,7 +1,7 @@
 ;; This library just contain the entry point for ppx drivers. It must
 ;; be linked after all other libraries and units.
 (library
- (name ppxlib_runner_as_ppx)
+ (name ppx_runner_as_ppx)
  (public_name ppx.runner_as_ppx)
  (library_flags -linkall)
  (flags (:standard -safe-string))

@@ -1,6 +1,6 @@
 (** Result type *)
 
-type ('a, 'error) t = ('a, 'error) Ppxlib_caml.result =
+type ('a, 'error) t = ('a, 'error) Ppx_caml.result =
   | Ok    of 'a
   | Error of 'error
 

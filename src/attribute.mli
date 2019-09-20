@@ -201,7 +201,7 @@ val collect : Ast_traverse.iter
 val check_all_seen : unit -> unit
 
 (** Mark an attribute as seen and handled. This is only to make ppx rewriters that don't
-    use ppxlib works well with the ones that do use it. *)
+    use ppx works well with the ones that do use it. *)
 val mark_as_handled_manually : attribute -> unit
 
 (** Return the list of attributes that have been dropped so far: attributes that haven't

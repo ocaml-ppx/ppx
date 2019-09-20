@@ -1,5 +1,5 @@
 (library
- (name        ppxlib_traverse)
+ (name        ppx_traverse)
  (public_name ppx.traverse)
  (kind ppx_rewriter)
  (flags (:standard -safe-string))

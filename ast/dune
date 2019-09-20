@@ -1,5 +1,5 @@
 (library
- (name        ppxlib_ast)
+ (name        ppx_ast)
  (public_name ppx.ast)
  (libraries
   ocaml-compiler-libs.shadow
@@ -17,10 +17,10 @@
   parse
   parser
   pprintast
-  ppxlib_ast
+  ppx_ast
   syntaxerr
   warn)
- (lint (pps ppxlib_traverse -deriving-keep-w32=impl)))
+ (lint (pps ppx_traverse -deriving-keep-w32=impl)))
 
 (ocamllex  lexer)
 (ocamlyacc parser0)

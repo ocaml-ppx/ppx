@@ -1,4 +1,4 @@
 (library
- (name        ppxlib_traverse_builtins)
+ (name        ppx_traverse_builtins)
  (public_name ppx.traverse_builtins)
  (flags (:standard -safe-string)))

@@ -4,11 +4,11 @@
 
 open Base
 open Stdio
-open Ppxlib
+open Ppx
 
-module N = Ppxlib_private.Name
+module N = Ppx_private.Name
 [%%expect{|
-module N = Ppxlib.Ppxlib_private.Name
+module N = Ppx.Ppx_private.Name
 |}]
 
 
@@ -65,57 +65,56 @@ val convert_longident : string -> string * longident = <fun>
 
 let _ = convert_longident "x"
 [%%expect{|
-- : string * longident = ("x", Ppxlib.Longident.Lident "x")
+- : string * longident = ("x", Ppx.Longident.Lident "x")
 |}]
 
 let _ = convert_longident "(+)"
 [%%expect{|
-- : string * longident = ("( + )", Ppxlib.Longident.Lident "+")
+- : string * longident = ("( + )", Ppx.Longident.Lident "+")
 |}]
 
 let _ = convert_longident "( + )"
 [%%expect{|
-- : string * longident = ("( + )", Ppxlib.Longident.Lident "+")
+- : string * longident = ("( + )", Ppx.Longident.Lident "+")
 |}]
 
 let _ = convert_longident "Base.x"
 [%%expect{|
 - : string * longident =
-("Base.x", Ppxlib.Longident.Ldot (Ppxlib.Longident.Lident "Base", "x"))
+("Base.x", Ppx.Longident.Ldot (Ppx.Longident.Lident "Base", "x"))
 |}]
 
 let _ = convert_longident "Base.(+)"
 [%%expect{|
 - : string * longident =
-("Base.( + )", Ppxlib.Longident.Ldot (Ppxlib.Longident.Lident "Base", "+"))
+("Base.( + )", Ppx.Longident.Ldot (Ppx.Longident.Lident "Base", "+"))
 |}]
 
 let _ = convert_longident "Base.( + )"
 [%%expect{|
 - : string * longident =
-("Base.( + )", Ppxlib.Longident.Ldot (Ppxlib.Longident.Lident "Base", "+"))
+("Base.( + )", Ppx.Longident.Ldot (Ppx.Longident.Lident "Base", "+"))
 |}]
 
 let _ = convert_longident "Base.( land )"
 [%%expect{|
 - : string * longident =
-("Base.( land )",
- Ppxlib.Longident.Ldot (Ppxlib.Longident.Lident "Base", "land"))
+("Base.( land )", Ppx.Longident.Ldot (Ppx.Longident.Lident "Base", "land"))
 |}]
 
-let _ = Ppxlib.Code_path.(file_path @@ top_level ~file_path:"dir/main.ml")
+let _ = Ppx.Code_path.(file_path @@ top_level ~file_path:"dir/main.ml")
 [%%expect{|
 - : string = "dir/main.ml"
 |}]
 
-let _ = Ppxlib.Code_path.(fully_qualified_path @@ top_level ~file_path:"dir/main.ml")
+let _ = Ppx.Code_path.(fully_qualified_path @@ top_level ~file_path:"dir/main.ml")
 [%%expect{|
 - : string = "Main"
 |}]
 
 let complex_path =
-  let open Ppxlib.Code_path in
-  let loc = Ppxlib.Location.none in
+  let open Ppx.Code_path in
+  let loc = Ppx.Location.none in
   top_level ~file_path:"dir/main.ml"
   |> enter_module ~loc "Sub"
   |> enter_module ~loc "Sub_sub"
@@ -124,12 +123,12 @@ let complex_path =
 val complex_path : Code_path.t = <abstr>
 |}]
 
-let _ = Ppxlib.Code_path.fully_qualified_path complex_path
+let _ = Ppx.Code_path.fully_qualified_path complex_path
 [%%expect{|
 - : string = "Main.Sub.Sub_sub.some_val"
 |}]
 
-let _ = Ppxlib.Code_path.to_string_path complex_path
+let _ = Ppx.Code_path.to_string_path complex_path
 [%%expect{|
 - : string = "dir/main.ml.Sub.Sub_sub"
 |}]

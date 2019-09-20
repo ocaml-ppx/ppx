@@ -3,7 +3,7 @@
 #require "ocaml-migrate-parsetree";;
 
 open Base
-open Ppxlib
+open Ppx
 
 
 (* Linters *)

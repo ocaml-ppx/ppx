@@ -1,5 +1,5 @@
-module List = Ppxlib_caml.ListLabels
-module String = Ppxlib_caml.StringLabels
+module List = Ppx_caml.ListLabels
+module String = Ppx_caml.StringLabels
 
 type +'a t =
   | Nop

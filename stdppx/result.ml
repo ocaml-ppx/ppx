@@ -1,4 +1,4 @@
-type ('a, 'error) t = ('a, 'error) Ppxlib_caml.result =
+type ('a, 'error) t = ('a, 'error) Ppx_caml.result =
   | Ok    of 'a
   | Error of 'error
 
@@ -108,7 +108,7 @@ module List = struct
 end
 
 let hash h1 h2 t =
-  Ppxlib_caml.Hashtbl.hash (
+  Ppx_caml.Hashtbl.hash (
     match t with
     | Ok s -> h1 s
     | Error e -> h2 e)

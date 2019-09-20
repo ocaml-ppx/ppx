@@ -112,7 +112,7 @@ let stable_sort t ~compare =
   stable_sort t ~cmp:(fun a b -> Ordering.to_int (compare a b))
 
 let sort_uniq t ~compare =
-  Ppxlib_caml.List.sort_uniq (fun a b -> Ordering.to_int (compare a b)) t
+  Ppx_caml.List.sort_uniq (fun a b -> Ordering.to_int (compare a b)) t
 
 let rec compare a b ~compare:f : Ordering.t =
   match a, b with
@@ -158,7 +158,7 @@ let rec equal eq xs ys =
   | x :: xs, y :: ys -> eq x y && equal eq xs ys
   | _, _ -> false
 
-let hash f xs = Ppxlib_caml.Hashtbl.hash (map ~f xs)
+let hash f xs = Ppx_caml.Hashtbl.hash (map ~f xs)
 
 let find_a_dup ~compare l =
   let sorted = sort ~compare l in

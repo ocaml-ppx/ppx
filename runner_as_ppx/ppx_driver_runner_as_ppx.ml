@@ -1,1 +1,1 @@
-Ppxlib.Driver.run_as_ppx_rewriter ()
+Ppx.Driver.run_as_ppx_rewriter ()

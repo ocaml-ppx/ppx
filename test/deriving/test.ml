@@ -1,9 +1,9 @@
 #use "topfind";;
 #require "base";;
-#load "ppxlib_metaquot_lifters.cmo";;
-#load "ppxlib_metaquot.cmo";;
+#load "ppx_metaquot_lifters.cmo";;
+#load "ppx_metaquot.cmo";;
 
-open Ppxlib
+open Ppx
 
 
 let foo =

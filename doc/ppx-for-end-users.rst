@@ -55,9 +55,9 @@ see the transformed version of ``src/foo.ml``, run:
 [@@deriving_inline]
 -------------------
 
-Ppxlib supports attaching the ``[@@deriving]`` attribute to type
+Ppx supports attaching the ``[@@deriving]`` attribute to type
 declaration. This is used to generate code at compile time based on
-the structure of the type. For this particular case, ppxlib supports
+the structure of the type. For this particular case, ppx supports
 an alternative way to look at the generated code: replace
 ``[@@deriving <derivers>]`` by ``[@@deriving_inline
 <derivers>][@@@end]``. Then run the following command:
@@ -77,9 +77,9 @@ Dropping ppx dependencies with [@@deriving_inline]
 You might notice that the resulting file when using
 ``[@@deriving_inline]`` needs no special treatment to be compiled. In
 particular, you can build it without the ppx rewriter or even
-ppxlib. You only need them while developing the project, in order to
+ppx. You only need them while developing the project, in order to
 automatically produce the generated code but that's it. End users of
-your project do not need to install ppxlib and other ppx rewriters
+your project do not need to install ppx and other ppx rewriters
 themselves.
 
 Dune_ gracefully supports this workflow: simply replace ``preprocess``

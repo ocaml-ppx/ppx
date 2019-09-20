@@ -1,4 +1,4 @@
-include Ppxlib_ast
+include Ppx_ast
 include Ast
 open Ast_helper
 
@@ -117,7 +117,7 @@ let get_types ~filename =
   (* Expand "longident_loc" into "longident loc" as it is preferable for what we do here. *)
   let map = object
     inherit Ast.map as super
-    inherit Ppxlib_traverse_builtins.map
+    inherit Ppx_traverse_builtins.map
     method! core_type_desc = function
       | Ptyp_constr ({ txt = Lident "longident_loc"; loc }, []) ->
         Ptyp_constr ({ txt = Lident "loc"; loc},

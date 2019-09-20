@@ -1,5 +1,5 @@
 (* Because other the syntax s.[x] causes trouble *)
-module String = Ppxlib_caml.String
+module String = Ppx_caml.String
 module Dyn = Dyn0
 
 include struct

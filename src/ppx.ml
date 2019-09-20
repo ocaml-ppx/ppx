@@ -1,6 +1,6 @@
 (** Standard library for ppx rewriters *)
 
-(** Make sure code using Ppxlib doesn't refer to compiler-libs without being explicit
+(** Make sure code using Ppx doesn't refer to compiler-libs without being explicit
     about it *)
 include struct
   [@@@warning "-3"]
@@ -22,9 +22,9 @@ include struct
           )
 end (** @inline *)
 
-(** Includes the overrides from Ppxlib_ast, as well as all the Ast definitions since we
+(** Includes the overrides from Ppx_ast, as well as all the Ast definitions since we
     need them in every single ppx *)
-include Ppxlib_ast
+include Ppx_ast
 include Ast
 
 module Ast_builder         = Ast_builder
@@ -57,7 +57,7 @@ include Common
 (**/**)
 
 (* For tests and Ppx_core compatiblity layer *)
-module Ppxlib_private = struct
+module Ppx_private = struct
   module Common = Common
   module Name   = Name
 end

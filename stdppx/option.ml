@@ -95,5 +95,5 @@ module List = struct
 end
 
 let hash f = function
-  | None -> Ppxlib_caml.Hashtbl.hash None
-  | Some s -> Ppxlib_caml.Hashtbl.hash (f s)
+  | None -> Ppx_caml.Hashtbl.hash None
+  | Some s -> Ppx_caml.Hashtbl.hash (f s)

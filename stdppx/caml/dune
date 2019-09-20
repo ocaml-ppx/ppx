@@ -1,4 +1,4 @@
 (library
- (name ppxlib_caml)
+ (name ppx_caml)
  (public_name ppx._caml))
 

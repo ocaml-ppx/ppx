@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# ppxlib documentation build configuration file, created by
+# ppx documentation build configuration file, created by
 # sphinx-quickstart on Sun Aug 12 15:37:30 2018.
 #
 # This file is execfile()d with the current directory set to its
@@ -45,7 +45,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'ppxlib'
+project = u'ppx'
 copyright = u'2018, Jane Street Group, LLC'
 author = u'Jane Street Group, LLC'
 
@@ -102,7 +102,7 @@ html_sidebars = {
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'ppxlibdoc'
+htmlhelp_basename = 'ppxdoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -129,7 +129,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'ppxlib.tex', u'ppxlib Documentation',
+    (master_doc, 'ppx.tex', u'ppx Documentation',
      u'Jane Street Group, LLC', 'manual'),
 ]
 
@@ -139,7 +139,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'ppxlib', u'ppxlib Documentation',
+    (master_doc, 'ppx', u'ppx Documentation',
      [author], 1)
 ]
 
@@ -150,8 +150,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'ppxlib', u'ppxlib Documentation',
-     author, 'ppxlib', 'A comprehensive toolbox for ppx development.',
+    (master_doc, 'ppx', u'ppx Documentation',
+     author, 'ppx', 'A comprehensive toolbox for ppx development.',
      'Miscellaneous'),
 ]
 

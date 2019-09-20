@@ -2,7 +2,7 @@
 ;; be linked after all other libraries and units.
 
 (library
- (name          ppxlib_runner)
+ (name          ppx_runner)
  (public_name   ppx.runner)
  (flags (:standard -safe-string))
  (libraries     ppx)

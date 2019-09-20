@@ -24,7 +24,7 @@ Extension points are compile time functions. The compiler itself
 doesn't know how to interpret them and they must all be rewritten by
 the ppx system before the compiler can process input files further.
 
-Ppxlib mainly supports two ways of generating code at compile time: by
+Ppx mainly supports two ways of generating code at compile time: by
 expanding an extension point or by expanding a ``[@@deriving ...]``
 attribute after a type declaration.
 
@@ -34,19 +34,19 @@ How does it works?
 The ppx system is composed of 3 parts:
 
 - individual ppx rewriters
-- ppxlib
+- ppx
 - a hook in the compiler
 
 Inidividual ppx rewriters are those implemented by various developers
 to provide features to end users, such as ppx_expect_ which provides a
 good inline testing framework.
 
-All these rewriters are written against the ppxlib API. Ppxlib is
+All these rewriters are written against the ppx API. Ppx is
 responsible for acknowledging the various rewriters a end user wants
 to use, making sure they can be composed together and performing the
 actual rewriting of input files.
 
-The hook in the compiler allows ppxlib to insert itself in the
+The hook in the compiler allows ppx to insert itself in the
 compilation pipeline and perform the rewriting of input files based on
 a list of ppx rewriters specified by the user. The hooks take the form
 of command line flags that takes a command to execute. The compiler
@@ -61,10 +61,10 @@ between the two is as follow:
 - ``-ppx`` takes as argument a command that is given a serialised
   representation of the AST and produces another serialised AST
 
-Ppxlib generally uses the first one as it yields faster compilation
+Ppx generally uses the first one as it yields faster compilation
 times, however it supports both methods of operation.
 
-Is ppxlib necessary?
+Is ppx necessary?
 --------------------
 
 Yes. While authors of ppx rewriters may in theory use the compiler
@@ -87,16 +87,16 @@ reasons:
   rewriters want to interpret the same attribute or extension point in
   incompatible ways, the result is not specified
 
-In summary, ppxlib abstracts away from all the low-level details of
+In summary, ppx abstracts away from all the low-level details of
 the ppx system and exposes a consistent model to authors of ppx
 rewriters and end users.
 
 Current state of the ppx ecosystem
 ----------------------------------
 
-Ppxlib was developed after the introduction of the ppx system. As a
-result, many ppx rewriters do not currently use ppxlib and are using
-the compiler hooks directly. Ppxlib can acknowledge such rewriters so
+Ppx was developed after the introduction of the ppx system. As a
+result, many ppx rewriters do not currently use ppx and are using
+the compiler hooks directly. Ppx can acknowledge such rewriters so
 that they can be used in conjunction with more modern rewriters,
 however it cannot provide a good composition or hygiene story when
 using such ppx rewriters.
@@ -104,14 +104,14 @@ using such ppx rewriters.
 Note on stability regarding new compiler releases
 -------------------------------------------------
 
-Due to the nature of the ppx system, it is hard for ppxlib to provide
+Due to the nature of the ppx system, it is hard for ppx to provide
 full protection against compiler changes. This means that a ppx
-rewriter written against ppxlib today can be broken by a future
+rewriter written against ppx today can be broken by a future
 release of the OCaml compiler and a new release of the ppx rewriter
 will be necessary to support the new compiler.
 
 However the following is true: every time this might happen, it will be
-possible to extend ppxlib to provide a greater protection, so that
+possible to extend ppx to provide a greater protection, so that
 eventually the whole ppx ecosystem is completely shielded from
 breaking compiler changes.
 
