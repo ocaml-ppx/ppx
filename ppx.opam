@@ -1,10 +1,10 @@
 opam-version: "2.0"
 maintainer: "opensource@janestreet.com"
 authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
-homepage: "https://github.com/ocaml-ppx/ppxlib"
-bug-reports: "https://github.com/ocaml-ppx/ppxlib/issues"
-dev-repo: "git+https://github.com/ocaml-ppx/ppxlib.git"
-doc: "https://ocaml-ppx.github.io/ppxlib/"
+homepage: "https://github.com/ocaml-ppx/ppx"
+bug-reports: "https://github.com/ocaml-ppx/ppx/issues"
+dev-repo: "git+https://github.com/ocaml-ppx/ppx.git"
+doc: "https://ocaml-ppx.github.io/ppx/"
 license: "MIT"
 build: [
   ["dune" "subst"] {pinned}
@@ -16,10 +16,12 @@ run-test: [
 depends: [
   "ocaml"                   {>= "4.04.1" & < "4.08.0"}
   "base"                    {>= "v0.11.0" & with-test}
+  "stdio"                   {>= "v0.11.0" & with-test}
   "dune"
   "ocaml-compiler-libs"     {>= "v0.11.0"}
   "ocaml-migrate-parsetree" {>= "1.0.9"}
   "ppx_derivers"            {>= "1.0"}
+  "cinaps"                  {with-test}
   "ocamlfind"               {with-test}
 ]
 synopsis: "Base library and tools for ppx rewriters"

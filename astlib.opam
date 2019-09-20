@@ -2,8 +2,8 @@ opam-version: "2.0"
 maintainer: "opensource@janestreet.com"
 authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
 homepage: "https://github.com/ocaml-ppx/astlib"
-bug-reports: "https://github.com/ocaml-ppx/ppxlib/issues"
-dev-repo: "git+https://github.com/ocaml-ppx/ppxlib.git"
+bug-reports: "https://github.com/ocaml-ppx/ppx/issues"
+dev-repo: "git+https://github.com/ocaml-ppx/ppx.git"
 doc: "https://ocaml-ppx.github.io/astlib/"
 license: "MIT"
 build: [
@@ -14,14 +14,17 @@ run-test: [
   ["dune" "runtest" "-p" name "-j" jobs] { ocaml >= "4.06" }
 ]
 depends: [
-  # "ocaml"                   {>= "4.04.1"}
-  # "base"                    {>= "v0.11.0"}
-  # "dune"                    {build}
-  # "ocaml-compiler-libs"     {>= "v0.11.0"}
-  # "ocaml-migrate-parsetree" {>= "1.0.9"}
-  # "ppx_derivers"            {>= "1.0"}
-  # "stdio"                   {>= "v0.11.0"}
-  # "ocamlfind"               {with-test}
+  "ocaml"                   {>= "4.04.1"}
+  "base"                    {>= "v0.11.0"}
+  "dune"                    {>= "1.8.0"}
+  "ocaml-compiler-libs"     {>= "v0.11.0"}
+  "ocaml-migrate-parsetree" {>= "1.0.9"}
+  "ppx_derivers"            {>= "1.0"}
+  "cinaps"                  {with-test}
+  "ppx_jane"
+  "base_quickcheck"
+  "expect_test_helpers_kernel"
+  "stdio"                   {>= "v0.11.0"}
 ]
 synopsis: "Compatibility layer for OCaml compiler AST"
 description: """
