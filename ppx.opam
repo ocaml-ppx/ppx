@@ -16,6 +16,7 @@ run-test: [
 depends: [
   "ocaml"                   {>= "4.04.1" & < "4.08.0"}
   "base"                    {>= "v0.11.0" & with-test}
+  "stdio"                   {>= "v0.11.0" & with-test}
   "dune"
   "ocaml-compiler-libs"     {>= "v0.11.0"}
   "ocaml-migrate-parsetree" {>= "1.0.9"}
