@@ -21,6 +21,7 @@ depends: [
   "ocaml-compiler-libs"     {>= "v0.11.0"}
   "ocaml-migrate-parsetree" {>= "1.0.9"}
   "ppx_derivers"            {>= "1.0"}
+  "cinaps"                  {with-test}
   "ocamlfind"               {with-test}
 ]
 synopsis: "Base library and tools for ppx rewriters"
