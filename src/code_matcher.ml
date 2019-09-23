@@ -37,7 +37,7 @@ struct
       | [] ->
         let loc = { Location. loc_start = pos; loc_end = pos; loc_ghost = false } in
         Location.raise_errorf ~loc
-          "ppxlib: [@@@@@@%s] attribute missing"
+          "ppx: [@@@@@@%s] attribute missing"
           (Attribute.Floating.name M.end_marker)
       | x :: l ->
         match Attribute.Floating.convert [M.end_marker] x with
@@ -63,7 +63,7 @@ struct
 
   let diff_asts ~generated ~round_trip =
     let with_temp_file f =
-      Exn.protectx (Filename.temp_file "ppxlib" "") ~finally:Sys.remove ~f
+      Exn.protectx (Filename.temp_file "ppx" "") ~finally:Sys.remove ~f
     in
     with_temp_file (fun fn1 ->
       with_temp_file (fun fn2 ->
@@ -121,7 +121,7 @@ struct
         let round_trip = remove_loc (parse_string (Format.asprintf "%a@." M.pp x)) in
         if x <> round_trip then
           Location.raise_errorf ~loc
-            "ppxlib: the corrected code doesn't round-trip.\n\
+            "ppx: the corrected code doesn't round-trip.\n\
              This is probably a bug in the OCaml printer:\n%s"
             (diff_asts ~generated:x ~round_trip);
         mismatch_handler loc [x];

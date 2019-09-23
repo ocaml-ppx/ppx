@@ -1,5 +1,5 @@
 (library
- (name ppxlib)
+ (name ppx)
  (public_name ppx)
  (libraries
   ocaml-compiler-libs.common
@@ -9,11 +9,11 @@
   ppx.ast
   ppx.print_diff
   ppx_derivers
-  ppxlib_traverse_builtins
-  stdppxlib)
+  ppx_traverse_builtins
+  stdppx)
  (flags (:standard -open Ocaml_shadow -safe-string))
  (ppx.driver
-  (main       Ppxlib.Driver.standalone)
+  (main       Ppx.Driver.standalone)
   (replaces   ocaml-migrate-parsetree)
   (flags      (-corrected-suffix %{corrected-suffix} -diff-cmd - -dump-ast))
   (lint_flags (-corrected-suffix %{corrected-suffix} -diff-cmd - -null    ))))

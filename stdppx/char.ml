@@ -1,4 +1,4 @@
-module Char = Ppxlib_caml.Char
+module Char = Ppx_caml.Char
 
 include struct
   [@@@warning "-32-3"]

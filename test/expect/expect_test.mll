@@ -96,8 +96,8 @@ let rec error_reporter ppf {Location.loc; msg; sub; if_highlight=_} =
 let apply_rewriters : (Parsetree.toplevel_phrase -> Parsetree.toplevel_phrase) = function
   | Ptop_dir _ as x -> x
   | Ptop_def s ->
-    let s = Ppxlib.Selected_ast.of_ocaml Structure s in
-    Ptop_def (Ppxlib.Driver.map_structure s
+    let s = Ppx.Selected_ast.of_ocaml Structure s in
+    Ptop_def (Ppx.Driver.map_structure s
               |> Migrate_parsetree.Driver.migrate_some_structure
                    (module Migrate_parsetree.OCaml_current))
 ;;
@@ -109,11 +109,11 @@ let main () =
     Clflags.real_paths := false;
     Toploop.initialize_toplevel_env ();
     List.iter
-      [ "ast/.ppxlib_ast.objs"
-      ; "src/.ppxlib.objs"
-      ; "metaquot_lifters/.ppxlib_metaquot_lifters.objs"
-      ; "metaquot/.ppxlib_metaquot.objs"
-      ; "traverse/.ppxlib_traverse.objs"
+      [ "ast/.ppx_ast.objs"
+      ; "src/.ppx.objs"
+      ; "metaquot_lifters/.ppx_metaquot_lifters.objs"
+      ; "traverse/.ppx_traverse.objs"
+      ; "metaquot/.ppx_metaquot.objs"
       ]
       ~f:(fun d -> Topdirs.dir_directory (d ^ "/byte"));
 

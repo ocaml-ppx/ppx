@@ -1,7 +1,7 @@
 #use "topfind";;
 #require "base";;
 
-open Ppxlib
+open Ppx
 
 let () =
   Driver.register_transformation "test"

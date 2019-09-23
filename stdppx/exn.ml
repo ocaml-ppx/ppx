@@ -1,5 +1,5 @@
-module List = Ppxlib_caml.ListLabels
-module String = Ppxlib_caml.StringLabels
+module List = Ppx_caml.ListLabels
+module String = Ppx_caml.StringLabels
 module Dyn = Dyn0
 type t = exn
 
@@ -64,6 +64,6 @@ include
    end))
 
 let equal = (=)
-let hash = Ppxlib_caml.Hashtbl.hash
+let hash = Ppx_caml.Hashtbl.hash
 
 let to_dyn exn = Dyn0.String (Printexc.to_string exn)

@@ -1,4 +1,4 @@
-include module type of struct include Ppxlib_caml.Filename end
+include module type of struct include Ppx_caml.Filename end
 
 val split_extension : string -> string * string
 val split_extension_after_dot : string -> string * string

@@ -2,7 +2,7 @@
 PPX for plugin authors
 **********************
 
-This section describes how to use ``ppxlib`` for PPX plugin authors.
+This section describes how to use ``ppx`` for PPX plugin authors.
 
 Metaquot
 --------
@@ -17,7 +17,7 @@ To use ``metaquot`` you need to add it to the list of preprocessor for your PPX 
 
           (library
            (name my_plugin_lib)
-           (preprocess (pps ppxlib.metaquot)))
+           (preprocess (pps ppx.metaquot)))
 
 ``metaquot`` can be used both to write expressions of some of the AST types or to write patterns to
 match over those same types. The various extensions it exposes can be used in both contexts,
@@ -64,7 +64,7 @@ actually expand it into:
           }
 
 For this to compile you need the AST types to be in the scope so you should always use ``metaquot``
-where ``Ppxlib`` is opened.
+where ``Ppx`` is opened.
 You'll also note that the generated node expects a ``loc : Location.t`` value to be available. The
 produced AST node value and every other nodes within it will be located to ``loc``. You should make
 sure ``loc`` is the location you want for your generated code when using ``metaquot``.

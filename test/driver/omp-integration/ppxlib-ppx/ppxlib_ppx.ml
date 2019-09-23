@@ -1,4 +1,4 @@
-open Ppxlib
+open Ppx
 
 let () =
   Driver.register_transformation "plop"

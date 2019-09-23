@@ -33,14 +33,14 @@ include T
 let rec flat accu = function
     Lident s -> s :: accu
   | Ldot(lid, s) -> flat (s :: accu) lid
-  | Lapply(_, _) -> invalid_arg "Ppxlib.Longident.flatten"
+  | Lapply(_, _) -> invalid_arg "Ppx.Longident.flatten"
 
 let flatten_exn lid = flat [] lid
 
 let last_exn = function
     Lident s -> s
   | Ldot(_, s) -> s
-  | Lapply(_, _) -> invalid_arg "Ppxlib.Longident.flatten"
+  | Lapply(_, _) -> invalid_arg "Ppx.Longident.flatten"
 
 let unflatten ~init l =
   List.fold_left l ~init ~f:(fun acc s -> Ldot (acc, s))
@@ -56,10 +56,10 @@ let parse s =
   match String.index s '(' with
   | None -> parse_simple  s
   | Some l -> match String.rindex_opt s ')' with
-    | None -> invalid_arg "Ppxlib.Longident.parse"
+    | None -> invalid_arg "Ppx.Longident.parse"
     | Some r ->
       if not (Int.equal r (String.length s - 1)) then
-        invalid_arg "Ppxlib.Longident.parse";
+        invalid_arg "Ppx.Longident.parse";
       let group = if Int.equal r (l + 1) then "()" else
           String.trim (String.sub s ~pos:(l+1) ~len:(r-l-1)) in
       if Int.equal l 0 then Lident group else

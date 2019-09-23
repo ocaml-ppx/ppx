@@ -1,4 +1,4 @@
-open Ppxlib
+open Ppx
 
 (*
    [[@@deriving foo]] expands to:

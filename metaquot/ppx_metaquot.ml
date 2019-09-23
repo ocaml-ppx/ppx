@@ -1,4 +1,4 @@
-open Ppxlib
+open Ppx
 open Ast_builder.Default
 
 module E = Extension
@@ -9,7 +9,7 @@ module Make(M : sig
     val cast : extension -> result
     val location : location -> result
     val attributes : (location -> result) option
-    class std_lifters : location -> [result] Ppxlib_traverse_builtins.std_lifters
+    class std_lifters : location -> [result] Ppx_traverse_builtins.std_lifters
   end) = struct
   let lift loc = object
     inherit [M.result] Ast_traverse.lift as super
@@ -70,7 +70,7 @@ module Expr = Make(struct
     type result = expression
     let location loc = evar ~loc "loc"
     let attributes = None
-    class std_lifters = Ppxlib_metaquot_lifters.expression_lifters
+    class std_lifters = Ppx_metaquot_lifters.expression_lifters
     let cast ext =
       match snd ext with
       | PStr [{ pstr_desc = Pstr_eval (e, attrs); _}] ->
@@ -85,7 +85,7 @@ module Patt = Make(struct
     type result = pattern
     let location loc = ppat_any ~loc
     let attributes = Some (fun loc -> ppat_any ~loc)
-    class std_lifters = Ppxlib_metaquot_lifters.pattern_lifters
+    class std_lifters = Ppx_metaquot_lifters.pattern_lifters
     let cast ext =
       match snd ext with
       | PPat (p, None) -> p

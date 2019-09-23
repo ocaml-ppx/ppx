@@ -448,7 +448,7 @@ let check_unused = object(self)
 
   method! attribute (name, _) =
     Location.raise_errorf ~loc:name.loc
-      "attribute not expected here, Ppxlib.Attribute needs updating!"
+      "attribute not expected here, Ppx.Attribute needs updating!"
 
   method private check_node : type a. a Context.t -> a -> a = fun context node ->
     let attrs = Context.get_attributes context node in

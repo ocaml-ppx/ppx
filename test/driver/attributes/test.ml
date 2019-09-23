@@ -2,7 +2,7 @@
 #require "base";;
 
 open Base
-open Ppxlib
+open Ppx
 
 let () = Driver.enable_checks ()
 

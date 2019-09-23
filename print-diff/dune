@@ -1,4 +1,4 @@
 (library
- (name ppxlib_print_diff)
+ (name ppx_print_diff)
  (public_name ppx.print_diff)
  (flags (:standard -safe-string)))

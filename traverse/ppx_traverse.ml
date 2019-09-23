@@ -1,5 +1,5 @@
-open Ppxlib
-open Stdppxlib
+open Ppx
+open Stdppx
 open Ast_builder.Default
 
 let alphabet =
@@ -540,7 +540,7 @@ let gen_str ~(what:what)~loc ~path:_ (rf, tds) =
   (match rf with
    | Nonrecursive ->
      (* The method name would clash... *)
-     Location.raise_errorf ~loc "ppxlib_traverse doesn't support nonrec"
+     Location.raise_errorf ~loc "ppx_traverse doesn't support nonrec"
    | Recursive -> ());
   let cl = gen_class ~loc ~what tds in
   [ pstr_class ~loc:cl.pci_loc [cl] ]

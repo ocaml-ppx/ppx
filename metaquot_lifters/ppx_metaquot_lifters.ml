@@ -1,9 +1,9 @@
-open Ppxlib
-open Stdppxlib
+open Ppx
+open Stdppx
 open Ast_builder.Default
 
 class expression_lifters loc = object
-  inherit [expression] Ppxlib_traverse_builtins.lift
+  inherit [expression] Ppx_traverse_builtins.lift
   method record flds =
     pexp_record ~loc
       (List.map flds ~f:(fun (lab, e) ->
@@ -30,7 +30,7 @@ class expression_lifters loc = object
 end
 
 class pattern_lifters loc = object
-  inherit [pattern] Ppxlib_traverse_builtins.lift
+  inherit [pattern] Ppx_traverse_builtins.lift
   method record flds =
     ppat_record ~loc
       (List.map flds ~f:(fun (lab, e) ->

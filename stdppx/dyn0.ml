@@ -1,4 +1,4 @@
-module Array = Ppxlib_caml.ArrayLabels
+module Array = Ppx_caml.ArrayLabels
 
 type t =
   | Unit

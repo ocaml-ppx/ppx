@@ -232,7 +232,7 @@ let check_unused = object
 
   method! extension (name, _) =
     Location.raise_errorf ~loc:name.loc
-      "extension not expected here, Ppxlib.Extension needs updating!"
+      "extension not expected here, Ppx.Extension needs updating!"
 
   method! core_type_desc = function
     | Ptyp_extension ext -> fail Core_type ext

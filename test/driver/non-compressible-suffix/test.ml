@@ -2,7 +2,7 @@
 #require "base";;
 #require "stdio";;
 
-open Ppxlib;;
+open Ppx;;
 open Ast_builder.Default;;
 
 Driver.register_transformation "blah"
