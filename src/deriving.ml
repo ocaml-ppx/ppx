@@ -631,7 +631,7 @@ let expand_sig_type_ext ~ctxt te generators =
 
 let rules ~typ ~expand_sig ~expand_str ~rule_str ~rule_sig ~rule_str_expect
       ~rule_sig_expect =
-  let prefix = "ppxlib." in
+  let prefix = "ppx." in
   let deriving_attr = mk_deriving_attr ~suffix:"" ~prefix typ in
   let deriving_attr_expect = mk_deriving_attr ~suffix:"_inline" ~prefix typ in
   [ rule_sig deriving_attr expand_sig
