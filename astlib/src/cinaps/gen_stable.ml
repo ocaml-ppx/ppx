@@ -132,7 +132,7 @@ let print_kind_to_concrete (kind : Astlib_ast.Grammar.kind) =
     Print.format "| _ -> None")
 
 let print_kind_signature (kind : Astlib_ast.Grammar.kind) =
-  Print.format "type t";
+  Print.format "type t = Unversioned.%s" (String.lowercase_ascii kind.kind_name);
   Print.newline ();
   Print.format "val of_ast : Versioned_ast.t -> t";
   Print.format "val to_ast : t -> Versioned_ast.t";
@@ -168,12 +168,34 @@ let print_grammar_ml grammar =
     Print.define_module kind.kind_name (fun () ->
       print_kind_structure kind))
 
+let names_of_versioned_grammars versioned_grammars =
+  versioned_grammars
+  |> List.map ~f:snd
+  |> List.concat
+  |> List.map ~f:(fun (kind : Astlib_ast.Grammar.kind) -> kind.kind_name)
+  |> List.sort_uniq ~cmp:String.compare
+
+let print_unversioned_mli versioned_grammars =
+  let names = names_of_versioned_grammars versioned_grammars in
+  List.iter names ~f:(fun name ->
+    Print.format "type %s" (String.lowercase_ascii name))
+
+let print_unversioned_ml versioned_grammars =
+  let names = names_of_versioned_grammars versioned_grammars in
+  List.iter names ~f:(fun name ->
+    Print.format "type %s = Versioned_ast.t" (String.lowercase_ascii name))
+
 let print_astlib_mli () =
   Print.newline ();
   Print.format "open! StdLabels";
   Print.format "open! Ocaml_common";
-  Astlib_ast.History.to_versioned_grammars Astlib_ast.History.history
-  |> List.iter ~f:(fun (version, grammar) ->
+  let versioned_grammars =
+    Astlib_ast.History.to_versioned_grammars Astlib_ast.History.history
+  in
+  Print.newline ();
+  Print.declare_module "Unversioned" (fun () ->
+    print_unversioned_mli versioned_grammars);
+  List.iter versioned_grammars ~f:(fun (version, grammar) ->
     Print.newline ();
     Print.declare_module version (fun () ->
       print_grammar_mli grammar))
@@ -183,8 +205,13 @@ let print_astlib_ml () =
   Print.newline ();
   Print.format "open! StdLabels";
   Print.format "open! Ocaml_common";
-  Astlib_ast.History.to_versioned_grammars Astlib_ast.History.history
-  |> List.iter ~f:(fun (version, grammar) ->
+  let versioned_grammars =
+    Astlib_ast.History.to_versioned_grammars Astlib_ast.History.history
+  in
+  Print.newline ();
+  Print.define_module "Unversioned" (fun () ->
+    print_unversioned_ml versioned_grammars);
+  List.iter versioned_grammars ~f:(fun (version, grammar) ->
     Print.newline ();
     Print.define_module version (fun () ->
       Print.format "let version = %S" version;

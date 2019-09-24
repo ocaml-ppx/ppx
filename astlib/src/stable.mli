@@ -2,9 +2,96 @@
 open! StdLabels
 open! Ocaml_common
 
+module Unversioned : sig
+  type apply_arg
+  type arg_label
+  type attribute
+  type attributes
+  type case
+  type class_declaration
+  type class_description
+  type class_expr
+  type class_expr_desc
+  type class_field
+  type class_field_desc
+  type class_field_kind
+  type class_method_desc
+  type class_signature
+  type class_structure
+  type class_type
+  type class_type_constraint
+  type class_type_declaration
+  type class_type_desc
+  type class_type_field
+  type class_type_field_desc
+  type class_type_method_desc
+  type class_type_value_desc
+  type class_value_desc
+  type closed_flag
+  type constant
+  type constructor_arguments
+  type constructor_declaration
+  type core_type
+  type core_type_desc
+  type direction_flag
+  type directive_argument
+  type expression
+  type expression_desc
+  type extension
+  type extension_constructor
+  type extension_constructor_kind
+  type include_declaration
+  type include_description
+  type label
+  type label_declaration
+  type label_loc
+  type longident
+  type longident_loc
+  type module_binding
+  type module_declaration
+  type module_expr
+  type module_expr_desc
+  type module_type
+  type module_type_declaration
+  type module_type_desc
+  type mutable_flag
+  type object_field
+  type open_description
+  type override_expression
+  type override_flag
+  type package_type
+  type package_type_constraint
+  type pattern
+  type pattern_desc
+  type payload
+  type private_flag
+  type rec_flag
+  type record_field_expression
+  type record_field_pattern
+  type row_field
+  type signature
+  type signature_item
+  type signature_item_desc
+  type string_loc
+  type structure
+  type structure_item
+  type structure_item_desc
+  type toplevel_phrase
+  type type_constraint
+  type type_declaration
+  type type_extension
+  type type_kind
+  type type_param
+  type value_binding
+  type value_description
+  type variance
+  type virtual_flag
+  type with_constraint
+end
+
 module V4_07 : sig
   module rec Longident : sig
-    type t
+    type t = Unversioned.longident
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -21,7 +108,7 @@ module V4_07 : sig
   end
 
   and Longident_loc : sig
-    type t
+    type t = Unversioned.longident_loc
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -36,7 +123,7 @@ module V4_07 : sig
   end
 
   and Rec_flag : sig
-    type t
+    type t = Unversioned.rec_flag
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -52,7 +139,7 @@ module V4_07 : sig
   end
 
   and Direction_flag : sig
-    type t
+    type t = Unversioned.direction_flag
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -68,7 +155,7 @@ module V4_07 : sig
   end
 
   and Private_flag : sig
-    type t
+    type t = Unversioned.private_flag
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -84,7 +171,7 @@ module V4_07 : sig
   end
 
   and Mutable_flag : sig
-    type t
+    type t = Unversioned.mutable_flag
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -100,7 +187,7 @@ module V4_07 : sig
   end
 
   and Virtual_flag : sig
-    type t
+    type t = Unversioned.virtual_flag
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -116,7 +203,7 @@ module V4_07 : sig
   end
 
   and Override_flag : sig
-    type t
+    type t = Unversioned.override_flag
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -132,7 +219,7 @@ module V4_07 : sig
   end
 
   and Closed_flag : sig
-    type t
+    type t = Unversioned.closed_flag
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -148,7 +235,7 @@ module V4_07 : sig
   end
 
   and Label : sig
-    type t
+    type t = Unversioned.label
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -163,7 +250,7 @@ module V4_07 : sig
   end
 
   and Label_loc : sig
-    type t
+    type t = Unversioned.label_loc
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -178,7 +265,7 @@ module V4_07 : sig
   end
 
   and String_loc : sig
-    type t
+    type t = Unversioned.string_loc
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -193,7 +280,7 @@ module V4_07 : sig
   end
 
   and Arg_label : sig
-    type t
+    type t = Unversioned.arg_label
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -210,7 +297,7 @@ module V4_07 : sig
   end
 
   and Variance : sig
-    type t
+    type t = Unversioned.variance
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -227,7 +314,7 @@ module V4_07 : sig
   end
 
   and Constant : sig
-    type t
+    type t = Unversioned.constant
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -245,7 +332,7 @@ module V4_07 : sig
   end
 
   and Attribute : sig
-    type t
+    type t = Unversioned.attribute
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -260,7 +347,7 @@ module V4_07 : sig
   end
 
   and Extension : sig
-    type t
+    type t = Unversioned.extension
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -275,7 +362,7 @@ module V4_07 : sig
   end
 
   and Attributes : sig
-    type t
+    type t = Unversioned.attributes
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -290,7 +377,7 @@ module V4_07 : sig
   end
 
   and Payload : sig
-    type t
+    type t = Unversioned.payload
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -308,7 +395,7 @@ module V4_07 : sig
   end
 
   and Core_type : sig
-    type t
+    type t = Unversioned.core_type
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -323,7 +410,7 @@ module V4_07 : sig
   end
 
   and Core_type_desc : sig
-    type t
+    type t = Unversioned.core_type_desc
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -349,7 +436,7 @@ module V4_07 : sig
   end
 
   and Package_type : sig
-    type t
+    type t = Unversioned.package_type
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -364,7 +451,7 @@ module V4_07 : sig
   end
 
   and Package_type_constraint : sig
-    type t
+    type t = Unversioned.package_type_constraint
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -379,7 +466,7 @@ module V4_07 : sig
   end
 
   and Row_field : sig
-    type t
+    type t = Unversioned.row_field
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -395,7 +482,7 @@ module V4_07 : sig
   end
 
   and Object_field : sig
-    type t
+    type t = Unversioned.object_field
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -411,7 +498,7 @@ module V4_07 : sig
   end
 
   and Pattern : sig
-    type t
+    type t = Unversioned.pattern
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -426,7 +513,7 @@ module V4_07 : sig
   end
 
   and Pattern_desc : sig
-    type t
+    type t = Unversioned.pattern_desc
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -458,7 +545,7 @@ module V4_07 : sig
   end
 
   and Record_field_pattern : sig
-    type t
+    type t = Unversioned.record_field_pattern
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -473,7 +560,7 @@ module V4_07 : sig
   end
 
   and Expression : sig
-    type t
+    type t = Unversioned.expression
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -488,7 +575,7 @@ module V4_07 : sig
   end
 
   and Expression_desc : sig
-    type t
+    type t = Unversioned.expression_desc
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -538,7 +625,7 @@ module V4_07 : sig
   end
 
   and Override_expression : sig
-    type t
+    type t = Unversioned.override_expression
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -553,7 +640,7 @@ module V4_07 : sig
   end
 
   and Record_field_expression : sig
-    type t
+    type t = Unversioned.record_field_expression
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -568,7 +655,7 @@ module V4_07 : sig
   end
 
   and Apply_arg : sig
-    type t
+    type t = Unversioned.apply_arg
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -583,7 +670,7 @@ module V4_07 : sig
   end
 
   and Case : sig
-    type t
+    type t = Unversioned.case
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -598,7 +685,7 @@ module V4_07 : sig
   end
 
   and Value_description : sig
-    type t
+    type t = Unversioned.value_description
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -613,7 +700,7 @@ module V4_07 : sig
   end
 
   and Type_declaration : sig
-    type t
+    type t = Unversioned.type_declaration
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -628,7 +715,7 @@ module V4_07 : sig
   end
 
   and Type_param : sig
-    type t
+    type t = Unversioned.type_param
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -643,7 +730,7 @@ module V4_07 : sig
   end
 
   and Type_constraint : sig
-    type t
+    type t = Unversioned.type_constraint
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -658,7 +745,7 @@ module V4_07 : sig
   end
 
   and Type_kind : sig
-    type t
+    type t = Unversioned.type_kind
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -676,7 +763,7 @@ module V4_07 : sig
   end
 
   and Label_declaration : sig
-    type t
+    type t = Unversioned.label_declaration
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -691,7 +778,7 @@ module V4_07 : sig
   end
 
   and Constructor_declaration : sig
-    type t
+    type t = Unversioned.constructor_declaration
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -706,7 +793,7 @@ module V4_07 : sig
   end
 
   and Constructor_arguments : sig
-    type t
+    type t = Unversioned.constructor_arguments
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -722,7 +809,7 @@ module V4_07 : sig
   end
 
   and Type_extension : sig
-    type t
+    type t = Unversioned.type_extension
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -737,7 +824,7 @@ module V4_07 : sig
   end
 
   and Extension_constructor : sig
-    type t
+    type t = Unversioned.extension_constructor
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -752,7 +839,7 @@ module V4_07 : sig
   end
 
   and Extension_constructor_kind : sig
-    type t
+    type t = Unversioned.extension_constructor_kind
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -768,7 +855,7 @@ module V4_07 : sig
   end
 
   and Class_type : sig
-    type t
+    type t = Unversioned.class_type
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -783,7 +870,7 @@ module V4_07 : sig
   end
 
   and Class_type_desc : sig
-    type t
+    type t = Unversioned.class_type_desc
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -802,7 +889,7 @@ module V4_07 : sig
   end
 
   and Class_signature : sig
-    type t
+    type t = Unversioned.class_signature
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -817,7 +904,7 @@ module V4_07 : sig
   end
 
   and Class_type_field : sig
-    type t
+    type t = Unversioned.class_type_field
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -832,7 +919,7 @@ module V4_07 : sig
   end
 
   and Class_type_field_desc : sig
-    type t
+    type t = Unversioned.class_type_field_desc
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -852,7 +939,7 @@ module V4_07 : sig
   end
 
   and Class_type_value_desc : sig
-    type t
+    type t = Unversioned.class_type_value_desc
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -867,7 +954,7 @@ module V4_07 : sig
   end
 
   and Class_type_method_desc : sig
-    type t
+    type t = Unversioned.class_type_method_desc
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -882,7 +969,7 @@ module V4_07 : sig
   end
 
   and Class_type_constraint : sig
-    type t
+    type t = Unversioned.class_type_constraint
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -897,7 +984,7 @@ module V4_07 : sig
   end
 
   and Class_description : sig
-    type t
+    type t = Unversioned.class_description
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -912,7 +999,7 @@ module V4_07 : sig
   end
 
   and Class_type_declaration : sig
-    type t
+    type t = Unversioned.class_type_declaration
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -927,7 +1014,7 @@ module V4_07 : sig
   end
 
   and Class_expr : sig
-    type t
+    type t = Unversioned.class_expr
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -942,7 +1029,7 @@ module V4_07 : sig
   end
 
   and Class_expr_desc : sig
-    type t
+    type t = Unversioned.class_expr_desc
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -964,7 +1051,7 @@ module V4_07 : sig
   end
 
   and Class_structure : sig
-    type t
+    type t = Unversioned.class_structure
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -979,7 +1066,7 @@ module V4_07 : sig
   end
 
   and Class_field : sig
-    type t
+    type t = Unversioned.class_field
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -994,7 +1081,7 @@ module V4_07 : sig
   end
 
   and Class_field_desc : sig
-    type t
+    type t = Unversioned.class_field_desc
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -1015,7 +1102,7 @@ module V4_07 : sig
   end
 
   and Class_value_desc : sig
-    type t
+    type t = Unversioned.class_value_desc
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -1030,7 +1117,7 @@ module V4_07 : sig
   end
 
   and Class_method_desc : sig
-    type t
+    type t = Unversioned.class_method_desc
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -1045,7 +1132,7 @@ module V4_07 : sig
   end
 
   and Class_field_kind : sig
-    type t
+    type t = Unversioned.class_field_kind
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -1061,7 +1148,7 @@ module V4_07 : sig
   end
 
   and Class_declaration : sig
-    type t
+    type t = Unversioned.class_declaration
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -1076,7 +1163,7 @@ module V4_07 : sig
   end
 
   and Module_type : sig
-    type t
+    type t = Unversioned.module_type
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -1091,7 +1178,7 @@ module V4_07 : sig
   end
 
   and Module_type_desc : sig
-    type t
+    type t = Unversioned.module_type_desc
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -1112,7 +1199,7 @@ module V4_07 : sig
   end
 
   and Signature : sig
-    type t
+    type t = Unversioned.signature
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -1127,7 +1214,7 @@ module V4_07 : sig
   end
 
   and Signature_item : sig
-    type t
+    type t = Unversioned.signature_item
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -1142,7 +1229,7 @@ module V4_07 : sig
   end
 
   and Signature_item_desc : sig
-    type t
+    type t = Unversioned.signature_item_desc
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -1169,7 +1256,7 @@ module V4_07 : sig
   end
 
   and Module_declaration : sig
-    type t
+    type t = Unversioned.module_declaration
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -1184,7 +1271,7 @@ module V4_07 : sig
   end
 
   and Module_type_declaration : sig
-    type t
+    type t = Unversioned.module_type_declaration
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -1199,7 +1286,7 @@ module V4_07 : sig
   end
 
   and Open_description : sig
-    type t
+    type t = Unversioned.open_description
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -1214,7 +1301,7 @@ module V4_07 : sig
   end
 
   and Include_description : sig
-    type t
+    type t = Unversioned.include_description
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -1229,7 +1316,7 @@ module V4_07 : sig
   end
 
   and Include_declaration : sig
-    type t
+    type t = Unversioned.include_declaration
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -1244,7 +1331,7 @@ module V4_07 : sig
   end
 
   and With_constraint : sig
-    type t
+    type t = Unversioned.with_constraint
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -1262,7 +1349,7 @@ module V4_07 : sig
   end
 
   and Module_expr : sig
-    type t
+    type t = Unversioned.module_expr
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -1277,7 +1364,7 @@ module V4_07 : sig
   end
 
   and Module_expr_desc : sig
-    type t
+    type t = Unversioned.module_expr_desc
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -1298,7 +1385,7 @@ module V4_07 : sig
   end
 
   and Structure : sig
-    type t
+    type t = Unversioned.structure
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -1313,7 +1400,7 @@ module V4_07 : sig
   end
 
   and Structure_item : sig
-    type t
+    type t = Unversioned.structure_item
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -1328,7 +1415,7 @@ module V4_07 : sig
   end
 
   and Structure_item_desc : sig
-    type t
+    type t = Unversioned.structure_item_desc
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -1357,7 +1444,7 @@ module V4_07 : sig
   end
 
   and Value_binding : sig
-    type t
+    type t = Unversioned.value_binding
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -1372,7 +1459,7 @@ module V4_07 : sig
   end
 
   and Module_binding : sig
-    type t
+    type t = Unversioned.module_binding
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -1387,7 +1474,7 @@ module V4_07 : sig
   end
 
   and Toplevel_phrase : sig
-    type t
+    type t = Unversioned.toplevel_phrase
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
@@ -1403,7 +1490,7 @@ module V4_07 : sig
   end
 
   and Directive_argument : sig
-    type t
+    type t = Unversioned.directive_argument
 
     val of_ast : Versioned_ast.t -> t
     val to_ast : t -> Versioned_ast.t
