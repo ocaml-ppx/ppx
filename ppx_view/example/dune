@@ -7,7 +7,3 @@
   ocaml-migrate-parsetree
   viewast)
  (preprocess (pps ppx_view_rewriter)))
-
-(alias
- (name runtest)
- (deps examples.exe))
