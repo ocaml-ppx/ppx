@@ -1,0 +1,48 @@
+module ConstExp = struct
+
+  let char view value =
+    match value.Parsetree.pexp_desc with
+    | Parsetree.Pexp_constant (Parsetree.Pconst_char x) -> view x
+    | _ -> View.error
+
+  let string_delim view value =
+    match value.Parsetree.pexp_desc with
+    | Parsetree.Pexp_constant (Parsetree.Pconst_string (x, y)) -> view (x, y)
+    | _ -> View.error
+
+  let string view value =
+    match value.Parsetree.pexp_desc with
+    | Parsetree.Pexp_constant (Parsetree.Pconst_string (x, _)) -> view x
+    | _ -> View.error
+
+  let integer view value =
+    match value.Parsetree.pexp_desc with
+    | Parsetree.Pexp_constant (Parsetree.Pconst_integer (x, y)) -> view (x, y)
+    | _ -> View.error
+
+  let int view value =
+    match value.Parsetree.pexp_desc with
+    | Parsetree.Pexp_constant (Parsetree.Pconst_integer (x, None)) -> view (int_of_string x)
+    | _ -> View.error
+
+  let int32 view value =
+    match value.Parsetree.pexp_desc with
+    | Parsetree.Pexp_constant (Parsetree.Pconst_integer (x, Some 'l')) -> view (Int32.of_string x)
+    | _ -> View.error
+
+  let int64 view value =
+    match value.Parsetree.pexp_desc with
+    | Parsetree.Pexp_constant (Parsetree.Pconst_integer (x, Some 'L')) -> view (Int64.of_string x)
+    | _ -> View.error
+
+  let nativeint view value =
+    match value.Parsetree.pexp_desc with
+    | Parsetree.Pexp_constant (Parsetree.Pconst_integer (x, Some 'n')) -> view (Nativeint.of_string x)
+    | _ -> View.error
+
+  let float view value =
+    match value.Parsetree.pexp_desc with
+    | Parsetree.Pexp_constant (Parsetree.Pconst_float (x, y)) -> view (x, y)
+    | _ -> View.error
+
+end

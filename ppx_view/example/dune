@@ -1,0 +1,9 @@
+(executables
+ (names examples)
+ (libraries
+  compiler-libs.common
+  ocaml-compiler-libs.shadow
+  ocaml-compiler-libs.common
+  ocaml-migrate-parsetree
+  viewast)
+ (preprocess (pps ppx_view_rewriter)))

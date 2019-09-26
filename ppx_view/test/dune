@@ -1,0 +1,16 @@
+(library
+ (name ppx_view_test)
+ (public_name ppx_view._test_internal)
+ (libraries
+  compiler-libs.common
+  ocaml-compiler-libs.shadow
+  ocaml-compiler-libs.common
+  ocaml-migrate-parsetree
+  viewast
+  base
+  ppx_inline_test.config
+  ppx_expect.config
+  ppx_expect.common)
+ (flags :standard -open Ocaml_shadow)
+ (inline_tests)
+ (preprocess (pps ppx_expect ppx_view_rewriter)))
