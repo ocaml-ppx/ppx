@@ -24,7 +24,7 @@ next
 
 - Port to `dune` and remove use of bash (#45, @rgrinberg)
 
-- Ignore all attribites starting with `_` (#46, @diml)
+- Ignore all attributes starting with `_` (#46, @diml)
 
 - Reserve the `reason` and `refmt` namespaces (#46, @diml)
 
@@ -34,14 +34,14 @@ next
 
 - Do not relocate files unless `-loc-filename` is passed (#55, @hhugo)
 
-- Perserve the filename in the output (#56, @hhugo)
+- Preserve the filename in the output (#56, @hhugo)
 
 0.3.1
 -----
 
 - Add `Attribute.declare_with_name_loc` (#33, @diml)
 
-- Let the tool name pass throught when used as a -ppx (#41, @diml)
+- Let the tool name pass through when used as a -ppx (#41, @diml)
 
 - Update the AST to 4.06 (#8, @xclerc)
 
