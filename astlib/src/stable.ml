@@ -105,33 +105,37 @@ module V4_07 = struct
         | Lapply of { a : Versioned_ast.t; b : Versioned_ast.t }
     end
 
+    let lident ~a =
+      Versioned_ast.create ~version
+        { kind = "Longident"
+        ; clause = "Lident"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_string a }
+            ]
+        }
+    let ldot ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Longident"
+        ; clause = "Ldot"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_string b }
+            ]
+        }
+    let lapply ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Longident"
+        ; clause = "Lapply"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Lident { a } ->
-        Versioned_ast.create ~version
-          { kind = "Longident"
-          ; clause = "Lident"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_string a }
-              ]
-          }
-      | Ldot { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Longident"
-          ; clause = "Ldot"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_string b }
-              ]
-          }
-      | Lapply { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Longident"
-          ; clause = "Lapply"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
+      | Lident { a } -> lident ~a
+      | Ldot { a; b } -> ldot ~a ~b
+      | Lapply { a; b } -> lapply ~a ~b
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -177,16 +181,18 @@ module V4_07 = struct
         | Longident_loc of { txt : Versioned_ast.t; loc : Location.t }
     end
 
+    let longident_loc ~txt ~loc =
+      Versioned_ast.create ~version
+        { kind = "Longident_loc"
+        ; clause = "Longident_loc"
+        ; fields =
+            [ { name = "txt"; value = Versioned_value.of_ast txt }
+            ; { name = "loc"; value = Versioned_value.of_location loc }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Longident_loc { txt; loc } ->
-        Versioned_ast.create ~version
-          { kind = "Longident_loc"
-          ; clause = "Longident_loc"
-          ; fields =
-              [ { name = "txt"; value = Versioned_value.of_ast txt }
-              ; { name = "loc"; value = Versioned_value.of_location loc }
-              ]
-          }
+      | Longident_loc { txt; loc } -> longident_loc ~txt ~loc
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -215,19 +221,22 @@ module V4_07 = struct
         | Recursive
     end
 
+    let nonrecursive =
+      Versioned_ast.create ~version
+        { kind = "Rec_flag"
+        ; clause = "Nonrecursive"
+        ; fields = []
+        }
+    let recursive =
+      Versioned_ast.create ~version
+        { kind = "Rec_flag"
+        ; clause = "Recursive"
+        ; fields = []
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Nonrecursive ->
-        Versioned_ast.create ~version
-          { kind = "Rec_flag"
-          ; clause = "Nonrecursive"
-          ; fields = []
-          }
-      | Recursive ->
-        Versioned_ast.create ~version
-          { kind = "Rec_flag"
-          ; clause = "Recursive"
-          ; fields = []
-          }
+      | Nonrecursive -> nonrecursive
+      | Recursive -> recursive
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -256,19 +265,22 @@ module V4_07 = struct
         | Downto
     end
 
+    let upto =
+      Versioned_ast.create ~version
+        { kind = "Direction_flag"
+        ; clause = "Upto"
+        ; fields = []
+        }
+    let downto_ =
+      Versioned_ast.create ~version
+        { kind = "Direction_flag"
+        ; clause = "Downto"
+        ; fields = []
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Upto ->
-        Versioned_ast.create ~version
-          { kind = "Direction_flag"
-          ; clause = "Upto"
-          ; fields = []
-          }
-      | Downto ->
-        Versioned_ast.create ~version
-          { kind = "Direction_flag"
-          ; clause = "Downto"
-          ; fields = []
-          }
+      | Upto -> upto
+      | Downto -> downto_
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -297,19 +309,22 @@ module V4_07 = struct
         | Public
     end
 
+    let private_ =
+      Versioned_ast.create ~version
+        { kind = "Private_flag"
+        ; clause = "Private"
+        ; fields = []
+        }
+    let public =
+      Versioned_ast.create ~version
+        { kind = "Private_flag"
+        ; clause = "Public"
+        ; fields = []
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Private ->
-        Versioned_ast.create ~version
-          { kind = "Private_flag"
-          ; clause = "Private"
-          ; fields = []
-          }
-      | Public ->
-        Versioned_ast.create ~version
-          { kind = "Private_flag"
-          ; clause = "Public"
-          ; fields = []
-          }
+      | Private -> private_
+      | Public -> public
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -338,19 +353,22 @@ module V4_07 = struct
         | Mutable
     end
 
+    let immutable =
+      Versioned_ast.create ~version
+        { kind = "Mutable_flag"
+        ; clause = "Immutable"
+        ; fields = []
+        }
+    let mutable_ =
+      Versioned_ast.create ~version
+        { kind = "Mutable_flag"
+        ; clause = "Mutable"
+        ; fields = []
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Immutable ->
-        Versioned_ast.create ~version
-          { kind = "Mutable_flag"
-          ; clause = "Immutable"
-          ; fields = []
-          }
-      | Mutable ->
-        Versioned_ast.create ~version
-          { kind = "Mutable_flag"
-          ; clause = "Mutable"
-          ; fields = []
-          }
+      | Immutable -> immutable
+      | Mutable -> mutable_
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -379,19 +397,22 @@ module V4_07 = struct
         | Concrete
     end
 
+    let virtual_ =
+      Versioned_ast.create ~version
+        { kind = "Virtual_flag"
+        ; clause = "Virtual"
+        ; fields = []
+        }
+    let concrete =
+      Versioned_ast.create ~version
+        { kind = "Virtual_flag"
+        ; clause = "Concrete"
+        ; fields = []
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Virtual ->
-        Versioned_ast.create ~version
-          { kind = "Virtual_flag"
-          ; clause = "Virtual"
-          ; fields = []
-          }
-      | Concrete ->
-        Versioned_ast.create ~version
-          { kind = "Virtual_flag"
-          ; clause = "Concrete"
-          ; fields = []
-          }
+      | Virtual -> virtual_
+      | Concrete -> concrete
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -420,19 +441,22 @@ module V4_07 = struct
         | Fresh
     end
 
+    let override =
+      Versioned_ast.create ~version
+        { kind = "Override_flag"
+        ; clause = "Override"
+        ; fields = []
+        }
+    let fresh =
+      Versioned_ast.create ~version
+        { kind = "Override_flag"
+        ; clause = "Fresh"
+        ; fields = []
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Override ->
-        Versioned_ast.create ~version
-          { kind = "Override_flag"
-          ; clause = "Override"
-          ; fields = []
-          }
-      | Fresh ->
-        Versioned_ast.create ~version
-          { kind = "Override_flag"
-          ; clause = "Fresh"
-          ; fields = []
-          }
+      | Override -> override
+      | Fresh -> fresh
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -461,19 +485,22 @@ module V4_07 = struct
         | Open
     end
 
+    let closed =
+      Versioned_ast.create ~version
+        { kind = "Closed_flag"
+        ; clause = "Closed"
+        ; fields = []
+        }
+    let open_ =
+      Versioned_ast.create ~version
+        { kind = "Closed_flag"
+        ; clause = "Open"
+        ; fields = []
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Closed ->
-        Versioned_ast.create ~version
-          { kind = "Closed_flag"
-          ; clause = "Closed"
-          ; fields = []
-          }
-      | Open ->
-        Versioned_ast.create ~version
-          { kind = "Closed_flag"
-          ; clause = "Open"
-          ; fields = []
-          }
+      | Closed -> closed
+      | Open -> open_
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -501,15 +528,17 @@ module V4_07 = struct
         | Label of { a : string }
     end
 
+    let label ~a =
+      Versioned_ast.create ~version
+        { kind = "Label"
+        ; clause = "Label"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_string a }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Label { a } ->
-        Versioned_ast.create ~version
-          { kind = "Label"
-          ; clause = "Label"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_string a }
-              ]
-          }
+      | Label { a } -> label ~a
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -535,16 +564,18 @@ module V4_07 = struct
         | Label_loc of { txt : Versioned_ast.t; loc : Location.t }
     end
 
+    let label_loc ~txt ~loc =
+      Versioned_ast.create ~version
+        { kind = "Label_loc"
+        ; clause = "Label_loc"
+        ; fields =
+            [ { name = "txt"; value = Versioned_value.of_ast txt }
+            ; { name = "loc"; value = Versioned_value.of_location loc }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Label_loc { txt; loc } ->
-        Versioned_ast.create ~version
-          { kind = "Label_loc"
-          ; clause = "Label_loc"
-          ; fields =
-              [ { name = "txt"; value = Versioned_value.of_ast txt }
-              ; { name = "loc"; value = Versioned_value.of_location loc }
-              ]
-          }
+      | Label_loc { txt; loc } -> label_loc ~txt ~loc
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -572,16 +603,18 @@ module V4_07 = struct
         | String_loc of { txt : string; loc : Location.t }
     end
 
+    let string_loc ~txt ~loc =
+      Versioned_ast.create ~version
+        { kind = "String_loc"
+        ; clause = "String_loc"
+        ; fields =
+            [ { name = "txt"; value = Versioned_value.of_string txt }
+            ; { name = "loc"; value = Versioned_value.of_location loc }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | String_loc { txt; loc } ->
-        Versioned_ast.create ~version
-          { kind = "String_loc"
-          ; clause = "String_loc"
-          ; fields =
-              [ { name = "txt"; value = Versioned_value.of_string txt }
-              ; { name = "loc"; value = Versioned_value.of_location loc }
-              ]
-          }
+      | String_loc { txt; loc } -> string_loc ~txt ~loc
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -611,29 +644,33 @@ module V4_07 = struct
         | Optional of { a : string }
     end
 
+    let nolabel =
+      Versioned_ast.create ~version
+        { kind = "Arg_label"
+        ; clause = "Nolabel"
+        ; fields = []
+        }
+    let labelled ~a =
+      Versioned_ast.create ~version
+        { kind = "Arg_label"
+        ; clause = "Labelled"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_string a }
+            ]
+        }
+    let optional ~a =
+      Versioned_ast.create ~version
+        { kind = "Arg_label"
+        ; clause = "Optional"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_string a }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Nolabel ->
-        Versioned_ast.create ~version
-          { kind = "Arg_label"
-          ; clause = "Nolabel"
-          ; fields = []
-          }
-      | Labelled { a } ->
-        Versioned_ast.create ~version
-          { kind = "Arg_label"
-          ; clause = "Labelled"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_string a }
-              ]
-          }
-      | Optional { a } ->
-        Versioned_ast.create ~version
-          { kind = "Arg_label"
-          ; clause = "Optional"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_string a }
-              ]
-          }
+      | Nolabel -> nolabel
+      | Labelled { a } -> labelled ~a
+      | Optional { a } -> optional ~a
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -674,25 +711,29 @@ module V4_07 = struct
         | Invariant
     end
 
+    let covariant =
+      Versioned_ast.create ~version
+        { kind = "Variance"
+        ; clause = "Covariant"
+        ; fields = []
+        }
+    let contravariant =
+      Versioned_ast.create ~version
+        { kind = "Variance"
+        ; clause = "Contravariant"
+        ; fields = []
+        }
+    let invariant =
+      Versioned_ast.create ~version
+        { kind = "Variance"
+        ; clause = "Invariant"
+        ; fields = []
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Covariant ->
-        Versioned_ast.create ~version
-          { kind = "Variance"
-          ; clause = "Covariant"
-          ; fields = []
-          }
-      | Contravariant ->
-        Versioned_ast.create ~version
-          { kind = "Variance"
-          ; clause = "Contravariant"
-          ; fields = []
-          }
-      | Invariant ->
-        Versioned_ast.create ~version
-          { kind = "Variance"
-          ; clause = "Invariant"
-          ; fields = []
-          }
+      | Covariant -> covariant
+      | Contravariant -> contravariant
+      | Invariant -> invariant
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -728,42 +769,47 @@ module V4_07 = struct
         | Pconst_float of { a : string; b : char option }
     end
 
+    let pconst_integer ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Constant"
+        ; clause = "Pconst_integer"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_string a }
+            ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_char) b }
+            ]
+        }
+    let pconst_char ~a =
+      Versioned_ast.create ~version
+        { kind = "Constant"
+        ; clause = "Pconst_char"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_char a }
+            ]
+        }
+    let pconst_string ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Constant"
+        ; clause = "Pconst_string"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_string a }
+            ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_string) b }
+            ]
+        }
+    let pconst_float ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Constant"
+        ; clause = "Pconst_float"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_string a }
+            ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_char) b }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Pconst_integer { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Constant"
-          ; clause = "Pconst_integer"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_string a }
-              ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_char) b }
-              ]
-          }
-      | Pconst_char { a } ->
-        Versioned_ast.create ~version
-          { kind = "Constant"
-          ; clause = "Pconst_char"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_char a }
-              ]
-          }
-      | Pconst_string { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Constant"
-          ; clause = "Pconst_string"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_string a }
-              ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_string) b }
-              ]
-          }
-      | Pconst_float { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Constant"
-          ; clause = "Pconst_float"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_string a }
-              ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_char) b }
-              ]
-          }
+      | Pconst_integer { a; b } -> pconst_integer ~a ~b
+      | Pconst_char { a } -> pconst_char ~a
+      | Pconst_string { a; b } -> pconst_string ~a ~b
+      | Pconst_float { a; b } -> pconst_float ~a ~b
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -819,16 +865,18 @@ module V4_07 = struct
         | Attribute of { a : Versioned_ast.t; b : Versioned_ast.t }
     end
 
+    let attribute ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Attribute"
+        ; clause = "Attribute"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Attribute { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Attribute"
-          ; clause = "Attribute"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
+      | Attribute { a; b } -> attribute ~a ~b
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -856,16 +904,18 @@ module V4_07 = struct
         | Extension of { a : Versioned_ast.t; b : Versioned_ast.t }
     end
 
+    let extension ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Extension"
+        ; clause = "Extension"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Extension { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Extension"
-          ; clause = "Extension"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
+      | Extension { a; b } -> extension ~a ~b
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -893,15 +943,17 @@ module V4_07 = struct
         | Attributes of { a : Versioned_ast.t list }
     end
 
+    let attributes ~a =
+      Versioned_ast.create ~version
+        { kind = "Attributes"
+        ; clause = "Attributes"
+        ; fields =
+            [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Attributes { a } ->
-        Versioned_ast.create ~version
-          { kind = "Attributes"
-          ; clause = "Attributes"
-          ; fields =
-              [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
-              ]
-          }
+      | Attributes { a } -> attributes ~a
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -930,40 +982,45 @@ module V4_07 = struct
         | PPat of { a : Versioned_ast.t; b : Versioned_ast.t option }
     end
 
+    let pstr ~a =
+      Versioned_ast.create ~version
+        { kind = "Payload"
+        ; clause = "PStr"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let psig ~a =
+      Versioned_ast.create ~version
+        { kind = "Payload"
+        ; clause = "PSig"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let ptyp ~a =
+      Versioned_ast.create ~version
+        { kind = "Payload"
+        ; clause = "PTyp"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let ppat ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Payload"
+        ; clause = "PPat"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) b }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | PStr { a } ->
-        Versioned_ast.create ~version
-          { kind = "Payload"
-          ; clause = "PStr"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | PSig { a } ->
-        Versioned_ast.create ~version
-          { kind = "Payload"
-          ; clause = "PSig"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | PTyp { a } ->
-        Versioned_ast.create ~version
-          { kind = "Payload"
-          ; clause = "PTyp"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | PPat { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Payload"
-          ; clause = "PPat"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) b }
-              ]
-          }
+      | PStr { a } -> pstr ~a
+      | PSig { a } -> psig ~a
+      | PTyp { a } -> ptyp ~a
+      | PPat { a; b } -> ppat ~a ~b
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -1015,17 +1072,19 @@ module V4_07 = struct
         | Core_type of { ptyp_desc : Versioned_ast.t; ptyp_loc : Location.t; ptyp_attributes : Versioned_ast.t }
     end
 
+    let core_type ~ptyp_desc ~ptyp_loc ~ptyp_attributes =
+      Versioned_ast.create ~version
+        { kind = "Core_type"
+        ; clause = "Core_type"
+        ; fields =
+            [ { name = "ptyp_desc"; value = Versioned_value.of_ast ptyp_desc }
+            ; { name = "ptyp_loc"; value = Versioned_value.of_location ptyp_loc }
+            ; { name = "ptyp_attributes"; value = Versioned_value.of_ast ptyp_attributes }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Core_type { ptyp_desc; ptyp_loc; ptyp_attributes } ->
-        Versioned_ast.create ~version
-          { kind = "Core_type"
-          ; clause = "Core_type"
-          ; fields =
-              [ { name = "ptyp_desc"; value = Versioned_value.of_ast ptyp_desc }
-              ; { name = "ptyp_loc"; value = Versioned_value.of_location ptyp_loc }
-              ; { name = "ptyp_attributes"; value = Versioned_value.of_ast ptyp_attributes }
-              ]
-          }
+      | Core_type { ptyp_desc; ptyp_loc; ptyp_attributes } -> core_type ~ptyp_desc ~ptyp_loc ~ptyp_attributes
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -1066,110 +1125,123 @@ module V4_07 = struct
         | Ptyp_extension of { a : Versioned_ast.t }
     end
 
+    let ptyp_any =
+      Versioned_ast.create ~version
+        { kind = "Core_type_desc"
+        ; clause = "Ptyp_any"
+        ; fields = []
+        }
+    let ptyp_var ~a =
+      Versioned_ast.create ~version
+        { kind = "Core_type_desc"
+        ; clause = "Ptyp_var"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_string a }
+            ]
+        }
+    let ptyp_arrow ~a ~b ~c =
+      Versioned_ast.create ~version
+        { kind = "Core_type_desc"
+        ; clause = "Ptyp_arrow"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ; { name = "c"; value = Versioned_value.of_ast c }
+            ]
+        }
+    let ptyp_tuple ~a =
+      Versioned_ast.create ~version
+        { kind = "Core_type_desc"
+        ; clause = "Ptyp_tuple"
+        ; fields =
+            [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
+            ]
+        }
+    let ptyp_constr ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Core_type_desc"
+        ; clause = "Ptyp_constr"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
+            ]
+        }
+    let ptyp_object ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Core_type_desc"
+        ; clause = "Ptyp_object"
+        ; fields =
+            [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+    let ptyp_class ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Core_type_desc"
+        ; clause = "Ptyp_class"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
+            ]
+        }
+    let ptyp_alias ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Core_type_desc"
+        ; clause = "Ptyp_alias"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_string b }
+            ]
+        }
+    let ptyp_variant ~a ~b ~c =
+      Versioned_ast.create ~version
+        { kind = "Core_type_desc"
+        ; clause = "Ptyp_variant"
+        ; fields =
+            [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ; { name = "c"; value = (Versioned_value.of_option ~f:(Versioned_value.of_list ~f:Versioned_value.of_ast)) c }
+            ]
+        }
+    let ptyp_poly ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Core_type_desc"
+        ; clause = "Ptyp_poly"
+        ; fields =
+            [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+    let ptyp_package ~a =
+      Versioned_ast.create ~version
+        { kind = "Core_type_desc"
+        ; clause = "Ptyp_package"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let ptyp_extension ~a =
+      Versioned_ast.create ~version
+        { kind = "Core_type_desc"
+        ; clause = "Ptyp_extension"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Ptyp_any ->
-        Versioned_ast.create ~version
-          { kind = "Core_type_desc"
-          ; clause = "Ptyp_any"
-          ; fields = []
-          }
-      | Ptyp_var { a } ->
-        Versioned_ast.create ~version
-          { kind = "Core_type_desc"
-          ; clause = "Ptyp_var"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_string a }
-              ]
-          }
-      | Ptyp_arrow { a; b; c } ->
-        Versioned_ast.create ~version
-          { kind = "Core_type_desc"
-          ; clause = "Ptyp_arrow"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ; { name = "c"; value = Versioned_value.of_ast c }
-              ]
-          }
-      | Ptyp_tuple { a } ->
-        Versioned_ast.create ~version
-          { kind = "Core_type_desc"
-          ; clause = "Ptyp_tuple"
-          ; fields =
-              [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
-              ]
-          }
-      | Ptyp_constr { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Core_type_desc"
-          ; clause = "Ptyp_constr"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
-              ]
-          }
-      | Ptyp_object { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Core_type_desc"
-          ; clause = "Ptyp_object"
-          ; fields =
-              [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
-      | Ptyp_class { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Core_type_desc"
-          ; clause = "Ptyp_class"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
-              ]
-          }
-      | Ptyp_alias { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Core_type_desc"
-          ; clause = "Ptyp_alias"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_string b }
-              ]
-          }
-      | Ptyp_variant { a; b; c } ->
-        Versioned_ast.create ~version
-          { kind = "Core_type_desc"
-          ; clause = "Ptyp_variant"
-          ; fields =
-              [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ; { name = "c"; value = (Versioned_value.of_option ~f:(Versioned_value.of_list ~f:Versioned_value.of_ast)) c }
-              ]
-          }
-      | Ptyp_poly { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Core_type_desc"
-          ; clause = "Ptyp_poly"
-          ; fields =
-              [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
-      | Ptyp_package { a } ->
-        Versioned_ast.create ~version
-          { kind = "Core_type_desc"
-          ; clause = "Ptyp_package"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Ptyp_extension { a } ->
-        Versioned_ast.create ~version
-          { kind = "Core_type_desc"
-          ; clause = "Ptyp_extension"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
+      | Ptyp_any -> ptyp_any
+      | Ptyp_var { a } -> ptyp_var ~a
+      | Ptyp_arrow { a; b; c } -> ptyp_arrow ~a ~b ~c
+      | Ptyp_tuple { a } -> ptyp_tuple ~a
+      | Ptyp_constr { a; b } -> ptyp_constr ~a ~b
+      | Ptyp_object { a; b } -> ptyp_object ~a ~b
+      | Ptyp_class { a; b } -> ptyp_class ~a ~b
+      | Ptyp_alias { a; b } -> ptyp_alias ~a ~b
+      | Ptyp_variant { a; b; c } -> ptyp_variant ~a ~b ~c
+      | Ptyp_poly { a; b } -> ptyp_poly ~a ~b
+      | Ptyp_package { a } -> ptyp_package ~a
+      | Ptyp_extension { a } -> ptyp_extension ~a
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -1298,16 +1370,18 @@ module V4_07 = struct
         | Package_type of { a : Versioned_ast.t; b : Versioned_ast.t list }
     end
 
+    let package_type ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Package_type"
+        ; clause = "Package_type"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Package_type { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Package_type"
-          ; clause = "Package_type"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
-              ]
-          }
+      | Package_type { a; b } -> package_type ~a ~b
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -1335,16 +1409,18 @@ module V4_07 = struct
         | Package_type_constraint of { a : Versioned_ast.t; b : Versioned_ast.t }
     end
 
+    let package_type_constraint ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Package_type_constraint"
+        ; clause = "Package_type_constraint"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Package_type_constraint { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Package_type_constraint"
-          ; clause = "Package_type_constraint"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
+      | Package_type_constraint { a; b } -> package_type_constraint ~a ~b
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -1373,26 +1449,29 @@ module V4_07 = struct
         | Rinherit of { a : Versioned_ast.t }
     end
 
+    let rtag ~a ~b ~c ~d =
+      Versioned_ast.create ~version
+        { kind = "Row_field"
+        ; clause = "Rtag"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ; { name = "c"; value = Versioned_value.of_bool c }
+            ; { name = "d"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) d }
+            ]
+        }
+    let rinherit ~a =
+      Versioned_ast.create ~version
+        { kind = "Row_field"
+        ; clause = "Rinherit"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Rtag { a; b; c; d } ->
-        Versioned_ast.create ~version
-          { kind = "Row_field"
-          ; clause = "Rtag"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ; { name = "c"; value = Versioned_value.of_bool c }
-              ; { name = "d"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) d }
-              ]
-          }
-      | Rinherit { a } ->
-        Versioned_ast.create ~version
-          { kind = "Row_field"
-          ; clause = "Rinherit"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
+      | Rtag { a; b; c; d } -> rtag ~a ~b ~c ~d
+      | Rinherit { a } -> rinherit ~a
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -1433,25 +1512,28 @@ module V4_07 = struct
         | Oinherit of { a : Versioned_ast.t }
     end
 
+    let otag ~a ~b ~c =
+      Versioned_ast.create ~version
+        { kind = "Object_field"
+        ; clause = "Otag"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ; { name = "c"; value = Versioned_value.of_ast c }
+            ]
+        }
+    let oinherit ~a =
+      Versioned_ast.create ~version
+        { kind = "Object_field"
+        ; clause = "Oinherit"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Otag { a; b; c } ->
-        Versioned_ast.create ~version
-          { kind = "Object_field"
-          ; clause = "Otag"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ; { name = "c"; value = Versioned_value.of_ast c }
-              ]
-          }
-      | Oinherit { a } ->
-        Versioned_ast.create ~version
-          { kind = "Object_field"
-          ; clause = "Oinherit"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
+      | Otag { a; b; c } -> otag ~a ~b ~c
+      | Oinherit { a } -> oinherit ~a
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -1489,17 +1571,19 @@ module V4_07 = struct
         | Pattern of { ppat_desc : Versioned_ast.t; ppat_loc : Location.t; ppat_attributes : Versioned_ast.t }
     end
 
+    let pattern ~ppat_desc ~ppat_loc ~ppat_attributes =
+      Versioned_ast.create ~version
+        { kind = "Pattern"
+        ; clause = "Pattern"
+        ; fields =
+            [ { name = "ppat_desc"; value = Versioned_value.of_ast ppat_desc }
+            ; { name = "ppat_loc"; value = Versioned_value.of_location ppat_loc }
+            ; { name = "ppat_attributes"; value = Versioned_value.of_ast ppat_attributes }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Pattern { ppat_desc; ppat_loc; ppat_attributes } ->
-        Versioned_ast.create ~version
-          { kind = "Pattern"
-          ; clause = "Pattern"
-          ; fields =
-              [ { name = "ppat_desc"; value = Versioned_value.of_ast ppat_desc }
-              ; { name = "ppat_loc"; value = Versioned_value.of_location ppat_loc }
-              ; { name = "ppat_attributes"; value = Versioned_value.of_ast ppat_attributes }
-              ]
-          }
+      | Pattern { ppat_desc; ppat_loc; ppat_attributes } -> pattern ~ppat_desc ~ppat_loc ~ppat_attributes
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -1546,157 +1630,176 @@ module V4_07 = struct
         | Ppat_open of { a : Versioned_ast.t; b : Versioned_ast.t }
     end
 
+    let ppat_any =
+      Versioned_ast.create ~version
+        { kind = "Pattern_desc"
+        ; clause = "Ppat_any"
+        ; fields = []
+        }
+    let ppat_var ~a =
+      Versioned_ast.create ~version
+        { kind = "Pattern_desc"
+        ; clause = "Ppat_var"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let ppat_alias ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Pattern_desc"
+        ; clause = "Ppat_alias"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+    let ppat_constant ~a =
+      Versioned_ast.create ~version
+        { kind = "Pattern_desc"
+        ; clause = "Ppat_constant"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let ppat_interval ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Pattern_desc"
+        ; clause = "Ppat_interval"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+    let ppat_tuple ~a =
+      Versioned_ast.create ~version
+        { kind = "Pattern_desc"
+        ; clause = "Ppat_tuple"
+        ; fields =
+            [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
+            ]
+        }
+    let ppat_construct ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Pattern_desc"
+        ; clause = "Ppat_construct"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) b }
+            ]
+        }
+    let ppat_variant ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Pattern_desc"
+        ; clause = "Ppat_variant"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) b }
+            ]
+        }
+    let ppat_record ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Pattern_desc"
+        ; clause = "Ppat_record"
+        ; fields =
+            [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+    let ppat_array ~a =
+      Versioned_ast.create ~version
+        { kind = "Pattern_desc"
+        ; clause = "Ppat_array"
+        ; fields =
+            [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
+            ]
+        }
+    let ppat_or ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Pattern_desc"
+        ; clause = "Ppat_or"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+    let ppat_constraint ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Pattern_desc"
+        ; clause = "Ppat_constraint"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+    let ppat_type ~a =
+      Versioned_ast.create ~version
+        { kind = "Pattern_desc"
+        ; clause = "Ppat_type"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let ppat_lazy ~a =
+      Versioned_ast.create ~version
+        { kind = "Pattern_desc"
+        ; clause = "Ppat_lazy"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let ppat_unpack ~a =
+      Versioned_ast.create ~version
+        { kind = "Pattern_desc"
+        ; clause = "Ppat_unpack"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let ppat_exception ~a =
+      Versioned_ast.create ~version
+        { kind = "Pattern_desc"
+        ; clause = "Ppat_exception"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let ppat_extension ~a =
+      Versioned_ast.create ~version
+        { kind = "Pattern_desc"
+        ; clause = "Ppat_extension"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let ppat_open ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Pattern_desc"
+        ; clause = "Ppat_open"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Ppat_any ->
-        Versioned_ast.create ~version
-          { kind = "Pattern_desc"
-          ; clause = "Ppat_any"
-          ; fields = []
-          }
-      | Ppat_var { a } ->
-        Versioned_ast.create ~version
-          { kind = "Pattern_desc"
-          ; clause = "Ppat_var"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Ppat_alias { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Pattern_desc"
-          ; clause = "Ppat_alias"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
-      | Ppat_constant { a } ->
-        Versioned_ast.create ~version
-          { kind = "Pattern_desc"
-          ; clause = "Ppat_constant"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Ppat_interval { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Pattern_desc"
-          ; clause = "Ppat_interval"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
-      | Ppat_tuple { a } ->
-        Versioned_ast.create ~version
-          { kind = "Pattern_desc"
-          ; clause = "Ppat_tuple"
-          ; fields =
-              [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
-              ]
-          }
-      | Ppat_construct { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Pattern_desc"
-          ; clause = "Ppat_construct"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) b }
-              ]
-          }
-      | Ppat_variant { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Pattern_desc"
-          ; clause = "Ppat_variant"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) b }
-              ]
-          }
-      | Ppat_record { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Pattern_desc"
-          ; clause = "Ppat_record"
-          ; fields =
-              [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
-      | Ppat_array { a } ->
-        Versioned_ast.create ~version
-          { kind = "Pattern_desc"
-          ; clause = "Ppat_array"
-          ; fields =
-              [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
-              ]
-          }
-      | Ppat_or { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Pattern_desc"
-          ; clause = "Ppat_or"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
-      | Ppat_constraint { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Pattern_desc"
-          ; clause = "Ppat_constraint"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
-      | Ppat_type { a } ->
-        Versioned_ast.create ~version
-          { kind = "Pattern_desc"
-          ; clause = "Ppat_type"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Ppat_lazy { a } ->
-        Versioned_ast.create ~version
-          { kind = "Pattern_desc"
-          ; clause = "Ppat_lazy"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Ppat_unpack { a } ->
-        Versioned_ast.create ~version
-          { kind = "Pattern_desc"
-          ; clause = "Ppat_unpack"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Ppat_exception { a } ->
-        Versioned_ast.create ~version
-          { kind = "Pattern_desc"
-          ; clause = "Ppat_exception"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Ppat_extension { a } ->
-        Versioned_ast.create ~version
-          { kind = "Pattern_desc"
-          ; clause = "Ppat_extension"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Ppat_open { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Pattern_desc"
-          ; clause = "Ppat_open"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
+      | Ppat_any -> ppat_any
+      | Ppat_var { a } -> ppat_var ~a
+      | Ppat_alias { a; b } -> ppat_alias ~a ~b
+      | Ppat_constant { a } -> ppat_constant ~a
+      | Ppat_interval { a; b } -> ppat_interval ~a ~b
+      | Ppat_tuple { a } -> ppat_tuple ~a
+      | Ppat_construct { a; b } -> ppat_construct ~a ~b
+      | Ppat_variant { a; b } -> ppat_variant ~a ~b
+      | Ppat_record { a; b } -> ppat_record ~a ~b
+      | Ppat_array { a } -> ppat_array ~a
+      | Ppat_or { a; b } -> ppat_or ~a ~b
+      | Ppat_constraint { a; b } -> ppat_constraint ~a ~b
+      | Ppat_type { a } -> ppat_type ~a
+      | Ppat_lazy { a } -> ppat_lazy ~a
+      | Ppat_unpack { a } -> ppat_unpack ~a
+      | Ppat_exception { a } -> ppat_exception ~a
+      | Ppat_extension { a } -> ppat_extension ~a
+      | Ppat_open { a; b } -> ppat_open ~a ~b
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -1871,16 +1974,18 @@ module V4_07 = struct
         | Record_field_pattern of { a : Versioned_ast.t; b : Versioned_ast.t }
     end
 
+    let record_field_pattern ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Record_field_pattern"
+        ; clause = "Record_field_pattern"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Record_field_pattern { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Record_field_pattern"
-          ; clause = "Record_field_pattern"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
+      | Record_field_pattern { a; b } -> record_field_pattern ~a ~b
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -1908,17 +2013,19 @@ module V4_07 = struct
         | Expression of { pexp_desc : Versioned_ast.t; pexp_loc : Location.t; pexp_attributes : Versioned_ast.t }
     end
 
+    let expression ~pexp_desc ~pexp_loc ~pexp_attributes =
+      Versioned_ast.create ~version
+        { kind = "Expression"
+        ; clause = "Expression"
+        ; fields =
+            [ { name = "pexp_desc"; value = Versioned_value.of_ast pexp_desc }
+            ; { name = "pexp_loc"; value = Versioned_value.of_location pexp_loc }
+            ; { name = "pexp_attributes"; value = Versioned_value.of_ast pexp_attributes }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Expression { pexp_desc; pexp_loc; pexp_attributes } ->
-        Versioned_ast.create ~version
-          { kind = "Expression"
-          ; clause = "Expression"
-          ; fields =
-              [ { name = "pexp_desc"; value = Versioned_value.of_ast pexp_desc }
-              ; { name = "pexp_loc"; value = Versioned_value.of_location pexp_loc }
-              ; { name = "pexp_attributes"; value = Versioned_value.of_ast pexp_attributes }
-              ]
-          }
+      | Expression { pexp_desc; pexp_loc; pexp_attributes } -> expression ~pexp_desc ~pexp_loc ~pexp_attributes
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -1983,327 +2090,364 @@ module V4_07 = struct
         | Pexp_unreachable
     end
 
+    let pexp_ident ~a =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_ident"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pexp_constant ~a =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_constant"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pexp_let ~a ~b ~c =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_let"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
+            ; { name = "c"; value = Versioned_value.of_ast c }
+            ]
+        }
+    let pexp_function ~a =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_function"
+        ; fields =
+            [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
+            ]
+        }
+    let pexp_fun ~a ~b ~c ~d =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_fun"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) b }
+            ; { name = "c"; value = Versioned_value.of_ast c }
+            ; { name = "d"; value = Versioned_value.of_ast d }
+            ]
+        }
+    let pexp_apply ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_apply"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
+            ]
+        }
+    let pexp_match ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_match"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
+            ]
+        }
+    let pexp_try ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_try"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
+            ]
+        }
+    let pexp_tuple ~a =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_tuple"
+        ; fields =
+            [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
+            ]
+        }
+    let pexp_construct ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_construct"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) b }
+            ]
+        }
+    let pexp_variant ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_variant"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) b }
+            ]
+        }
+    let pexp_record ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_record"
+        ; fields =
+            [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
+            ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) b }
+            ]
+        }
+    let pexp_field ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_field"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+    let pexp_setfield ~a ~b ~c =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_setfield"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ; { name = "c"; value = Versioned_value.of_ast c }
+            ]
+        }
+    let pexp_array ~a =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_array"
+        ; fields =
+            [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
+            ]
+        }
+    let pexp_ifthenelse ~a ~b ~c =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_ifthenelse"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ; { name = "c"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) c }
+            ]
+        }
+    let pexp_sequence ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_sequence"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+    let pexp_while ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_while"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+    let pexp_for ~a ~b ~c ~d ~e =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_for"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ; { name = "c"; value = Versioned_value.of_ast c }
+            ; { name = "d"; value = Versioned_value.of_ast d }
+            ; { name = "e"; value = Versioned_value.of_ast e }
+            ]
+        }
+    let pexp_constraint ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_constraint"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+    let pexp_coerce ~a ~b ~c =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_coerce"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) b }
+            ; { name = "c"; value = Versioned_value.of_ast c }
+            ]
+        }
+    let pexp_send ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_send"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+    let pexp_new ~a =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_new"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pexp_setinstvar ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_setinstvar"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+    let pexp_override ~a =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_override"
+        ; fields =
+            [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
+            ]
+        }
+    let pexp_letmodule ~a ~b ~c =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_letmodule"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ; { name = "c"; value = Versioned_value.of_ast c }
+            ]
+        }
+    let pexp_letexception ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_letexception"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+    let pexp_assert ~a =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_assert"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pexp_lazy ~a =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_lazy"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pexp_poly ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_poly"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) b }
+            ]
+        }
+    let pexp_object ~a =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_object"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pexp_newtype ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_newtype"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+    let pexp_pack ~a =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_pack"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pexp_open ~a ~b ~c =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_open"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ; { name = "c"; value = Versioned_value.of_ast c }
+            ]
+        }
+    let pexp_extension ~a =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_extension"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pexp_unreachable =
+      Versioned_ast.create ~version
+        { kind = "Expression_desc"
+        ; clause = "Pexp_unreachable"
+        ; fields = []
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Pexp_ident { a } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_ident"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pexp_constant { a } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_constant"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pexp_let { a; b; c } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_let"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
-              ; { name = "c"; value = Versioned_value.of_ast c }
-              ]
-          }
-      | Pexp_function { a } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_function"
-          ; fields =
-              [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
-              ]
-          }
-      | Pexp_fun { a; b; c; d } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_fun"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) b }
-              ; { name = "c"; value = Versioned_value.of_ast c }
-              ; { name = "d"; value = Versioned_value.of_ast d }
-              ]
-          }
-      | Pexp_apply { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_apply"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
-              ]
-          }
-      | Pexp_match { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_match"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
-              ]
-          }
-      | Pexp_try { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_try"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
-              ]
-          }
-      | Pexp_tuple { a } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_tuple"
-          ; fields =
-              [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
-              ]
-          }
-      | Pexp_construct { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_construct"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) b }
-              ]
-          }
-      | Pexp_variant { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_variant"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) b }
-              ]
-          }
-      | Pexp_record { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_record"
-          ; fields =
-              [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
-              ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) b }
-              ]
-          }
-      | Pexp_field { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_field"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
-      | Pexp_setfield { a; b; c } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_setfield"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ; { name = "c"; value = Versioned_value.of_ast c }
-              ]
-          }
-      | Pexp_array { a } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_array"
-          ; fields =
-              [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
-              ]
-          }
-      | Pexp_ifthenelse { a; b; c } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_ifthenelse"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ; { name = "c"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) c }
-              ]
-          }
-      | Pexp_sequence { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_sequence"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
-      | Pexp_while { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_while"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
-      | Pexp_for { a; b; c; d; e } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_for"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ; { name = "c"; value = Versioned_value.of_ast c }
-              ; { name = "d"; value = Versioned_value.of_ast d }
-              ; { name = "e"; value = Versioned_value.of_ast e }
-              ]
-          }
-      | Pexp_constraint { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_constraint"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
-      | Pexp_coerce { a; b; c } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_coerce"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) b }
-              ; { name = "c"; value = Versioned_value.of_ast c }
-              ]
-          }
-      | Pexp_send { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_send"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
-      | Pexp_new { a } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_new"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pexp_setinstvar { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_setinstvar"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
-      | Pexp_override { a } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_override"
-          ; fields =
-              [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
-              ]
-          }
-      | Pexp_letmodule { a; b; c } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_letmodule"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ; { name = "c"; value = Versioned_value.of_ast c }
-              ]
-          }
-      | Pexp_letexception { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_letexception"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
-      | Pexp_assert { a } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_assert"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pexp_lazy { a } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_lazy"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pexp_poly { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_poly"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) b }
-              ]
-          }
-      | Pexp_object { a } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_object"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pexp_newtype { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_newtype"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
-      | Pexp_pack { a } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_pack"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pexp_open { a; b; c } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_open"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ; { name = "c"; value = Versioned_value.of_ast c }
-              ]
-          }
-      | Pexp_extension { a } ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_extension"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pexp_unreachable ->
-        Versioned_ast.create ~version
-          { kind = "Expression_desc"
-          ; clause = "Pexp_unreachable"
-          ; fields = []
-          }
+      | Pexp_ident { a } -> pexp_ident ~a
+      | Pexp_constant { a } -> pexp_constant ~a
+      | Pexp_let { a; b; c } -> pexp_let ~a ~b ~c
+      | Pexp_function { a } -> pexp_function ~a
+      | Pexp_fun { a; b; c; d } -> pexp_fun ~a ~b ~c ~d
+      | Pexp_apply { a; b } -> pexp_apply ~a ~b
+      | Pexp_match { a; b } -> pexp_match ~a ~b
+      | Pexp_try { a; b } -> pexp_try ~a ~b
+      | Pexp_tuple { a } -> pexp_tuple ~a
+      | Pexp_construct { a; b } -> pexp_construct ~a ~b
+      | Pexp_variant { a; b } -> pexp_variant ~a ~b
+      | Pexp_record { a; b } -> pexp_record ~a ~b
+      | Pexp_field { a; b } -> pexp_field ~a ~b
+      | Pexp_setfield { a; b; c } -> pexp_setfield ~a ~b ~c
+      | Pexp_array { a } -> pexp_array ~a
+      | Pexp_ifthenelse { a; b; c } -> pexp_ifthenelse ~a ~b ~c
+      | Pexp_sequence { a; b } -> pexp_sequence ~a ~b
+      | Pexp_while { a; b } -> pexp_while ~a ~b
+      | Pexp_for { a; b; c; d; e } -> pexp_for ~a ~b ~c ~d ~e
+      | Pexp_constraint { a; b } -> pexp_constraint ~a ~b
+      | Pexp_coerce { a; b; c } -> pexp_coerce ~a ~b ~c
+      | Pexp_send { a; b } -> pexp_send ~a ~b
+      | Pexp_new { a } -> pexp_new ~a
+      | Pexp_setinstvar { a; b } -> pexp_setinstvar ~a ~b
+      | Pexp_override { a } -> pexp_override ~a
+      | Pexp_letmodule { a; b; c } -> pexp_letmodule ~a ~b ~c
+      | Pexp_letexception { a; b } -> pexp_letexception ~a ~b
+      | Pexp_assert { a } -> pexp_assert ~a
+      | Pexp_lazy { a } -> pexp_lazy ~a
+      | Pexp_poly { a; b } -> pexp_poly ~a ~b
+      | Pexp_object { a } -> pexp_object ~a
+      | Pexp_newtype { a; b } -> pexp_newtype ~a ~b
+      | Pexp_pack { a } -> pexp_pack ~a
+      | Pexp_open { a; b; c } -> pexp_open ~a ~b ~c
+      | Pexp_extension { a } -> pexp_extension ~a
+      | Pexp_unreachable -> pexp_unreachable
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -2674,16 +2818,18 @@ module V4_07 = struct
         | Override_expression of { a : Versioned_ast.t; b : Versioned_ast.t }
     end
 
+    let override_expression ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Override_expression"
+        ; clause = "Override_expression"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Override_expression { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Override_expression"
-          ; clause = "Override_expression"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
+      | Override_expression { a; b } -> override_expression ~a ~b
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -2711,16 +2857,18 @@ module V4_07 = struct
         | Record_field_expression of { a : Versioned_ast.t; b : Versioned_ast.t }
     end
 
+    let record_field_expression ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Record_field_expression"
+        ; clause = "Record_field_expression"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Record_field_expression { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Record_field_expression"
-          ; clause = "Record_field_expression"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
+      | Record_field_expression { a; b } -> record_field_expression ~a ~b
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -2748,16 +2896,18 @@ module V4_07 = struct
         | Apply_arg of { a : Versioned_ast.t; b : Versioned_ast.t }
     end
 
+    let apply_arg ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Apply_arg"
+        ; clause = "Apply_arg"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Apply_arg { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Apply_arg"
-          ; clause = "Apply_arg"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
+      | Apply_arg { a; b } -> apply_arg ~a ~b
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -2785,17 +2935,19 @@ module V4_07 = struct
         | Case of { pc_lhs : Versioned_ast.t; pc_guard : Versioned_ast.t option; pc_rhs : Versioned_ast.t }
     end
 
+    let case ~pc_lhs ~pc_guard ~pc_rhs =
+      Versioned_ast.create ~version
+        { kind = "Case"
+        ; clause = "Case"
+        ; fields =
+            [ { name = "pc_lhs"; value = Versioned_value.of_ast pc_lhs }
+            ; { name = "pc_guard"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) pc_guard }
+            ; { name = "pc_rhs"; value = Versioned_value.of_ast pc_rhs }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Case { pc_lhs; pc_guard; pc_rhs } ->
-        Versioned_ast.create ~version
-          { kind = "Case"
-          ; clause = "Case"
-          ; fields =
-              [ { name = "pc_lhs"; value = Versioned_value.of_ast pc_lhs }
-              ; { name = "pc_guard"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) pc_guard }
-              ; { name = "pc_rhs"; value = Versioned_value.of_ast pc_rhs }
-              ]
-          }
+      | Case { pc_lhs; pc_guard; pc_rhs } -> case ~pc_lhs ~pc_guard ~pc_rhs
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -2825,19 +2977,21 @@ module V4_07 = struct
         | Value_description of { pval_name : Versioned_ast.t; pval_type : Versioned_ast.t; pval_prim : string list; pval_attributes : Versioned_ast.t; pval_loc : Location.t }
     end
 
+    let value_description ~pval_name ~pval_type ~pval_prim ~pval_attributes ~pval_loc =
+      Versioned_ast.create ~version
+        { kind = "Value_description"
+        ; clause = "Value_description"
+        ; fields =
+            [ { name = "pval_name"; value = Versioned_value.of_ast pval_name }
+            ; { name = "pval_type"; value = Versioned_value.of_ast pval_type }
+            ; { name = "pval_prim"; value = (Versioned_value.of_list ~f:Versioned_value.of_string) pval_prim }
+            ; { name = "pval_attributes"; value = Versioned_value.of_ast pval_attributes }
+            ; { name = "pval_loc"; value = Versioned_value.of_location pval_loc }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Value_description { pval_name; pval_type; pval_prim; pval_attributes; pval_loc } ->
-        Versioned_ast.create ~version
-          { kind = "Value_description"
-          ; clause = "Value_description"
-          ; fields =
-              [ { name = "pval_name"; value = Versioned_value.of_ast pval_name }
-              ; { name = "pval_type"; value = Versioned_value.of_ast pval_type }
-              ; { name = "pval_prim"; value = (Versioned_value.of_list ~f:Versioned_value.of_string) pval_prim }
-              ; { name = "pval_attributes"; value = Versioned_value.of_ast pval_attributes }
-              ; { name = "pval_loc"; value = Versioned_value.of_location pval_loc }
-              ]
-          }
+      | Value_description { pval_name; pval_type; pval_prim; pval_attributes; pval_loc } -> value_description ~pval_name ~pval_type ~pval_prim ~pval_attributes ~pval_loc
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -2871,22 +3025,24 @@ module V4_07 = struct
         | Type_declaration of { ptype_name : Versioned_ast.t; ptype_params : Versioned_ast.t list; ptype_cstrs : Versioned_ast.t list; ptype_kind : Versioned_ast.t; ptype_private : Versioned_ast.t; ptype_manifest : Versioned_ast.t option; ptype_attributes : Versioned_ast.t; ptype_loc : Location.t }
     end
 
+    let type_declaration ~ptype_name ~ptype_params ~ptype_cstrs ~ptype_kind ~ptype_private ~ptype_manifest ~ptype_attributes ~ptype_loc =
+      Versioned_ast.create ~version
+        { kind = "Type_declaration"
+        ; clause = "Type_declaration"
+        ; fields =
+            [ { name = "ptype_name"; value = Versioned_value.of_ast ptype_name }
+            ; { name = "ptype_params"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) ptype_params }
+            ; { name = "ptype_cstrs"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) ptype_cstrs }
+            ; { name = "ptype_kind"; value = Versioned_value.of_ast ptype_kind }
+            ; { name = "ptype_private"; value = Versioned_value.of_ast ptype_private }
+            ; { name = "ptype_manifest"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) ptype_manifest }
+            ; { name = "ptype_attributes"; value = Versioned_value.of_ast ptype_attributes }
+            ; { name = "ptype_loc"; value = Versioned_value.of_location ptype_loc }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Type_declaration { ptype_name; ptype_params; ptype_cstrs; ptype_kind; ptype_private; ptype_manifest; ptype_attributes; ptype_loc } ->
-        Versioned_ast.create ~version
-          { kind = "Type_declaration"
-          ; clause = "Type_declaration"
-          ; fields =
-              [ { name = "ptype_name"; value = Versioned_value.of_ast ptype_name }
-              ; { name = "ptype_params"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) ptype_params }
-              ; { name = "ptype_cstrs"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) ptype_cstrs }
-              ; { name = "ptype_kind"; value = Versioned_value.of_ast ptype_kind }
-              ; { name = "ptype_private"; value = Versioned_value.of_ast ptype_private }
-              ; { name = "ptype_manifest"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) ptype_manifest }
-              ; { name = "ptype_attributes"; value = Versioned_value.of_ast ptype_attributes }
-              ; { name = "ptype_loc"; value = Versioned_value.of_location ptype_loc }
-              ]
-          }
+      | Type_declaration { ptype_name; ptype_params; ptype_cstrs; ptype_kind; ptype_private; ptype_manifest; ptype_attributes; ptype_loc } -> type_declaration ~ptype_name ~ptype_params ~ptype_cstrs ~ptype_kind ~ptype_private ~ptype_manifest ~ptype_attributes ~ptype_loc
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -2926,16 +3082,18 @@ module V4_07 = struct
         | Type_param of { a : Versioned_ast.t; b : Versioned_ast.t }
     end
 
+    let type_param ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Type_param"
+        ; clause = "Type_param"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Type_param { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Type_param"
-          ; clause = "Type_param"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
+      | Type_param { a; b } -> type_param ~a ~b
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -2963,17 +3121,19 @@ module V4_07 = struct
         | Type_constraint of { a : Versioned_ast.t; b : Versioned_ast.t; c : Location.t }
     end
 
+    let type_constraint ~a ~b ~c =
+      Versioned_ast.create ~version
+        { kind = "Type_constraint"
+        ; clause = "Type_constraint"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ; { name = "c"; value = Versioned_value.of_location c }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Type_constraint { a; b; c } ->
-        Versioned_ast.create ~version
-          { kind = "Type_constraint"
-          ; clause = "Type_constraint"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ; { name = "c"; value = Versioned_value.of_location c }
-              ]
-          }
+      | Type_constraint { a; b; c } -> type_constraint ~a ~b ~c
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -3006,35 +3166,40 @@ module V4_07 = struct
         | Ptype_open
     end
 
+    let ptype_abstract =
+      Versioned_ast.create ~version
+        { kind = "Type_kind"
+        ; clause = "Ptype_abstract"
+        ; fields = []
+        }
+    let ptype_variant ~a =
+      Versioned_ast.create ~version
+        { kind = "Type_kind"
+        ; clause = "Ptype_variant"
+        ; fields =
+            [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
+            ]
+        }
+    let ptype_record ~a =
+      Versioned_ast.create ~version
+        { kind = "Type_kind"
+        ; clause = "Ptype_record"
+        ; fields =
+            [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
+            ]
+        }
+    let ptype_open =
+      Versioned_ast.create ~version
+        { kind = "Type_kind"
+        ; clause = "Ptype_open"
+        ; fields = []
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Ptype_abstract ->
-        Versioned_ast.create ~version
-          { kind = "Type_kind"
-          ; clause = "Ptype_abstract"
-          ; fields = []
-          }
-      | Ptype_variant { a } ->
-        Versioned_ast.create ~version
-          { kind = "Type_kind"
-          ; clause = "Ptype_variant"
-          ; fields =
-              [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
-              ]
-          }
-      | Ptype_record { a } ->
-        Versioned_ast.create ~version
-          { kind = "Type_kind"
-          ; clause = "Ptype_record"
-          ; fields =
-              [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
-              ]
-          }
-      | Ptype_open ->
-        Versioned_ast.create ~version
-          { kind = "Type_kind"
-          ; clause = "Ptype_open"
-          ; fields = []
-          }
+      | Ptype_abstract -> ptype_abstract
+      | Ptype_variant { a } -> ptype_variant ~a
+      | Ptype_record { a } -> ptype_record ~a
+      | Ptype_open -> ptype_open
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -3078,19 +3243,21 @@ module V4_07 = struct
         | Label_declaration of { pld_name : Versioned_ast.t; pld_mutable : Versioned_ast.t; pld_type : Versioned_ast.t; pld_loc : Location.t; pld_attributes : Versioned_ast.t }
     end
 
+    let label_declaration ~pld_name ~pld_mutable ~pld_type ~pld_loc ~pld_attributes =
+      Versioned_ast.create ~version
+        { kind = "Label_declaration"
+        ; clause = "Label_declaration"
+        ; fields =
+            [ { name = "pld_name"; value = Versioned_value.of_ast pld_name }
+            ; { name = "pld_mutable"; value = Versioned_value.of_ast pld_mutable }
+            ; { name = "pld_type"; value = Versioned_value.of_ast pld_type }
+            ; { name = "pld_loc"; value = Versioned_value.of_location pld_loc }
+            ; { name = "pld_attributes"; value = Versioned_value.of_ast pld_attributes }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Label_declaration { pld_name; pld_mutable; pld_type; pld_loc; pld_attributes } ->
-        Versioned_ast.create ~version
-          { kind = "Label_declaration"
-          ; clause = "Label_declaration"
-          ; fields =
-              [ { name = "pld_name"; value = Versioned_value.of_ast pld_name }
-              ; { name = "pld_mutable"; value = Versioned_value.of_ast pld_mutable }
-              ; { name = "pld_type"; value = Versioned_value.of_ast pld_type }
-              ; { name = "pld_loc"; value = Versioned_value.of_location pld_loc }
-              ; { name = "pld_attributes"; value = Versioned_value.of_ast pld_attributes }
-              ]
-          }
+      | Label_declaration { pld_name; pld_mutable; pld_type; pld_loc; pld_attributes } -> label_declaration ~pld_name ~pld_mutable ~pld_type ~pld_loc ~pld_attributes
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -3124,19 +3291,21 @@ module V4_07 = struct
         | Constructor_declaration of { pcd_name : Versioned_ast.t; pcd_args : Versioned_ast.t; pcd_res : Versioned_ast.t option; pcd_loc : Location.t; pcd_attributes : Versioned_ast.t }
     end
 
+    let constructor_declaration ~pcd_name ~pcd_args ~pcd_res ~pcd_loc ~pcd_attributes =
+      Versioned_ast.create ~version
+        { kind = "Constructor_declaration"
+        ; clause = "Constructor_declaration"
+        ; fields =
+            [ { name = "pcd_name"; value = Versioned_value.of_ast pcd_name }
+            ; { name = "pcd_args"; value = Versioned_value.of_ast pcd_args }
+            ; { name = "pcd_res"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) pcd_res }
+            ; { name = "pcd_loc"; value = Versioned_value.of_location pcd_loc }
+            ; { name = "pcd_attributes"; value = Versioned_value.of_ast pcd_attributes }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Constructor_declaration { pcd_name; pcd_args; pcd_res; pcd_loc; pcd_attributes } ->
-        Versioned_ast.create ~version
-          { kind = "Constructor_declaration"
-          ; clause = "Constructor_declaration"
-          ; fields =
-              [ { name = "pcd_name"; value = Versioned_value.of_ast pcd_name }
-              ; { name = "pcd_args"; value = Versioned_value.of_ast pcd_args }
-              ; { name = "pcd_res"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) pcd_res }
-              ; { name = "pcd_loc"; value = Versioned_value.of_location pcd_loc }
-              ; { name = "pcd_attributes"; value = Versioned_value.of_ast pcd_attributes }
-              ]
-          }
+      | Constructor_declaration { pcd_name; pcd_args; pcd_res; pcd_loc; pcd_attributes } -> constructor_declaration ~pcd_name ~pcd_args ~pcd_res ~pcd_loc ~pcd_attributes
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -3171,23 +3340,26 @@ module V4_07 = struct
         | Pcstr_record of { a : Versioned_ast.t list }
     end
 
+    let pcstr_tuple ~a =
+      Versioned_ast.create ~version
+        { kind = "Constructor_arguments"
+        ; clause = "Pcstr_tuple"
+        ; fields =
+            [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
+            ]
+        }
+    let pcstr_record ~a =
+      Versioned_ast.create ~version
+        { kind = "Constructor_arguments"
+        ; clause = "Pcstr_record"
+        ; fields =
+            [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Pcstr_tuple { a } ->
-        Versioned_ast.create ~version
-          { kind = "Constructor_arguments"
-          ; clause = "Pcstr_tuple"
-          ; fields =
-              [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
-              ]
-          }
-      | Pcstr_record { a } ->
-        Versioned_ast.create ~version
-          { kind = "Constructor_arguments"
-          ; clause = "Pcstr_record"
-          ; fields =
-              [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
-              ]
-          }
+      | Pcstr_tuple { a } -> pcstr_tuple ~a
+      | Pcstr_record { a } -> pcstr_record ~a
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -3221,19 +3393,21 @@ module V4_07 = struct
         | Type_extension of { ptyext_path : Versioned_ast.t; ptyext_params : Versioned_ast.t list; ptyext_constructors : Versioned_ast.t list; ptyext_private : Versioned_ast.t; ptyext_attributes : Versioned_ast.t }
     end
 
+    let type_extension ~ptyext_path ~ptyext_params ~ptyext_constructors ~ptyext_private ~ptyext_attributes =
+      Versioned_ast.create ~version
+        { kind = "Type_extension"
+        ; clause = "Type_extension"
+        ; fields =
+            [ { name = "ptyext_path"; value = Versioned_value.of_ast ptyext_path }
+            ; { name = "ptyext_params"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) ptyext_params }
+            ; { name = "ptyext_constructors"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) ptyext_constructors }
+            ; { name = "ptyext_private"; value = Versioned_value.of_ast ptyext_private }
+            ; { name = "ptyext_attributes"; value = Versioned_value.of_ast ptyext_attributes }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Type_extension { ptyext_path; ptyext_params; ptyext_constructors; ptyext_private; ptyext_attributes } ->
-        Versioned_ast.create ~version
-          { kind = "Type_extension"
-          ; clause = "Type_extension"
-          ; fields =
-              [ { name = "ptyext_path"; value = Versioned_value.of_ast ptyext_path }
-              ; { name = "ptyext_params"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) ptyext_params }
-              ; { name = "ptyext_constructors"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) ptyext_constructors }
-              ; { name = "ptyext_private"; value = Versioned_value.of_ast ptyext_private }
-              ; { name = "ptyext_attributes"; value = Versioned_value.of_ast ptyext_attributes }
-              ]
-          }
+      | Type_extension { ptyext_path; ptyext_params; ptyext_constructors; ptyext_private; ptyext_attributes } -> type_extension ~ptyext_path ~ptyext_params ~ptyext_constructors ~ptyext_private ~ptyext_attributes
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -3267,18 +3441,20 @@ module V4_07 = struct
         | Extension_constructor of { pext_name : Versioned_ast.t; pext_kind : Versioned_ast.t; pext_loc : Location.t; pext_attributes : Versioned_ast.t }
     end
 
+    let extension_constructor ~pext_name ~pext_kind ~pext_loc ~pext_attributes =
+      Versioned_ast.create ~version
+        { kind = "Extension_constructor"
+        ; clause = "Extension_constructor"
+        ; fields =
+            [ { name = "pext_name"; value = Versioned_value.of_ast pext_name }
+            ; { name = "pext_kind"; value = Versioned_value.of_ast pext_kind }
+            ; { name = "pext_loc"; value = Versioned_value.of_location pext_loc }
+            ; { name = "pext_attributes"; value = Versioned_value.of_ast pext_attributes }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Extension_constructor { pext_name; pext_kind; pext_loc; pext_attributes } ->
-        Versioned_ast.create ~version
-          { kind = "Extension_constructor"
-          ; clause = "Extension_constructor"
-          ; fields =
-              [ { name = "pext_name"; value = Versioned_value.of_ast pext_name }
-              ; { name = "pext_kind"; value = Versioned_value.of_ast pext_kind }
-              ; { name = "pext_loc"; value = Versioned_value.of_location pext_loc }
-              ; { name = "pext_attributes"; value = Versioned_value.of_ast pext_attributes }
-              ]
-          }
+      | Extension_constructor { pext_name; pext_kind; pext_loc; pext_attributes } -> extension_constructor ~pext_name ~pext_kind ~pext_loc ~pext_attributes
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -3311,24 +3487,27 @@ module V4_07 = struct
         | Pext_rebind of { a : Versioned_ast.t }
     end
 
+    let pext_decl ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Extension_constructor_kind"
+        ; clause = "Pext_decl"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) b }
+            ]
+        }
+    let pext_rebind ~a =
+      Versioned_ast.create ~version
+        { kind = "Extension_constructor_kind"
+        ; clause = "Pext_rebind"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Pext_decl { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Extension_constructor_kind"
-          ; clause = "Pext_decl"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) b }
-              ]
-          }
-      | Pext_rebind { a } ->
-        Versioned_ast.create ~version
-          { kind = "Extension_constructor_kind"
-          ; clause = "Pext_rebind"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
+      | Pext_decl { a; b } -> pext_decl ~a ~b
+      | Pext_rebind { a } -> pext_rebind ~a
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -3364,17 +3543,19 @@ module V4_07 = struct
         | Class_type of { pcty_desc : Versioned_ast.t; pcty_loc : Location.t; pcty_attributes : Versioned_ast.t }
     end
 
+    let class_type ~pcty_desc ~pcty_loc ~pcty_attributes =
+      Versioned_ast.create ~version
+        { kind = "Class_type"
+        ; clause = "Class_type"
+        ; fields =
+            [ { name = "pcty_desc"; value = Versioned_value.of_ast pcty_desc }
+            ; { name = "pcty_loc"; value = Versioned_value.of_location pcty_loc }
+            ; { name = "pcty_attributes"; value = Versioned_value.of_ast pcty_attributes }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Class_type { pcty_desc; pcty_loc; pcty_attributes } ->
-        Versioned_ast.create ~version
-          { kind = "Class_type"
-          ; clause = "Class_type"
-          ; fields =
-              [ { name = "pcty_desc"; value = Versioned_value.of_ast pcty_desc }
-              ; { name = "pcty_loc"; value = Versioned_value.of_location pcty_loc }
-              ; { name = "pcty_attributes"; value = Versioned_value.of_ast pcty_attributes }
-              ]
-          }
+      | Class_type { pcty_desc; pcty_loc; pcty_attributes } -> class_type ~pcty_desc ~pcty_loc ~pcty_attributes
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -3408,52 +3589,58 @@ module V4_07 = struct
         | Pcty_open of { a : Versioned_ast.t; b : Versioned_ast.t; c : Versioned_ast.t }
     end
 
+    let pcty_constr ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Class_type_desc"
+        ; clause = "Pcty_constr"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
+            ]
+        }
+    let pcty_signature ~a =
+      Versioned_ast.create ~version
+        { kind = "Class_type_desc"
+        ; clause = "Pcty_signature"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pcty_arrow ~a ~b ~c =
+      Versioned_ast.create ~version
+        { kind = "Class_type_desc"
+        ; clause = "Pcty_arrow"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ; { name = "c"; value = Versioned_value.of_ast c }
+            ]
+        }
+    let pcty_extension ~a =
+      Versioned_ast.create ~version
+        { kind = "Class_type_desc"
+        ; clause = "Pcty_extension"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pcty_open ~a ~b ~c =
+      Versioned_ast.create ~version
+        { kind = "Class_type_desc"
+        ; clause = "Pcty_open"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ; { name = "c"; value = Versioned_value.of_ast c }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Pcty_constr { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Class_type_desc"
-          ; clause = "Pcty_constr"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
-              ]
-          }
-      | Pcty_signature { a } ->
-        Versioned_ast.create ~version
-          { kind = "Class_type_desc"
-          ; clause = "Pcty_signature"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pcty_arrow { a; b; c } ->
-        Versioned_ast.create ~version
-          { kind = "Class_type_desc"
-          ; clause = "Pcty_arrow"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ; { name = "c"; value = Versioned_value.of_ast c }
-              ]
-          }
-      | Pcty_extension { a } ->
-        Versioned_ast.create ~version
-          { kind = "Class_type_desc"
-          ; clause = "Pcty_extension"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pcty_open { a; b; c } ->
-        Versioned_ast.create ~version
-          { kind = "Class_type_desc"
-          ; clause = "Pcty_open"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ; { name = "c"; value = Versioned_value.of_ast c }
-              ]
-          }
+      | Pcty_constr { a; b } -> pcty_constr ~a ~b
+      | Pcty_signature { a } -> pcty_signature ~a
+      | Pcty_arrow { a; b; c } -> pcty_arrow ~a ~b ~c
+      | Pcty_extension { a } -> pcty_extension ~a
+      | Pcty_open { a; b; c } -> pcty_open ~a ~b ~c
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -3521,16 +3708,18 @@ module V4_07 = struct
         | Class_signature of { pcsig_self : Versioned_ast.t; pcsig_fields : Versioned_ast.t list }
     end
 
+    let class_signature ~pcsig_self ~pcsig_fields =
+      Versioned_ast.create ~version
+        { kind = "Class_signature"
+        ; clause = "Class_signature"
+        ; fields =
+            [ { name = "pcsig_self"; value = Versioned_value.of_ast pcsig_self }
+            ; { name = "pcsig_fields"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) pcsig_fields }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Class_signature { pcsig_self; pcsig_fields } ->
-        Versioned_ast.create ~version
-          { kind = "Class_signature"
-          ; clause = "Class_signature"
-          ; fields =
-              [ { name = "pcsig_self"; value = Versioned_value.of_ast pcsig_self }
-              ; { name = "pcsig_fields"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) pcsig_fields }
-              ]
-          }
+      | Class_signature { pcsig_self; pcsig_fields } -> class_signature ~pcsig_self ~pcsig_fields
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -3558,17 +3747,19 @@ module V4_07 = struct
         | Class_type_field of { pctf_desc : Versioned_ast.t; pctf_loc : Location.t; pctf_attributes : Versioned_ast.t }
     end
 
+    let class_type_field ~pctf_desc ~pctf_loc ~pctf_attributes =
+      Versioned_ast.create ~version
+        { kind = "Class_type_field"
+        ; clause = "Class_type_field"
+        ; fields =
+            [ { name = "pctf_desc"; value = Versioned_value.of_ast pctf_desc }
+            ; { name = "pctf_loc"; value = Versioned_value.of_location pctf_loc }
+            ; { name = "pctf_attributes"; value = Versioned_value.of_ast pctf_attributes }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Class_type_field { pctf_desc; pctf_loc; pctf_attributes } ->
-        Versioned_ast.create ~version
-          { kind = "Class_type_field"
-          ; clause = "Class_type_field"
-          ; fields =
-              [ { name = "pctf_desc"; value = Versioned_value.of_ast pctf_desc }
-              ; { name = "pctf_loc"; value = Versioned_value.of_location pctf_loc }
-              ; { name = "pctf_attributes"; value = Versioned_value.of_ast pctf_attributes }
-              ]
-          }
+      | Class_type_field { pctf_desc; pctf_loc; pctf_attributes } -> class_type_field ~pctf_desc ~pctf_loc ~pctf_attributes
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -3603,55 +3794,62 @@ module V4_07 = struct
         | Pctf_extension of { a : Versioned_ast.t }
     end
 
+    let pctf_inherit ~a =
+      Versioned_ast.create ~version
+        { kind = "Class_type_field_desc"
+        ; clause = "Pctf_inherit"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pctf_val ~a =
+      Versioned_ast.create ~version
+        { kind = "Class_type_field_desc"
+        ; clause = "Pctf_val"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pctf_method ~a =
+      Versioned_ast.create ~version
+        { kind = "Class_type_field_desc"
+        ; clause = "Pctf_method"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pctf_constraint ~a =
+      Versioned_ast.create ~version
+        { kind = "Class_type_field_desc"
+        ; clause = "Pctf_constraint"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pctf_attribute ~a =
+      Versioned_ast.create ~version
+        { kind = "Class_type_field_desc"
+        ; clause = "Pctf_attribute"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pctf_extension ~a =
+      Versioned_ast.create ~version
+        { kind = "Class_type_field_desc"
+        ; clause = "Pctf_extension"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Pctf_inherit { a } ->
-        Versioned_ast.create ~version
-          { kind = "Class_type_field_desc"
-          ; clause = "Pctf_inherit"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pctf_val { a } ->
-        Versioned_ast.create ~version
-          { kind = "Class_type_field_desc"
-          ; clause = "Pctf_val"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pctf_method { a } ->
-        Versioned_ast.create ~version
-          { kind = "Class_type_field_desc"
-          ; clause = "Pctf_method"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pctf_constraint { a } ->
-        Versioned_ast.create ~version
-          { kind = "Class_type_field_desc"
-          ; clause = "Pctf_constraint"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pctf_attribute { a } ->
-        Versioned_ast.create ~version
-          { kind = "Class_type_field_desc"
-          ; clause = "Pctf_attribute"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pctf_extension { a } ->
-        Versioned_ast.create ~version
-          { kind = "Class_type_field_desc"
-          ; clause = "Pctf_extension"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
+      | Pctf_inherit { a } -> pctf_inherit ~a
+      | Pctf_val { a } -> pctf_val ~a
+      | Pctf_method { a } -> pctf_method ~a
+      | Pctf_constraint { a } -> pctf_constraint ~a
+      | Pctf_attribute { a } -> pctf_attribute ~a
+      | Pctf_extension { a } -> pctf_extension ~a
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -3717,18 +3915,20 @@ module V4_07 = struct
         | Class_type_value_desc of { a : Versioned_ast.t; b : Versioned_ast.t; c : Versioned_ast.t; d : Versioned_ast.t }
     end
 
+    let class_type_value_desc ~a ~b ~c ~d =
+      Versioned_ast.create ~version
+        { kind = "Class_type_value_desc"
+        ; clause = "Class_type_value_desc"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ; { name = "c"; value = Versioned_value.of_ast c }
+            ; { name = "d"; value = Versioned_value.of_ast d }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Class_type_value_desc { a; b; c; d } ->
-        Versioned_ast.create ~version
-          { kind = "Class_type_value_desc"
-          ; clause = "Class_type_value_desc"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ; { name = "c"; value = Versioned_value.of_ast c }
-              ; { name = "d"; value = Versioned_value.of_ast d }
-              ]
-          }
+      | Class_type_value_desc { a; b; c; d } -> class_type_value_desc ~a ~b ~c ~d
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -3760,18 +3960,20 @@ module V4_07 = struct
         | Class_type_method_desc of { a : Versioned_ast.t; b : Versioned_ast.t; c : Versioned_ast.t; d : Versioned_ast.t }
     end
 
+    let class_type_method_desc ~a ~b ~c ~d =
+      Versioned_ast.create ~version
+        { kind = "Class_type_method_desc"
+        ; clause = "Class_type_method_desc"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ; { name = "c"; value = Versioned_value.of_ast c }
+            ; { name = "d"; value = Versioned_value.of_ast d }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Class_type_method_desc { a; b; c; d } ->
-        Versioned_ast.create ~version
-          { kind = "Class_type_method_desc"
-          ; clause = "Class_type_method_desc"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ; { name = "c"; value = Versioned_value.of_ast c }
-              ; { name = "d"; value = Versioned_value.of_ast d }
-              ]
-          }
+      | Class_type_method_desc { a; b; c; d } -> class_type_method_desc ~a ~b ~c ~d
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -3803,16 +4005,18 @@ module V4_07 = struct
         | Class_type_constraint of { a : Versioned_ast.t; b : Versioned_ast.t }
     end
 
+    let class_type_constraint ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Class_type_constraint"
+        ; clause = "Class_type_constraint"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Class_type_constraint { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Class_type_constraint"
-          ; clause = "Class_type_constraint"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
+      | Class_type_constraint { a; b } -> class_type_constraint ~a ~b
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -3840,20 +4044,22 @@ module V4_07 = struct
         | Class_description of { pci_virt : Versioned_ast.t; pci_params : Versioned_ast.t list; pci_name : Versioned_ast.t; pci_expr : Versioned_ast.t; pci_loc : Location.t; pci_attributes : Versioned_ast.t }
     end
 
+    let class_description ~pci_virt ~pci_params ~pci_name ~pci_expr ~pci_loc ~pci_attributes =
+      Versioned_ast.create ~version
+        { kind = "Class_description"
+        ; clause = "Class_description"
+        ; fields =
+            [ { name = "pci_virt"; value = Versioned_value.of_ast pci_virt }
+            ; { name = "pci_params"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) pci_params }
+            ; { name = "pci_name"; value = Versioned_value.of_ast pci_name }
+            ; { name = "pci_expr"; value = Versioned_value.of_ast pci_expr }
+            ; { name = "pci_loc"; value = Versioned_value.of_location pci_loc }
+            ; { name = "pci_attributes"; value = Versioned_value.of_ast pci_attributes }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Class_description { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } ->
-        Versioned_ast.create ~version
-          { kind = "Class_description"
-          ; clause = "Class_description"
-          ; fields =
-              [ { name = "pci_virt"; value = Versioned_value.of_ast pci_virt }
-              ; { name = "pci_params"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) pci_params }
-              ; { name = "pci_name"; value = Versioned_value.of_ast pci_name }
-              ; { name = "pci_expr"; value = Versioned_value.of_ast pci_expr }
-              ; { name = "pci_loc"; value = Versioned_value.of_location pci_loc }
-              ; { name = "pci_attributes"; value = Versioned_value.of_ast pci_attributes }
-              ]
-          }
+      | Class_description { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } -> class_description ~pci_virt ~pci_params ~pci_name ~pci_expr ~pci_loc ~pci_attributes
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -3889,20 +4095,22 @@ module V4_07 = struct
         | Class_type_declaration of { pci_virt : Versioned_ast.t; pci_params : Versioned_ast.t list; pci_name : Versioned_ast.t; pci_expr : Versioned_ast.t; pci_loc : Location.t; pci_attributes : Versioned_ast.t }
     end
 
+    let class_type_declaration ~pci_virt ~pci_params ~pci_name ~pci_expr ~pci_loc ~pci_attributes =
+      Versioned_ast.create ~version
+        { kind = "Class_type_declaration"
+        ; clause = "Class_type_declaration"
+        ; fields =
+            [ { name = "pci_virt"; value = Versioned_value.of_ast pci_virt }
+            ; { name = "pci_params"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) pci_params }
+            ; { name = "pci_name"; value = Versioned_value.of_ast pci_name }
+            ; { name = "pci_expr"; value = Versioned_value.of_ast pci_expr }
+            ; { name = "pci_loc"; value = Versioned_value.of_location pci_loc }
+            ; { name = "pci_attributes"; value = Versioned_value.of_ast pci_attributes }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Class_type_declaration { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } ->
-        Versioned_ast.create ~version
-          { kind = "Class_type_declaration"
-          ; clause = "Class_type_declaration"
-          ; fields =
-              [ { name = "pci_virt"; value = Versioned_value.of_ast pci_virt }
-              ; { name = "pci_params"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) pci_params }
-              ; { name = "pci_name"; value = Versioned_value.of_ast pci_name }
-              ; { name = "pci_expr"; value = Versioned_value.of_ast pci_expr }
-              ; { name = "pci_loc"; value = Versioned_value.of_location pci_loc }
-              ; { name = "pci_attributes"; value = Versioned_value.of_ast pci_attributes }
-              ]
-          }
+      | Class_type_declaration { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } -> class_type_declaration ~pci_virt ~pci_params ~pci_name ~pci_expr ~pci_loc ~pci_attributes
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -3938,17 +4146,19 @@ module V4_07 = struct
         | Class_expr of { pcl_desc : Versioned_ast.t; pcl_loc : Location.t; pcl_attributes : Versioned_ast.t }
     end
 
+    let class_expr ~pcl_desc ~pcl_loc ~pcl_attributes =
+      Versioned_ast.create ~version
+        { kind = "Class_expr"
+        ; clause = "Class_expr"
+        ; fields =
+            [ { name = "pcl_desc"; value = Versioned_value.of_ast pcl_desc }
+            ; { name = "pcl_loc"; value = Versioned_value.of_location pcl_loc }
+            ; { name = "pcl_attributes"; value = Versioned_value.of_ast pcl_attributes }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Class_expr { pcl_desc; pcl_loc; pcl_attributes } ->
-        Versioned_ast.create ~version
-          { kind = "Class_expr"
-          ; clause = "Class_expr"
-          ; fields =
-              [ { name = "pcl_desc"; value = Versioned_value.of_ast pcl_desc }
-              ; { name = "pcl_loc"; value = Versioned_value.of_location pcl_loc }
-              ; { name = "pcl_attributes"; value = Versioned_value.of_ast pcl_attributes }
-              ]
-          }
+      | Class_expr { pcl_desc; pcl_loc; pcl_attributes } -> class_expr ~pcl_desc ~pcl_loc ~pcl_attributes
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -3985,81 +4195,90 @@ module V4_07 = struct
         | Pcl_open of { a : Versioned_ast.t; b : Versioned_ast.t; c : Versioned_ast.t }
     end
 
+    let pcl_constr ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Class_expr_desc"
+        ; clause = "Pcl_constr"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
+            ]
+        }
+    let pcl_structure ~a =
+      Versioned_ast.create ~version
+        { kind = "Class_expr_desc"
+        ; clause = "Pcl_structure"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pcl_fun ~a ~b ~c ~d =
+      Versioned_ast.create ~version
+        { kind = "Class_expr_desc"
+        ; clause = "Pcl_fun"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) b }
+            ; { name = "c"; value = Versioned_value.of_ast c }
+            ; { name = "d"; value = Versioned_value.of_ast d }
+            ]
+        }
+    let pcl_apply ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Class_expr_desc"
+        ; clause = "Pcl_apply"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
+            ]
+        }
+    let pcl_let ~a ~b ~c =
+      Versioned_ast.create ~version
+        { kind = "Class_expr_desc"
+        ; clause = "Pcl_let"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
+            ; { name = "c"; value = Versioned_value.of_ast c }
+            ]
+        }
+    let pcl_constraint ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Class_expr_desc"
+        ; clause = "Pcl_constraint"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+    let pcl_extension ~a =
+      Versioned_ast.create ~version
+        { kind = "Class_expr_desc"
+        ; clause = "Pcl_extension"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pcl_open ~a ~b ~c =
+      Versioned_ast.create ~version
+        { kind = "Class_expr_desc"
+        ; clause = "Pcl_open"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ; { name = "c"; value = Versioned_value.of_ast c }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Pcl_constr { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Class_expr_desc"
-          ; clause = "Pcl_constr"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
-              ]
-          }
-      | Pcl_structure { a } ->
-        Versioned_ast.create ~version
-          { kind = "Class_expr_desc"
-          ; clause = "Pcl_structure"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pcl_fun { a; b; c; d } ->
-        Versioned_ast.create ~version
-          { kind = "Class_expr_desc"
-          ; clause = "Pcl_fun"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) b }
-              ; { name = "c"; value = Versioned_value.of_ast c }
-              ; { name = "d"; value = Versioned_value.of_ast d }
-              ]
-          }
-      | Pcl_apply { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Class_expr_desc"
-          ; clause = "Pcl_apply"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
-              ]
-          }
-      | Pcl_let { a; b; c } ->
-        Versioned_ast.create ~version
-          { kind = "Class_expr_desc"
-          ; clause = "Pcl_let"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
-              ; { name = "c"; value = Versioned_value.of_ast c }
-              ]
-          }
-      | Pcl_constraint { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Class_expr_desc"
-          ; clause = "Pcl_constraint"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
-      | Pcl_extension { a } ->
-        Versioned_ast.create ~version
-          { kind = "Class_expr_desc"
-          ; clause = "Pcl_extension"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pcl_open { a; b; c } ->
-        Versioned_ast.create ~version
-          { kind = "Class_expr_desc"
-          ; clause = "Pcl_open"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ; { name = "c"; value = Versioned_value.of_ast c }
-              ]
-          }
+      | Pcl_constr { a; b } -> pcl_constr ~a ~b
+      | Pcl_structure { a } -> pcl_structure ~a
+      | Pcl_fun { a; b; c; d } -> pcl_fun ~a ~b ~c ~d
+      | Pcl_apply { a; b } -> pcl_apply ~a ~b
+      | Pcl_let { a; b; c } -> pcl_let ~a ~b ~c
+      | Pcl_constraint { a; b } -> pcl_constraint ~a ~b
+      | Pcl_extension { a } -> pcl_extension ~a
+      | Pcl_open { a; b; c } -> pcl_open ~a ~b ~c
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -4161,16 +4380,18 @@ module V4_07 = struct
         | Class_structure of { pcstr_self : Versioned_ast.t; pcstr_fields : Versioned_ast.t list }
     end
 
+    let class_structure ~pcstr_self ~pcstr_fields =
+      Versioned_ast.create ~version
+        { kind = "Class_structure"
+        ; clause = "Class_structure"
+        ; fields =
+            [ { name = "pcstr_self"; value = Versioned_value.of_ast pcstr_self }
+            ; { name = "pcstr_fields"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) pcstr_fields }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Class_structure { pcstr_self; pcstr_fields } ->
-        Versioned_ast.create ~version
-          { kind = "Class_structure"
-          ; clause = "Class_structure"
-          ; fields =
-              [ { name = "pcstr_self"; value = Versioned_value.of_ast pcstr_self }
-              ; { name = "pcstr_fields"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) pcstr_fields }
-              ]
-          }
+      | Class_structure { pcstr_self; pcstr_fields } -> class_structure ~pcstr_self ~pcstr_fields
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -4198,17 +4419,19 @@ module V4_07 = struct
         | Class_field of { pcf_desc : Versioned_ast.t; pcf_loc : Location.t; pcf_attributes : Versioned_ast.t }
     end
 
+    let class_field ~pcf_desc ~pcf_loc ~pcf_attributes =
+      Versioned_ast.create ~version
+        { kind = "Class_field"
+        ; clause = "Class_field"
+        ; fields =
+            [ { name = "pcf_desc"; value = Versioned_value.of_ast pcf_desc }
+            ; { name = "pcf_loc"; value = Versioned_value.of_location pcf_loc }
+            ; { name = "pcf_attributes"; value = Versioned_value.of_ast pcf_attributes }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Class_field { pcf_desc; pcf_loc; pcf_attributes } ->
-        Versioned_ast.create ~version
-          { kind = "Class_field"
-          ; clause = "Class_field"
-          ; fields =
-              [ { name = "pcf_desc"; value = Versioned_value.of_ast pcf_desc }
-              ; { name = "pcf_loc"; value = Versioned_value.of_location pcf_loc }
-              ; { name = "pcf_attributes"; value = Versioned_value.of_ast pcf_attributes }
-              ]
-          }
+      | Class_field { pcf_desc; pcf_loc; pcf_attributes } -> class_field ~pcf_desc ~pcf_loc ~pcf_attributes
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -4244,65 +4467,73 @@ module V4_07 = struct
         | Pcf_extension of { a : Versioned_ast.t }
     end
 
+    let pcf_inherit ~a ~b ~c =
+      Versioned_ast.create ~version
+        { kind = "Class_field_desc"
+        ; clause = "Pcf_inherit"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ; { name = "c"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) c }
+            ]
+        }
+    let pcf_val ~a =
+      Versioned_ast.create ~version
+        { kind = "Class_field_desc"
+        ; clause = "Pcf_val"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pcf_method ~a =
+      Versioned_ast.create ~version
+        { kind = "Class_field_desc"
+        ; clause = "Pcf_method"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pcf_constraint ~a =
+      Versioned_ast.create ~version
+        { kind = "Class_field_desc"
+        ; clause = "Pcf_constraint"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pcf_initializer ~a =
+      Versioned_ast.create ~version
+        { kind = "Class_field_desc"
+        ; clause = "Pcf_initializer"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pcf_attribute ~a =
+      Versioned_ast.create ~version
+        { kind = "Class_field_desc"
+        ; clause = "Pcf_attribute"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pcf_extension ~a =
+      Versioned_ast.create ~version
+        { kind = "Class_field_desc"
+        ; clause = "Pcf_extension"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Pcf_inherit { a; b; c } ->
-        Versioned_ast.create ~version
-          { kind = "Class_field_desc"
-          ; clause = "Pcf_inherit"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ; { name = "c"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) c }
-              ]
-          }
-      | Pcf_val { a } ->
-        Versioned_ast.create ~version
-          { kind = "Class_field_desc"
-          ; clause = "Pcf_val"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pcf_method { a } ->
-        Versioned_ast.create ~version
-          { kind = "Class_field_desc"
-          ; clause = "Pcf_method"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pcf_constraint { a } ->
-        Versioned_ast.create ~version
-          { kind = "Class_field_desc"
-          ; clause = "Pcf_constraint"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pcf_initializer { a } ->
-        Versioned_ast.create ~version
-          { kind = "Class_field_desc"
-          ; clause = "Pcf_initializer"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pcf_attribute { a } ->
-        Versioned_ast.create ~version
-          { kind = "Class_field_desc"
-          ; clause = "Pcf_attribute"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pcf_extension { a } ->
-        Versioned_ast.create ~version
-          { kind = "Class_field_desc"
-          ; clause = "Pcf_extension"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
+      | Pcf_inherit { a; b; c } -> pcf_inherit ~a ~b ~c
+      | Pcf_val { a } -> pcf_val ~a
+      | Pcf_method { a } -> pcf_method ~a
+      | Pcf_constraint { a } -> pcf_constraint ~a
+      | Pcf_initializer { a } -> pcf_initializer ~a
+      | Pcf_attribute { a } -> pcf_attribute ~a
+      | Pcf_extension { a } -> pcf_extension ~a
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -4380,17 +4611,19 @@ module V4_07 = struct
         | Class_value_desc of { a : Versioned_ast.t; b : Versioned_ast.t; c : Versioned_ast.t }
     end
 
+    let class_value_desc ~a ~b ~c =
+      Versioned_ast.create ~version
+        { kind = "Class_value_desc"
+        ; clause = "Class_value_desc"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ; { name = "c"; value = Versioned_value.of_ast c }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Class_value_desc { a; b; c } ->
-        Versioned_ast.create ~version
-          { kind = "Class_value_desc"
-          ; clause = "Class_value_desc"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ; { name = "c"; value = Versioned_value.of_ast c }
-              ]
-          }
+      | Class_value_desc { a; b; c } -> class_value_desc ~a ~b ~c
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -4420,17 +4653,19 @@ module V4_07 = struct
         | Class_method_desc of { a : Versioned_ast.t; b : Versioned_ast.t; c : Versioned_ast.t }
     end
 
+    let class_method_desc ~a ~b ~c =
+      Versioned_ast.create ~version
+        { kind = "Class_method_desc"
+        ; clause = "Class_method_desc"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ; { name = "c"; value = Versioned_value.of_ast c }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Class_method_desc { a; b; c } ->
-        Versioned_ast.create ~version
-          { kind = "Class_method_desc"
-          ; clause = "Class_method_desc"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ; { name = "c"; value = Versioned_value.of_ast c }
-              ]
-          }
+      | Class_method_desc { a; b; c } -> class_method_desc ~a ~b ~c
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -4461,24 +4696,27 @@ module V4_07 = struct
         | Cfk_concrete of { a : Versioned_ast.t; b : Versioned_ast.t }
     end
 
+    let cfk_virtual ~a =
+      Versioned_ast.create ~version
+        { kind = "Class_field_kind"
+        ; clause = "Cfk_virtual"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let cfk_concrete ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Class_field_kind"
+        ; clause = "Cfk_concrete"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Cfk_virtual { a } ->
-        Versioned_ast.create ~version
-          { kind = "Class_field_kind"
-          ; clause = "Cfk_virtual"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Cfk_concrete { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Class_field_kind"
-          ; clause = "Cfk_concrete"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
+      | Cfk_virtual { a } -> cfk_virtual ~a
+      | Cfk_concrete { a; b } -> cfk_concrete ~a ~b
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -4514,20 +4752,22 @@ module V4_07 = struct
         | Class_declaration of { pci_virt : Versioned_ast.t; pci_params : Versioned_ast.t list; pci_name : Versioned_ast.t; pci_expr : Versioned_ast.t; pci_loc : Location.t; pci_attributes : Versioned_ast.t }
     end
 
+    let class_declaration ~pci_virt ~pci_params ~pci_name ~pci_expr ~pci_loc ~pci_attributes =
+      Versioned_ast.create ~version
+        { kind = "Class_declaration"
+        ; clause = "Class_declaration"
+        ; fields =
+            [ { name = "pci_virt"; value = Versioned_value.of_ast pci_virt }
+            ; { name = "pci_params"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) pci_params }
+            ; { name = "pci_name"; value = Versioned_value.of_ast pci_name }
+            ; { name = "pci_expr"; value = Versioned_value.of_ast pci_expr }
+            ; { name = "pci_loc"; value = Versioned_value.of_location pci_loc }
+            ; { name = "pci_attributes"; value = Versioned_value.of_ast pci_attributes }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Class_declaration { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } ->
-        Versioned_ast.create ~version
-          { kind = "Class_declaration"
-          ; clause = "Class_declaration"
-          ; fields =
-              [ { name = "pci_virt"; value = Versioned_value.of_ast pci_virt }
-              ; { name = "pci_params"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) pci_params }
-              ; { name = "pci_name"; value = Versioned_value.of_ast pci_name }
-              ; { name = "pci_expr"; value = Versioned_value.of_ast pci_expr }
-              ; { name = "pci_loc"; value = Versioned_value.of_location pci_loc }
-              ; { name = "pci_attributes"; value = Versioned_value.of_ast pci_attributes }
-              ]
-          }
+      | Class_declaration { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } -> class_declaration ~pci_virt ~pci_params ~pci_name ~pci_expr ~pci_loc ~pci_attributes
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -4563,17 +4803,19 @@ module V4_07 = struct
         | Module_type of { pmty_desc : Versioned_ast.t; pmty_loc : Location.t; pmty_attributes : Versioned_ast.t }
     end
 
+    let module_type ~pmty_desc ~pmty_loc ~pmty_attributes =
+      Versioned_ast.create ~version
+        { kind = "Module_type"
+        ; clause = "Module_type"
+        ; fields =
+            [ { name = "pmty_desc"; value = Versioned_value.of_ast pmty_desc }
+            ; { name = "pmty_loc"; value = Versioned_value.of_location pmty_loc }
+            ; { name = "pmty_attributes"; value = Versioned_value.of_ast pmty_attributes }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Module_type { pmty_desc; pmty_loc; pmty_attributes } ->
-        Versioned_ast.create ~version
-          { kind = "Module_type"
-          ; clause = "Module_type"
-          ; fields =
-              [ { name = "pmty_desc"; value = Versioned_value.of_ast pmty_desc }
-              ; { name = "pmty_loc"; value = Versioned_value.of_location pmty_loc }
-              ; { name = "pmty_attributes"; value = Versioned_value.of_ast pmty_attributes }
-              ]
-          }
+      | Module_type { pmty_desc; pmty_loc; pmty_attributes } -> module_type ~pmty_desc ~pmty_loc ~pmty_attributes
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -4609,66 +4851,74 @@ module V4_07 = struct
         | Pmty_alias of { a : Versioned_ast.t }
     end
 
+    let pmty_ident ~a =
+      Versioned_ast.create ~version
+        { kind = "Module_type_desc"
+        ; clause = "Pmty_ident"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pmty_signature ~a =
+      Versioned_ast.create ~version
+        { kind = "Module_type_desc"
+        ; clause = "Pmty_signature"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pmty_functor ~a ~b ~c =
+      Versioned_ast.create ~version
+        { kind = "Module_type_desc"
+        ; clause = "Pmty_functor"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) b }
+            ; { name = "c"; value = Versioned_value.of_ast c }
+            ]
+        }
+    let pmty_with ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Module_type_desc"
+        ; clause = "Pmty_with"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
+            ]
+        }
+    let pmty_typeof ~a =
+      Versioned_ast.create ~version
+        { kind = "Module_type_desc"
+        ; clause = "Pmty_typeof"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pmty_extension ~a =
+      Versioned_ast.create ~version
+        { kind = "Module_type_desc"
+        ; clause = "Pmty_extension"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pmty_alias ~a =
+      Versioned_ast.create ~version
+        { kind = "Module_type_desc"
+        ; clause = "Pmty_alias"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Pmty_ident { a } ->
-        Versioned_ast.create ~version
-          { kind = "Module_type_desc"
-          ; clause = "Pmty_ident"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pmty_signature { a } ->
-        Versioned_ast.create ~version
-          { kind = "Module_type_desc"
-          ; clause = "Pmty_signature"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pmty_functor { a; b; c } ->
-        Versioned_ast.create ~version
-          { kind = "Module_type_desc"
-          ; clause = "Pmty_functor"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) b }
-              ; { name = "c"; value = Versioned_value.of_ast c }
-              ]
-          }
-      | Pmty_with { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Module_type_desc"
-          ; clause = "Pmty_with"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
-              ]
-          }
-      | Pmty_typeof { a } ->
-        Versioned_ast.create ~version
-          { kind = "Module_type_desc"
-          ; clause = "Pmty_typeof"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pmty_extension { a } ->
-        Versioned_ast.create ~version
-          { kind = "Module_type_desc"
-          ; clause = "Pmty_extension"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pmty_alias { a } ->
-        Versioned_ast.create ~version
-          { kind = "Module_type_desc"
-          ; clause = "Pmty_alias"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
+      | Pmty_ident { a } -> pmty_ident ~a
+      | Pmty_signature { a } -> pmty_signature ~a
+      | Pmty_functor { a; b; c } -> pmty_functor ~a ~b ~c
+      | Pmty_with { a; b } -> pmty_with ~a ~b
+      | Pmty_typeof { a } -> pmty_typeof ~a
+      | Pmty_extension { a } -> pmty_extension ~a
+      | Pmty_alias { a } -> pmty_alias ~a
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -4748,15 +4998,17 @@ module V4_07 = struct
         | Signature of { a : Versioned_ast.t list }
     end
 
+    let signature ~a =
+      Versioned_ast.create ~version
+        { kind = "Signature"
+        ; clause = "Signature"
+        ; fields =
+            [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Signature { a } ->
-        Versioned_ast.create ~version
-          { kind = "Signature"
-          ; clause = "Signature"
-          ; fields =
-              [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
-              ]
-          }
+      | Signature { a } -> signature ~a
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -4782,16 +5034,18 @@ module V4_07 = struct
         | Signature_item of { psig_desc : Versioned_ast.t; psig_loc : Location.t }
     end
 
+    let signature_item ~psig_desc ~psig_loc =
+      Versioned_ast.create ~version
+        { kind = "Signature_item"
+        ; clause = "Signature_item"
+        ; fields =
+            [ { name = "psig_desc"; value = Versioned_value.of_ast psig_desc }
+            ; { name = "psig_loc"; value = Versioned_value.of_location psig_loc }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Signature_item { psig_desc; psig_loc } ->
-        Versioned_ast.create ~version
-          { kind = "Signature_item"
-          ; clause = "Signature_item"
-          ; fields =
-              [ { name = "psig_desc"; value = Versioned_value.of_ast psig_desc }
-              ; { name = "psig_loc"; value = Versioned_value.of_location psig_loc }
-              ]
-          }
+      | Signature_item { psig_desc; psig_loc } -> signature_item ~psig_desc ~psig_loc
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -4831,113 +5085,127 @@ module V4_07 = struct
         | Psig_extension of { a : Versioned_ast.t; b : Versioned_ast.t }
     end
 
+    let psig_value ~a =
+      Versioned_ast.create ~version
+        { kind = "Signature_item_desc"
+        ; clause = "Psig_value"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let psig_type ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Signature_item_desc"
+        ; clause = "Psig_type"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
+            ]
+        }
+    let psig_typext ~a =
+      Versioned_ast.create ~version
+        { kind = "Signature_item_desc"
+        ; clause = "Psig_typext"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let psig_exception ~a =
+      Versioned_ast.create ~version
+        { kind = "Signature_item_desc"
+        ; clause = "Psig_exception"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let psig_module ~a =
+      Versioned_ast.create ~version
+        { kind = "Signature_item_desc"
+        ; clause = "Psig_module"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let psig_recmodule ~a =
+      Versioned_ast.create ~version
+        { kind = "Signature_item_desc"
+        ; clause = "Psig_recmodule"
+        ; fields =
+            [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
+            ]
+        }
+    let psig_modtype ~a =
+      Versioned_ast.create ~version
+        { kind = "Signature_item_desc"
+        ; clause = "Psig_modtype"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let psig_open ~a =
+      Versioned_ast.create ~version
+        { kind = "Signature_item_desc"
+        ; clause = "Psig_open"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let psig_include ~a =
+      Versioned_ast.create ~version
+        { kind = "Signature_item_desc"
+        ; clause = "Psig_include"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let psig_class ~a =
+      Versioned_ast.create ~version
+        { kind = "Signature_item_desc"
+        ; clause = "Psig_class"
+        ; fields =
+            [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
+            ]
+        }
+    let psig_class_type ~a =
+      Versioned_ast.create ~version
+        { kind = "Signature_item_desc"
+        ; clause = "Psig_class_type"
+        ; fields =
+            [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
+            ]
+        }
+    let psig_attribute ~a =
+      Versioned_ast.create ~version
+        { kind = "Signature_item_desc"
+        ; clause = "Psig_attribute"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let psig_extension ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Signature_item_desc"
+        ; clause = "Psig_extension"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Psig_value { a } ->
-        Versioned_ast.create ~version
-          { kind = "Signature_item_desc"
-          ; clause = "Psig_value"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Psig_type { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Signature_item_desc"
-          ; clause = "Psig_type"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
-              ]
-          }
-      | Psig_typext { a } ->
-        Versioned_ast.create ~version
-          { kind = "Signature_item_desc"
-          ; clause = "Psig_typext"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Psig_exception { a } ->
-        Versioned_ast.create ~version
-          { kind = "Signature_item_desc"
-          ; clause = "Psig_exception"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Psig_module { a } ->
-        Versioned_ast.create ~version
-          { kind = "Signature_item_desc"
-          ; clause = "Psig_module"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Psig_recmodule { a } ->
-        Versioned_ast.create ~version
-          { kind = "Signature_item_desc"
-          ; clause = "Psig_recmodule"
-          ; fields =
-              [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
-              ]
-          }
-      | Psig_modtype { a } ->
-        Versioned_ast.create ~version
-          { kind = "Signature_item_desc"
-          ; clause = "Psig_modtype"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Psig_open { a } ->
-        Versioned_ast.create ~version
-          { kind = "Signature_item_desc"
-          ; clause = "Psig_open"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Psig_include { a } ->
-        Versioned_ast.create ~version
-          { kind = "Signature_item_desc"
-          ; clause = "Psig_include"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Psig_class { a } ->
-        Versioned_ast.create ~version
-          { kind = "Signature_item_desc"
-          ; clause = "Psig_class"
-          ; fields =
-              [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
-              ]
-          }
-      | Psig_class_type { a } ->
-        Versioned_ast.create ~version
-          { kind = "Signature_item_desc"
-          ; clause = "Psig_class_type"
-          ; fields =
-              [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
-              ]
-          }
-      | Psig_attribute { a } ->
-        Versioned_ast.create ~version
-          { kind = "Signature_item_desc"
-          ; clause = "Psig_attribute"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Psig_extension { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Signature_item_desc"
-          ; clause = "Psig_extension"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
+      | Psig_value { a } -> psig_value ~a
+      | Psig_type { a; b } -> psig_type ~a ~b
+      | Psig_typext { a } -> psig_typext ~a
+      | Psig_exception { a } -> psig_exception ~a
+      | Psig_module { a } -> psig_module ~a
+      | Psig_recmodule { a } -> psig_recmodule ~a
+      | Psig_modtype { a } -> psig_modtype ~a
+      | Psig_open { a } -> psig_open ~a
+      | Psig_include { a } -> psig_include ~a
+      | Psig_class { a } -> psig_class ~a
+      | Psig_class_type { a } -> psig_class_type ~a
+      | Psig_attribute { a } -> psig_attribute ~a
+      | Psig_extension { a; b } -> psig_extension ~a ~b
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -5063,18 +5331,20 @@ module V4_07 = struct
         | Module_declaration of { pmd_name : Versioned_ast.t; pmd_type : Versioned_ast.t; pmd_attributes : Versioned_ast.t; pmd_loc : Location.t }
     end
 
+    let module_declaration ~pmd_name ~pmd_type ~pmd_attributes ~pmd_loc =
+      Versioned_ast.create ~version
+        { kind = "Module_declaration"
+        ; clause = "Module_declaration"
+        ; fields =
+            [ { name = "pmd_name"; value = Versioned_value.of_ast pmd_name }
+            ; { name = "pmd_type"; value = Versioned_value.of_ast pmd_type }
+            ; { name = "pmd_attributes"; value = Versioned_value.of_ast pmd_attributes }
+            ; { name = "pmd_loc"; value = Versioned_value.of_location pmd_loc }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Module_declaration { pmd_name; pmd_type; pmd_attributes; pmd_loc } ->
-        Versioned_ast.create ~version
-          { kind = "Module_declaration"
-          ; clause = "Module_declaration"
-          ; fields =
-              [ { name = "pmd_name"; value = Versioned_value.of_ast pmd_name }
-              ; { name = "pmd_type"; value = Versioned_value.of_ast pmd_type }
-              ; { name = "pmd_attributes"; value = Versioned_value.of_ast pmd_attributes }
-              ; { name = "pmd_loc"; value = Versioned_value.of_location pmd_loc }
-              ]
-          }
+      | Module_declaration { pmd_name; pmd_type; pmd_attributes; pmd_loc } -> module_declaration ~pmd_name ~pmd_type ~pmd_attributes ~pmd_loc
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -5106,18 +5376,20 @@ module V4_07 = struct
         | Module_type_declaration of { pmtd_name : Versioned_ast.t; pmtd_type : Versioned_ast.t option; pmtd_attributes : Versioned_ast.t; pmtd_loc : Location.t }
     end
 
+    let module_type_declaration ~pmtd_name ~pmtd_type ~pmtd_attributes ~pmtd_loc =
+      Versioned_ast.create ~version
+        { kind = "Module_type_declaration"
+        ; clause = "Module_type_declaration"
+        ; fields =
+            [ { name = "pmtd_name"; value = Versioned_value.of_ast pmtd_name }
+            ; { name = "pmtd_type"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) pmtd_type }
+            ; { name = "pmtd_attributes"; value = Versioned_value.of_ast pmtd_attributes }
+            ; { name = "pmtd_loc"; value = Versioned_value.of_location pmtd_loc }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Module_type_declaration { pmtd_name; pmtd_type; pmtd_attributes; pmtd_loc } ->
-        Versioned_ast.create ~version
-          { kind = "Module_type_declaration"
-          ; clause = "Module_type_declaration"
-          ; fields =
-              [ { name = "pmtd_name"; value = Versioned_value.of_ast pmtd_name }
-              ; { name = "pmtd_type"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) pmtd_type }
-              ; { name = "pmtd_attributes"; value = Versioned_value.of_ast pmtd_attributes }
-              ; { name = "pmtd_loc"; value = Versioned_value.of_location pmtd_loc }
-              ]
-          }
+      | Module_type_declaration { pmtd_name; pmtd_type; pmtd_attributes; pmtd_loc } -> module_type_declaration ~pmtd_name ~pmtd_type ~pmtd_attributes ~pmtd_loc
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -5149,18 +5421,20 @@ module V4_07 = struct
         | Open_description of { popen_lid : Versioned_ast.t; popen_override : Versioned_ast.t; popen_loc : Location.t; popen_attributes : Versioned_ast.t }
     end
 
+    let open_description ~popen_lid ~popen_override ~popen_loc ~popen_attributes =
+      Versioned_ast.create ~version
+        { kind = "Open_description"
+        ; clause = "Open_description"
+        ; fields =
+            [ { name = "popen_lid"; value = Versioned_value.of_ast popen_lid }
+            ; { name = "popen_override"; value = Versioned_value.of_ast popen_override }
+            ; { name = "popen_loc"; value = Versioned_value.of_location popen_loc }
+            ; { name = "popen_attributes"; value = Versioned_value.of_ast popen_attributes }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Open_description { popen_lid; popen_override; popen_loc; popen_attributes } ->
-        Versioned_ast.create ~version
-          { kind = "Open_description"
-          ; clause = "Open_description"
-          ; fields =
-              [ { name = "popen_lid"; value = Versioned_value.of_ast popen_lid }
-              ; { name = "popen_override"; value = Versioned_value.of_ast popen_override }
-              ; { name = "popen_loc"; value = Versioned_value.of_location popen_loc }
-              ; { name = "popen_attributes"; value = Versioned_value.of_ast popen_attributes }
-              ]
-          }
+      | Open_description { popen_lid; popen_override; popen_loc; popen_attributes } -> open_description ~popen_lid ~popen_override ~popen_loc ~popen_attributes
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -5192,17 +5466,19 @@ module V4_07 = struct
         | Include_description of { pincl_mod : Versioned_ast.t; pincl_loc : Location.t; pincl_attributes : Versioned_ast.t }
     end
 
+    let include_description ~pincl_mod ~pincl_loc ~pincl_attributes =
+      Versioned_ast.create ~version
+        { kind = "Include_description"
+        ; clause = "Include_description"
+        ; fields =
+            [ { name = "pincl_mod"; value = Versioned_value.of_ast pincl_mod }
+            ; { name = "pincl_loc"; value = Versioned_value.of_location pincl_loc }
+            ; { name = "pincl_attributes"; value = Versioned_value.of_ast pincl_attributes }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Include_description { pincl_mod; pincl_loc; pincl_attributes } ->
-        Versioned_ast.create ~version
-          { kind = "Include_description"
-          ; clause = "Include_description"
-          ; fields =
-              [ { name = "pincl_mod"; value = Versioned_value.of_ast pincl_mod }
-              ; { name = "pincl_loc"; value = Versioned_value.of_location pincl_loc }
-              ; { name = "pincl_attributes"; value = Versioned_value.of_ast pincl_attributes }
-              ]
-          }
+      | Include_description { pincl_mod; pincl_loc; pincl_attributes } -> include_description ~pincl_mod ~pincl_loc ~pincl_attributes
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -5232,17 +5508,19 @@ module V4_07 = struct
         | Include_declaration of { pincl_mod : Versioned_ast.t; pincl_loc : Location.t; pincl_attributes : Versioned_ast.t }
     end
 
+    let include_declaration ~pincl_mod ~pincl_loc ~pincl_attributes =
+      Versioned_ast.create ~version
+        { kind = "Include_declaration"
+        ; clause = "Include_declaration"
+        ; fields =
+            [ { name = "pincl_mod"; value = Versioned_value.of_ast pincl_mod }
+            ; { name = "pincl_loc"; value = Versioned_value.of_location pincl_loc }
+            ; { name = "pincl_attributes"; value = Versioned_value.of_ast pincl_attributes }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Include_declaration { pincl_mod; pincl_loc; pincl_attributes } ->
-        Versioned_ast.create ~version
-          { kind = "Include_declaration"
-          ; clause = "Include_declaration"
-          ; fields =
-              [ { name = "pincl_mod"; value = Versioned_value.of_ast pincl_mod }
-              ; { name = "pincl_loc"; value = Versioned_value.of_location pincl_loc }
-              ; { name = "pincl_attributes"; value = Versioned_value.of_ast pincl_attributes }
-              ]
-          }
+      | Include_declaration { pincl_mod; pincl_loc; pincl_attributes } -> include_declaration ~pincl_mod ~pincl_loc ~pincl_attributes
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -5275,43 +5553,48 @@ module V4_07 = struct
         | Pwith_modsubst of { a : Versioned_ast.t; b : Versioned_ast.t }
     end
 
+    let pwith_type ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "With_constraint"
+        ; clause = "Pwith_type"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+    let pwith_module ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "With_constraint"
+        ; clause = "Pwith_module"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+    let pwith_typesubst ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "With_constraint"
+        ; clause = "Pwith_typesubst"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+    let pwith_modsubst ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "With_constraint"
+        ; clause = "Pwith_modsubst"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Pwith_type { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "With_constraint"
-          ; clause = "Pwith_type"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
-      | Pwith_module { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "With_constraint"
-          ; clause = "Pwith_module"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
-      | Pwith_typesubst { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "With_constraint"
-          ; clause = "Pwith_typesubst"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
-      | Pwith_modsubst { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "With_constraint"
-          ; clause = "Pwith_modsubst"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
+      | Pwith_type { a; b } -> pwith_type ~a ~b
+      | Pwith_module { a; b } -> pwith_module ~a ~b
+      | Pwith_typesubst { a; b } -> pwith_typesubst ~a ~b
+      | Pwith_modsubst { a; b } -> pwith_modsubst ~a ~b
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -5369,17 +5652,19 @@ module V4_07 = struct
         | Module_expr of { pmod_desc : Versioned_ast.t; pmod_loc : Location.t; pmod_attributes : Versioned_ast.t }
     end
 
+    let module_expr ~pmod_desc ~pmod_loc ~pmod_attributes =
+      Versioned_ast.create ~version
+        { kind = "Module_expr"
+        ; clause = "Module_expr"
+        ; fields =
+            [ { name = "pmod_desc"; value = Versioned_value.of_ast pmod_desc }
+            ; { name = "pmod_loc"; value = Versioned_value.of_location pmod_loc }
+            ; { name = "pmod_attributes"; value = Versioned_value.of_ast pmod_attributes }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Module_expr { pmod_desc; pmod_loc; pmod_attributes } ->
-        Versioned_ast.create ~version
-          { kind = "Module_expr"
-          ; clause = "Module_expr"
-          ; fields =
-              [ { name = "pmod_desc"; value = Versioned_value.of_ast pmod_desc }
-              ; { name = "pmod_loc"; value = Versioned_value.of_location pmod_loc }
-              ; { name = "pmod_attributes"; value = Versioned_value.of_ast pmod_attributes }
-              ]
-          }
+      | Module_expr { pmod_desc; pmod_loc; pmod_attributes } -> module_expr ~pmod_desc ~pmod_loc ~pmod_attributes
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -5415,67 +5700,75 @@ module V4_07 = struct
         | Pmod_extension of { a : Versioned_ast.t }
     end
 
+    let pmod_ident ~a =
+      Versioned_ast.create ~version
+        { kind = "Module_expr_desc"
+        ; clause = "Pmod_ident"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pmod_structure ~a =
+      Versioned_ast.create ~version
+        { kind = "Module_expr_desc"
+        ; clause = "Pmod_structure"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pmod_functor ~a ~b ~c =
+      Versioned_ast.create ~version
+        { kind = "Module_expr_desc"
+        ; clause = "Pmod_functor"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) b }
+            ; { name = "c"; value = Versioned_value.of_ast c }
+            ]
+        }
+    let pmod_apply ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Module_expr_desc"
+        ; clause = "Pmod_apply"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+    let pmod_constraint ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Module_expr_desc"
+        ; clause = "Pmod_constraint"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+    let pmod_unpack ~a =
+      Versioned_ast.create ~version
+        { kind = "Module_expr_desc"
+        ; clause = "Pmod_unpack"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pmod_extension ~a =
+      Versioned_ast.create ~version
+        { kind = "Module_expr_desc"
+        ; clause = "Pmod_extension"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Pmod_ident { a } ->
-        Versioned_ast.create ~version
-          { kind = "Module_expr_desc"
-          ; clause = "Pmod_ident"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pmod_structure { a } ->
-        Versioned_ast.create ~version
-          { kind = "Module_expr_desc"
-          ; clause = "Pmod_structure"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pmod_functor { a; b; c } ->
-        Versioned_ast.create ~version
-          { kind = "Module_expr_desc"
-          ; clause = "Pmod_functor"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_ast) b }
-              ; { name = "c"; value = Versioned_value.of_ast c }
-              ]
-          }
-      | Pmod_apply { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Module_expr_desc"
-          ; clause = "Pmod_apply"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
-      | Pmod_constraint { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Module_expr_desc"
-          ; clause = "Pmod_constraint"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
-      | Pmod_unpack { a } ->
-        Versioned_ast.create ~version
-          { kind = "Module_expr_desc"
-          ; clause = "Pmod_unpack"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pmod_extension { a } ->
-        Versioned_ast.create ~version
-          { kind = "Module_expr_desc"
-          ; clause = "Pmod_extension"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
+      | Pmod_ident { a } -> pmod_ident ~a
+      | Pmod_structure { a } -> pmod_structure ~a
+      | Pmod_functor { a; b; c } -> pmod_functor ~a ~b ~c
+      | Pmod_apply { a; b } -> pmod_apply ~a ~b
+      | Pmod_constraint { a; b } -> pmod_constraint ~a ~b
+      | Pmod_unpack { a } -> pmod_unpack ~a
+      | Pmod_extension { a } -> pmod_extension ~a
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -5557,15 +5850,17 @@ module V4_07 = struct
         | Structure of { a : Versioned_ast.t list }
     end
 
+    let structure ~a =
+      Versioned_ast.create ~version
+        { kind = "Structure"
+        ; clause = "Structure"
+        ; fields =
+            [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Structure { a } ->
-        Versioned_ast.create ~version
-          { kind = "Structure"
-          ; clause = "Structure"
-          ; fields =
-              [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
-              ]
-          }
+      | Structure { a } -> structure ~a
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -5591,16 +5886,18 @@ module V4_07 = struct
         | Structure_item of { pstr_desc : Versioned_ast.t; pstr_loc : Location.t }
     end
 
+    let structure_item ~pstr_desc ~pstr_loc =
+      Versioned_ast.create ~version
+        { kind = "Structure_item"
+        ; clause = "Structure_item"
+        ; fields =
+            [ { name = "pstr_desc"; value = Versioned_value.of_ast pstr_desc }
+            ; { name = "pstr_loc"; value = Versioned_value.of_location pstr_loc }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Structure_item { pstr_desc; pstr_loc } ->
-        Versioned_ast.create ~version
-          { kind = "Structure_item"
-          ; clause = "Structure_item"
-          ; fields =
-              [ { name = "pstr_desc"; value = Versioned_value.of_ast pstr_desc }
-              ; { name = "pstr_loc"; value = Versioned_value.of_location pstr_loc }
-              ]
-          }
+      | Structure_item { pstr_desc; pstr_loc } -> structure_item ~pstr_desc ~pstr_loc
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -5642,131 +5939,147 @@ module V4_07 = struct
         | Pstr_extension of { a : Versioned_ast.t; b : Versioned_ast.t }
     end
 
+    let pstr_eval ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Structure_item_desc"
+        ; clause = "Pstr_eval"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+    let pstr_value ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Structure_item_desc"
+        ; clause = "Pstr_value"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
+            ]
+        }
+    let pstr_primitive ~a =
+      Versioned_ast.create ~version
+        { kind = "Structure_item_desc"
+        ; clause = "Pstr_primitive"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pstr_type ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Structure_item_desc"
+        ; clause = "Pstr_type"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
+            ]
+        }
+    let pstr_typext ~a =
+      Versioned_ast.create ~version
+        { kind = "Structure_item_desc"
+        ; clause = "Pstr_typext"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pstr_exception ~a =
+      Versioned_ast.create ~version
+        { kind = "Structure_item_desc"
+        ; clause = "Pstr_exception"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pstr_module ~a =
+      Versioned_ast.create ~version
+        { kind = "Structure_item_desc"
+        ; clause = "Pstr_module"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pstr_recmodule ~a =
+      Versioned_ast.create ~version
+        { kind = "Structure_item_desc"
+        ; clause = "Pstr_recmodule"
+        ; fields =
+            [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
+            ]
+        }
+    let pstr_modtype ~a =
+      Versioned_ast.create ~version
+        { kind = "Structure_item_desc"
+        ; clause = "Pstr_modtype"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pstr_open ~a =
+      Versioned_ast.create ~version
+        { kind = "Structure_item_desc"
+        ; clause = "Pstr_open"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pstr_class ~a =
+      Versioned_ast.create ~version
+        { kind = "Structure_item_desc"
+        ; clause = "Pstr_class"
+        ; fields =
+            [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
+            ]
+        }
+    let pstr_class_type ~a =
+      Versioned_ast.create ~version
+        { kind = "Structure_item_desc"
+        ; clause = "Pstr_class_type"
+        ; fields =
+            [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
+            ]
+        }
+    let pstr_include ~a =
+      Versioned_ast.create ~version
+        { kind = "Structure_item_desc"
+        ; clause = "Pstr_include"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pstr_attribute ~a =
+      Versioned_ast.create ~version
+        { kind = "Structure_item_desc"
+        ; clause = "Pstr_attribute"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pstr_extension ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Structure_item_desc"
+        ; clause = "Pstr_extension"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Pstr_eval { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Structure_item_desc"
-          ; clause = "Pstr_eval"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
-      | Pstr_value { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Structure_item_desc"
-          ; clause = "Pstr_value"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
-              ]
-          }
-      | Pstr_primitive { a } ->
-        Versioned_ast.create ~version
-          { kind = "Structure_item_desc"
-          ; clause = "Pstr_primitive"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pstr_type { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Structure_item_desc"
-          ; clause = "Pstr_type"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) b }
-              ]
-          }
-      | Pstr_typext { a } ->
-        Versioned_ast.create ~version
-          { kind = "Structure_item_desc"
-          ; clause = "Pstr_typext"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pstr_exception { a } ->
-        Versioned_ast.create ~version
-          { kind = "Structure_item_desc"
-          ; clause = "Pstr_exception"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pstr_module { a } ->
-        Versioned_ast.create ~version
-          { kind = "Structure_item_desc"
-          ; clause = "Pstr_module"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pstr_recmodule { a } ->
-        Versioned_ast.create ~version
-          { kind = "Structure_item_desc"
-          ; clause = "Pstr_recmodule"
-          ; fields =
-              [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
-              ]
-          }
-      | Pstr_modtype { a } ->
-        Versioned_ast.create ~version
-          { kind = "Structure_item_desc"
-          ; clause = "Pstr_modtype"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pstr_open { a } ->
-        Versioned_ast.create ~version
-          { kind = "Structure_item_desc"
-          ; clause = "Pstr_open"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pstr_class { a } ->
-        Versioned_ast.create ~version
-          { kind = "Structure_item_desc"
-          ; clause = "Pstr_class"
-          ; fields =
-              [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
-              ]
-          }
-      | Pstr_class_type { a } ->
-        Versioned_ast.create ~version
-          { kind = "Structure_item_desc"
-          ; clause = "Pstr_class_type"
-          ; fields =
-              [ { name = "a"; value = (Versioned_value.of_list ~f:Versioned_value.of_ast) a }
-              ]
-          }
-      | Pstr_include { a } ->
-        Versioned_ast.create ~version
-          { kind = "Structure_item_desc"
-          ; clause = "Pstr_include"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pstr_attribute { a } ->
-        Versioned_ast.create ~version
-          { kind = "Structure_item_desc"
-          ; clause = "Pstr_attribute"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pstr_extension { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Structure_item_desc"
-          ; clause = "Pstr_extension"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
+      | Pstr_eval { a; b } -> pstr_eval ~a ~b
+      | Pstr_value { a; b } -> pstr_value ~a ~b
+      | Pstr_primitive { a } -> pstr_primitive ~a
+      | Pstr_type { a; b } -> pstr_type ~a ~b
+      | Pstr_typext { a } -> pstr_typext ~a
+      | Pstr_exception { a } -> pstr_exception ~a
+      | Pstr_module { a } -> pstr_module ~a
+      | Pstr_recmodule { a } -> pstr_recmodule ~a
+      | Pstr_modtype { a } -> pstr_modtype ~a
+      | Pstr_open { a } -> pstr_open ~a
+      | Pstr_class { a } -> pstr_class ~a
+      | Pstr_class_type { a } -> pstr_class_type ~a
+      | Pstr_include { a } -> pstr_include ~a
+      | Pstr_attribute { a } -> pstr_attribute ~a
+      | Pstr_extension { a; b } -> pstr_extension ~a ~b
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -5912,18 +6225,20 @@ module V4_07 = struct
         | Value_binding of { pvb_pat : Versioned_ast.t; pvb_expr : Versioned_ast.t; pvb_attributes : Versioned_ast.t; pvb_loc : Location.t }
     end
 
+    let value_binding ~pvb_pat ~pvb_expr ~pvb_attributes ~pvb_loc =
+      Versioned_ast.create ~version
+        { kind = "Value_binding"
+        ; clause = "Value_binding"
+        ; fields =
+            [ { name = "pvb_pat"; value = Versioned_value.of_ast pvb_pat }
+            ; { name = "pvb_expr"; value = Versioned_value.of_ast pvb_expr }
+            ; { name = "pvb_attributes"; value = Versioned_value.of_ast pvb_attributes }
+            ; { name = "pvb_loc"; value = Versioned_value.of_location pvb_loc }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Value_binding { pvb_pat; pvb_expr; pvb_attributes; pvb_loc } ->
-        Versioned_ast.create ~version
-          { kind = "Value_binding"
-          ; clause = "Value_binding"
-          ; fields =
-              [ { name = "pvb_pat"; value = Versioned_value.of_ast pvb_pat }
-              ; { name = "pvb_expr"; value = Versioned_value.of_ast pvb_expr }
-              ; { name = "pvb_attributes"; value = Versioned_value.of_ast pvb_attributes }
-              ; { name = "pvb_loc"; value = Versioned_value.of_location pvb_loc }
-              ]
-          }
+      | Value_binding { pvb_pat; pvb_expr; pvb_attributes; pvb_loc } -> value_binding ~pvb_pat ~pvb_expr ~pvb_attributes ~pvb_loc
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -5955,18 +6270,20 @@ module V4_07 = struct
         | Module_binding of { pmb_name : Versioned_ast.t; pmb_expr : Versioned_ast.t; pmb_attributes : Versioned_ast.t; pmb_loc : Location.t }
     end
 
+    let module_binding ~pmb_name ~pmb_expr ~pmb_attributes ~pmb_loc =
+      Versioned_ast.create ~version
+        { kind = "Module_binding"
+        ; clause = "Module_binding"
+        ; fields =
+            [ { name = "pmb_name"; value = Versioned_value.of_ast pmb_name }
+            ; { name = "pmb_expr"; value = Versioned_value.of_ast pmb_expr }
+            ; { name = "pmb_attributes"; value = Versioned_value.of_ast pmb_attributes }
+            ; { name = "pmb_loc"; value = Versioned_value.of_location pmb_loc }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Module_binding { pmb_name; pmb_expr; pmb_attributes; pmb_loc } ->
-        Versioned_ast.create ~version
-          { kind = "Module_binding"
-          ; clause = "Module_binding"
-          ; fields =
-              [ { name = "pmb_name"; value = Versioned_value.of_ast pmb_name }
-              ; { name = "pmb_expr"; value = Versioned_value.of_ast pmb_expr }
-              ; { name = "pmb_attributes"; value = Versioned_value.of_ast pmb_attributes }
-              ; { name = "pmb_loc"; value = Versioned_value.of_location pmb_loc }
-              ]
-          }
+      | Module_binding { pmb_name; pmb_expr; pmb_attributes; pmb_loc } -> module_binding ~pmb_name ~pmb_expr ~pmb_attributes ~pmb_loc
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -5999,24 +6316,27 @@ module V4_07 = struct
         | Ptop_dir of { a : string; b : Versioned_ast.t }
     end
 
+    let ptop_def ~a =
+      Versioned_ast.create ~version
+        { kind = "Toplevel_phrase"
+        ; clause = "Ptop_def"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let ptop_dir ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Toplevel_phrase"
+        ; clause = "Ptop_dir"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_string a }
+            ; { name = "b"; value = Versioned_value.of_ast b }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Ptop_def { a } ->
-        Versioned_ast.create ~version
-          { kind = "Toplevel_phrase"
-          ; clause = "Ptop_def"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Ptop_dir { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Toplevel_phrase"
-          ; clause = "Ptop_dir"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_string a }
-              ; { name = "b"; value = Versioned_value.of_ast b }
-              ]
-          }
+      | Ptop_def { a } -> ptop_def ~a
+      | Ptop_dir { a; b } -> ptop_dir ~a ~b
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with
@@ -6056,46 +6376,52 @@ module V4_07 = struct
         | Pdir_bool of { a : bool }
     end
 
+    let pdir_none =
+      Versioned_ast.create ~version
+        { kind = "Directive_argument"
+        ; clause = "Pdir_none"
+        ; fields = []
+        }
+    let pdir_string ~a =
+      Versioned_ast.create ~version
+        { kind = "Directive_argument"
+        ; clause = "Pdir_string"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_string a }
+            ]
+        }
+    let pdir_int ~a ~b =
+      Versioned_ast.create ~version
+        { kind = "Directive_argument"
+        ; clause = "Pdir_int"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_string a }
+            ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_char) b }
+            ]
+        }
+    let pdir_ident ~a =
+      Versioned_ast.create ~version
+        { kind = "Directive_argument"
+        ; clause = "Pdir_ident"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_ast a }
+            ]
+        }
+    let pdir_bool ~a =
+      Versioned_ast.create ~version
+        { kind = "Directive_argument"
+        ; clause = "Pdir_bool"
+        ; fields =
+            [ { name = "a"; value = Versioned_value.of_bool a }
+            ]
+        }
+
     let of_concrete : Concrete.t -> t = function
-      | Pdir_none ->
-        Versioned_ast.create ~version
-          { kind = "Directive_argument"
-          ; clause = "Pdir_none"
-          ; fields = []
-          }
-      | Pdir_string { a } ->
-        Versioned_ast.create ~version
-          { kind = "Directive_argument"
-          ; clause = "Pdir_string"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_string a }
-              ]
-          }
-      | Pdir_int { a; b } ->
-        Versioned_ast.create ~version
-          { kind = "Directive_argument"
-          ; clause = "Pdir_int"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_string a }
-              ; { name = "b"; value = (Versioned_value.of_option ~f:Versioned_value.of_char) b }
-              ]
-          }
-      | Pdir_ident { a } ->
-        Versioned_ast.create ~version
-          { kind = "Directive_argument"
-          ; clause = "Pdir_ident"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_ast a }
-              ]
-          }
-      | Pdir_bool { a } ->
-        Versioned_ast.create ~version
-          { kind = "Directive_argument"
-          ; clause = "Pdir_bool"
-          ; fields =
-              [ { name = "a"; value = Versioned_value.of_bool a }
-              ]
-          }
+      | Pdir_none -> pdir_none
+      | Pdir_string { a } -> pdir_string ~a
+      | Pdir_int { a; b } -> pdir_int ~a ~b
+      | Pdir_ident { a } -> pdir_ident ~a
+      | Pdir_bool { a } -> pdir_bool ~a
 
     let to_concrete t =
       match Versioned_ast.convert t ~version with

@@ -105,6 +105,9 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val lident : a:string -> t
+    val ldot : a:Longident.t -> b:string -> t
+    val lapply : a:Longident.t -> b:Longident.t -> t
   end
 
   and Longident_loc : sig
@@ -120,6 +123,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val longident_loc : txt:Longident.t -> loc:Location.t -> t
   end
 
   and Rec_flag : sig
@@ -136,6 +140,8 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val nonrecursive : t
+    val recursive : t
   end
 
   and Direction_flag : sig
@@ -152,6 +158,8 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val upto : t
+    val downto_ : t
   end
 
   and Private_flag : sig
@@ -168,6 +176,8 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val private_ : t
+    val public : t
   end
 
   and Mutable_flag : sig
@@ -184,6 +194,8 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val immutable : t
+    val mutable_ : t
   end
 
   and Virtual_flag : sig
@@ -200,6 +212,8 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val virtual_ : t
+    val concrete : t
   end
 
   and Override_flag : sig
@@ -216,6 +230,8 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val override : t
+    val fresh : t
   end
 
   and Closed_flag : sig
@@ -232,6 +248,8 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val closed : t
+    val open_ : t
   end
 
   and Label : sig
@@ -247,6 +265,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val label : a:string -> t
   end
 
   and Label_loc : sig
@@ -262,6 +281,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val label_loc : txt:Label.t -> loc:Location.t -> t
   end
 
   and String_loc : sig
@@ -277,6 +297,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val string_loc : txt:string -> loc:Location.t -> t
   end
 
   and Arg_label : sig
@@ -294,6 +315,9 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val nolabel : t
+    val labelled : a:string -> t
+    val optional : a:string -> t
   end
 
   and Variance : sig
@@ -311,6 +335,9 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val covariant : t
+    val contravariant : t
+    val invariant : t
   end
 
   and Constant : sig
@@ -329,6 +356,10 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val pconst_integer : a:string -> b:char option -> t
+    val pconst_char : a:char -> t
+    val pconst_string : a:string -> b:string option -> t
+    val pconst_float : a:string -> b:char option -> t
   end
 
   and Attribute : sig
@@ -344,6 +375,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val attribute : a:String_loc.t -> b:Payload.t -> t
   end
 
   and Extension : sig
@@ -359,6 +391,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val extension : a:String_loc.t -> b:Payload.t -> t
   end
 
   and Attributes : sig
@@ -374,6 +407,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val attributes : a:Attribute.t list -> t
   end
 
   and Payload : sig
@@ -392,6 +426,10 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val pstr : a:Structure.t -> t
+    val psig : a:Signature.t -> t
+    val ptyp : a:Core_type.t -> t
+    val ppat : a:Pattern.t -> b:Expression.t option -> t
   end
 
   and Core_type : sig
@@ -407,6 +445,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val core_type : ptyp_desc:Core_type_desc.t -> ptyp_loc:Location.t -> ptyp_attributes:Attributes.t -> t
   end
 
   and Core_type_desc : sig
@@ -433,6 +472,18 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val ptyp_any : t
+    val ptyp_var : a:string -> t
+    val ptyp_arrow : a:Arg_label.t -> b:Core_type.t -> c:Core_type.t -> t
+    val ptyp_tuple : a:Core_type.t list -> t
+    val ptyp_constr : a:Longident_loc.t -> b:Core_type.t list -> t
+    val ptyp_object : a:Object_field.t list -> b:Closed_flag.t -> t
+    val ptyp_class : a:Longident_loc.t -> b:Core_type.t list -> t
+    val ptyp_alias : a:Core_type.t -> b:string -> t
+    val ptyp_variant : a:Row_field.t list -> b:Closed_flag.t -> c:Label.t list option -> t
+    val ptyp_poly : a:String_loc.t list -> b:Core_type.t -> t
+    val ptyp_package : a:Package_type.t -> t
+    val ptyp_extension : a:Extension.t -> t
   end
 
   and Package_type : sig
@@ -448,6 +499,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val package_type : a:Longident_loc.t -> b:Package_type_constraint.t list -> t
   end
 
   and Package_type_constraint : sig
@@ -463,6 +515,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val package_type_constraint : a:Longident_loc.t -> b:Core_type.t -> t
   end
 
   and Row_field : sig
@@ -479,6 +532,8 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val rtag : a:Label_loc.t -> b:Attributes.t -> c:bool -> d:Core_type.t list -> t
+    val rinherit : a:Core_type.t -> t
   end
 
   and Object_field : sig
@@ -495,6 +550,8 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val otag : a:Label_loc.t -> b:Attributes.t -> c:Core_type.t -> t
+    val oinherit : a:Core_type.t -> t
   end
 
   and Pattern : sig
@@ -510,6 +567,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val pattern : ppat_desc:Pattern_desc.t -> ppat_loc:Location.t -> ppat_attributes:Attributes.t -> t
   end
 
   and Pattern_desc : sig
@@ -542,6 +600,24 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val ppat_any : t
+    val ppat_var : a:String_loc.t -> t
+    val ppat_alias : a:Pattern.t -> b:String_loc.t -> t
+    val ppat_constant : a:Constant.t -> t
+    val ppat_interval : a:Constant.t -> b:Constant.t -> t
+    val ppat_tuple : a:Pattern.t list -> t
+    val ppat_construct : a:Longident_loc.t -> b:Pattern.t option -> t
+    val ppat_variant : a:Label.t -> b:Pattern.t option -> t
+    val ppat_record : a:Record_field_pattern.t list -> b:Closed_flag.t -> t
+    val ppat_array : a:Pattern.t list -> t
+    val ppat_or : a:Pattern.t -> b:Pattern.t -> t
+    val ppat_constraint : a:Pattern.t -> b:Core_type.t -> t
+    val ppat_type : a:Longident_loc.t -> t
+    val ppat_lazy : a:Pattern.t -> t
+    val ppat_unpack : a:String_loc.t -> t
+    val ppat_exception : a:Pattern.t -> t
+    val ppat_extension : a:Extension.t -> t
+    val ppat_open : a:Longident_loc.t -> b:Pattern.t -> t
   end
 
   and Record_field_pattern : sig
@@ -557,6 +633,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val record_field_pattern : a:Longident_loc.t -> b:Pattern.t -> t
   end
 
   and Expression : sig
@@ -572,6 +649,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val expression : pexp_desc:Expression_desc.t -> pexp_loc:Location.t -> pexp_attributes:Attributes.t -> t
   end
 
   and Expression_desc : sig
@@ -622,6 +700,42 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val pexp_ident : a:Longident_loc.t -> t
+    val pexp_constant : a:Constant.t -> t
+    val pexp_let : a:Rec_flag.t -> b:Value_binding.t list -> c:Expression.t -> t
+    val pexp_function : a:Case.t list -> t
+    val pexp_fun : a:Arg_label.t -> b:Expression.t option -> c:Pattern.t -> d:Expression.t -> t
+    val pexp_apply : a:Expression.t -> b:Apply_arg.t list -> t
+    val pexp_match : a:Expression.t -> b:Case.t list -> t
+    val pexp_try : a:Expression.t -> b:Case.t list -> t
+    val pexp_tuple : a:Expression.t list -> t
+    val pexp_construct : a:Longident_loc.t -> b:Expression.t option -> t
+    val pexp_variant : a:Label.t -> b:Expression.t option -> t
+    val pexp_record : a:Record_field_expression.t list -> b:Expression.t option -> t
+    val pexp_field : a:Expression.t -> b:Longident_loc.t -> t
+    val pexp_setfield : a:Expression.t -> b:Longident_loc.t -> c:Expression.t -> t
+    val pexp_array : a:Expression.t list -> t
+    val pexp_ifthenelse : a:Expression.t -> b:Expression.t -> c:Expression.t option -> t
+    val pexp_sequence : a:Expression.t -> b:Expression.t -> t
+    val pexp_while : a:Expression.t -> b:Expression.t -> t
+    val pexp_for : a:Pattern.t -> b:Expression.t -> c:Expression.t -> d:Direction_flag.t -> e:Expression.t -> t
+    val pexp_constraint : a:Expression.t -> b:Core_type.t -> t
+    val pexp_coerce : a:Expression.t -> b:Core_type.t option -> c:Core_type.t -> t
+    val pexp_send : a:Expression.t -> b:Label_loc.t -> t
+    val pexp_new : a:Longident_loc.t -> t
+    val pexp_setinstvar : a:Label_loc.t -> b:Expression.t -> t
+    val pexp_override : a:Override_expression.t list -> t
+    val pexp_letmodule : a:String_loc.t -> b:Module_expr.t -> c:Expression.t -> t
+    val pexp_letexception : a:Extension_constructor.t -> b:Expression.t -> t
+    val pexp_assert : a:Expression.t -> t
+    val pexp_lazy : a:Expression.t -> t
+    val pexp_poly : a:Expression.t -> b:Core_type.t option -> t
+    val pexp_object : a:Class_structure.t -> t
+    val pexp_newtype : a:String_loc.t -> b:Expression.t -> t
+    val pexp_pack : a:Module_expr.t -> t
+    val pexp_open : a:Override_flag.t -> b:Longident_loc.t -> c:Expression.t -> t
+    val pexp_extension : a:Extension.t -> t
+    val pexp_unreachable : t
   end
 
   and Override_expression : sig
@@ -637,6 +751,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val override_expression : a:Label_loc.t -> b:Expression.t -> t
   end
 
   and Record_field_expression : sig
@@ -652,6 +767,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val record_field_expression : a:Longident_loc.t -> b:Expression.t -> t
   end
 
   and Apply_arg : sig
@@ -667,6 +783,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val apply_arg : a:Arg_label.t -> b:Expression.t -> t
   end
 
   and Case : sig
@@ -682,6 +799,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val case : pc_lhs:Pattern.t -> pc_guard:Expression.t option -> pc_rhs:Expression.t -> t
   end
 
   and Value_description : sig
@@ -697,6 +815,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val value_description : pval_name:String_loc.t -> pval_type:Core_type.t -> pval_prim:string list -> pval_attributes:Attributes.t -> pval_loc:Location.t -> t
   end
 
   and Type_declaration : sig
@@ -712,6 +831,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val type_declaration : ptype_name:String_loc.t -> ptype_params:Type_param.t list -> ptype_cstrs:Type_constraint.t list -> ptype_kind:Type_kind.t -> ptype_private:Private_flag.t -> ptype_manifest:Core_type.t option -> ptype_attributes:Attributes.t -> ptype_loc:Location.t -> t
   end
 
   and Type_param : sig
@@ -727,6 +847,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val type_param : a:Core_type.t -> b:Variance.t -> t
   end
 
   and Type_constraint : sig
@@ -742,6 +863,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val type_constraint : a:Core_type.t -> b:Core_type.t -> c:Location.t -> t
   end
 
   and Type_kind : sig
@@ -760,6 +882,10 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val ptype_abstract : t
+    val ptype_variant : a:Constructor_declaration.t list -> t
+    val ptype_record : a:Label_declaration.t list -> t
+    val ptype_open : t
   end
 
   and Label_declaration : sig
@@ -775,6 +901,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val label_declaration : pld_name:String_loc.t -> pld_mutable:Mutable_flag.t -> pld_type:Core_type.t -> pld_loc:Location.t -> pld_attributes:Attributes.t -> t
   end
 
   and Constructor_declaration : sig
@@ -790,6 +917,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val constructor_declaration : pcd_name:String_loc.t -> pcd_args:Constructor_arguments.t -> pcd_res:Core_type.t option -> pcd_loc:Location.t -> pcd_attributes:Attributes.t -> t
   end
 
   and Constructor_arguments : sig
@@ -806,6 +934,8 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val pcstr_tuple : a:Core_type.t list -> t
+    val pcstr_record : a:Label_declaration.t list -> t
   end
 
   and Type_extension : sig
@@ -821,6 +951,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val type_extension : ptyext_path:Longident_loc.t -> ptyext_params:Type_param.t list -> ptyext_constructors:Extension_constructor.t list -> ptyext_private:Private_flag.t -> ptyext_attributes:Attributes.t -> t
   end
 
   and Extension_constructor : sig
@@ -836,6 +967,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val extension_constructor : pext_name:String_loc.t -> pext_kind:Extension_constructor_kind.t -> pext_loc:Location.t -> pext_attributes:Attributes.t -> t
   end
 
   and Extension_constructor_kind : sig
@@ -852,6 +984,8 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val pext_decl : a:Constructor_arguments.t -> b:Core_type.t option -> t
+    val pext_rebind : a:Longident_loc.t -> t
   end
 
   and Class_type : sig
@@ -867,6 +1001,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val class_type : pcty_desc:Class_type_desc.t -> pcty_loc:Location.t -> pcty_attributes:Attributes.t -> t
   end
 
   and Class_type_desc : sig
@@ -886,6 +1021,11 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val pcty_constr : a:Longident_loc.t -> b:Core_type.t list -> t
+    val pcty_signature : a:Class_signature.t -> t
+    val pcty_arrow : a:Arg_label.t -> b:Core_type.t -> c:Class_type.t -> t
+    val pcty_extension : a:Extension.t -> t
+    val pcty_open : a:Override_flag.t -> b:Longident_loc.t -> c:Class_type.t -> t
   end
 
   and Class_signature : sig
@@ -901,6 +1041,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val class_signature : pcsig_self:Core_type.t -> pcsig_fields:Class_type_field.t list -> t
   end
 
   and Class_type_field : sig
@@ -916,6 +1057,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val class_type_field : pctf_desc:Class_type_field_desc.t -> pctf_loc:Location.t -> pctf_attributes:Attributes.t -> t
   end
 
   and Class_type_field_desc : sig
@@ -936,6 +1078,12 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val pctf_inherit : a:Class_type.t -> t
+    val pctf_val : a:Class_type_value_desc.t -> t
+    val pctf_method : a:Class_type_method_desc.t -> t
+    val pctf_constraint : a:Class_type_constraint.t -> t
+    val pctf_attribute : a:Attribute.t -> t
+    val pctf_extension : a:Extension.t -> t
   end
 
   and Class_type_value_desc : sig
@@ -951,6 +1099,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val class_type_value_desc : a:Label_loc.t -> b:Mutable_flag.t -> c:Virtual_flag.t -> d:Core_type.t -> t
   end
 
   and Class_type_method_desc : sig
@@ -966,6 +1115,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val class_type_method_desc : a:Label_loc.t -> b:Private_flag.t -> c:Virtual_flag.t -> d:Core_type.t -> t
   end
 
   and Class_type_constraint : sig
@@ -981,6 +1131,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val class_type_constraint : a:Core_type.t -> b:Core_type.t -> t
   end
 
   and Class_description : sig
@@ -996,6 +1147,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val class_description : pci_virt:Virtual_flag.t -> pci_params:Type_param.t list -> pci_name:String_loc.t -> pci_expr:Class_type.t -> pci_loc:Location.t -> pci_attributes:Attributes.t -> t
   end
 
   and Class_type_declaration : sig
@@ -1011,6 +1163,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val class_type_declaration : pci_virt:Virtual_flag.t -> pci_params:Type_param.t list -> pci_name:String_loc.t -> pci_expr:Class_type.t -> pci_loc:Location.t -> pci_attributes:Attributes.t -> t
   end
 
   and Class_expr : sig
@@ -1026,6 +1179,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val class_expr : pcl_desc:Class_expr_desc.t -> pcl_loc:Location.t -> pcl_attributes:Attributes.t -> t
   end
 
   and Class_expr_desc : sig
@@ -1048,6 +1202,14 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val pcl_constr : a:Longident_loc.t -> b:Core_type.t list -> t
+    val pcl_structure : a:Class_structure.t -> t
+    val pcl_fun : a:Arg_label.t -> b:Expression.t option -> c:Pattern.t -> d:Class_expr.t -> t
+    val pcl_apply : a:Class_expr.t -> b:Apply_arg.t list -> t
+    val pcl_let : a:Rec_flag.t -> b:Value_binding.t list -> c:Class_expr.t -> t
+    val pcl_constraint : a:Class_expr.t -> b:Class_type.t -> t
+    val pcl_extension : a:Extension.t -> t
+    val pcl_open : a:Override_flag.t -> b:Longident_loc.t -> c:Class_expr.t -> t
   end
 
   and Class_structure : sig
@@ -1063,6 +1225,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val class_structure : pcstr_self:Pattern.t -> pcstr_fields:Class_field.t list -> t
   end
 
   and Class_field : sig
@@ -1078,6 +1241,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val class_field : pcf_desc:Class_field_desc.t -> pcf_loc:Location.t -> pcf_attributes:Attributes.t -> t
   end
 
   and Class_field_desc : sig
@@ -1099,6 +1263,13 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val pcf_inherit : a:Override_flag.t -> b:Class_expr.t -> c:String_loc.t option -> t
+    val pcf_val : a:Class_value_desc.t -> t
+    val pcf_method : a:Class_method_desc.t -> t
+    val pcf_constraint : a:Class_type_constraint.t -> t
+    val pcf_initializer : a:Expression.t -> t
+    val pcf_attribute : a:Attribute.t -> t
+    val pcf_extension : a:Extension.t -> t
   end
 
   and Class_value_desc : sig
@@ -1114,6 +1285,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val class_value_desc : a:Label_loc.t -> b:Mutable_flag.t -> c:Class_field_kind.t -> t
   end
 
   and Class_method_desc : sig
@@ -1129,6 +1301,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val class_method_desc : a:Label_loc.t -> b:Private_flag.t -> c:Class_field_kind.t -> t
   end
 
   and Class_field_kind : sig
@@ -1145,6 +1318,8 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val cfk_virtual : a:Core_type.t -> t
+    val cfk_concrete : a:Override_flag.t -> b:Expression.t -> t
   end
 
   and Class_declaration : sig
@@ -1160,6 +1335,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val class_declaration : pci_virt:Virtual_flag.t -> pci_params:Type_param.t list -> pci_name:String_loc.t -> pci_expr:Class_expr.t -> pci_loc:Location.t -> pci_attributes:Attributes.t -> t
   end
 
   and Module_type : sig
@@ -1175,6 +1351,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val module_type : pmty_desc:Module_type_desc.t -> pmty_loc:Location.t -> pmty_attributes:Attributes.t -> t
   end
 
   and Module_type_desc : sig
@@ -1196,6 +1373,13 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val pmty_ident : a:Longident_loc.t -> t
+    val pmty_signature : a:Signature.t -> t
+    val pmty_functor : a:String_loc.t -> b:Module_type.t option -> c:Module_type.t -> t
+    val pmty_with : a:Module_type.t -> b:With_constraint.t list -> t
+    val pmty_typeof : a:Module_expr.t -> t
+    val pmty_extension : a:Extension.t -> t
+    val pmty_alias : a:Longident_loc.t -> t
   end
 
   and Signature : sig
@@ -1211,6 +1395,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val signature : a:Signature_item.t list -> t
   end
 
   and Signature_item : sig
@@ -1226,6 +1411,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val signature_item : psig_desc:Signature_item_desc.t -> psig_loc:Location.t -> t
   end
 
   and Signature_item_desc : sig
@@ -1253,6 +1439,19 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val psig_value : a:Value_description.t -> t
+    val psig_type : a:Rec_flag.t -> b:Type_declaration.t list -> t
+    val psig_typext : a:Type_extension.t -> t
+    val psig_exception : a:Extension_constructor.t -> t
+    val psig_module : a:Module_declaration.t -> t
+    val psig_recmodule : a:Module_declaration.t list -> t
+    val psig_modtype : a:Module_type_declaration.t -> t
+    val psig_open : a:Open_description.t -> t
+    val psig_include : a:Include_description.t -> t
+    val psig_class : a:Class_description.t list -> t
+    val psig_class_type : a:Class_type_declaration.t list -> t
+    val psig_attribute : a:Attribute.t -> t
+    val psig_extension : a:Extension.t -> b:Attributes.t -> t
   end
 
   and Module_declaration : sig
@@ -1268,6 +1467,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val module_declaration : pmd_name:String_loc.t -> pmd_type:Module_type.t -> pmd_attributes:Attributes.t -> pmd_loc:Location.t -> t
   end
 
   and Module_type_declaration : sig
@@ -1283,6 +1483,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val module_type_declaration : pmtd_name:String_loc.t -> pmtd_type:Module_type.t option -> pmtd_attributes:Attributes.t -> pmtd_loc:Location.t -> t
   end
 
   and Open_description : sig
@@ -1298,6 +1499,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val open_description : popen_lid:Longident_loc.t -> popen_override:Override_flag.t -> popen_loc:Location.t -> popen_attributes:Attributes.t -> t
   end
 
   and Include_description : sig
@@ -1313,6 +1515,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val include_description : pincl_mod:Module_type.t -> pincl_loc:Location.t -> pincl_attributes:Attributes.t -> t
   end
 
   and Include_declaration : sig
@@ -1328,6 +1531,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val include_declaration : pincl_mod:Module_expr.t -> pincl_loc:Location.t -> pincl_attributes:Attributes.t -> t
   end
 
   and With_constraint : sig
@@ -1346,6 +1550,10 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val pwith_type : a:Longident_loc.t -> b:Type_declaration.t -> t
+    val pwith_module : a:Longident_loc.t -> b:Longident_loc.t -> t
+    val pwith_typesubst : a:Longident_loc.t -> b:Type_declaration.t -> t
+    val pwith_modsubst : a:Longident_loc.t -> b:Longident_loc.t -> t
   end
 
   and Module_expr : sig
@@ -1361,6 +1569,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val module_expr : pmod_desc:Module_expr_desc.t -> pmod_loc:Location.t -> pmod_attributes:Attributes.t -> t
   end
 
   and Module_expr_desc : sig
@@ -1382,6 +1591,13 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val pmod_ident : a:Longident_loc.t -> t
+    val pmod_structure : a:Structure.t -> t
+    val pmod_functor : a:String_loc.t -> b:Module_type.t option -> c:Module_expr.t -> t
+    val pmod_apply : a:Module_expr.t -> b:Module_expr.t -> t
+    val pmod_constraint : a:Module_expr.t -> b:Module_type.t -> t
+    val pmod_unpack : a:Expression.t -> t
+    val pmod_extension : a:Extension.t -> t
   end
 
   and Structure : sig
@@ -1397,6 +1613,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val structure : a:Structure_item.t list -> t
   end
 
   and Structure_item : sig
@@ -1412,6 +1629,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val structure_item : pstr_desc:Structure_item_desc.t -> pstr_loc:Location.t -> t
   end
 
   and Structure_item_desc : sig
@@ -1441,6 +1659,21 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val pstr_eval : a:Expression.t -> b:Attributes.t -> t
+    val pstr_value : a:Rec_flag.t -> b:Value_binding.t list -> t
+    val pstr_primitive : a:Value_description.t -> t
+    val pstr_type : a:Rec_flag.t -> b:Type_declaration.t list -> t
+    val pstr_typext : a:Type_extension.t -> t
+    val pstr_exception : a:Extension_constructor.t -> t
+    val pstr_module : a:Module_binding.t -> t
+    val pstr_recmodule : a:Module_binding.t list -> t
+    val pstr_modtype : a:Module_type_declaration.t -> t
+    val pstr_open : a:Open_description.t -> t
+    val pstr_class : a:Class_declaration.t list -> t
+    val pstr_class_type : a:Class_type_declaration.t list -> t
+    val pstr_include : a:Include_declaration.t -> t
+    val pstr_attribute : a:Attribute.t -> t
+    val pstr_extension : a:Extension.t -> b:Attributes.t -> t
   end
 
   and Value_binding : sig
@@ -1456,6 +1689,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val value_binding : pvb_pat:Pattern.t -> pvb_expr:Expression.t -> pvb_attributes:Attributes.t -> pvb_loc:Location.t -> t
   end
 
   and Module_binding : sig
@@ -1471,6 +1705,7 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val module_binding : pmb_name:String_loc.t -> pmb_expr:Module_expr.t -> pmb_attributes:Attributes.t -> pmb_loc:Location.t -> t
   end
 
   and Toplevel_phrase : sig
@@ -1487,6 +1722,8 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val ptop_def : a:Structure.t -> t
+    val ptop_dir : a:string -> b:Directive_argument.t -> t
   end
 
   and Directive_argument : sig
@@ -1506,6 +1743,11 @@ module V4_07 : sig
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
+    val pdir_none : t
+    val pdir_string : a:string -> t
+    val pdir_int : a:string -> b:char option -> t
+    val pdir_ident : a:Longident.t -> t
+    val pdir_bool : a:bool -> t
   end
 end
 (*$*)
