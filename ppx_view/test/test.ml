@@ -13,7 +13,7 @@ let%expect_test "match failure" =
       print_string "matched"
   with e ->
     print_string (Printexc.to_string e)
-  end;[%expect {|"Match_failure test/test.ml:11:18"|}]
+  end;[%expect {|"Match_failure ppx_view/test/test.ml:11:18"|}]
 
 let%expect_test "match simple" =
   let match_3 = function%view
