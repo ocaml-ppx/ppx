@@ -7,9 +7,9 @@ type ('edit, 'self) t =
 
 type nothing = |
 
-type field = (Type.data, Type.field) t
-type clause = (field list, Type.clause) t
-type kind = (clause list, Type.kind) t
+type field = (Grammar.data, Grammar.field) t
+type clause = (field list, Grammar.clause) t
+type kind = (clause list, Grammar.kind) t
 type grammar = kind list
 
 let modify list value ~get ~set ~f =
@@ -59,23 +59,23 @@ let apply t list ~name_of ~f =
 
 let apply_to_fields t fields =
   apply t fields
-    ~name_of:(fun (field : Type.field) -> field.field_name)
-    ~f:(fun data (field : Type.field) -> { field with data })
+    ~name_of:(fun (field : Grammar.field) -> field.field_name)
+    ~f:(fun data (field : Grammar.field) -> { field with data })
 
 let apply_to_clauses t clauses =
   apply t clauses
-    ~name_of:(fun (clause : Type.clause) -> clause.clause_name)
+    ~name_of:(fun (clause : Grammar.clause) -> clause.clause_name)
     ~f:(modify
-          ~get:(fun (clause : Type.clause) -> clause.fields)
-          ~set:(fun (clause : Type.clause) fields -> { clause with fields })
+          ~get:(fun (clause : Grammar.clause) -> clause.fields)
+          ~set:(fun (clause : Grammar.clause) fields -> { clause with fields })
           ~f:apply_to_fields)
 
 let apply_to_kinds t kinds =
   apply t kinds
-    ~name_of:(fun (kind : Type.kind) -> kind.kind_name)
+    ~name_of:(fun (kind : Grammar.kind) -> kind.kind_name)
     ~f:(modify
-          ~get:(fun (kind : Type.kind) -> kind.clauses)
-          ~set:(fun (kind : Type.kind) clauses -> { kind with clauses })
+          ~get:(fun (kind : Grammar.kind) -> kind.clauses)
+          ~set:(fun (kind : Grammar.kind) clauses -> { kind with clauses })
           ~f:apply_to_clauses)
 
 let apply_to_grammar list grammar =

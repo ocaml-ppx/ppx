@@ -1,4 +1,4 @@
-let (v3_grammar : Type.t) =
+let (v3_grammar : Grammar.t) =
   [ { kind_name = "Identifier"
     ; clauses =
         [ { clause_name = "Var"

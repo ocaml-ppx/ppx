@@ -65,7 +65,7 @@ let simplify_poly_parsetree parsetree =
       | None -> failwith ("unknown polymorphic type " ^ poly ^ " in " ^ name)
       | Some rep -> Some (name, substitute_rep rep ~arg))
 
-let rec data_of_ty ty : Type.data =
+let rec data_of_ty ty : Grammar.data =
   match (ty : _ Input.ty) with
   | Bool -> Bool
   | Char -> Char
@@ -78,7 +78,7 @@ let rec data_of_ty ty : Type.data =
 
 let grammar_fields_of_alist alist =
   List.map alist ~f:(fun (field_name, ty) ->
-    ({ field_name; data = data_of_ty ty } : Type.field))
+    ({ field_name; data = data_of_ty ty } : Grammar.field))
 
 let grammar_fields_of_list list =
   grammar_fields_of_alist
@@ -92,7 +92,7 @@ let record_kind ~name ~fields =
          ; fields = grammar_fields_of_alist fields
          }
        ]
-   } : Type.kind)
+   } : Grammar.kind)
 
 let alias_kind ~name ~ty =
   record_kind ~name ~fields:[(field_name 0, ty)]
@@ -106,12 +106,12 @@ let tuple_kind ~name ~values =
 
 let grammar_clauses_of_alist alist =
   List.map alist ~f:(fun (clause_name, tys) ->
-    ({ clause_name; fields = grammar_fields_of_list tys } : Type.clause))
+    ({ clause_name; fields = grammar_fields_of_list tys } : Grammar.clause))
 
 let variant_kind ~name ~clauses =
   ({ kind_name = String.capitalize_ascii name
    ; clauses = grammar_clauses_of_alist clauses
-   } : Type.kind)
+   } : Grammar.kind)
 
 let grammar_of_simplified_parsetree parsetree =
   List.map parsetree ~f:(fun (name, rep) ->

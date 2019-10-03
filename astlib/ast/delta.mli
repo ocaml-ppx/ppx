@@ -5,9 +5,9 @@ type ('edit, 'self) t =
 
 type nothing = |
 
-type field = (Type.data, Type.field) t
-type clause = (field list, Type.clause) t
-type kind = (clause list, Type.kind) t
+type field = (Grammar.data, Grammar.field) t
+type clause = (field list, Grammar.clause) t
+type kind = (clause list, Grammar.kind) t
 type grammar = kind list
 
-val apply_to_grammar : grammar -> Type.t -> Type.t
+val apply_to_grammar : grammar -> Grammar.t -> Grammar.t

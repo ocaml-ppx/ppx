@@ -13,7 +13,7 @@ let%expect_test "versions" =
   [%expect {|
     V4_07 |}]
 
-let rec sexp_of_data : Astlib_ast.Type.data -> Sexp.t = function
+let rec sexp_of_data : Astlib_ast.Grammar.data -> Sexp.t = function
   | Kind name -> Atom (name ^ ".t")
   | Bool -> Atom "bool"
   | Char -> Atom "char"
@@ -22,13 +22,13 @@ let rec sexp_of_data : Astlib_ast.Type.data -> Sexp.t = function
   | List data -> List [sexp_of_data data; Atom "list"]
   | Option data -> List [sexp_of_data data; Atom "option"]
 
-let sexp_of_field ({ field_name; data } : Astlib_ast.Type.field) =
+let sexp_of_field ({ field_name; data } : Astlib_ast.Grammar.field) =
   [%sexp (field_name : string), (data : data)]
 
-let sexp_of_clause ({ clause_name; fields } : Astlib_ast.Type.clause) =
+let sexp_of_clause ({ clause_name; fields } : Astlib_ast.Grammar.clause) =
   [%sexp (clause_name : string), (fields : field list)]
 
-let sexp_of_kind ({ kind_name; clauses } : Astlib_ast.Type.kind) =
+let sexp_of_kind ({ kind_name; clauses } : Astlib_ast.Grammar.kind) =
   [%sexp (kind_name : string), (clauses : clause list)]
 
 let sexp_of_grammar = [%sexp_of: kind list]

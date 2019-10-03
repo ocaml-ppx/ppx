@@ -6,7 +6,7 @@ let print_generators_mli () =
   |> List.iter ~f:(fun (version, grammar) ->
     Print.newline ();
     Print.declare_module version (fun () ->
-      List.iteri grammar ~f:(fun kind_index (kind : Astlib_ast.Type.kind) ->
+      List.iteri grammar ~f:(fun kind_index (kind : Astlib_ast.Grammar.kind) ->
         if kind_index > 0 then Print.newline ();
         Print.declare_module kind.kind_name (fun () ->
           Print.format "type t = Astlib.%s.%s.t" version kind.kind_name;
@@ -15,17 +15,17 @@ let print_generators_mli () =
           Print.format "val quickcheck_generator : t Base_quickcheck.Generator.t";
           Print.format "val quickcheck_shrinker : t Base_quickcheck.Shrinker.t"))))
 
-let rec data_contains_mutual_recursion (data : Astlib_ast.Type.data) =
+let rec data_contains_mutual_recursion (data : Astlib_ast.Grammar.data) =
   match data with
   | Bool | Char | String | Location -> false
   | Kind _ -> true
   | List data | Option data -> data_contains_mutual_recursion data
 
-let clause_mutual_recursion_count (clause : Astlib_ast.Type.clause) =
+let clause_mutual_recursion_count (clause : Astlib_ast.Grammar.clause) =
   List.count clause.fields ~f:(fun field ->
     data_contains_mutual_recursion field.data)
 
-let rec data_generator (data : Astlib_ast.Type.data) =
+let rec data_generator (data : Astlib_ast.Grammar.data) =
   match data with
   | Bool -> "Base_quickcheck.Generator.bool"
   | Char -> "Base_quickcheck.Generator.char"
@@ -40,11 +40,11 @@ let rec data_generator (data : Astlib_ast.Type.data) =
   | Option data ->
     Printf.sprintf "(Base_quickcheck.Generator.option %s)" (data_generator data)
 
-let print_clause_generators (kind : Astlib_ast.Type.kind) ~version =
-  List.iter kind.clauses ~f:(fun (clause : Astlib_ast.Type.clause) ->
+let print_clause_generators (kind : Astlib_ast.Grammar.kind) ~version =
+  List.iter kind.clauses ~f:(fun (clause : Astlib_ast.Grammar.clause) ->
     Print.format "let %s_gen =" (String.lowercase clause.clause_name);
     Print.indented (fun () ->
-      List.iteri clause.fields ~f:(fun field_index (field : Astlib_ast.Type.field) ->
+      List.iteri clause.fields ~f:(fun field_index (field : Astlib_ast.Grammar.field) ->
         Print.format "%s %s ="
           (if field_index = 0 then "let%bind" else "and")
           field.field_name;
@@ -60,7 +60,7 @@ let print_clause_generators (kind : Astlib_ast.Type.kind) ~version =
          | _ :: _ ->
            Printf.sprintf " { %s }"
              (String.concat ~sep:"; "
-                (List.map clause.fields ~f:(fun (field : Astlib_ast.Type.field) ->
+                (List.map clause.fields ~f:(fun (field : Astlib_ast.Grammar.field) ->
                    field.field_name)))));
     Print.format "in")
 
@@ -99,7 +99,7 @@ let print_complex_kind_generator ~non_recursive_clauses ~recursive_clauses =
   Print.format "| 0 -> non_recursive_gen";
   Print.format "| _ -> recursive_gen"
 
-let print_kind_generator (kind : Astlib_ast.Type.kind) ~version =
+let print_kind_generator (kind : Astlib_ast.Grammar.kind) ~version =
   print_clause_generators kind ~version;
   match
     List.partition_tf kind.clauses ~f:(fun clause ->
@@ -125,7 +125,7 @@ let print_generators_ml () =
     Print.newline ();
     Print.define_module version (fun () ->
       Print.define_recursive_values
-        (List.map grammar ~f:(fun (kind : Astlib_ast.Type.kind) ->
+        (List.map grammar ~f:(fun (kind : Astlib_ast.Grammar.kind) ->
            let header =
              Printf.sprintf "%s_generator ="
                (String.lowercase kind.kind_name)
@@ -142,7 +142,7 @@ let print_generators_ml () =
            in
            header, body));
       Print.newline ();
-      List.iteri grammar ~f:(fun kind_index (kind : Astlib_ast.Type.kind) ->
+      List.iteri grammar ~f:(fun kind_index (kind : Astlib_ast.Grammar.kind) ->
         if kind_index > 0 then Print.newline ();
         Print.define_module kind.kind_name (fun () ->
           Print.format "type t = Astlib.%s.%s.t" version kind.kind_name;
