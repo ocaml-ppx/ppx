@@ -32,6 +32,22 @@ let rec data_to_concrete data =
   | Option data ->
     Printf.sprintf "(Versioned_value.to_option ~f:%s)" (data_to_concrete data)
 
+let is_keyword = function
+  | "and" | "as" | "assert" | "asr" | "begin" | "class" | "constraint" | "do" | "done"
+  | "downto" | "else" | "end" | "exception" | "external" | "false" | "for" | "fun"
+  | "function" | "functor" | "if" | "in" | "include" | "inherit" | "initializer" | "land"
+  | "lazy" | "let" | "lor" | "lsl" | "lsr" | "lxor" | "match" | "method" | "mod"
+  | "module" | "mutable" | "new" | "nonrec" | "object" | "of" | "open" | "or" | "private"
+  | "rec" | "sig" | "struct" | "then" | "to" | "true" | "try" | "type" | "val" | "virtual"
+  | "when" | "while" | "with"
+    -> true
+  | _ -> false
+
+let usable_name name =
+  if is_keyword name
+  then name ^ "_"
+  else name
+
 let print_clause_type (clause : Astlib_ast.Grammar.clause) ~opaque =
   Print.format "| %s%s"
     clause.clause_name
@@ -48,16 +64,24 @@ let print_kind_type (kind : Astlib_ast.Grammar.kind) ~opaque =
   Print.indented (fun () ->
     List.iter kind.clauses ~f:(print_clause_type ~opaque))
 
-let print_clause_of_concrete ~kind_name (clause : Astlib_ast.Grammar.clause) =
-  Print.format "| %s%s ->"
-    clause.clause_name
-    (match clause.fields with
-     | [] -> ""
-     | _ :: _ ->
-       Printf.sprintf " { %s }"
-         (String.concat ~sep:"; "
-            (List.map clause.fields ~f:(fun (field : Astlib_ast.Grammar.field) ->
-               field.field_name))));
+let declare_constructor
+      (clause : Astlib_ast.Grammar.clause)
+  =
+  Print.format "val %s : %st"
+    (usable_name (String.lowercase_ascii clause.clause_name))
+    (String.concat ~sep:""
+       (List.map clause.fields ~f:(fun (field : Astlib_ast.Grammar.field) ->
+          field.field_name ^ ":" ^ type_of_data field.data ~opaque:true ^ " -> ")))
+
+let declare_constructors (kind : Astlib_ast.Grammar.kind) =
+  List.iter kind.clauses ~f:declare_constructor
+
+let define_constructor ~kind_name (clause : Astlib_ast.Grammar.clause) =
+  Print.format "let %s%s ="
+    (usable_name (String.lowercase_ascii clause.clause_name))
+    (String.concat ~sep:""
+       (List.map clause.fields ~f:(fun (field : Astlib_ast.Grammar.field) ->
+          " ~" ^ field.field_name)));
   Print.indented (fun () ->
     Print.format "Versioned_ast.create ~version";
     Print.indented (fun () ->
@@ -77,6 +101,24 @@ let print_clause_of_concrete ~kind_name (clause : Astlib_ast.Grammar.clause) =
                  field.field_name);
            Print.format "]"));
       Print.format "}"))
+
+let define_constructors (kind : Astlib_ast.Grammar.kind) =
+  List.iter kind.clauses ~f:(define_constructor ~kind_name:kind.kind_name)
+
+let print_clause_of_concrete (clause : Astlib_ast.Grammar.clause) =
+  Print.format "| %s%s -> %s%s"
+    clause.clause_name
+    (match clause.fields with
+     | [] -> ""
+     | _ :: _ ->
+       Printf.sprintf " { %s }"
+         (String.concat ~sep:"; "
+            (List.map clause.fields ~f:(fun (field : Astlib_ast.Grammar.field) ->
+               field.field_name))))
+    (usable_name (String.lowercase_ascii clause.clause_name))
+    (String.concat ~sep:""
+       (List.map clause.fields ~f:(fun (field : Astlib_ast.Grammar.field) ->
+          " ~" ^ field.field_name)))
 
 let print_clause_to_concrete ~kind_name (clause : Astlib_ast.Grammar.clause) =
   Print.format "| { kind = %S" kind_name;
@@ -120,8 +162,7 @@ let print_clause_to_concrete ~kind_name (clause : Astlib_ast.Grammar.clause) =
 let print_kind_of_concrete (kind : Astlib_ast.Grammar.kind) =
   Print.format "let of_concrete : Concrete.t -> t = function";
   Print.indented (fun () ->
-    List.iter kind.clauses ~f:(fun clause ->
-      print_clause_of_concrete clause ~kind_name:kind.kind_name))
+    List.iter kind.clauses ~f:print_clause_of_concrete)
 
 let print_kind_to_concrete (kind : Astlib_ast.Grammar.kind) =
   Print.format "let to_concrete t =";
@@ -141,7 +182,8 @@ let print_kind_signature (kind : Astlib_ast.Grammar.kind) =
     print_kind_type kind ~opaque:true);
   Print.newline ();
   Print.format "val of_concrete : Concrete.t -> t";
-  Print.format "val to_concrete : t -> Concrete.t option"
+  Print.format "val to_concrete : t -> Concrete.t option";
+  declare_constructors kind
 
 let print_kind_structure (kind : Astlib_ast.Grammar.kind) =
   Print.format "type t = Versioned_ast.t";
@@ -151,6 +193,8 @@ let print_kind_structure (kind : Astlib_ast.Grammar.kind) =
   Print.newline ();
   Print.define_module "Concrete" (fun () ->
     print_kind_type kind ~opaque:false);
+  Print.newline ();
+  define_constructors kind;
   Print.newline ();
   print_kind_of_concrete kind;
   Print.newline ();
