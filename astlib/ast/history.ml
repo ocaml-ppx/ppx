@@ -64,7 +64,7 @@ let to_versioned_grammars t =
     ~init:(t.current_grammar, [(t.current_version, t.current_grammar)])
     ~f:(fun previous_version (current_grammar, list) ->
       let previous_grammar =
-        Delta.apply_to_grammar previous_version.delta_from_next current_grammar
+        Apply_delta.grammar previous_version.delta_from_next current_grammar
       in
       previous_grammar, (previous_version.version, previous_grammar) :: list)
   |> snd
