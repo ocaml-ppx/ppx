@@ -1,7 +1,7 @@
 type 'var structural =
   | Var of 'var
   | Inst of 'var inst
-  | Named of string
+  | Name of string
   | Bool
   | Int
   | Char
@@ -14,38 +14,34 @@ type 'var structural =
 and 'var tuple = 'var structural list
 
 and 'var inst =
-  { inst_poly : string
-  ; inst_args : 'var structural list
+  { poly : string
+  ; args : 'var structural list
   }
 
-type 'var field =
-  { field_name : string
-  ; field_type : 'var structural
-  }
-
-type 'var record = 'var field list
+type 'var record = (string * 'var structural) list
 
 type 'var clause =
-  | Inline_tuple of 'var tuple
-  | Inline_record of 'var record
+  | Tuple of 'var tuple
+  | Record of 'var record
 
-type 'var variant = 'var clause list
+type 'var variant = (string * 'var clause) list
 
 type 'var nominal =
   | Alias of 'var structural
   | Record of 'var record
   | Variant of 'var variant
 
-type 'var named =
-  { decl_name : string
-  ; decl_vars : 'var list
-  ; decl_body : 'var nominal
-  }
-
 type nothing = |
 
-type decl =
-  | Poly of string named
-  | Mono of nothing named
+type mono = nothing nominal
 
-type t = decl list
+type poly =
+  { vars : string list
+  ; body : string nominal
+  }
+
+type decl =
+  | Poly of poly
+  | Mono of mono
+
+type t = (string * decl) list
