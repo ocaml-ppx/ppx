@@ -19,11 +19,11 @@ type previous_version =
 
 val create
   :  current_version:string
-  -> current_grammar:Grammar.t
+  -> current_grammar:Type.t
   -> previous_versions:previous_version list
   -> t
 
-val to_versioned_grammars : t -> (string * Grammar.t) list
+val to_versioned_grammars : t -> (string * Type.t) list
 
 type conversion_step =
   { src_version : string

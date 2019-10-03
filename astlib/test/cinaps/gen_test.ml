@@ -24,7 +24,7 @@ let version_index_exn =
   fun ~version alist -> loop ~index:0 ~version alist
 
 let print_copy_test
-      (kind : Astlib_ast.Grammar.kind)
+      (kind : Astlib_ast.Type.kind)
       ~version
       ~index
       ~grammar_version
@@ -74,7 +74,7 @@ let print_copy_test
     Print.format "[%%expect {| |}]")
 
 let print_completeness_test
-      (kind : Astlib_ast.Grammar.kind)
+      (kind : Astlib_ast.Type.kind)
       ~version
       ~index
       ~grammar_version
@@ -104,10 +104,10 @@ let print_completeness_test
               kind.kind_name))));
     Print.format "[%%expect {| |}]")
 
-let print_kind_test (kind : Astlib_ast.Grammar.kind) ~version ~versioned_grammars =
+let print_kind_test (kind : Astlib_ast.Type.kind) ~version ~versioned_grammars =
   let versioned_grammars =
     List.filter versioned_grammars ~f:(fun (_, grammar) ->
-      List.exists grammar ~f:(fun (grammar_kind : Astlib_ast.Grammar.kind) ->
+      List.exists grammar ~f:(fun (grammar_kind : Astlib_ast.Type.kind) ->
         String.equal kind.kind_name grammar_kind.kind_name))
   in
   let index = version_index_exn ~version versioned_grammars in
@@ -120,10 +120,10 @@ let print_kind_test (kind : Astlib_ast.Grammar.kind) ~version ~versioned_grammar
 
 let print_grammar_test grammar ~entry_points ~version ~versioned_grammars =
   let grammar =
-    List.filter grammar ~f:(fun (kind : Astlib_ast.Grammar.kind) ->
+    List.filter grammar ~f:(fun (kind : Astlib_ast.Type.kind) ->
       List.mem entry_points kind.kind_name ~equal:String.equal)
   in
-  List.iteri grammar ~f:(fun kind_index (kind : Astlib_ast.Grammar.kind) ->
+  List.iteri grammar ~f:(fun kind_index (kind : Astlib_ast.Type.kind) ->
     if kind_index > 0 then Print.newline ();
     Print.define_module kind.kind_name (fun () ->
       print_kind_test kind ~version ~versioned_grammars))

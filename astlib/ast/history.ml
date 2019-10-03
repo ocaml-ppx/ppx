@@ -25,7 +25,7 @@ type conversion_step =
 
 type t =
   { current_version : string
-  ; current_grammar : Grammar.t
+  ; current_grammar : Type.t
   ; previous_versions_in_chronological_order : previous_version list
   }
 

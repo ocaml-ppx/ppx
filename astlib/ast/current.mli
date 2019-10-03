@@ -1,2 +1,2 @@
 val version : string
-val grammar : Grammar.t
+val grammar : Type.t

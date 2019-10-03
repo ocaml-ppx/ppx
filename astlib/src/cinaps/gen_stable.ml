@@ -2,7 +2,7 @@ open StdLabels
 open Astlib_cinaps
 
 let rec type_of_data data ~opaque =
-  match (data : Astlib_ast.Grammar.data) with
+  match (data : Astlib_ast.Type.data) with
   | Bool -> "bool"
   | Char -> "char"
   | String -> "string"
@@ -11,7 +11,7 @@ let rec type_of_data data ~opaque =
   | List data -> type_of_data data ~opaque ^ " list"
   | Option data -> type_of_data data ~opaque ^ " option"
 
-let rec data_of_concrete : Astlib_ast.Grammar.data -> string = function
+let rec data_of_concrete : Astlib_ast.Type.data -> string = function
   | Bool -> "Versioned_value.of_bool"
   | Char -> "Versioned_value.of_char"
   | String -> "Versioned_value.of_string"
@@ -22,7 +22,7 @@ let rec data_of_concrete : Astlib_ast.Grammar.data -> string = function
     Printf.sprintf "(Versioned_value.of_option ~f:%s)" (data_of_concrete data)
 
 let rec data_to_concrete data =
-  match (data : Astlib_ast.Grammar.data) with
+  match (data : Astlib_ast.Type.data) with
   | Bool -> "Versioned_value.to_bool"
   | Char -> "Versioned_value.to_char"
   | String -> "Versioned_value.to_string"
@@ -48,7 +48,7 @@ let usable_name name =
   then name ^ "_"
   else name
 
-let print_clause_type (clause : Astlib_ast.Grammar.clause) ~opaque =
+let print_clause_type (clause : Astlib_ast.Type.clause) ~opaque =
   Print.format "| %s%s"
     clause.clause_name
     (match clause.fields with
@@ -56,31 +56,31 @@ let print_clause_type (clause : Astlib_ast.Grammar.clause) ~opaque =
      | _ :: _ ->
        Printf.sprintf " of { %s }"
          (String.concat ~sep:"; "
-            (List.map clause.fields ~f:(fun (field : Astlib_ast.Grammar.field) ->
+            (List.map clause.fields ~f:(fun (field : Astlib_ast.Type.field) ->
                field.field_name ^ " : " ^ type_of_data field.data ~opaque))))
 
-let print_kind_type (kind : Astlib_ast.Grammar.kind) ~opaque =
+let print_kind_type (kind : Astlib_ast.Type.kind) ~opaque =
   Print.format "type t =";
   Print.indented (fun () ->
     List.iter kind.clauses ~f:(print_clause_type ~opaque))
 
 let declare_constructor
-      (clause : Astlib_ast.Grammar.clause)
+      (clause : Astlib_ast.Type.clause)
   =
   Print.format "val %s : %st"
     (usable_name (String.lowercase_ascii clause.clause_name))
     (String.concat ~sep:""
-       (List.map clause.fields ~f:(fun (field : Astlib_ast.Grammar.field) ->
+       (List.map clause.fields ~f:(fun (field : Astlib_ast.Type.field) ->
           field.field_name ^ ":" ^ type_of_data field.data ~opaque:true ^ " -> ")))
 
-let declare_constructors (kind : Astlib_ast.Grammar.kind) =
+let declare_constructors (kind : Astlib_ast.Type.kind) =
   List.iter kind.clauses ~f:declare_constructor
 
-let define_constructor ~kind_name (clause : Astlib_ast.Grammar.clause) =
+let define_constructor ~kind_name (clause : Astlib_ast.Type.clause) =
   Print.format "let %s%s ="
     (usable_name (String.lowercase_ascii clause.clause_name))
     (String.concat ~sep:""
-       (List.map clause.fields ~f:(fun (field : Astlib_ast.Grammar.field) ->
+       (List.map clause.fields ~f:(fun (field : Astlib_ast.Type.field) ->
           " ~" ^ field.field_name)));
   Print.indented (fun () ->
     Print.format "Versioned_ast.create ~version";
@@ -93,7 +93,7 @@ let define_constructor ~kind_name (clause : Astlib_ast.Grammar.clause) =
          Print.format "; fields =";
          Print.indented ~levels:2 (fun () ->
            List.iteri clause.fields
-             ~f:(fun field_index (field : Astlib_ast.Grammar.field) ->
+             ~f:(fun field_index (field : Astlib_ast.Type.field) ->
                Print.format "%c { name = %S; value = %s %s }"
                  (if field_index = 0 then '[' else ';')
                  field.field_name
@@ -102,10 +102,10 @@ let define_constructor ~kind_name (clause : Astlib_ast.Grammar.clause) =
            Print.format "]"));
       Print.format "}"))
 
-let define_constructors (kind : Astlib_ast.Grammar.kind) =
+let define_constructors (kind : Astlib_ast.Type.kind) =
   List.iter kind.clauses ~f:(define_constructor ~kind_name:kind.kind_name)
 
-let print_clause_of_concrete (clause : Astlib_ast.Grammar.clause) =
+let print_clause_of_concrete (clause : Astlib_ast.Type.clause) =
   Print.format "| %s%s -> %s%s"
     clause.clause_name
     (match clause.fields with
@@ -113,14 +113,14 @@ let print_clause_of_concrete (clause : Astlib_ast.Grammar.clause) =
      | _ :: _ ->
        Printf.sprintf " { %s }"
          (String.concat ~sep:"; "
-            (List.map clause.fields ~f:(fun (field : Astlib_ast.Grammar.field) ->
+            (List.map clause.fields ~f:(fun (field : Astlib_ast.Type.field) ->
                field.field_name))))
     (usable_name (String.lowercase_ascii clause.clause_name))
     (String.concat ~sep:""
-       (List.map clause.fields ~f:(fun (field : Astlib_ast.Grammar.field) ->
+       (List.map clause.fields ~f:(fun (field : Astlib_ast.Type.field) ->
           " ~" ^ field.field_name)))
 
-let print_clause_to_concrete ~kind_name (clause : Astlib_ast.Grammar.clause) =
+let print_clause_to_concrete ~kind_name (clause : Astlib_ast.Type.clause) =
   Print.format "| { kind = %S" kind_name;
   Print.indented (fun () ->
     Print.format "; clause = %S" clause.clause_name;
@@ -130,7 +130,7 @@ let print_clause_to_concrete ~kind_name (clause : Astlib_ast.Grammar.clause) =
        Print.format "; fields =";
        Print.indented ~levels:2 (fun () ->
          List.iteri clause.fields
-           ~f:(fun field_index (field : Astlib_ast.Grammar.field) ->
+           ~f:(fun field_index (field : Astlib_ast.Type.field) ->
              Print.format "%c { name = %S; value = %s }"
                (if field_index = 0 then '[' else ';')
                field.field_name
@@ -139,7 +139,7 @@ let print_clause_to_concrete ~kind_name (clause : Astlib_ast.Grammar.clause) =
     Print.format "} ->";
     let rec loop fields =
       match fields with
-      | (field : Astlib_ast.Grammar.field) :: fields ->
+      | (field : Astlib_ast.Type.field) :: fields ->
         Print.format "Optional.bind (%s %s) ~f:(fun %s ->"
           (data_to_concrete field.data)
           field.field_name
@@ -153,18 +153,18 @@ let print_clause_to_concrete ~kind_name (clause : Astlib_ast.Grammar.clause) =
            | _ :: _ ->
              Printf.sprintf " { %s }"
                (String.concat ~sep:"; "
-                  (List.map clause.fields ~f:(fun (field : Astlib_ast.Grammar.field) ->
+                  (List.map clause.fields ~f:(fun (field : Astlib_ast.Type.field) ->
                      field.field_name))))
           (String.make (List.length clause.fields) ')')
     in
     loop clause.fields)
 
-let print_kind_of_concrete (kind : Astlib_ast.Grammar.kind) =
+let print_kind_of_concrete (kind : Astlib_ast.Type.kind) =
   Print.format "let of_concrete : Concrete.t -> t = function";
   Print.indented (fun () ->
     List.iter kind.clauses ~f:print_clause_of_concrete)
 
-let print_kind_to_concrete (kind : Astlib_ast.Grammar.kind) =
+let print_kind_to_concrete (kind : Astlib_ast.Type.kind) =
   Print.format "let to_concrete t =";
   Print.indented (fun () ->
     Print.format "match Versioned_ast.convert t ~version with";
@@ -172,7 +172,7 @@ let print_kind_to_concrete (kind : Astlib_ast.Grammar.kind) =
       print_clause_to_concrete clause ~kind_name:kind.kind_name);
     Print.format "| _ -> None")
 
-let print_kind_signature (kind : Astlib_ast.Grammar.kind) =
+let print_kind_signature (kind : Astlib_ast.Type.kind) =
   Print.format "type t = Unversioned.%s" (String.lowercase_ascii kind.kind_name);
   Print.newline ();
   Print.format "val of_ast : Versioned_ast.t -> t";
@@ -185,7 +185,7 @@ let print_kind_signature (kind : Astlib_ast.Grammar.kind) =
   Print.format "val to_concrete : t -> Concrete.t option";
   declare_constructors kind
 
-let print_kind_structure (kind : Astlib_ast.Grammar.kind) =
+let print_kind_structure (kind : Astlib_ast.Type.kind) =
   Print.format "type t = Versioned_ast.t";
   Print.newline ();
   Print.format "let of_ast t = t";
@@ -202,12 +202,12 @@ let print_kind_structure (kind : Astlib_ast.Grammar.kind) =
 
 let print_grammar_mli grammar =
   Print.declare_recursive_modules
-    (List.map grammar ~f:(fun (kind : Astlib_ast.Grammar.kind) ->
+    (List.map grammar ~f:(fun (kind : Astlib_ast.Type.kind) ->
        (kind.kind_name,
         (fun () -> print_kind_signature kind))))
 
 let print_grammar_ml grammar =
-  List.iteri grammar ~f:(fun kind_index (kind : Astlib_ast.Grammar.kind) ->
+  List.iteri grammar ~f:(fun kind_index (kind : Astlib_ast.Type.kind) ->
     if kind_index > 0 then Print.newline ();
     Print.define_module kind.kind_name (fun () ->
       print_kind_structure kind))
@@ -216,7 +216,7 @@ let names_of_versioned_grammars versioned_grammars =
   versioned_grammars
   |> List.map ~f:snd
   |> List.concat
-  |> List.map ~f:(fun (kind : Astlib_ast.Grammar.kind) -> kind.kind_name)
+  |> List.map ~f:(fun (kind : Astlib_ast.Type.kind) -> kind.kind_name)
   |> List.sort_uniq ~cmp:String.compare
 
 let print_unversioned_mli versioned_grammars =
