@@ -1,5 +1,5 @@
 module Ast = Ast
-module Type = Type
+module Grammar = Grammar
 
 module History = struct
   include History
