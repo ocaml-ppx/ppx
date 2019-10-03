@@ -2,6 +2,8 @@
 #require "base";;
 #require "stdio";;
 
+let () = Printexc.record_backtrace false
+
 open Base
 open Stdio
 open Ppx
@@ -100,6 +102,21 @@ let _ = convert_longident "Base.( land )"
 [%%expect{|
 - : string * longident =
 ("Base.( land )", Ppx.Longident.Ldot (Ppx.Longident.Lident "Base", "land"))
+|}]
+
+let _ = convert_longident "A(B)"
+[%%expect{|
+Exception: Invalid_argument "Ppx.Longident.parse: \"A(B)\"".
+|}]
+
+let _ = convert_longident "A.B(C)"
+[%%expect{|
+Exception: Invalid_argument "Ppx.Longident.parse: \"A.B(C)\"".
+|}]
+
+let _ = convert_longident ")"
+[%%expect{|
+Exception: Invalid_argument "Ppx.Longident.parse: \")\"".
 |}]
 
 let _ = Ppx.Code_path.(file_path @@ top_level ~file_path:"dir/main.ml")
