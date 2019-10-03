@@ -47,6 +47,34 @@ let edit_list key modify edits input =
 
 let alist_key _ (name, _) = name
 
-let edit_alist = edit_list alist_key
+let list_key i _ = i
+
+let edit_named modify e (name, x) = (name, modify e x)
+
+let edit_alist modify = edit_list alist_key (edit_named modify)
+
+let structural (e : Delta.structural) (_ : Grammar.structural) : Grammar.structural = e
+
+let tuple = edit_list list_key structural
+
+let record = edit_alist structural
+
+let clause (e : Delta.clause) (g : Grammar.clause) : Grammar.clause =
+  match e, g with
+  | Tuple e, Tuple g -> Tuple (tuple e g)
+  | Record e, Record g -> Record (record e g)
+  | _ -> failwith (__LOC__ ^ ": clause edit/grammar mismatch")
+
+let variant = edit_alist clause
+
+let nominal (e : Delta.nominal) (g : Grammar.nominal) : Grammar.nominal =
+  match e, g with
+  | Alias e, Alias g -> Alias (structural e g)
+  | Record e, Record g -> Record (record e g)
+  | Variant e, Variant g -> Variant (variant e g)
+  | _ -> failwith (__LOC__ ^ ": nominal edit/grammar mismatch")
+
+let decl e ({ vars; body } : Grammar.decl) : Grammar.decl =
+  { vars; body = nominal e body }
 
 let grammar = edit_alist decl
