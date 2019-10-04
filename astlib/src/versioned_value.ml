@@ -2,11 +2,11 @@ open StdLabels
 
 type t = Versioned_ast.t Astlib_ast.Ast.value
 
-let of_ast x : t = Tree x
+let of_ast x : t = Node x
 
 let to_ast t =
   match (t : t) with
-  | Tree x -> Some x
+  | Node x -> Some x
   | _ -> None
 
 let of_list list ~f = Astlib_ast.Ast.List (List.map list ~f)
