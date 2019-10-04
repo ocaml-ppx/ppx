@@ -125,17 +125,44 @@ let print_decl name ({ vars; body } : Astlib_ast.Grammar.decl) ~opaque =
   Print.format "type %st =" (type_vars vars);
   Print.indented (fun () -> print_nominal_type body ~opaque)
 
-let declare_constructor
-      (clause : Astlib_ast.Grammar.clause)
-  =
-  Print.format "val %s : %st"
-    (usable_name (String.lowercase_ascii clause.clause_name))
-    (String.concat ~sep:""
-       (List.map clause.fields ~f:(fun (field : Astlib_ast.Grammar.field) ->
-          field.field_name ^ ":" ^ type_of_structural field.structural ~opaque:true ^ " -> ")))
+let tuple_argument_types tuple =
+  List.map tuple ~f:(type_of_structural ~opaque:true)
 
-let declare_constructors (kind : Astlib_ast.Grammar.kind) =
-  List.iter kind.clauses ~f:declare_constructor
+let record_argument_types record =
+  List.map record ~f:(fun (name, structural) ->
+    name ^ ":" ^ type_of_structural structural ~opaque:true)
+
+let clause_argument_types (clause : Astlib_ast.Grammar.clause) =
+  match clause with
+  | Empty -> []
+  | Tuple tuple -> tuple_argument_types tuple
+  | Record record -> record_argument_types record
+
+let declare_constructor ~suffix ~vars ~arguments =
+  Print.format "val create%s : %s"
+    (match suffix with
+     | None -> ""
+     | Some suffix -> "_" ^ suffix)
+    (String.concat ~sep:" -> " (arguments @ [type_vars vars ^ "t"]))
+
+let declare_clause_constructor name ~vars (clause : Astlib_ast.Grammar.clause) =
+  declare_constructor
+    ~suffix:(Some name)
+    ~vars
+    ~arguments:(clause_argument_types clause)
+
+let declare_nominal_constructors ~vars (nominal : Astlib_ast.Grammar.nominal) =
+  match nominal with
+  | Alias structural ->
+    declare_constructor
+      ~suffix:None
+      ~vars
+      ~arguments:[type_of_structural structural ~opaque:true]
+  | Record record ->
+    declare_constructor ~suffix:None ~vars ~arguments:(record_argument_types record)
+  | Variant variant ->
+    List.iter variant ~f:(fun (name, clause) ->
+      declare_clause_constructor name ~vars clause)
 
 let define_constructor ~kind_name (clause : Astlib_ast.Grammar.clause) =
   Print.format "let %s%s ="
