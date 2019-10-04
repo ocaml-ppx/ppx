@@ -186,7 +186,8 @@ let define_tuple_constructor ~decl_name ~suffix tuple f =
                   (tuple_argument i))))))
 
 let define_record_constructor ~decl_name ~suffix record f =
-  define_constructor ~decl_name ~suffix ~arguments:(List.map record ~f:fst)
+  define_constructor ~decl_name ~suffix
+    ~arguments:(List.map record ~f:(fun (field, _) -> "~" ^ field))
     (f (Printf.sprintf "[%s]"
           (String.concat ~sep:"; "
              (List.map record ~f:(fun (field, structural) ->
@@ -223,20 +224,22 @@ let define_nominal_constructors ~decl_name (nominal : Astlib_ast.Grammar.nominal
     List.iter variant ~f:(fun (name, clause) ->
       define_clause_constructor name ~decl_name clause)
 
-let print_clause_of_concrete (clause : Astlib_ast.Grammar.clause) =
-  Print.format "| %s%s -> %s%s"
-    clause.clause_name
-    (match clause.fields with
-     | [] -> ""
-     | _ :: _ ->
-       Printf.sprintf " { %s }"
-         (String.concat ~sep:"; "
-            (List.map clause.fields ~f:(fun (field : Astlib_ast.Grammar.field) ->
-               field.field_name))))
-    (usable_name (String.lowercase_ascii clause.clause_name))
-    (String.concat ~sep:""
-       (List.map clause.fields ~f:(fun (field : Astlib_ast.Grammar.field) ->
-          " ~" ^ field.field_name)))
+let print_clause_of_concrete name (clause : Astlib_ast.Grammar.clause) =
+  let suffix = Some name in
+  match clause with
+  | Empty -> Print.format "| %s -> %s" name (constructor_name ~suffix)
+  | Tuple tuple ->
+    Print.format "| %s (%s) ->" name (String.concat ~sep:", " (tuple_arguments tuple));
+    Print.indented (fun () ->
+      Print.format "%s %s"
+        (constructor_name ~suffix)
+        (String.concat ~sep:" " (tuple_arguments tuple)))
+  | Record record ->
+    Print.format "| %s { %s } ->" name (String.concat ~sep:"; " (List.map record ~f:fst));
+    Print.indented (fun () ->
+      Print.format "%s %s"
+        (constructor_name ~suffix)
+        (String.concat ~sep:" " (List.map record ~f:(fun (field, _) -> "~" ^ field))))
 
 let print_clause_to_concrete ~kind_name (clause : Astlib_ast.Grammar.clause) =
   Print.format "| { kind = %S" kind_name;
