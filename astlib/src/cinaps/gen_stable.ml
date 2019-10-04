@@ -1,36 +1,45 @@
 open StdLabels
 open Astlib_cinaps
 
-let rec type_of_data data ~opaque =
-  match (data : Astlib_ast.Grammar.data) with
+let rec type_of_structural structural ~opaque =
+  match (structural : Astlib_ast.Grammar.structural) with
   | Bool -> "bool"
+  | Int -> "int"
   | Char -> "char"
   | String -> "string"
   | Location -> "Location.t"
-  | Kind name -> if opaque then name ^ ".t" else "Versioned_ast.t"
-  | List data -> type_of_data data ~opaque ^ " list"
-  | Option data -> type_of_data data ~opaque ^ " option"
+  | Var var -> "'" ^ var
+  | Inst { poly; args } ->
+    Printf.sprintf "(%s) %s"
+      (String.concat ~sep:", " (List.map args ~f:(type_of_structural ~opaque)))
+      poly
+  | Name name -> if opaque then name ^ ".t" else "Versioned_ast.t"
+  | List structural -> type_of_structural structural ~opaque ^ " list"
+  | Option structural -> type_of_structural structural ~opaque ^ " option"
+  | Tuple tuple ->
+    Printf.sprintf "(%s)"
+      (String.concat ~sep:" * " (List.map tuple ~f:(type_of_structural ~opaque)))
 
-let rec data_of_concrete : Astlib_ast.Grammar.data -> string = function
+let rec structural_of_concrete : Astlib_ast.Grammar.structural -> string = function
   | Bool -> "Versioned_value.of_bool"
   | Char -> "Versioned_value.of_char"
   | String -> "Versioned_value.of_string"
   | Location -> "Versioned_value.of_location"
   | Kind _ -> "Versioned_value.of_ast"
-  | List data -> Printf.sprintf "(Versioned_value.of_list ~f:%s)" (data_of_concrete data)
-  | Option data ->
-    Printf.sprintf "(Versioned_value.of_option ~f:%s)" (data_of_concrete data)
+  | List structural -> Printf.sprintf "(Versioned_value.of_list ~f:%s)" (structural_of_concrete structural)
+  | Option structural ->
+    Printf.sprintf "(Versioned_value.of_option ~f:%s)" (structural_of_concrete structural)
 
-let rec data_to_concrete data =
-  match (data : Astlib_ast.Grammar.data) with
+let rec structural_to_concrete structural =
+  match (structural : Astlib_ast.Grammar.structural) with
   | Bool -> "Versioned_value.to_bool"
   | Char -> "Versioned_value.to_char"
   | String -> "Versioned_value.to_string"
   | Location -> "Versioned_value.to_location"
   | Kind _ -> Printf.sprintf "Versioned_value.to_ast"
-  | List data -> Printf.sprintf "(Versioned_value.to_list ~f:%s)" (data_to_concrete data)
-  | Option data ->
-    Printf.sprintf "(Versioned_value.to_option ~f:%s)" (data_to_concrete data)
+  | List structural -> Printf.sprintf "(Versioned_value.to_list ~f:%s)" (structural_to_concrete structural)
+  | Option structural ->
+    Printf.sprintf "(Versioned_value.to_option ~f:%s)" (structural_to_concrete structural)
 
 let is_keyword = function
   | "and" | "as" | "assert" | "asr" | "begin" | "class" | "constraint" | "do" | "done"
@@ -57,7 +66,7 @@ let print_clause_type (clause : Astlib_ast.Grammar.clause) ~opaque =
        Printf.sprintf " of { %s }"
          (String.concat ~sep:"; "
             (List.map clause.fields ~f:(fun (field : Astlib_ast.Grammar.field) ->
-               field.field_name ^ " : " ^ type_of_data field.data ~opaque))))
+               field.field_name ^ " : " ^ type_of_structural field.structural ~opaque))))
 
 let print_kind_type (kind : Astlib_ast.Grammar.kind) ~opaque =
   Print.format "type t =";
@@ -71,7 +80,7 @@ let declare_constructor
     (usable_name (String.lowercase_ascii clause.clause_name))
     (String.concat ~sep:""
        (List.map clause.fields ~f:(fun (field : Astlib_ast.Grammar.field) ->
-          field.field_name ^ ":" ^ type_of_data field.data ~opaque:true ^ " -> ")))
+          field.field_name ^ ":" ^ type_of_structural field.structural ~opaque:true ^ " -> ")))
 
 let declare_constructors (kind : Astlib_ast.Grammar.kind) =
   List.iter kind.clauses ~f:declare_constructor
@@ -97,7 +106,7 @@ let define_constructor ~kind_name (clause : Astlib_ast.Grammar.clause) =
                Print.format "%c { name = %S; value = %s %s }"
                  (if field_index = 0 then '[' else ';')
                  field.field_name
-                 (data_of_concrete field.data)
+                 (structural_of_concrete field.structural)
                  field.field_name);
            Print.format "]"));
       Print.format "}"))
@@ -141,7 +150,7 @@ let print_clause_to_concrete ~kind_name (clause : Astlib_ast.Grammar.clause) =
       match fields with
       | (field : Astlib_ast.Grammar.field) :: fields ->
         Print.format "Optional.bind (%s %s) ~f:(fun %s ->"
-          (data_to_concrete field.data)
+          (structural_to_concrete field.structural)
           field.field_name
           field.field_name;
         Print.indented (fun () -> loop fields)
