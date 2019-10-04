@@ -22,6 +22,12 @@ and type_of_tuple tuple ~opaque =
   Printf.sprintf "(%s)"
     (String.concat ~sep:" * " (List.map tuple ~f:(type_of_structural ~opaque)))
 
+let type_of_record record ~opaque =
+  Printf.sprintf "{ %s }"
+    (String.concat ~sep:"; "
+       (List.map record ~f:(fun (name, structural) ->
+          name ^ " : " ^ type_of_structural structural ~opaque)))
+
 let rec structural_of_concrete : Astlib_ast.Grammar.structural -> string = function
   | Bool -> "Versioned_value.of_bool"
   | Int -> "Versioned_value.of_int"
@@ -89,12 +95,6 @@ let usable_name name =
   then name ^ "_"
   else name
 
-let type_of_record record ~opaque =
-  Printf.sprintf "{ %s }"
-    (String.concat ~sep:"; "
-       (List.map record ~f:(fun (name, structural) ->
-          name ^ " : " ^ type_of_structural structural ~opaque)))
-
 let print_clause_type name (clause : Astlib_ast.Grammar.clause) ~opaque =
   Print.format "| %s%s"
     name
@@ -103,10 +103,27 @@ let print_clause_type name (clause : Astlib_ast.Grammar.clause) ~opaque =
      | Tuple tuple -> " of " ^ type_of_tuple tuple ~opaque
      | Record record -> " of " ^ type_of_record record ~opaque)
 
-let print_kind_type (kind : Astlib_ast.Grammar.kind) ~opaque =
-  Print.format "type t =";
-  Print.indented (fun () ->
-    List.iter kind.clauses ~f:(print_clause_type ~opaque))
+let print_variant_type variant ~opaque =
+  List.iter variant ~f:(fun (name, clause) ->
+    print_clause_type name clause ~opaque)
+
+let type_vars vars =
+  match vars with
+  | [] -> ""
+  | [var] -> "'" ^ var
+  | _ ->
+    Printf.sprintf "(%s)"
+      (String.concat ~sep:", " (List.map vars ~f:(fun var -> "'" ^ var)))
+
+let print_nominal_type (nominal : Astlib_ast.Grammar.nominal) ~opaque =
+  match nominal with
+  | Alias structural -> Print.format "%s" (type_of_structural structural ~opaque)
+  | Record record -> Print.format "%s" (type_of_record record ~opaque)
+  | Variant variant -> print_variant_type variant ~opaque
+
+let print_decl name ({ vars; body } : Astlib_ast.Grammar.decl) ~opaque =
+  Print.format "type %st =" (type_vars vars);
+  Print.indented (fun () -> print_nominal_type body ~opaque)
 
 let declare_constructor
       (clause : Astlib_ast.Grammar.clause)
