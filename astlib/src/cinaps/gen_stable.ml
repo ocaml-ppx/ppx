@@ -167,35 +167,35 @@ let declare_nominal_constructors ~vars (nominal : Astlib_ast.Grammar.nominal) =
     List.iter variant ~f:(fun (name, clause) ->
       declare_clause_constructor name ~vars clause)
 
-let define_constructor ~suffix ~node ~arguments data =
-  Print.format "let %s : t ="
+let define_constructor ~suffix ~decl_name ~arguments data =
+  Print.format "let %s ="
     (String.concat ~sep:" " (constructor_name ~suffix :: arguments));
   Print.indented (fun () ->
-    Print.format "{ name = %S; data = %s }" node data)
+    Print.format "Versioned_ast.create ~version { name = %S; data = %s }" decl_name data)
 
 let tuple_arguments tuple =
   List.init ~len:(List.length tuple) ~f:(fun i -> Printf.sprintf "x%d" (i + 1))
 
-let define_clause_constructor name ~node (clause : Astlib_ast.Grammar.clause) =
+let define_clause_constructor name ~decl_name (clause : Astlib_ast.Grammar.clause) =
   let suffix = Some name in
   match clause with
   | Empty ->
-    define_constructor ~node ~suffix ~arguments:[]
+    define_constructor ~decl_name ~suffix ~arguments:[]
       (Printf.sprintf "Variant (%S, Empty)" name)
   | Tuple tuple ->
     let arguments = tuple_arguments tuple in
-    define_constructor ~node ~suffix ~arguments
+    define_constructor ~decl_name ~suffix ~arguments
       (Printf.sprintf "Variant (%S, Tuple [%s])" name (String.concat ~sep:"; " arguments))
   | Record record ->
     let arguments = List.map record ~f:fst in
-    define_constructor ~node ~suffix ~arguments
+    define_constructor ~decl_name ~suffix ~arguments
       (Printf.sprintf "Variant (%S, Record [%s])"
          name
          (String.concat ~sep:"; "
             (List.map arguments ~f:(fun arg ->
                Printf.sprintf "%S, %s" arg arg))))
 
-let define_constructors (kind : Astlib_ast.Grammar.kind) =
+let define_nominal_constructors (kind : Astlib_ast.Grammar.kind) =
   List.iter kind.clauses ~f:(define_constructor ~kind_name:kind.kind_name)
 
 let print_clause_of_concrete (clause : Astlib_ast.Grammar.clause) =
