@@ -241,44 +241,61 @@ let print_clause_of_concrete name (clause : Astlib_ast.Grammar.clause) =
         (constructor_name ~suffix)
         (String.concat ~sep:" " (List.map record ~f:(fun (field, _) -> "~" ^ field))))
 
-let print_clause_to_concrete ~kind_name (clause : Astlib_ast.Grammar.clause) =
-  Print.format "| { kind = %S" kind_name;
-  Print.indented (fun () ->
-    Print.format "; clause = %S" clause.clause_name;
-    (match clause.fields with
-     | [] -> Print.format "; fields = []"
-     | _ ->
-       Print.format "; fields =";
-       Print.indented ~levels:2 (fun () ->
-         List.iteri clause.fields
-           ~f:(fun field_index (field : Astlib_ast.Grammar.field) ->
-             Print.format "%c { name = %S; value = %s }"
-               (if field_index = 0 then '[' else ';')
-               field.field_name
-               field.field_name);
-         Print.format "]"));
-    Print.format "} ->";
-    let rec loop fields =
-      match fields with
-      | (field : Astlib_ast.Grammar.field) :: fields ->
-        Print.format "Optional.bind (%s %s) ~f:(fun %s ->"
-          (structural_to_concrete field.structural)
-          field.field_name
-          field.field_name;
-        Print.indented (fun () -> loop fields)
-      | [] ->
-        Print.format "Some (Concrete.%s%s)%s"
-          clause.clause_name
-          (match clause.fields with
-           | [] -> ""
-           | _ :: _ ->
-             Printf.sprintf " { %s }"
-               (String.concat ~sep:"; "
-                  (List.map clause.fields ~f:(fun (field : Astlib_ast.Grammar.field) ->
-                     field.field_name))))
-          (String.make (List.length clause.fields) ')')
-    in
-    loop clause.fields)
+let with_optional_bindings bindings f =
+  let rec loop bindings =
+    match bindings with
+    | [] -> f ()
+    | (arg, expr) :: bindings ->
+      Print.format "Optional.bind (%s) ~f:(fun %s ->" expr arg;
+      Print.indented (fun () -> loop bindings)
+  in
+  loop bindings;
+  Print.format "%s" (String.make (List.length bindings) ')')
+
+let with_tuple_to_concrete tuple f =
+  let bindings =
+    List.mapi tuple ~f:(fun i structural ->
+      let arg = tuple_argument i in
+      let conv = structural_to_concrete structural in
+      arg, Printf.sprintf "%s %s" conv arg)
+  in
+  with_optional_bindings bindings f
+
+let with_record_to_concrete record f =
+  let bindings =
+    List.map record ~f:(fun (field, structural) ->
+      let conv = structural_to_concrete structural in
+      field, Printf.sprintf "%s %s" conv field)
+  in
+  with_optional_bindings bindings f
+
+let print_clause_to_concrete name ~decl_name (clause : Astlib_ast.Grammar.clause) =
+  match clause with
+  | Empty ->
+    Print.format "| { name = %S; data = Variant (%S, Empty) } -> Some %s"
+      decl_name
+      name
+      name
+  | Tuple tuple ->
+    Print.format "| { name = %S; data = Variant (%S, Tuple [%s]) } ->"
+      decl_name
+      name
+      (String.concat ~sep:"; " (tuple_arguments tuple));
+    Print.indented (fun () ->
+      with_tuple_to_concrete tuple (fun () ->
+        Print.format "Some (%s (%s))"
+          name
+          (String.concat ~sep:", " (tuple_arguments tuple))))
+  | Record record ->
+    Print.format "| { name = %S; data = Variant (%S, Record [%s]) } ->"
+      decl_name
+      name
+      (String.concat ~sep:"; " (List.map record ~f:fst));
+    Print.indented (fun () ->
+      with_record_to_concrete record (fun () ->
+        Print.format "Some (%s { %s })"
+          name
+          (String.concat ~sep:"; " (List.map record ~f:fst))))
 
 let print_kind_of_concrete (kind : Astlib_ast.Grammar.kind) =
   Print.format "let of_concrete : Concrete.t -> t = function";
