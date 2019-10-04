@@ -110,9 +110,9 @@ let print_variant_type variant ~opaque =
 let type_vars vars =
   match vars with
   | [] -> ""
-  | [var] -> "'" ^ var
+  | [var] -> "'" ^ var ^ " "
   | _ ->
-    Printf.sprintf "(%s)"
+    Printf.sprintf "(%s) "
       (String.concat ~sep:", " (List.map vars ~f:(fun var -> "'" ^ var)))
 
 let print_nominal_type (nominal : Astlib_ast.Grammar.nominal) ~opaque =
@@ -297,21 +297,23 @@ let print_clause_to_concrete name ~decl_name (clause : Astlib_ast.Grammar.clause
           name
           (String.concat ~sep:"; " (List.map record ~f:fst))))
 
-let print_of_concrete ~pattern print_body =
-  Print.format "let of_concrete (%s : Concrete.t) : t =" pattern;
+let print_of_concrete ~vars ~pattern print_body =
+  let tyvars = type_vars vars in
+  Print.format "let of_concrete (%s : %sConcrete.t) : %st =" pattern tyvars tyvars;
   Print.indented print_body
 
 let print_nominal_of_concrete ~decl_name ~vars (nominal : Astlib_ast.Grammar.nominal) =
   match nominal with
   | Alias structural ->
     let arg = "concrete" in
-    print_of_concrete ~pattern:arg (fun () ->
+    print_of_concrete ~vars ~pattern:arg (fun () ->
       Print.format "{ name = %S; data = %s %s }"
         decl_name
         (structural_of_concrete structural)
         arg)
   | Record record ->
     print_of_concrete
+      ~vars
       ~pattern:(Printf.sprintf "{ %s }"
                   (String.concat ~sep:", " (List.map record ~f:fst)))
       (fun () ->
@@ -325,7 +327,7 @@ let print_nominal_of_concrete ~decl_name ~vars (nominal : Astlib_ast.Grammar.nom
                    field))))
   | Variant variant ->
     let arg = "concrete" in
-    print_of_concrete ~pattern:arg (fun () ->
+    print_of_concrete ~vars ~pattern:arg (fun () ->
       Print.format "match %s with" arg;
       List.iter variant ~f:(fun (name, clause) ->
         print_clause_of_concrete name clause))
