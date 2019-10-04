@@ -167,7 +167,7 @@ let declare_nominal_constructors ~vars (nominal : Astlib_ast.Grammar.nominal) =
     List.iter variant ~f:(fun (name, clause) ->
       declare_clause_constructor name ~vars clause)
 
-let define_constructor ~suffix ~decl_name ~arguments data =
+let define_constructor ~decl_name ~suffix ~arguments data =
   Print.format "let %s ="
     (String.concat ~sep:" " (constructor_name ~suffix :: arguments));
   Print.indented (fun () ->
@@ -176,6 +176,25 @@ let define_constructor ~suffix ~decl_name ~arguments data =
 let tuple_argument i = Printf.sprintf "x%d" (i + 1)
 let tuple_arguments tuple = List.init ~len:(List.length tuple) ~f:tuple_argument
 
+let define_tuple_constructor ~decl_name ~suffix tuple f =
+  define_constructor ~decl_name ~suffix ~arguments:(tuple_arguments tuple)
+    (f (Printf.sprintf "[%s]"
+          (String.concat ~sep:"; "
+             (List.mapi tuple ~f:(fun i structural ->
+                Printf.sprintf "%s %s"
+                  (structural_of_concrete structural)
+                  (tuple_argument i))))))
+
+let define_record_constructor ~decl_name ~suffix record f =
+  define_constructor ~decl_name ~suffix ~arguments:(List.map record ~f:fst)
+    (f (Printf.sprintf "[%s]"
+          (String.concat ~sep:"; "
+             (List.map record ~f:(fun (field, structural) ->
+                Printf.sprintf "(%S, %s %s)"
+                  field
+                  (structural_of_concrete structural)
+                  field)))))
+
 let define_clause_constructor name ~decl_name (clause : Astlib_ast.Grammar.clause) =
   let suffix = Some name in
   match clause with
@@ -183,26 +202,26 @@ let define_clause_constructor name ~decl_name (clause : Astlib_ast.Grammar.claus
     define_constructor ~decl_name ~suffix ~arguments:[]
       (Printf.sprintf "Variant (%S, Empty)" name)
   | Tuple tuple ->
-    define_constructor ~decl_name ~suffix ~arguments:(tuple_arguments tuple)
-      (Printf.sprintf "Variant (%S, Tuple [%s])" name
-         (String.concat ~sep:"; "
-            (List.mapi tuple ~f:(fun i structural ->
-               Printf.sprintf "%s %s"
-                 (structural_of_concrete structural)
-                 (tuple_argument i)))))
+    define_tuple_constructor ~decl_name ~suffix tuple (fun list ->
+      Printf.sprintf "Variant (%S, Tuple %s)" name list)
   | Record record ->
-    define_constructor ~decl_name ~suffix ~arguments:(List.map record ~f:fst)
-      (Printf.sprintf "Variant (%S, Record [%s])"
-         name
-         (String.concat ~sep:"; "
-            (List.map record ~f:(fun (field, structural) ->
-               Printf.sprintf "(%S, %s %s)"
-                 field
-                 (structural_of_concrete structural)
-                 field))))
+    define_record_constructor ~decl_name ~suffix record (fun list ->
+      Printf.sprintf "Variant (%S, Record %s)" name list)
 
-let define_nominal_constructors (kind : Astlib_ast.Grammar.kind) =
-  List.iter kind.clauses ~f:(define_constructor ~kind_name:kind.kind_name)
+let define_nominal_constructors ~decl_name (nominal : Astlib_ast.Grammar.nominal) =
+  match nominal with
+  | Alias structural ->
+    define_constructor
+      ~decl_name
+      ~suffix:None
+      ~arguments:["x"]
+      (Printf.sprintf "%s x" (structural_of_concrete structural))
+  | Record record ->
+    define_record_constructor ~decl_name ~suffix:None record (fun list ->
+      Printf.sprintf "Record %s" list)
+  | Variant variant ->
+    List.iter variant ~f:(fun (name, clause) ->
+      define_clause_constructor name ~decl_name clause)
 
 let print_clause_of_concrete (clause : Astlib_ast.Grammar.clause) =
   Print.format "| %s%s -> %s%s"
