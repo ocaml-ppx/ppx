@@ -138,11 +138,14 @@ let clause_argument_types (clause : Astlib_ast.Grammar.clause) =
   | Tuple tuple -> tuple_argument_types tuple
   | Record record -> record_argument_types record
 
+let constructor_name ~suffix =
+  match suffix with
+  | None -> ""
+  | Some suffix -> "_" ^ String.lowercase_ascii suffix
+
 let declare_constructor ~suffix ~vars ~arguments =
   Print.format "val create%s : %s"
-    (match suffix with
-     | None -> ""
-     | Some suffix -> "_" ^ suffix)
+    (constructor_name ~suffix)
     (String.concat ~sep:" -> " (arguments @ [type_vars vars ^ "t"]))
 
 let declare_clause_constructor name ~vars (clause : Astlib_ast.Grammar.clause) =
@@ -164,31 +167,36 @@ let declare_nominal_constructors ~vars (nominal : Astlib_ast.Grammar.nominal) =
     List.iter variant ~f:(fun (name, clause) ->
       declare_clause_constructor name ~vars clause)
 
-let define_constructor ~kind_name (clause : Astlib_ast.Grammar.clause) =
-  Print.format "let %s%s ="
-    (usable_name (String.lowercase_ascii clause.clause_name))
-    (String.concat ~sep:""
-       (List.map clause.fields ~f:(fun (field : Astlib_ast.Grammar.field) ->
-          " ~" ^ field.field_name)));
-  Print.indented (fun () ->
-    Print.format "Versioned_ast.create ~version";
-    Print.indented (fun () ->
-      Print.format "{ kind = %S" kind_name;
-      Print.format "; clause = %S" clause.clause_name;
-      (match clause.fields with
-       | [] -> Print.format "; fields = []"
-       | _ ->
-         Print.format "; fields =";
-         Print.indented ~levels:2 (fun () ->
-           List.iteri clause.fields
-             ~f:(fun field_index (field : Astlib_ast.Grammar.field) ->
-               Print.format "%c { name = %S; value = %s %s }"
-                 (if field_index = 0 then '[' else ';')
-                 field.field_name
-                 (structural_of_concrete field.structural)
-                 field.field_name);
-           Print.format "]"));
-      Print.format "}"))
+let define_constructor ~suffix ~arguments print_body =
+  Print.format "let %s ="
+    (String.concat ~sep:" " (constructor_name ~suffix :: arguments));
+  Print.indented print_body
+
+let tuple_arguments tuple =
+  List.init ~len:(List.length tuple) ~f:(fun i -> Printf.sprintf "x%d" (i + 1))
+
+let define_tuple_constructor ~suffix tuple print_body =
+  let arguments = tuple_arguments tuple in
+  define_constructor ~suffix ~arguments (fun () ->
+    print_body arguments)
+
+let define_record_constructor ~suffix record print_body =
+  let arguments = List.map record ~f:fst in
+  define_constructor ~suffix ~arguments (fun () ->
+    print_body arguments)
+
+let define_clause_constructor name (clause : Astlib_ast.Grammar.clause) =
+  let suffix = Some name in
+  match clause with
+  | Empty ->
+    define_constructor ~suffix ~arguments:[] (fun () ->
+      Print.format "%s" name)
+  | Tuple tuple ->
+    define_tuple_constructor ~suffix tuple (fun arguments ->
+      Print.format "%s (%s)" name (String.concat ~sep:", " arguments))
+  | Record record ->
+    define_record_constructor ~suffix record (fun arguments ->
+      Print.format "%s { %s }" name (String.concat ~sep:"; " arguments))
 
 let define_constructors (kind : Astlib_ast.Grammar.kind) =
   List.iter kind.clauses ~f:(define_constructor ~kind_name:kind.kind_name)
