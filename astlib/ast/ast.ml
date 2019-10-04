@@ -16,6 +16,7 @@ and 'a tuple = 'a value list
 type 'a record = (string * 'a value) list
 
 type 'a clause =
+  | Empty
   | Tuple of 'a tuple
   | Record of 'a record
 

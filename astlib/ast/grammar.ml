@@ -21,6 +21,7 @@ and inst =
 type record = (string * structural) list
 
 type clause =
+  | Empty
   | Tuple of tuple
   | Record of record
 

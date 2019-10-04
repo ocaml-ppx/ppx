@@ -16,9 +16,11 @@ let rec type_of_structural structural ~opaque =
   | Name name -> if opaque then name ^ ".t" else "Versioned_ast.t"
   | List structural -> type_of_structural structural ~opaque ^ " list"
   | Option structural -> type_of_structural structural ~opaque ^ " option"
-  | Tuple tuple ->
-    Printf.sprintf "(%s)"
-      (String.concat ~sep:" * " (List.map tuple ~f:(type_of_structural ~opaque)))
+  | Tuple tuple -> type_of_tuple tuple ~opaque
+
+and type_of_tuple tuple ~opaque =
+  Printf.sprintf "(%s)"
+    (String.concat ~sep:" * " (List.map tuple ~f:(type_of_structural ~opaque)))
 
 let rec structural_of_concrete : Astlib_ast.Grammar.structural -> string = function
   | Bool -> "Versioned_value.of_bool"
@@ -36,12 +38,14 @@ let rec structural_of_concrete : Astlib_ast.Grammar.structural -> string = funct
     Printf.sprintf "(Versioned_value.of_list ~f:%s)" (structural_of_concrete structural)
   | Option structural ->
     Printf.sprintf "(Versioned_value.of_option ~f:%s)" (structural_of_concrete structural)
-  | Tuple tuple ->
-    Printf.sprintf "(Versioned_value.of_tuple%d %s)"
-      (List.length tuple)
-      (String.concat ~sep:" "
-         (List.mapi tuple ~f:(fun i structural ->
-            Printf.sprintf "~f%d:%s" (i + 1) (structural_of_concrete structural))))
+  | Tuple tuple -> tuple_of_concrete tuple
+
+and tuple_of_concrete tuple =
+  Printf.sprintf "(Versioned_value.of_tuple%d %s)"
+    (List.length tuple)
+    (String.concat ~sep:" "
+       (List.mapi tuple ~f:(fun i structural ->
+          Printf.sprintf "~f%d:%s" (i + 1) (structural_of_concrete structural))))
 
 let rec structural_to_concrete structural =
   match (structural : Astlib_ast.Grammar.structural) with
@@ -60,12 +64,14 @@ let rec structural_to_concrete structural =
     Printf.sprintf "(Versioned_value.to_list ~f:%s)" (structural_to_concrete structural)
   | Option structural ->
     Printf.sprintf "(Versioned_value.to_option ~f:%s)" (structural_to_concrete structural)
-  | Tuple tuple ->
-    Printf.sprintf "(Versioned_value.to_tuple%d %s)"
-      (List.length tuple)
-      (String.concat ~sep:" "
-         (List.mapi tuple ~f:(fun i structural ->
-            Printf.sprintf "~f%d:%s" (i + 1) (structural_to_concrete structural))))
+  | Tuple tuple -> tuple_to_concrete tuple
+
+and tuple_to_concrete tuple =
+  Printf.sprintf "(Versioned_value.to_tuple%d %s)"
+    (List.length tuple)
+    (String.concat ~sep:" "
+       (List.mapi tuple ~f:(fun i structural ->
+          Printf.sprintf "~f%d:%s" (i + 1) (structural_to_concrete structural))))
 
 let is_keyword = function
   | "and" | "as" | "assert" | "asr" | "begin" | "class" | "constraint" | "do" | "done"
@@ -83,16 +89,19 @@ let usable_name name =
   then name ^ "_"
   else name
 
-let print_clause_type (clause : Astlib_ast.Grammar.clause) ~opaque =
+let type_of_record record ~opaque =
+  Printf.sprintf "{ %s }"
+    (String.concat ~sep:"; "
+       (List.map record ~f:(fun (name, structural) ->
+          name ^ " : " ^ type_of_structural structural ~opaque)))
+
+let print_clause_type name (clause : Astlib_ast.Grammar.clause) ~opaque =
   Print.format "| %s%s"
-    clause.clause_name
-    (match clause.fields with
-     | [] -> ""
-     | _ :: _ ->
-       Printf.sprintf " of { %s }"
-         (String.concat ~sep:"; "
-            (List.map clause.fields ~f:(fun (field : Astlib_ast.Grammar.field) ->
-               field.field_name ^ " : " ^ type_of_structural field.structural ~opaque))))
+    name
+    (match clause with
+     | Empty -> ""
+     | Tuple tuple -> " of " ^ type_of_tuple tuple ~opaque
+     | Record record -> " of " ^ type_of_record record ~opaque)
 
 let print_kind_type (kind : Astlib_ast.Grammar.kind) ~opaque =
   Print.format "type t =";
