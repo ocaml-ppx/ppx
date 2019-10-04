@@ -22,22 +22,37 @@ let rec type_of_structural structural ~opaque =
 
 let rec structural_of_concrete : Astlib_ast.Grammar.structural -> string = function
   | Bool -> "Versioned_value.of_bool"
+  | Int -> "Versioned_value.of_int"
   | Char -> "Versioned_value.of_char"
   | String -> "Versioned_value.of_string"
   | Location -> "Versioned_value.of_location"
-  | Kind _ -> "Versioned_value.of_ast"
-  | List structural -> Printf.sprintf "(Versioned_value.of_list ~f:%s)" (structural_of_concrete structural)
+  | Var var -> var ^ "_of_concrete"
+  | Name _ -> "Versioned_value.of_ast"
+  | Inst { poly; args } ->
+    Printf.sprintf "(%s_of_concrete %s)"
+      poly
+      (String.concat ~sep:" " (List.map args ~f:structural_of_concrete))
+  | List structural ->
+    Printf.sprintf "(Versioned_value.of_list ~f:%s)" (structural_of_concrete structural)
   | Option structural ->
     Printf.sprintf "(Versioned_value.of_option ~f:%s)" (structural_of_concrete structural)
+  | Tuple tuple ->
+    Printf.sprintf "(Versioned_value.of_tuple%d %s)"
+      (List.length tuple)
+      (String.concat ~sep:" "
+         (List.mapi tuple ~f:(fun i structural ->
+            Printf.sprintf "~f%d:%s" (i + 1) (structural_of_concrete structural))))
 
 let rec structural_to_concrete structural =
   match (structural : Astlib_ast.Grammar.structural) with
   | Bool -> "Versioned_value.to_bool"
+  | Int -> "Versioned_value.to_int"
   | Char -> "Versioned_value.to_char"
   | String -> "Versioned_value.to_string"
   | Location -> "Versioned_value.to_location"
-  | Kind _ -> Printf.sprintf "Versioned_value.to_ast"
-  | List structural -> Printf.sprintf "(Versioned_value.to_list ~f:%s)" (structural_to_concrete structural)
+  | Name _ -> Printf.sprintf "Versioned_value.to_ast"
+  | List structural ->
+    Printf.sprintf "(Versioned_value.to_list ~f:%s)" (structural_to_concrete structural)
   | Option structural ->
     Printf.sprintf "(Versioned_value.to_option ~f:%s)" (structural_to_concrete structural)
 
