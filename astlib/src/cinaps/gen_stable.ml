@@ -50,11 +50,22 @@ let rec structural_to_concrete structural =
   | Char -> "Versioned_value.to_char"
   | String -> "Versioned_value.to_string"
   | Location -> "Versioned_value.to_location"
+  | Var var -> var ^ "_to_concrete"
   | Name _ -> Printf.sprintf "Versioned_value.to_ast"
+  | Inst { poly; args } ->
+    Printf.sprintf "(%s_to_concrete %s)"
+      poly
+      (String.concat ~sep:" " (List.map args ~f:structural_to_concrete))
   | List structural ->
     Printf.sprintf "(Versioned_value.to_list ~f:%s)" (structural_to_concrete structural)
   | Option structural ->
     Printf.sprintf "(Versioned_value.to_option ~f:%s)" (structural_to_concrete structural)
+  | Tuple tuple ->
+    Printf.sprintf "(Versioned_value.to_tuple%d %s)"
+      (List.length tuple)
+      (String.concat ~sep:" "
+         (List.mapi tuple ~f:(fun i structural ->
+            Printf.sprintf "~f%d:%s" (i + 1) (structural_to_concrete structural))))
 
 let is_keyword = function
   | "and" | "as" | "assert" | "asr" | "begin" | "class" | "constraint" | "do" | "done"
