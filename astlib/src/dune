@@ -1,7 +1,7 @@
 (library
  (name astlib)
  (public_name astlib)
- (libraries astlib.ast astlib.parsetree)
+ (libraries astlib.ast)
  (flags (:standard -open Ocaml_shadow -safe-string)))
 
 (cinaps
