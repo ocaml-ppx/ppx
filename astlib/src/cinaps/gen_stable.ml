@@ -173,8 +173,8 @@ let define_constructor ~suffix ~decl_name ~arguments data =
   Print.indented (fun () ->
     Print.format "Versioned_ast.create ~version { name = %S; data = %s }" decl_name data)
 
-let tuple_arguments tuple =
-  List.init ~len:(List.length tuple) ~f:(fun i -> Printf.sprintf "x%d" (i + 1))
+let tuple_argument i = Printf.sprintf "x%d" (i + 1)
+let tuple_arguments tuple = List.init ~len:(List.length tuple) ~f:tuple_argument
 
 let define_clause_constructor name ~decl_name (clause : Astlib_ast.Grammar.clause) =
   let suffix = Some name in
@@ -183,17 +183,23 @@ let define_clause_constructor name ~decl_name (clause : Astlib_ast.Grammar.claus
     define_constructor ~decl_name ~suffix ~arguments:[]
       (Printf.sprintf "Variant (%S, Empty)" name)
   | Tuple tuple ->
-    let arguments = tuple_arguments tuple in
-    define_constructor ~decl_name ~suffix ~arguments
-      (Printf.sprintf "Variant (%S, Tuple [%s])" name (String.concat ~sep:"; " arguments))
+    define_constructor ~decl_name ~suffix ~arguments:(tuple_arguments tuple)
+      (Printf.sprintf "Variant (%S, Tuple [%s])" name
+         (String.concat ~sep:"; "
+            (List.mapi tuple ~f:(fun i structural ->
+               Printf.sprintf "%s %s"
+                 (structural_of_concrete structural)
+                 (tuple_argument i)))))
   | Record record ->
-    let arguments = List.map record ~f:fst in
-    define_constructor ~decl_name ~suffix ~arguments
+    define_constructor ~decl_name ~suffix ~arguments:(List.map record ~f:fst)
       (Printf.sprintf "Variant (%S, Record [%s])"
          name
          (String.concat ~sep:"; "
-            (List.map arguments ~f:(fun arg ->
-               Printf.sprintf "%S, %s" arg arg))))
+            (List.map record ~f:(fun (field, structural) ->
+               Printf.sprintf "(%S, %s %s)"
+                 field
+                 (structural_of_concrete structural)
+                 field))))
 
 let define_nominal_constructors (kind : Astlib_ast.Grammar.kind) =
   List.iter kind.clauses ~f:(define_constructor ~kind_name:kind.kind_name)
