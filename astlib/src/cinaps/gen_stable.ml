@@ -167,36 +167,33 @@ let declare_nominal_constructors ~vars (nominal : Astlib_ast.Grammar.nominal) =
     List.iter variant ~f:(fun (name, clause) ->
       declare_clause_constructor name ~vars clause)
 
-let define_constructor ~suffix ~arguments print_body =
-  Print.format "let %s ="
+let define_constructor ~suffix ~node ~arguments data =
+  Print.format "let %s : t ="
     (String.concat ~sep:" " (constructor_name ~suffix :: arguments));
-  Print.indented print_body
+  Print.indented (fun () ->
+    Print.format "{ name = %S; data = %s }" node data)
 
 let tuple_arguments tuple =
   List.init ~len:(List.length tuple) ~f:(fun i -> Printf.sprintf "x%d" (i + 1))
 
-let define_tuple_constructor ~suffix tuple print_body =
-  let arguments = tuple_arguments tuple in
-  define_constructor ~suffix ~arguments (fun () ->
-    print_body arguments)
-
-let define_record_constructor ~suffix record print_body =
-  let arguments = List.map record ~f:fst in
-  define_constructor ~suffix ~arguments (fun () ->
-    print_body arguments)
-
-let define_clause_constructor name (clause : Astlib_ast.Grammar.clause) =
+let define_clause_constructor name ~node (clause : Astlib_ast.Grammar.clause) =
   let suffix = Some name in
   match clause with
   | Empty ->
-    define_constructor ~suffix ~arguments:[] (fun () ->
-      Print.format "%s" name)
+    define_constructor ~node ~suffix ~arguments:[]
+      (Printf.sprintf "Variant (%S, Empty)" name)
   | Tuple tuple ->
-    define_tuple_constructor ~suffix tuple (fun arguments ->
-      Print.format "%s (%s)" name (String.concat ~sep:", " arguments))
+    let arguments = tuple_arguments tuple in
+    define_constructor ~node ~suffix ~arguments
+      (Printf.sprintf "Variant (%S, Tuple [%s])" name (String.concat ~sep:"; " arguments))
   | Record record ->
-    define_record_constructor ~suffix record (fun arguments ->
-      Print.format "%s { %s }" name (String.concat ~sep:"; " arguments))
+    let arguments = List.map record ~f:fst in
+    define_constructor ~node ~suffix ~arguments
+      (Printf.sprintf "Variant (%S, Record [%s])"
+         name
+         (String.concat ~sep:"; "
+            (List.map arguments ~f:(fun arg ->
+               Printf.sprintf "%S, %s" arg arg))))
 
 let define_constructors (kind : Astlib_ast.Grammar.kind) =
   List.iter kind.clauses ~f:(define_constructor ~kind_name:kind.kind_name)
