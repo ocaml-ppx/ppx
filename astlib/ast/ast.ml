@@ -1,19 +1,19 @@
 open Ocaml_common
 
-type 'a data =
+type 'a value =
   | Node of 'a
   | Bool of bool
   | Int of int
   | Char of char
   | String of string
   | Location of Location.t
-  | List of 'a data list
-  | Option of 'a data option
+  | List of 'a value list
+  | Option of 'a value option
   | Tuple of 'a tuple
 
-and 'a tuple = 'a data list
+and 'a tuple = 'a value list
 
-type 'a record = (string * 'a data) list
+type 'a record = (string * 'a value) list
 
 type 'a clause =
   | Tuple of 'a tuple
@@ -22,7 +22,7 @@ type 'a clause =
 type 'a variant = string * 'a clause
 
 type 'a constructor =
-  | Data of 'a data
+  | Value of 'a value
   | Record of 'a record
   | Variant of 'a variant
 
