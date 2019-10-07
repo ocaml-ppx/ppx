@@ -79,22 +79,6 @@ and tuple_to_concrete tuple =
        (List.mapi tuple ~f:(fun i structural ->
           Printf.sprintf "~f%d:%s" (i + 1) (structural_to_concrete structural))))
 
-let is_keyword = function
-  | "and" | "as" | "assert" | "asr" | "begin" | "class" | "constraint" | "do" | "done"
-  | "downto" | "else" | "end" | "exception" | "external" | "false" | "for" | "fun"
-  | "function" | "functor" | "if" | "in" | "include" | "inherit" | "initializer" | "land"
-  | "lazy" | "let" | "lor" | "lsl" | "lsr" | "lxor" | "match" | "method" | "mod"
-  | "module" | "mutable" | "new" | "nonrec" | "object" | "of" | "open" | "or" | "private"
-  | "rec" | "sig" | "struct" | "then" | "to" | "true" | "try" | "type" | "val" | "virtual"
-  | "when" | "while" | "with"
-    -> true
-  | _ -> false
-
-let usable_name name =
-  if is_keyword name
-  then name ^ "_"
-  else name
-
 let print_clause_type name (clause : Astlib_ast.Grammar.clause) ~opaque =
   Print.format "| %s%s"
     name
@@ -120,10 +104,6 @@ let print_nominal_type (nominal : Astlib_ast.Grammar.nominal) ~opaque =
   | Alias structural -> Print.format "%s" (type_of_structural structural ~opaque)
   | Record record -> Print.format "%s" (type_of_record record ~opaque)
   | Variant variant -> print_variant_type variant ~opaque
-
-let print_decl name ({ vars; body } : Astlib_ast.Grammar.decl) ~opaque =
-  Print.format "type %st =" (type_vars vars);
-  Print.indented (fun () -> print_nominal_type body ~opaque)
 
 let tuple_argument_types tuple =
   List.map tuple ~f:(type_of_structural ~opaque:true)
@@ -269,16 +249,12 @@ let with_record_to_concrete record f =
   in
   with_optional_bindings bindings f
 
-let print_clause_to_concrete name ~decl_name (clause : Astlib_ast.Grammar.clause) =
+let print_clause_to_concrete name (clause : Astlib_ast.Grammar.clause) =
   match clause with
   | Empty ->
-    Print.format "| { name = %S; data = Variant (%S, Empty) } -> Some %s"
-      decl_name
-      name
-      name
+    Print.format "| Variant (%S, Empty) -> Some %s" name name
   | Tuple tuple ->
-    Print.format "| { name = %S; data = Variant (%S, Tuple [%s]) } ->"
-      decl_name
+    Print.format "| Variant (%S, Tuple [%s]) ->"
       name
       (String.concat ~sep:"; " (tuple_arguments tuple));
     Print.indented (fun () ->
@@ -287,8 +263,7 @@ let print_clause_to_concrete name ~decl_name (clause : Astlib_ast.Grammar.clause
           name
           (String.concat ~sep:", " (tuple_arguments tuple))))
   | Record record ->
-    Print.format "| { name = %S; data = Variant (%S, Record [%s]) } ->"
-      decl_name
+    Print.format "| Variant (%S, Record [%s]) ->"
       name
       (String.concat ~sep:"; " (List.map record ~f:fst));
     Print.indented (fun () ->
@@ -332,59 +307,82 @@ let print_nominal_of_concrete ~decl_name ~vars (nominal : Astlib_ast.Grammar.nom
       List.iter variant ~f:(fun (name, clause) ->
         print_clause_of_concrete name clause))
 
-let print_kind_to_concrete (kind : Astlib_ast.Grammar.kind) =
-  Print.format "let to_concrete t =";
+let print_to_concrete ~decl_name ~vars ~pattern print_body =
+  let tyvars = type_vars vars in
+  Print.format "let to_concrete t : %sConcrete.t =" tyvars;
   Print.indented (fun () ->
     Print.format "match Versioned_ast.convert t ~version with";
-    List.iter kind.clauses ~f:(fun clause ->
-      print_clause_to_concrete clause ~kind_name:kind.kind_name);
+    Print.format "| { name = %S; data = %s } ->" decl_name pattern;
+    Print.indented print_body;
     Print.format "| _ -> None")
 
-let print_kind_signature (kind : Astlib_ast.Grammar.kind) =
-  Print.format "type t = Unversioned.%s" (String.lowercase_ascii kind.kind_name);
+let print_nominal_to_concrete ~decl_name ~vars (nominal : Astlib_ast.Grammar.nominal) =
+  match nominal with
+  | Alias structural ->
+    let var = "data" in
+    print_to_concrete ~decl_name ~vars ~pattern:var (fun () ->
+      Print.format "%s %s" (structural_to_concrete structural) var)
+  | Record record ->
+    print_to_concrete ~decl_name ~vars
+      ~pattern:(Printf.sprintf "Record [%s]"
+                  (String.concat ~sep:"; "
+                     (List.map record ~f:(fun (field, _) ->
+                        Printf.sprintf "%S, %s" field field))))
+      (fun () ->
+         with_record_to_concrete record (fun () ->
+           Print.format "Some { %s }" (String.concat ~sep:"; " (List.map record ~f:fst))))
+  | Variant variant ->
+    let var = "data" in
+    print_to_concrete ~decl_name ~vars ~pattern:var (fun () ->
+      Print.format "( match %s with" var;
+      List.iter variant ~f:(fun (name, clause) ->
+        print_clause_to_concrete name clause);
+      Print.format ")")
+
+let print_decl_signature ~decl_name ({ vars; body = nominal } : Astlib_ast.Grammar.decl) =
+  Print.format "type t = Unversioned.%s" (String.lowercase_ascii decl_name);
   Print.newline ();
   Print.format "val of_ast : Versioned_ast.t -> t";
   Print.format "val to_ast : t -> Versioned_ast.t";
   Print.newline ();
   Print.declare_module "Concrete" (fun () ->
-    print_kind_type kind ~opaque:true);
+    print_nominal_type nominal ~opaque:true);
   Print.newline ();
   Print.format "val of_concrete : Concrete.t -> t";
   Print.format "val to_concrete : t -> Concrete.t option";
-  declare_constructors kind
+  declare_nominal_constructors ~vars nominal
 
-let print_kind_structure (kind : Astlib_ast.Grammar.kind) =
+let print_decl_structure ~decl_name ({ vars; body = nominal } : Astlib_ast.Grammar.decl) =
   Print.format "type t = Versioned_ast.t";
   Print.newline ();
   Print.format "let of_ast t = t";
   Print.format "let to_ast t = t";
   Print.newline ();
   Print.define_module "Concrete" (fun () ->
-    print_kind_type kind ~opaque:false);
+    print_nominal_type nominal ~opaque:false);
   Print.newline ();
-  define_constructors kind;
+  define_nominal_constructors ~decl_name nominal;
   Print.newline ();
-  print_kind_of_concrete kind;
+  print_nominal_of_concrete ~decl_name ~vars nominal;
   Print.newline ();
-  print_kind_to_concrete kind
+  print_nominal_to_concrete ~decl_name ~vars nominal
 
 let print_grammar_mli grammar =
   Print.declare_recursive_modules
-    (List.map grammar ~f:(fun (kind : Astlib_ast.Grammar.kind) ->
-       (kind.kind_name,
-        (fun () -> print_kind_signature kind))))
+    (List.map grammar ~f:(fun (decl_name, decl) ->
+       (decl_name, (fun () -> print_decl_signature ~decl_name decl))))
 
 let print_grammar_ml grammar =
-  List.iteri grammar ~f:(fun kind_index (kind : Astlib_ast.Grammar.kind) ->
-    if kind_index > 0 then Print.newline ();
-    Print.define_module kind.kind_name (fun () ->
-      print_kind_structure kind))
+  List.iteri grammar ~f:(fun decl_index (decl_name, decl) ->
+    if decl_index > 0 then Print.newline ();
+    Print.define_module decl_name (fun () ->
+      print_decl_structure ~decl_name decl))
 
 let names_of_versioned_grammars versioned_grammars =
   versioned_grammars
   |> List.map ~f:snd
   |> List.concat
-  |> List.map ~f:(fun (kind : Astlib_ast.Grammar.kind) -> kind.kind_name)
+  |> List.map ~f:fst
   |> List.sort_uniq ~cmp:String.compare
 
 let print_unversioned_mli versioned_grammars =
