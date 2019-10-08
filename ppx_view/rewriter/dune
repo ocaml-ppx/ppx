@@ -1,12 +1,12 @@
 (library
  (name ppx_view_rewriter)
- (public_name ppx_view)
+ (public_name ppx.ppx_view)
  (kind ppx_rewriter)
  (libraries
   compiler-libs.common
   ocaml-compiler-libs.shadow
   ocaml-compiler-libs.common
   ocaml-migrate-parsetree
-  ppx_view.common)
+  ppx.ppx_view.common)
  (flags :standard -open Ocaml_shadow)
  (ppx_runtime_libraries viewlib))

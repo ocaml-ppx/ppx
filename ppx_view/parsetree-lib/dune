@@ -1,6 +1,6 @@
 (library
  (name viewast)
- (public_name ppx_view.ast)
+ (public_name ppx.ppx_view.ast)
  (libraries
   compiler-libs.common
   ocaml-compiler-libs.shadow

@@ -24,7 +24,6 @@ A comprehensive toolbox for ppx development. It features:
  (depends
   (ocaml (and (>= 4.07) (< 4.08)))
   dune
-  ocaml-migrate-parsetree
   (ppx_expect :with-test)
   (ocaml (and (>= 4.04.1) (< 4.08.0)))
   (base (and (>= v0.11.0) :with-test))
@@ -54,14 +53,3 @@ be easily migrated to new versions of the compiler.")
   base_quickcheck
   expect_test_helpers_kernel
   (stdio (>= v0.11.0))))
-
-(package
- (name ppx_view)
- (synopsis "")
- (description "A ppx rewriter that provides pattern matching on abstract types by
-transforming patterns into views/expressions.")
- (depends
-  (ocaml (and (>= 4.07) (< 4.08)))
-  dune
-  ocaml-migrate-parsetree
-  (ppx_expect :with-test)))
