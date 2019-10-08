@@ -1,6 +1,6 @@
 (library
  (name ppx_view_test)
- (public_name ppx_view._test_internal)
+ (public_name ppx.ppx_view._test_internal)
  (libraries
   compiler-libs.common
   ocaml-compiler-libs.shadow
