@@ -49,39 +49,37 @@ let substitute_nominal nominal ~subst : Astlib_ast.Grammar.nominal =
   | Variant variant -> Variant (substitute_variant variant ~subst)
 
 let instantiate alist ~poly ~args =
-  let { vars ; body } : Astlib_ast.Grammar.decl =
-    List.assoc poly alist : Astlib_ast.Grammar.decl option
-  in
+  let { vars ; body } : Astlib_ast.Grammar.decl = List.assoc poly alist in
   let subst = List.map2 vars args ~f:(fun var arg -> (var, arg)) in
   substitute_nominal body ~subst
 
 let module_name ~name =
   Printf.sprintf "Stable.%s.%s"
-    Astlib_ast.Grammar.version
+    (Astlib_ast.History.current_version Astlib_ast.History.history)
     (String.capitalize_ascii name)
 
 let ast_type ~name =
   Printf.sprintf "Stable.%s.%s.t"
-    Astlib_ast.Grammar.version
+    (Astlib_ast.History.current_version Astlib_ast.History.history)
     (String.capitalize_ascii name)
 
 let concrete_type ~name =
   Printf.sprintf "Stable.%s.%s.Concrete.t"
-    Astlib_ast.Grammar.version
+    (Astlib_ast.History.current_version Astlib_ast.History.history)
     (String.capitalize_ascii name)
 
 let tree_type ~name = Printf.sprintf "Astlib_parsetree.%s" name
 
 let print_conversions_mli () =
-  List.iter Astlib_ast.Grammar.t ~f:(fun (name, decl) ->
-    match (decl : Astlib_ast.Grammar.decl) with
-    | Poly _ -> ()
-    | Inst _ | Mono _ ->
-      Print.newline ();
-      let ast_type = ast_type ~name in
-      let tree_type = tree_type ~name in
-      Print.format "val %s_to_ast : %s -> %s" name tree_type ast_type;
-      Print.format "val %s_of_ast : %s -> %s option" name ast_type tree_type)
+  Astlib_ast.History.to_versioned_grammars Astlib_ast.History.history
+  |> List.assoc (Astlib_ast.History.current_version Astlib_ast.History.history)
+  |> List.iter ~f:(fun (name, decl) ->
+    let { vars; body } : Astlib_ast.Grammar.decl = decl in
+    Print.newline ();
+    let ast_type = ast_type ~name in
+    let tree_type = tree_type ~name in
+    Print.format "val %s_to_ast : %s -> %s" name tree_type ast_type;
+    Print.format "val %s_of_ast : %s -> %s option" name ast_type tree_type)
 
 let variable_names =
   List.init ~len:256 ~f:Char.chr
@@ -99,12 +97,39 @@ let tuple_string list = Printf.sprintf "(%s)" (String.concat ~sep:", " list)
 let record_string list = Printf.sprintf "{ %s }" (String.concat ~sep:"; " list)
 
 let rec to_ast structural =
-  match (structural : Astlib_ast.Grammar.nothing Astlib_ast.Grammar.structural) with
-  | Bool | Char | String | Location -> None
-  | A _ -> .
-  | T name -> Some (Printf.sprintf "%s_to_ast" name)
-  | List structural -> option_map ~f:(Printf.sprintf "List.map ~f:(%s)") (to_ast structural)
-  | Option structural -> option_map ~f:(Printf.sprintf "Optional.map ~f:(%s)") (to_ast structural)
+  match (structural : Astlib_ast.Grammar.structural) with
+  | Bool | Int | Char | String | Location -> None
+  | Name string | Var string -> Some (Printf.sprintf "%s_to_ast" string)
+  | Inst { poly; args } ->
+    Some
+      (Printf.sprintf "(%s_to_ast %s)"
+         poly
+         (String.concat ~sep:" " (List.map args ~f:to_ast_or_id)))
+  | List structural ->
+    option_map ~f:(Printf.sprintf "List.map ~f:(%s)") (to_ast structural)
+  | Option structural ->
+    option_map ~f:(Printf.sprintf "Optional.map ~f:(%s)") (to_ast structural)
+  | Tuple tuple -> tuple_to_ast tuple
+
+and tuple_to_ast tuple =
+  let conversions = List.map tuple ~f:to_ast in
+  if List.for_all conversions ~f:(function None -> true | Some _ -> false)
+  then None
+  else (
+    let vars = List.mapi tuple ~f:(fun i _ -> Printf.sprintf "x%d" (i + 1)) in
+    Some
+      (Printf.sprintf "(fun (%s) -> (%s))"
+         (String.concat ~sep:", " vars)
+         (String.concat ~sep:", "
+            (List.map2 vars conversions ~f:(fun var conversion ->
+               match conversion with
+               | None -> var
+               | Some conversion -> Printf.sprintf "%s %s" conversion var)))))
+
+and to_ast_or_id structural =
+  match to_ast structural with
+  | Some x -> x
+  | None -> "(fun x -> x)"
 
 let bind_to_ast bindings =
   List.iter bindings ~f:(fun (name, structural) ->

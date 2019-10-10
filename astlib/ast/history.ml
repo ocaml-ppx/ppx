@@ -29,6 +29,8 @@ type t =
   ; previous_versions_in_chronological_order : previous_version list
   }
 
+let current_version t = t.current_version
+
 let ensure_follows previous_version ~version =
   if not (String.equal previous_version.next_version version)
   then

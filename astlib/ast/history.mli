@@ -23,6 +23,8 @@ val create
   -> previous_versions:previous_version list
   -> t
 
+val current_version : t -> string
+
 val to_versioned_grammars : t -> (string * Grammar.t) list
 
 type conversion_step =
