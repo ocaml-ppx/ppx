@@ -227,70 +227,78 @@ and of_ast_or_id structural =
   | None -> "(fun x -> x)"
 
 let bind_of_ast =
-  let rec loop ~bindings ~print ~suffix =
+  let rec loop ~bindings ~print =
     match bindings with
-    | [] -> print ~suffix
+    | [] -> print ()
     | (name, structural) :: bindings ->
       match of_ast structural with
-      | None -> loop ~bindings ~print ~suffix
+      | None -> loop ~bindings ~print
       | Some expr ->
         Print.format "Optional.bind (%s %s) ~f:(fun %s ->" expr name name;
-        Print.indented (fun () ->
-          loop ~bindings ~print ~suffix:(suffix ^ ")"))
+        Print.indented (fun () -> loop ~bindings ~print)
   in
   fun bindings print ->
-    loop ~bindings ~print ~suffix:""
+    loop ~bindings ~print;
+    Print.format "%s" (String.make (List.length bindings) ')')
 
-let print_of_ast nominal ~name ~index =
+let print_nominal_of_ast nominal ~name =
   let module_name = module_name ~name in
+  match (nominal : Astlib_ast.Grammar.nominal) with
+  | Alias structural ->
+    Print.format "fun (%s { a }) ->" (String.capitalize_ascii name);
+    Print.indented (fun () ->
+      bind_of_ast ["a", structural] (fun () ->
+        Print.format "Some a"))
+  | Record record ->
+    let vars = List.map record ~f:fst in
+    Print.format "fun (%s %s) ->" (String.capitalize_ascii name) (record_string vars);
+    Print.indented (fun () ->
+      bind_of_ast record (fun () ->
+        Print.format "Some (%s : %s)" (record_string vars) (tree_type ~name)))
+  | Variant variant ->
+    Print.format "function";
+    List.iter variant ~f:(fun (tag, clause) ->
+      match (clause : Astlib_ast.Grammar.clause) with
+      | Empty ->
+        Print.format "| %s -> Some %s"
+          (String.capitalize_ascii tag)
+          (String.capitalize_ascii tag)
+      | Tuple tuple ->
+        let vars = tuple_vars tuple in
+        Print.format "| %s %s ->"
+          (String.capitalize_ascii tag)
+          (tuple_string vars);
+        Print.indented (fun () ->
+          bind_of_ast (zip vars tuple) (fun () ->
+            Print.format "Some (%s %s)"
+              (String.capitalize_ascii tag)
+              (tuple_string vars)))
+      | Record record ->
+        let vars = List.map record ~f:fst in
+        Print.format "| %s %s ->"
+          (String.capitalize_ascii tag)
+          (record_string vars);
+        Print.indented (fun () ->
+          bind_of_ast record (fun () ->
+            Print.format "Some (%s %s)"
+              (String.capitalize_ascii tag)
+              (record_string vars))))
+
+let print_of_ast ~name ~index ({ vars; body } : Astlib_ast.Grammar.decl) =
   Print.newline ();
-  Print.format "%s %s_of_ast x =" (if index = 0 then "let rec" else "and") name;
+  Print.format "%s %s_of_ast%s ="
+    (if index = 0 then "let rec" else "and")
+    name
+    (String.concat ~sep:""
+       (List.map vars ~f:(fun var -> Printf.sprintf " %s_of_ast" var)));
   Print.indented (fun () ->
     Print.format "let of_concrete : %s -> %s option ="
       (concrete_type ~name)
       (tree_type ~name);
-    Print.indented (fun () ->
-      match (nominal : _ Astlib_ast.Grammar.nominal) with
-      | Alias structural ->
-        Print.format "fun (%s { a }) ->" (String.capitalize_ascii name);
-        Print.indented (fun () ->
-          bind_of_ast ["a", structural] (fun ~suffix ->
-            Print.format "Some a%s" suffix))
-      | Tuple tys ->
-        let vars = tuple_vars tys in
-        Print.format "fun (%s %s) ->" (String.capitalize_ascii name) (record_string vars);
-        Print.indented (fun () ->
-          bind_of_ast (zip vars tys) (fun ~suffix ->
-            Print.format "Some %s%s" (tuple_string vars) suffix))
-      | Record { source = _; fields } ->
-        let vars = List.map fields ~f:fst in
-        Print.format "fun (%s %s) ->" (String.capitalize_ascii name) (record_string vars);
-        Print.indented (fun () ->
-          bind_of_ast fields (fun ~suffix ->
-            Print.format "Some (%s : %s)%s"
-              (record_string vars)
-              (tree_type ~name)
-              suffix))
-      | Variant { source = _; clauses } ->
-        Print.format "function";
-        List.iter clauses ~f:(fun (tag, tys) ->
-          let vars = tuple_vars tys in
-          Print.format "| %s%s ->"
-            (String.capitalize_ascii tag)
-            (match vars with
-             | [] -> ""
-             | _ :: _ -> " " ^ record_string vars);
-          Print.indented (fun () ->
-            bind_of_ast (zip vars tys) (fun ~suffix ->
-              Print.format "Some (%s%s : %s)%s"
-                (String.capitalize_ascii tag)
-                (match vars with
-                 | [] -> ""
-                 | _ :: _ -> " " ^ tuple_string vars)
-                (tree_type ~name)
-                suffix))));
+    Print.indented (fun () -> print_nominal_of_ast ~name body);
     Print.format "in";
-    Print.format "Optional.bind ~f:of_concrete (%s.to_concrete x)" module_name)
+    Print.format "fun x -> Optional.bind ~f:of_concrete (%s.to_concrete x)"
+      (module_name ~name))
 
 let print_conversions_ml () =
   let alist = Astlib_ast.Grammar.t in
