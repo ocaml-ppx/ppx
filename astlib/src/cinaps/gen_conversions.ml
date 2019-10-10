@@ -15,55 +15,66 @@ let filter_map list ~f =
 
 let zip xs ys = List.map2 xs ys ~f:(fun x y -> x, y)
 
-let rec substitute_ty ty ~arg : _ Astlib_parsetree_types.ty =
-  match (ty : _ Astlib_parsetree_types.ty) with
-  | (Bool | Char | String | Location | T _) as ty -> ty
-  | A () -> arg
-  | List ty -> List (substitute_ty ty ~arg)
-  | Option ty -> Option (substitute_ty ty ~arg)
+let rec substitute_structural structural ~subst : Astlib_ast.Grammar.structural =
+  match (structural : Astlib_ast.Grammar.structural) with
+  | Bool | Int | Char | String | Location | Name _ -> structural
+  | Var var -> List.assoc var subst
+  | Inst { poly; args } ->
+    Inst { poly; args = List.map args ~f:(substitute_structural ~subst) }
+  | List structural -> List (substitute_structural structural ~subst)
+  | Option structural -> Option (substitute_structural structural ~subst)
+  | Tuple tuple -> Tuple (substitute_tuple tuple ~subst)
 
-let substitute_rep rep ~arg : _ Astlib_parsetree_types.rep =
-  match (rep : _ Astlib_parsetree_types.rep) with
-  | Alias ty -> Alias (substitute_ty ty ~arg)
-  | Tuple tys -> Tuple (List.map tys ~f:(substitute_ty ~arg))
-  | Record { source; fields } ->
-    let fields =
-      List.map fields ~f:(fun (name, ty) ->
-        (name, substitute_ty ty ~arg))
-    in
-    Record { source; fields }
-  | Variant { source; clauses } ->
-    let clauses =
-      List.map clauses ~f:(fun (name, tys) ->
-        (name, List.map tys ~f:(substitute_ty ~arg)))
-    in
-    Variant { source; clauses }
+and substitute_tuple tuple ~subst =
+  List.map tuple ~f:(substitute_structural ~subst)
 
-let instantiate alist ~poly ~arg =
-  match (List.assoc_opt poly alist : Astlib_parsetree_types.decl option) with
-  | Some (Poly rep) -> substitute_rep rep ~arg
-  | _ -> assert false
+let substitute_record record ~subst =
+  List.map record ~f:(fun (name, structural) ->
+    (name, substitute_structural structural ~subst))
+
+let substitute_clause clause ~subst : Astlib_ast.Grammar.clause =
+  match (clause : Astlib_ast.Grammar.clause) with
+  | Empty -> Empty
+  | Tuple tuple -> Tuple (substitute_tuple tuple ~subst)
+  | Record record -> Record (substitute_record record ~subst)
+
+let substitute_variant variant ~subst =
+  List.map variant ~f:(fun (name, clause) ->
+    (name, substitute_clause clause ~subst))
+
+let substitute_nominal nominal ~subst : Astlib_ast.Grammar.nominal =
+  match (nominal : Astlib_ast.Grammar.nominal) with
+  | Alias structural -> Alias (substitute_structural structural ~subst)
+  | Record record -> Record (substitute_record record ~subst)
+  | Variant variant -> Variant (substitute_variant variant ~subst)
+
+let instantiate alist ~poly ~args =
+  let { vars ; body } : Astlib_ast.Grammar.decl =
+    List.assoc poly alist : Astlib_ast.Grammar.decl option
+  in
+  let subst = List.map2 vars args ~f:(fun var arg -> (var, arg)) in
+  substitute_nominal body ~subst
 
 let module_name ~name =
   Printf.sprintf "Stable.%s.%s"
-    Astlib_parsetree_types.version
+    Astlib_ast.Grammar.version
     (String.capitalize_ascii name)
 
 let ast_type ~name =
   Printf.sprintf "Stable.%s.%s.t"
-    Astlib_parsetree_types.version
+    Astlib_ast.Grammar.version
     (String.capitalize_ascii name)
 
 let concrete_type ~name =
   Printf.sprintf "Stable.%s.%s.Concrete.t"
-    Astlib_parsetree_types.version
+    Astlib_ast.Grammar.version
     (String.capitalize_ascii name)
 
 let tree_type ~name = Printf.sprintf "Astlib_parsetree.%s" name
 
 let print_conversions_mli () =
-  List.iter Astlib_parsetree_types.t ~f:(fun (name, decl) ->
-    match (decl : Astlib_parsetree_types.decl) with
+  List.iter Astlib_ast.Grammar.t ~f:(fun (name, decl) ->
+    match (decl : Astlib_ast.Grammar.decl) with
     | Poly _ -> ()
     | Inst _ | Mono _ ->
       Print.newline ();
@@ -87,21 +98,21 @@ let tuple_vars list =
 let tuple_string list = Printf.sprintf "(%s)" (String.concat ~sep:", " list)
 let record_string list = Printf.sprintf "{ %s }" (String.concat ~sep:"; " list)
 
-let rec to_ast ty =
-  match (ty : Astlib_parsetree_types.nothing Astlib_parsetree_types.ty) with
+let rec to_ast structural =
+  match (structural : Astlib_ast.Grammar.nothing Astlib_ast.Grammar.structural) with
   | Bool | Char | String | Location -> None
   | A _ -> .
   | T name -> Some (Printf.sprintf "%s_to_ast" name)
-  | List ty -> option_map ~f:(Printf.sprintf "List.map ~f:(%s)") (to_ast ty)
-  | Option ty -> option_map ~f:(Printf.sprintf "Optional.map ~f:(%s)") (to_ast ty)
+  | List structural -> option_map ~f:(Printf.sprintf "List.map ~f:(%s)") (to_ast structural)
+  | Option structural -> option_map ~f:(Printf.sprintf "Optional.map ~f:(%s)") (to_ast structural)
 
 let bind_to_ast bindings =
-  List.iter bindings ~f:(fun (name, ty) ->
-    match to_ast ty with
+  List.iter bindings ~f:(fun (name, structural) ->
+    match to_ast structural with
     | None -> ()
     | Some expr -> Print.format "let %s = %s %s in" name expr name)
 
-let print_to_ast rep ~name ~index =
+let print_to_ast nominal ~name ~index =
   Print.newline ();
   Print.format "%s %s_to_ast : %s -> %s ="
     (if index = 0 then "let rec" else "and")
@@ -110,11 +121,11 @@ let print_to_ast rep ~name ~index =
     (ast_type ~name);
   let module_name = module_name ~name in
   Print.indented (fun () ->
-    match (rep : _ Astlib_parsetree_types.rep) with
-    | Alias ty ->
+    match (nominal : _ Astlib_ast.Grammar.nominal) with
+    | Alias structural ->
       Print.format "fun a ->";
       Print.indented (fun () ->
-        bind_to_ast ["a", ty];
+        bind_to_ast ["a", structural];
         Print.format "%s.of_concrete (%s { a })"
           module_name
           (String.capitalize_ascii name))
@@ -154,20 +165,20 @@ let print_to_ast rep ~name ~index =
              | [] -> ""
              | _ :: _ -> " " ^ record_string vars))))
 
-let rec of_ast ty =
-  match (ty : Astlib_parsetree_types.nothing Astlib_parsetree_types.ty) with
+let rec of_ast structural =
+  match (structural : Astlib_ast.Grammar.nothing Astlib_ast.Grammar.structural) with
   | Bool | Char | String | Location -> None
   | A _ -> .
   | T name -> Some (Printf.sprintf "%s_of_ast" name)
-  | List ty -> option_map ~f:(Printf.sprintf "Optional.List.map ~f:(%s)") (of_ast ty)
-  | Option ty -> option_map ~f:(Printf.sprintf "Optional.Option.map ~f:(%s)") (of_ast ty)
+  | List structural -> option_map ~f:(Printf.sprintf "Optional.List.map ~f:(%s)") (of_ast structural)
+  | Option structural -> option_map ~f:(Printf.sprintf "Optional.Option.map ~f:(%s)") (of_ast structural)
 
 let bind_of_ast =
   let rec loop ~bindings ~print ~suffix =
     match bindings with
     | [] -> print ~suffix
-    | (name, ty) :: bindings ->
-      match of_ast ty with
+    | (name, structural) :: bindings ->
+      match of_ast structural with
       | None -> loop ~bindings ~print ~suffix
       | Some expr ->
         Print.format "Optional.bind (%s %s) ~f:(fun %s ->" expr name name;
@@ -177,7 +188,7 @@ let bind_of_ast =
   fun bindings print ->
     loop ~bindings ~print ~suffix:""
 
-let print_of_ast rep ~name ~index =
+let print_of_ast nominal ~name ~index =
   let module_name = module_name ~name in
   Print.newline ();
   Print.format "%s %s_of_ast x =" (if index = 0 then "let rec" else "and") name;
@@ -186,11 +197,11 @@ let print_of_ast rep ~name ~index =
       (concrete_type ~name)
       (tree_type ~name);
     Print.indented (fun () ->
-      match (rep : _ Astlib_parsetree_types.rep) with
-      | Alias ty ->
+      match (nominal : _ Astlib_ast.Grammar.nominal) with
+      | Alias structural ->
         Print.format "fun (%s { a }) ->" (String.capitalize_ascii name);
         Print.indented (fun () ->
-          bind_of_ast ["a", ty] (fun ~suffix ->
+          bind_of_ast ["a", structural] (fun ~suffix ->
             Print.format "Some a%s" suffix))
       | Tuple tys ->
         let vars = tuple_vars tys in
@@ -229,15 +240,15 @@ let print_of_ast rep ~name ~index =
     Print.format "Optional.bind ~f:of_concrete (%s.to_concrete x)" module_name)
 
 let print_conversions_ml () =
-  let alist = Astlib_parsetree_types.t in
+  let alist = Astlib_ast.Grammar.t in
   let reps =
     filter_map alist ~f:(fun (name, decl) ->
-      match (decl : Astlib_parsetree_types.decl) with
+      match (decl : Astlib_ast.Grammar.decl) with
       | Poly _ -> None
-      | Mono rep -> Some (name, rep)
+      | Mono nominal -> Some (name, nominal)
       | Inst { poly; arg } -> Some (name, instantiate alist ~poly ~arg))
   in
   Print.newline ();
   Print.format "open! StdLabels";
-  List.iteri reps ~f:(fun index (name, rep) -> print_of_ast ~index ~name rep);
-  List.iteri reps ~f:(fun index (name, rep) -> print_to_ast ~index ~name rep)
+  List.iteri reps ~f:(fun index (name, nominal) -> print_of_ast ~index ~name nominal);
+  List.iteri reps ~f:(fun index (name, nominal) -> print_to_ast ~index ~name nominal)
