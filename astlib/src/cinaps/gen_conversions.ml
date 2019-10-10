@@ -192,12 +192,39 @@ let print_to_ast ~index ~name ({ vars; body } : Astlib_ast.Grammar.decl) =
     print_nominal_to_ast body ~name)
 
 let rec of_ast structural =
-  match (structural : Astlib_ast.Grammar.nothing Astlib_ast.Grammar.structural) with
-  | Bool | Char | String | Location -> None
-  | A _ -> .
-  | T name -> Some (Printf.sprintf "%s_of_ast" name)
-  | List structural -> option_map ~f:(Printf.sprintf "Optional.List.map ~f:(%s)") (of_ast structural)
-  | Option structural -> option_map ~f:(Printf.sprintf "Optional.Option.map ~f:(%s)") (of_ast structural)
+  match (structural : Astlib_ast.Grammar.structural) with
+  | Bool | Int | Char | String | Location -> None
+  | Name string | Var string -> Some (Printf.sprintf "%s_of_ast" string)
+  | Inst { poly; args } ->
+    Some
+      (Printf.sprintf "(%s_of_ast %s)"
+         poly
+         (String.concat ~sep:" " (List.map args ~f:of_ast_or_id)))
+  | List structural ->
+    option_map ~f:(Printf.sprintf "List.map ~f:(%s)") (of_ast structural)
+  | Option structural ->
+    option_map ~f:(Printf.sprintf "Optional.map ~f:(%s)") (of_ast structural)
+  | Tuple tuple -> tuple_of_ast tuple
+
+and tuple_of_ast tuple =
+  let conversions = List.map tuple ~f:of_ast in
+  if List.for_all conversions ~f:(function None -> true | Some _ -> false)
+  then None
+  else (
+    let vars = List.mapi tuple ~f:(fun i _ -> Printf.sprintf "x%d" (i + 1)) in
+    Some
+      (Printf.sprintf "(fun (%s) -> (%s))"
+         (String.concat ~sep:", " vars)
+         (String.concat ~sep:", "
+            (List.map2 vars conversions ~f:(fun var conversion ->
+               match conversion with
+               | None -> var
+               | Some conversion -> Printf.sprintf "%s %s" conversion var)))))
+
+and of_ast_or_id structural =
+  match of_ast structural with
+  | Some x -> x
+  | None -> "(fun x -> x)"
 
 let bind_of_ast =
   let rec loop ~bindings ~print ~suffix =
