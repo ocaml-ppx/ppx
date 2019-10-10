@@ -6,52 +6,7 @@ let option_map option ~f =
   | None -> None
   | Some x -> Some (f x)
 
-let filter_map list ~f =
-  List.map list ~f:(fun x ->
-    match f x with
-    | None -> []
-    | Some y -> [y])
-  |> List.concat
-
 let zip xs ys = List.map2 xs ys ~f:(fun x y -> x, y)
-
-let rec substitute_structural structural ~subst : Astlib_ast.Grammar.structural =
-  match (structural : Astlib_ast.Grammar.structural) with
-  | Bool | Int | Char | String | Location | Name _ -> structural
-  | Var var -> List.assoc var subst
-  | Inst { poly; args } ->
-    Inst { poly; args = List.map args ~f:(substitute_structural ~subst) }
-  | List structural -> List (substitute_structural structural ~subst)
-  | Option structural -> Option (substitute_structural structural ~subst)
-  | Tuple tuple -> Tuple (substitute_tuple tuple ~subst)
-
-and substitute_tuple tuple ~subst =
-  List.map tuple ~f:(substitute_structural ~subst)
-
-let substitute_record record ~subst =
-  List.map record ~f:(fun (name, structural) ->
-    (name, substitute_structural structural ~subst))
-
-let substitute_clause clause ~subst : Astlib_ast.Grammar.clause =
-  match (clause : Astlib_ast.Grammar.clause) with
-  | Empty -> Empty
-  | Tuple tuple -> Tuple (substitute_tuple tuple ~subst)
-  | Record record -> Record (substitute_record record ~subst)
-
-let substitute_variant variant ~subst =
-  List.map variant ~f:(fun (name, clause) ->
-    (name, substitute_clause clause ~subst))
-
-let substitute_nominal nominal ~subst : Astlib_ast.Grammar.nominal =
-  match (nominal : Astlib_ast.Grammar.nominal) with
-  | Alias structural -> Alias (substitute_structural structural ~subst)
-  | Record record -> Record (substitute_record record ~subst)
-  | Variant variant -> Variant (substitute_variant variant ~subst)
-
-let instantiate alist ~poly ~args =
-  let { vars ; body } : Astlib_ast.Grammar.decl = List.assoc poly alist in
-  let subst = List.map2 vars args ~f:(fun var arg -> (var, arg)) in
-  substitute_nominal body ~subst
 
 let module_name ~name =
   Printf.sprintf "Stable.%s.%s"
@@ -70,16 +25,46 @@ let concrete_type ~name =
 
 let tree_type ~name = Printf.sprintf "Astlib_parsetree.%s" name
 
+let current_grammar =
+  Lazy.from_fun (fun () ->
+    Astlib_ast.History.to_versioned_grammars Astlib_ast.History.history
+    |> List.assoc (Astlib_ast.History.current_version Astlib_ast.History.history))
+
+let poly_args vars n =
+  match vars with
+  | [] -> ""
+  | [var] -> Printf.sprintf " '%s%d" var n
+  | _ ->
+    Printf.sprintf " (%s)"
+      (String.concat ~sep:", "
+         (List.map vars ~f:(fun var ->
+            Printf.sprintf "'%s%d" var n)))
+
+let poly_conversions vars =
+  String.concat ~sep:""
+    (List.map vars ~f:(fun var ->
+       Printf.sprintf "('%s1 -> '%s2) -> " var var))
+
 let print_conversions_mli () =
-  Astlib_ast.History.to_versioned_grammars Astlib_ast.History.history
-  |> List.assoc (Astlib_ast.History.current_version Astlib_ast.History.history)
-  |> List.iter ~f:(fun (name, decl) ->
-    let { vars; body } : Astlib_ast.Grammar.decl = decl in
+  List.iter (Lazy.force current_grammar) ~f:(fun (name, decl) ->
+    let { vars; body = _ } : Astlib_ast.Grammar.decl = decl in
     Print.newline ();
     let ast_type = ast_type ~name in
     let tree_type = tree_type ~name in
-    Print.format "val %s_to_ast : %s -> %s" name tree_type ast_type;
-    Print.format "val %s_of_ast : %s -> %s option" name ast_type tree_type)
+    Print.format "val %s_to_ast : %s%s%s -> %s%s"
+      name
+      (poly_conversions vars)
+      (poly_args vars 1)
+      tree_type
+      (poly_args vars 2)
+      ast_type;
+    Print.format "val %s_of_ast : %s%s%s -> %s%s option"
+      name
+      (poly_conversions vars)
+      (poly_args vars 1)
+      ast_type
+      (poly_args vars 2)
+      tree_type)
 
 let variable_names =
   List.init ~len:256 ~f:Char.chr
@@ -242,7 +227,6 @@ let bind_of_ast =
     Print.format "%s" (String.make (List.length bindings) ')')
 
 let print_nominal_of_ast nominal ~name =
-  let module_name = module_name ~name in
   match (nominal : Astlib_ast.Grammar.nominal) with
   | Alias structural ->
     Print.format "fun (%s { a }) ->" (String.capitalize_ascii name);
@@ -301,15 +285,8 @@ let print_of_ast ~name ~index ({ vars; body } : Astlib_ast.Grammar.decl) =
       (module_name ~name))
 
 let print_conversions_ml () =
-  let alist = Astlib_ast.Grammar.t in
-  let reps =
-    filter_map alist ~f:(fun (name, decl) ->
-      match (decl : Astlib_ast.Grammar.decl) with
-      | Poly _ -> None
-      | Mono nominal -> Some (name, nominal)
-      | Inst { poly; arg } -> Some (name, instantiate alist ~poly ~arg))
-  in
   Print.newline ();
   Print.format "open! StdLabels";
-  List.iteri reps ~f:(fun index (name, nominal) -> print_of_ast ~index ~name nominal);
-  List.iteri reps ~f:(fun index (name, nominal) -> print_to_ast ~index ~name nominal)
+  let alist = Lazy.force current_grammar in
+  List.iteri alist ~f:(fun index (name, nominal) -> print_of_ast ~index ~name nominal);
+  List.iteri alist ~f:(fun index (name, nominal) -> print_to_ast ~index ~name nominal)
