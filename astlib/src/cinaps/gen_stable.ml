@@ -123,11 +123,11 @@ let clause_argument_types (clause : Astlib_ast.Grammar.clause) =
 
 let constructor_name ~suffix =
   match suffix with
-  | None -> ""
-  | Some suffix -> "_" ^ String.lowercase_ascii suffix
+  | None -> "create"
+  | Some suffix -> "create_" ^ String.lowercase_ascii suffix
 
 let declare_constructor ~suffix ~vars ~arguments =
-  Print.format "val create%s : %s"
+  Print.format "val %s : %s"
     (constructor_name ~suffix)
     (String.concat ~sep:" -> " (arguments @ [type_vars vars ^ "t"]))
 
