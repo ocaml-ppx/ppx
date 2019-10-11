@@ -224,7 +224,8 @@ let bind_of_ast =
   in
   fun bindings print ->
     loop ~bindings ~print;
-    Print.format "%s" (String.make (List.length bindings) ')')
+    let count = List.length bindings in
+    if count > 0 then Print.format "%s" (String.make count ')')
 
 let print_nominal_of_ast nominal ~name =
   match (nominal : Astlib_ast.Grammar.nominal) with

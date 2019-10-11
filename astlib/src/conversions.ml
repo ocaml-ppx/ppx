@@ -124,7 +124,6 @@ and arg_label_of_ast =
     function
     | Nolabel () ->
       Some (Nolabel ())
-      
     | Labelled (a) ->
       Some (Labelled (a))
       )
@@ -226,7 +225,6 @@ and core_type_desc_of_ast =
     function
     | Ptyp_any () ->
       Some (Ptyp_any ())
-      
     | Ptyp_var (a) ->
       Some (Ptyp_var (a))
       )
@@ -346,7 +344,6 @@ and pattern_desc_of_ast =
     function
     | Ppat_any () ->
       Some (Ppat_any ())
-      
     | Ppat_var (a) ->
       Optional.bind (string_loc_of_ast a) ~f:(fun a ->
         Some (Ppat_var (a))
@@ -624,7 +621,6 @@ and expression_desc_of_ast =
       )
     | Pexp_unreachable () ->
       Some (Pexp_unreachable ())
-      
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Expression_desc.to_concrete x)
 
@@ -715,7 +711,6 @@ and type_kind_of_ast =
     function
     | Ptype_abstract () ->
       Some (Ptype_abstract ())
-      
     | Ptype_variant (a) ->
       Optional.bind (List.map ~f:(constructor_declaration_of_ast) a) ~f:(fun a ->
         Some (Ptype_variant (a))
@@ -726,7 +721,6 @@ and type_kind_of_ast =
       )
     | Ptype_open () ->
       Some (Ptype_open ())
-      
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Type_kind.to_concrete x)
 
@@ -1501,7 +1495,6 @@ and directive_argument_of_ast =
     function
     | Pdir_none () ->
       Some (Pdir_none ())
-      
     | Pdir_string (a) ->
       Some (Pdir_string (a))
       )

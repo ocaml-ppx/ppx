@@ -514,7 +514,6 @@ module V4_07 = struct
         ( match data with
         | Variant ("Nolabel", Tuple []) ->
           Some (Nolabel ())
-          
         | Variant ("Labelled", Tuple [x1]) ->
           Optional.bind (Versioned_value.to_string x1) ~f:(fun x1 ->
             Some (Labelled (x1))
@@ -856,7 +855,6 @@ module V4_07 = struct
         ( match data with
         | Variant ("Ptyp_any", Tuple []) ->
           Some (Ptyp_any ())
-          
         | Variant ("Ptyp_var", Tuple [x1]) ->
           Optional.bind (Versioned_value.to_string x1) ~f:(fun x1 ->
             Some (Ptyp_var (x1))
@@ -1179,7 +1177,6 @@ module V4_07 = struct
         ( match data with
         | Variant ("Ppat_any", Tuple []) ->
           Some (Ppat_any ())
-          
         | Variant ("Ppat_var", Tuple [x1]) ->
           Optional.bind (Versioned_value.to_ast x1) ~f:(fun x1 ->
             Some (Ppat_var (x1))
@@ -1683,7 +1680,6 @@ module V4_07 = struct
           )
         | Variant ("Pexp_unreachable", Tuple []) ->
           Some (Pexp_unreachable ())
-          
         )
       | _ -> None
   end
@@ -1930,7 +1926,6 @@ module V4_07 = struct
         ( match data with
         | Variant ("Ptype_abstract", Tuple []) ->
           Some (Ptype_abstract ())
-          
         | Variant ("Ptype_variant", Tuple [x1]) ->
           Optional.bind ((Versioned_value.to_list ~f:Versioned_value.to_ast) x1) ~f:(fun x1 ->
             Some (Ptype_variant (x1))
@@ -1941,7 +1936,6 @@ module V4_07 = struct
           )
         | Variant ("Ptype_open", Tuple []) ->
           Some (Ptype_open ())
-          
         )
       | _ -> None
   end
@@ -3874,7 +3868,6 @@ module V4_07 = struct
         ( match data with
         | Variant ("Pdir_none", Tuple []) ->
           Some (Pdir_none ())
-          
         | Variant ("Pdir_string", Tuple [x1]) ->
           Optional.bind (Versioned_value.to_string x1) ~f:(fun x1 ->
             Some (Pdir_string (x1))

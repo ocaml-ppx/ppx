@@ -230,7 +230,8 @@ let with_optional_bindings bindings f =
       Print.indented (fun () -> loop bindings)
   in
   loop bindings;
-  Print.format "%s" (String.make (List.length bindings) ')')
+  let count = List.length bindings in
+  if count > 0 then Print.format "%s" (String.make count ')')
 
 let with_tuple_to_concrete tuple f =
   let bindings =
