@@ -102,7 +102,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      type t = { txt : 'a; loc : Location.t }
+      type 'a t = { txt : 'a; loc : Location.t }
     end
 
     let create ~txt ~loc =
@@ -2446,7 +2446,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      type t = { pci_virt : Versioned_ast.t; pci_params : Versioned_ast.t list; pci_name : Versioned_ast.t; pci_expr : 'a; pci_loc : Location.t; pci_attributes : Versioned_ast.t }
+      type 'a t = { pci_virt : Versioned_ast.t; pci_params : Versioned_ast.t list; pci_name : Versioned_ast.t; pci_expr : 'a; pci_loc : Location.t; pci_attributes : Versioned_ast.t }
     end
 
     let create ~pci_virt ~pci_params ~pci_name ~pci_expr ~pci_loc ~pci_attributes =
@@ -3292,7 +3292,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      type t = { pincl_mod : 'a; pincl_loc : Location.t; pincl_attributes : Versioned_ast.t }
+      type 'a t = { pincl_mod : 'a; pincl_loc : Location.t; pincl_attributes : Versioned_ast.t }
     end
 
     let create ~pincl_mod ~pincl_loc ~pincl_attributes =

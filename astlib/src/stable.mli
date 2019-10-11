@@ -100,11 +100,11 @@ module V4_07 : sig
     val to_ast : t -> Versioned_ast.t
 
     module Concrete : sig
-      type t = { txt : 'a; loc : Location.t }
+      type 'a t = { txt : 'a; loc : Location.t }
     end
 
-    val of_concrete : Concrete.t -> t
-    val to_concrete : t -> Concrete.t option
+    val of_concrete : 'a Concrete.t -> 'a t
+    val to_concrete : 'a t -> 'a Concrete.t option
     val create : txt:'a -> loc:Location.t -> 'a t
   end
 
@@ -1128,11 +1128,11 @@ module V4_07 : sig
     val to_ast : t -> Versioned_ast.t
 
     module Concrete : sig
-      type t = { pci_virt : Virtual_flag.t; pci_params : Type_param.t list; pci_name : String_loc.t; pci_expr : 'a; pci_loc : Location.t; pci_attributes : Attributes.t }
+      type 'a t = { pci_virt : Virtual_flag.t; pci_params : Type_param.t list; pci_name : String_loc.t; pci_expr : 'a; pci_loc : Location.t; pci_attributes : Attributes.t }
     end
 
-    val of_concrete : Concrete.t -> t
-    val to_concrete : t -> Concrete.t option
+    val of_concrete : 'a Concrete.t -> 'a t
+    val to_concrete : 'a t -> 'a Concrete.t option
     val create : pci_virt:Virtual_flag.t -> pci_params:Type_param.t list -> pci_name:String_loc.t -> pci_expr:'a -> pci_loc:Location.t -> pci_attributes:Attributes.t -> 'a t
   end
 
@@ -1497,11 +1497,11 @@ module V4_07 : sig
     val to_ast : t -> Versioned_ast.t
 
     module Concrete : sig
-      type t = { pincl_mod : 'a; pincl_loc : Location.t; pincl_attributes : Attributes.t }
+      type 'a t = { pincl_mod : 'a; pincl_loc : Location.t; pincl_attributes : Attributes.t }
     end
 
-    val of_concrete : Concrete.t -> t
-    val to_concrete : t -> Concrete.t option
+    val of_concrete : 'a Concrete.t -> 'a t
+    val to_concrete : 'a t -> 'a Concrete.t option
     val create : pincl_mod:'a -> pincl_loc:Location.t -> pincl_attributes:Attributes.t -> 'a t
   end
 

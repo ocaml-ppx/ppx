@@ -88,12 +88,6 @@ let print_clause_type name (clause : Astlib_ast.Grammar.clause) ~opaque =
        " of " ^ String.concat ~sep:" * " (List.map tuple ~f:(type_of_structural ~opaque))
      | Record record -> " of " ^ type_of_record record ~opaque)
 
-let print_variant_type variant ~opaque =
-  Print.format "type t =";
-  Print.indented (fun () ->
-    List.iter variant ~f:(fun (name, clause) ->
-      print_clause_type name clause ~opaque))
-
 let type_vars vars =
   match vars with
   | [] -> ""
@@ -102,11 +96,19 @@ let type_vars vars =
     Printf.sprintf "(%s) "
       (String.concat ~sep:", " (List.map vars ~f:(fun var -> "'" ^ var)))
 
-let print_nominal_type (nominal : Astlib_ast.Grammar.nominal) ~opaque =
+let print_variant_type variant ~vars ~opaque =
+  Print.format "type %st =" (type_vars vars);
+  Print.indented (fun () ->
+    List.iter variant ~f:(fun (name, clause) ->
+      print_clause_type name clause ~opaque))
+
+let print_nominal_type (nominal : Astlib_ast.Grammar.nominal) ~vars ~opaque =
   match nominal with
-  | Alias structural -> Print.format "type t = %s" (type_of_structural structural ~opaque)
-  | Record record -> Print.format "type t = %s" (type_of_record record ~opaque)
-  | Variant variant -> print_variant_type variant ~opaque
+  | Alias structural ->
+    Print.format "type %st = %s" (type_vars vars) (type_of_structural structural ~opaque)
+  | Record record ->
+    Print.format "type %st = %s" (type_vars vars) (type_of_record record ~opaque)
+  | Variant variant -> print_variant_type variant ~vars ~opaque
 
 let tuple_argument_types tuple =
   List.map tuple ~f:(type_of_structural ~opaque:true)
@@ -350,10 +352,11 @@ let print_decl_signature ~decl_name ({ vars; body = nominal } : Astlib_ast.Gramm
   Print.format "val to_ast : t -> Versioned_ast.t";
   Print.newline ();
   Print.declare_module "Concrete" (fun () ->
-    print_nominal_type nominal ~opaque:true);
+    print_nominal_type nominal ~vars ~opaque:true);
   Print.newline ();
-  Print.format "val of_concrete : Concrete.t -> t";
-  Print.format "val to_concrete : t -> Concrete.t option";
+  let tvars = type_vars vars in
+  Print.format "val of_concrete : %sConcrete.t -> %st" tvars tvars;
+  Print.format "val to_concrete : %st -> %sConcrete.t option" tvars tvars;
   declare_nominal_constructors ~vars nominal
 
 let print_decl_structure ~decl_name ({ vars; body = nominal } : Astlib_ast.Grammar.decl) =
@@ -363,7 +366,7 @@ let print_decl_structure ~decl_name ({ vars; body = nominal } : Astlib_ast.Gramm
   Print.format "let to_ast t = t";
   Print.newline ();
   Print.define_module "Concrete" (fun () ->
-    print_nominal_type nominal ~opaque:false);
+    print_nominal_type nominal ~vars ~opaque:false);
   Print.newline ();
   define_nominal_constructors ~decl_name nominal;
   Print.newline ();
