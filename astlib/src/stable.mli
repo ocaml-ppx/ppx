@@ -15,7 +15,7 @@ module Unversioned : sig
   type class_field
   type class_field_desc
   type class_field_kind
-  type class_infos
+  type 'a class_infos
   type class_method_desc
   type class_signature
   type class_structure
@@ -43,11 +43,11 @@ module Unversioned : sig
   type extension_constructor_kind
   type include_declaration
   type include_description
-  type include_infos
+  type 'a include_infos
   type label
   type label_declaration
   type label_loc
-  type loc
+  type 'a loc
   type longident
   type longident_loc
   type module_binding

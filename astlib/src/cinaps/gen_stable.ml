@@ -4,6 +4,10 @@ open Astlib_cinaps
 module String_map = struct
   include Map.Make (String)
 
+  let update t ~key ~f = update key f t
+  let mapi t ~f = mapi f t
+  let iter t ~f = iter f t
+
   let of_alist_multi alist =
     List.fold_right alist ~init:empty ~f:(fun (key, data) t ->
       let f = function
@@ -420,9 +424,9 @@ let print_unversioned_mli versioned_grammars =
 
 let print_unversioned_ml versioned_grammars =
   let names_and_arities = names_and_arities_of_versioned_grammars versioned_grammars in
-  List.iter names ~f:(fun name vars ->
+  String_map.iter names_and_arities ~f:(fun name vars ->
     Print.format "type %s%s = Versioned_ast.t"
-      (type_var vars)
+      (type_vars vars)
       (String.lowercase_ascii name))
 
 let print_astlib_mli () =
