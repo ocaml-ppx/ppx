@@ -13,7 +13,7 @@ let rec type_of_structural structural ~opaque =
     Printf.sprintf "(%s) %s"
       (String.concat ~sep:", " (List.map args ~f:(type_of_structural ~opaque)))
       poly
-  | Name name -> if opaque then name ^ ".t" else "Versioned_ast.t"
+  | Name name -> if opaque then String.capitalize_ascii name ^ ".t" else "Versioned_ast.t"
   | List structural -> type_of_structural structural ~opaque ^ " list"
   | Option structural -> type_of_structural structural ~opaque ^ " option"
   | Tuple tuple -> type_of_tuple tuple ~opaque
