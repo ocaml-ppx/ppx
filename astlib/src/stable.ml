@@ -179,7 +179,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      type t = (Versioned_ast.t) loc
+      type t = (Versioned_ast.t) Loc.t
     end
 
     let create x =
@@ -449,7 +449,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      type t = (Versioned_ast.t) loc
+      type t = (Versioned_ast.t) Loc.t
     end
 
     let create x =
@@ -472,7 +472,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      type t = (string) loc
+      type t = (string) Loc.t
     end
 
     let create x =
@@ -2476,7 +2476,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      type t = (Versioned_ast.t) class_infos
+      type t = (Versioned_ast.t) Class_infos.t
     end
 
     let create x =
@@ -2499,7 +2499,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      type t = (Versioned_ast.t) class_infos
+      type t = (Versioned_ast.t) Class_infos.t
     end
 
     let create x =
@@ -2880,7 +2880,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      type t = (Versioned_ast.t) class_infos
+      type t = (Versioned_ast.t) Class_infos.t
     end
 
     let create x =
@@ -3319,7 +3319,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      type t = (Versioned_ast.t) include_infos
+      type t = (Versioned_ast.t) Include_infos.t
     end
 
     let create x =
@@ -3342,7 +3342,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      type t = (Versioned_ast.t) include_infos
+      type t = (Versioned_ast.t) Include_infos.t
     end
 
     let create x =

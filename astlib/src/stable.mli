@@ -94,10 +94,10 @@ end
 
 module V4_07 : sig
   module rec Loc : sig
-    type t = Unversioned.loc
+    type 'a t = 'a Unversioned.loc
 
-    val of_ast : Versioned_ast.t -> t
-    val to_ast : t -> Versioned_ast.t
+    val of_ast : Versioned_ast.t -> 'a t
+    val to_ast : 'a t -> Versioned_ast.t
 
     module Concrete : sig
       type 'a t = { txt : 'a; loc : Location.t }
@@ -135,12 +135,12 @@ module V4_07 : sig
     val to_ast : t -> Versioned_ast.t
 
     module Concrete : sig
-      type t = (Longident.t) loc
+      type t = (Longident.t) Loc.t
     end
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
-    val create : (Longident.t) loc -> t
+    val create : (Longident.t) Loc.t -> t
   end
 
   and Rec_flag : sig
@@ -291,12 +291,12 @@ module V4_07 : sig
     val to_ast : t -> Versioned_ast.t
 
     module Concrete : sig
-      type t = (Label.t) loc
+      type t = (Label.t) Loc.t
     end
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
-    val create : (Label.t) loc -> t
+    val create : (Label.t) Loc.t -> t
   end
 
   and String_loc : sig
@@ -306,12 +306,12 @@ module V4_07 : sig
     val to_ast : t -> Versioned_ast.t
 
     module Concrete : sig
-      type t = (string) loc
+      type t = (string) Loc.t
     end
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
-    val create : (string) loc -> t
+    val create : (string) Loc.t -> t
   end
 
   and Arg_label : sig
@@ -1122,10 +1122,10 @@ module V4_07 : sig
   end
 
   and Class_infos : sig
-    type t = Unversioned.class_infos
+    type 'a t = 'a Unversioned.class_infos
 
-    val of_ast : Versioned_ast.t -> t
-    val to_ast : t -> Versioned_ast.t
+    val of_ast : Versioned_ast.t -> 'a t
+    val to_ast : 'a t -> Versioned_ast.t
 
     module Concrete : sig
       type 'a t = { pci_virt : Virtual_flag.t; pci_params : Type_param.t list; pci_name : String_loc.t; pci_expr : 'a; pci_loc : Location.t; pci_attributes : Attributes.t }
@@ -1143,12 +1143,12 @@ module V4_07 : sig
     val to_ast : t -> Versioned_ast.t
 
     module Concrete : sig
-      type t = (Class_type.t) class_infos
+      type t = (Class_type.t) Class_infos.t
     end
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
-    val create : (Class_type.t) class_infos -> t
+    val create : (Class_type.t) Class_infos.t -> t
   end
 
   and Class_type_declaration : sig
@@ -1158,12 +1158,12 @@ module V4_07 : sig
     val to_ast : t -> Versioned_ast.t
 
     module Concrete : sig
-      type t = (Class_type.t) class_infos
+      type t = (Class_type.t) Class_infos.t
     end
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
-    val create : (Class_type.t) class_infos -> t
+    val create : (Class_type.t) Class_infos.t -> t
   end
 
   and Class_expr : sig
@@ -1324,12 +1324,12 @@ module V4_07 : sig
     val to_ast : t -> Versioned_ast.t
 
     module Concrete : sig
-      type t = (Class_expr.t) class_infos
+      type t = (Class_expr.t) Class_infos.t
     end
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
-    val create : (Class_expr.t) class_infos -> t
+    val create : (Class_expr.t) Class_infos.t -> t
   end
 
   and Module_type : sig
@@ -1491,10 +1491,10 @@ module V4_07 : sig
   end
 
   and Include_infos : sig
-    type t = Unversioned.include_infos
+    type 'a t = 'a Unversioned.include_infos
 
-    val of_ast : Versioned_ast.t -> t
-    val to_ast : t -> Versioned_ast.t
+    val of_ast : Versioned_ast.t -> 'a t
+    val to_ast : 'a t -> Versioned_ast.t
 
     module Concrete : sig
       type 'a t = { pincl_mod : 'a; pincl_loc : Location.t; pincl_attributes : Attributes.t }
@@ -1512,12 +1512,12 @@ module V4_07 : sig
     val to_ast : t -> Versioned_ast.t
 
     module Concrete : sig
-      type t = (Module_type.t) include_infos
+      type t = (Module_type.t) Include_infos.t
     end
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
-    val create : (Module_type.t) include_infos -> t
+    val create : (Module_type.t) Include_infos.t -> t
   end
 
   and Include_declaration : sig
@@ -1527,12 +1527,12 @@ module V4_07 : sig
     val to_ast : t -> Versioned_ast.t
 
     module Concrete : sig
-      type t = (Module_expr.t) include_infos
+      type t = (Module_expr.t) Include_infos.t
     end
 
     val of_concrete : Concrete.t -> t
     val to_concrete : t -> Concrete.t option
-    val create : (Module_expr.t) include_infos -> t
+    val create : (Module_expr.t) Include_infos.t -> t
   end
 
   and With_constraint : sig

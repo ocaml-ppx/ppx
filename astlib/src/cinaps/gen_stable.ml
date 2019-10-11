@@ -26,9 +26,9 @@ let rec type_of_structural structural ~opaque =
   | Location -> "Location.t"
   | Var var -> "'" ^ var
   | Inst { poly; args } ->
-    Printf.sprintf "(%s) %s"
+    Printf.sprintf "(%s) %s.t"
       (String.concat ~sep:", " (List.map args ~f:(type_of_structural ~opaque)))
-      poly
+      (String.capitalize_ascii poly)
   | Name name -> if opaque then String.capitalize_ascii name ^ ".t" else "Versioned_ast.t"
   | List structural -> type_of_structural structural ~opaque ^ " list"
   | Option structural -> type_of_structural structural ~opaque ^ " option"
@@ -362,15 +362,18 @@ let print_nominal_to_concrete ~decl_name ~vars (nominal : Astlib_ast.Grammar.nom
       Print.format ")")
 
 let print_decl_signature ~decl_name ({ vars; body = nominal } : Astlib_ast.Grammar.decl) =
-  Print.format "type t = Unversioned.%s" (String.lowercase_ascii decl_name);
+  let tvars = type_vars vars in
+  Print.format "type %st = %sUnversioned.%s"
+    tvars
+    tvars
+    (String.lowercase_ascii decl_name);
   Print.newline ();
-  Print.format "val of_ast : Versioned_ast.t -> t";
-  Print.format "val to_ast : t -> Versioned_ast.t";
+  Print.format "val of_ast : Versioned_ast.t -> %st" tvars;
+  Print.format "val to_ast : %st -> Versioned_ast.t" tvars;
   Print.newline ();
   Print.declare_module "Concrete" (fun () ->
     print_nominal_type nominal ~vars ~opaque:true);
   Print.newline ();
-  let tvars = type_vars vars in
   Print.format "val of_concrete : %sConcrete.t -> %st" tvars tvars;
   Print.format "val to_concrete : %st -> %sConcrete.t option" tvars tvars;
   declare_nominal_constructors ~vars nominal
