@@ -172,7 +172,14 @@ let define_constructor ~decl_name ~suffix ~arguments data =
   Print.format "let %s ="
     (String.concat ~sep:" " (constructor_name ~suffix :: arguments));
   Print.indented (fun () ->
-    Print.format "Versioned_ast.create ~version { name = %S; data = %s }" decl_name data)
+    Print.format "Versioned_ast.create ~version";
+    Print.indented (fun () ->
+      Print.format "{ name = %S" decl_name;
+      Print.format "; data =";
+      Print.indented (fun () ->
+        Print.indented (fun () ->
+          Print.format "%s" data));
+      Print.format "}"))
 
 let tuple_argument i = Printf.sprintf "x%d" (i + 1)
 let tuple_arguments tuple = List.init ~len:(List.length tuple) ~f:tuple_argument
