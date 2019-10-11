@@ -1,6 +1,18 @@
 open StdLabels
 open Astlib_cinaps
 
+module String_map = struct
+  include Map.Make (String)
+
+  let of_alist_multi alist =
+    List.fold_right alist ~init:empty ~f:(fun (key, data) t ->
+      let f = function
+        | None -> Some [data]
+        | Some rest -> Some (data :: rest)
+      in
+      update t ~key ~f)
+end
+
 let rec type_of_structural structural ~opaque =
   match (structural : Astlib_ast.Grammar.structural) with
   | Bool -> "bool"
@@ -386,22 +398,32 @@ let print_grammar_ml grammar =
     Print.define_module (String.capitalize_ascii decl_name) (fun () ->
       print_decl_structure ~decl_name decl))
 
-let names_of_versioned_grammars versioned_grammars =
+let poly_vars_singleton_exn poly vars_list =
+  match vars_list with
+  | [] -> assert false
+  | [vars] -> vars
+  | _ -> failwith (Printf.sprintf "inconsistent type arguments for %s" poly)
+
+let names_and_arities_of_versioned_grammars versioned_grammars =
   versioned_grammars
   |> List.map ~f:snd
   |> List.concat
-  |> List.map ~f:fst
-  |> List.sort_uniq ~cmp:String.compare
+  |> List.map ~f:(fun (decl_name, (decl : Astlib_ast.Grammar.decl)) ->
+    (decl_name, decl.vars))
+  |> String_map.of_alist_multi
+  |> String_map.mapi ~f:poly_vars_singleton_exn
 
 let print_unversioned_mli versioned_grammars =
-  let names = names_of_versioned_grammars versioned_grammars in
-  List.iter names ~f:(fun name ->
-    Print.format "type %s" (String.lowercase_ascii name))
+  let names_and_arities = names_and_arities_of_versioned_grammars versioned_grammars in
+  String_map.iter names_and_arities ~f:(fun name vars ->
+    Print.format "type %s%s" (type_vars vars) (String.lowercase_ascii name))
 
 let print_unversioned_ml versioned_grammars =
-  let names = names_of_versioned_grammars versioned_grammars in
-  List.iter names ~f:(fun name ->
-    Print.format "type %s = Versioned_ast.t" (String.lowercase_ascii name))
+  let names_and_arities = names_and_arities_of_versioned_grammars versioned_grammars in
+  List.iter names ~f:(fun name vars ->
+    Print.format "type %s%s = Versioned_ast.t"
+      (type_var vars)
+      (String.lowercase_ascii name))
 
 let print_astlib_mli () =
   Print.newline ();
