@@ -7,12 +7,27 @@ let decl ~vars body = ({ vars; body } : Grammar.decl)
 let mono decl_name body = decl_name, decl ~vars:[] body
 let poly decl_name body = decl_name, decl ~vars:["a"] body
 
+let alias decl_name nominal = mono decl_name (Alias nominal)
+
+let tuple decl_name tuple = alias decl_name (Tuple tuple)
+
+let record decl_name record = mono decl_name (Record record)
+
 let variant decl_name clauses =
   let clauses =
     List.map clauses ~f:(fun (name, tuple) ->
       name, (Tuple tuple : Grammar.clause))
   in
-  mono decl_name (Grammar.Variant clauses)
+  mono decl_name (Variant clauses)
+
+let flag decl_name tags =
+  let clauses =
+    List.map tags ~f:(fun tag -> (tag, Grammar.Empty))
+  in
+  mono decl_name (Variant clauses)
+
+let inst decl_name poly arg =
+  alias decl_name (Inst { poly; args = [arg] })
 
 let grammar =
   [ poly "loc"
