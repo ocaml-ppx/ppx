@@ -108,7 +108,7 @@ module V4_07 = struct
     let create ~txt ~loc =
       Versioned_ast.create ~version { name = "loc"; data = Record [("txt", a_of_concrete txt); ("loc", Versioned_value.of_location loc)] }
 
-    let of_concrete ({ txt, loc } : 'a Concrete.t) : 'a t =
+    let of_concrete ({ txt; loc } : 'a Concrete.t) : 'a t =
       { name = "loc"; data = Record [("txt", a_of_concrete txt); ("loc", Versioned_value.of_location loc)] }
 
     let to_concrete t : 'a Concrete.t =
@@ -772,7 +772,7 @@ module V4_07 = struct
     let create ~ptyp_desc ~ptyp_loc ~ptyp_attributes =
       Versioned_ast.create ~version { name = "core_type"; data = Record [("ptyp_desc", Versioned_value.of_ast ptyp_desc); ("ptyp_loc", Versioned_value.of_location ptyp_loc); ("ptyp_attributes", Versioned_value.of_ast ptyp_attributes)] }
 
-    let of_concrete ({ ptyp_desc, ptyp_loc, ptyp_attributes } : Concrete.t) : t =
+    let of_concrete ({ ptyp_desc; ptyp_loc; ptyp_attributes } : Concrete.t) : t =
       { name = "core_type"; data = Record [("ptyp_desc", Versioned_value.of_ast ptyp_desc); ("ptyp_loc", Versioned_value.of_location ptyp_loc); ("ptyp_attributes", Versioned_value.of_ast ptyp_attributes)] }
 
     let to_concrete t : Concrete.t =
@@ -1065,7 +1065,7 @@ module V4_07 = struct
     let create ~ppat_desc ~ppat_loc ~ppat_attributes =
       Versioned_ast.create ~version { name = "pattern"; data = Record [("ppat_desc", Versioned_value.of_ast ppat_desc); ("ppat_loc", Versioned_value.of_location ppat_loc); ("ppat_attributes", Versioned_value.of_ast ppat_attributes)] }
 
-    let of_concrete ({ ppat_desc, ppat_loc, ppat_attributes } : Concrete.t) : t =
+    let of_concrete ({ ppat_desc; ppat_loc; ppat_attributes } : Concrete.t) : t =
       { name = "pattern"; data = Record [("ppat_desc", Versioned_value.of_ast ppat_desc); ("ppat_loc", Versioned_value.of_location ppat_loc); ("ppat_attributes", Versioned_value.of_ast ppat_attributes)] }
 
     let to_concrete t : Concrete.t =
@@ -1303,7 +1303,7 @@ module V4_07 = struct
     let create ~pexp_desc ~pexp_loc ~pexp_attributes =
       Versioned_ast.create ~version { name = "expression"; data = Record [("pexp_desc", Versioned_value.of_ast pexp_desc); ("pexp_loc", Versioned_value.of_location pexp_loc); ("pexp_attributes", Versioned_value.of_ast pexp_attributes)] }
 
-    let of_concrete ({ pexp_desc, pexp_loc, pexp_attributes } : Concrete.t) : t =
+    let of_concrete ({ pexp_desc; pexp_loc; pexp_attributes } : Concrete.t) : t =
       { name = "expression"; data = Record [("pexp_desc", Versioned_value.of_ast pexp_desc); ("pexp_loc", Versioned_value.of_location pexp_loc); ("pexp_attributes", Versioned_value.of_ast pexp_attributes)] }
 
     let to_concrete t : Concrete.t =
@@ -1775,7 +1775,7 @@ module V4_07 = struct
     let create ~pc_lhs ~pc_guard ~pc_rhs =
       Versioned_ast.create ~version { name = "case"; data = Record [("pc_lhs", Versioned_value.of_ast pc_lhs); ("pc_guard", (Versioned_value.of_option ~f:Versioned_value.of_ast) pc_guard); ("pc_rhs", Versioned_value.of_ast pc_rhs)] }
 
-    let of_concrete ({ pc_lhs, pc_guard, pc_rhs } : Concrete.t) : t =
+    let of_concrete ({ pc_lhs; pc_guard; pc_rhs } : Concrete.t) : t =
       { name = "case"; data = Record [("pc_lhs", Versioned_value.of_ast pc_lhs); ("pc_guard", (Versioned_value.of_option ~f:Versioned_value.of_ast) pc_guard); ("pc_rhs", Versioned_value.of_ast pc_rhs)] }
 
     let to_concrete t : Concrete.t =
@@ -1802,7 +1802,7 @@ module V4_07 = struct
     let create ~pval_name ~pval_type ~pval_prim ~pval_attributes ~pval_loc =
       Versioned_ast.create ~version { name = "value_description"; data = Record [("pval_name", Versioned_value.of_ast pval_name); ("pval_type", Versioned_value.of_ast pval_type); ("pval_prim", (Versioned_value.of_list ~f:Versioned_value.of_string) pval_prim); ("pval_attributes", Versioned_value.of_ast pval_attributes); ("pval_loc", Versioned_value.of_location pval_loc)] }
 
-    let of_concrete ({ pval_name, pval_type, pval_prim, pval_attributes, pval_loc } : Concrete.t) : t =
+    let of_concrete ({ pval_name; pval_type; pval_prim; pval_attributes; pval_loc } : Concrete.t) : t =
       { name = "value_description"; data = Record [("pval_name", Versioned_value.of_ast pval_name); ("pval_type", Versioned_value.of_ast pval_type); ("pval_prim", (Versioned_value.of_list ~f:Versioned_value.of_string) pval_prim); ("pval_attributes", Versioned_value.of_ast pval_attributes); ("pval_loc", Versioned_value.of_location pval_loc)] }
 
     let to_concrete t : Concrete.t =
@@ -1831,7 +1831,7 @@ module V4_07 = struct
     let create ~ptype_name ~ptype_params ~ptype_cstrs ~ptype_kind ~ptype_private ~ptype_manifest ~ptype_attributes ~ptype_loc =
       Versioned_ast.create ~version { name = "type_declaration"; data = Record [("ptype_name", Versioned_value.of_ast ptype_name); ("ptype_params", (Versioned_value.of_list ~f:Versioned_value.of_ast) ptype_params); ("ptype_cstrs", (Versioned_value.of_list ~f:Versioned_value.of_ast) ptype_cstrs); ("ptype_kind", Versioned_value.of_ast ptype_kind); ("ptype_private", Versioned_value.of_ast ptype_private); ("ptype_manifest", (Versioned_value.of_option ~f:Versioned_value.of_ast) ptype_manifest); ("ptype_attributes", Versioned_value.of_ast ptype_attributes); ("ptype_loc", Versioned_value.of_location ptype_loc)] }
 
-    let of_concrete ({ ptype_name, ptype_params, ptype_cstrs, ptype_kind, ptype_private, ptype_manifest, ptype_attributes, ptype_loc } : Concrete.t) : t =
+    let of_concrete ({ ptype_name; ptype_params; ptype_cstrs; ptype_kind; ptype_private; ptype_manifest; ptype_attributes; ptype_loc } : Concrete.t) : t =
       { name = "type_declaration"; data = Record [("ptype_name", Versioned_value.of_ast ptype_name); ("ptype_params", (Versioned_value.of_list ~f:Versioned_value.of_ast) ptype_params); ("ptype_cstrs", (Versioned_value.of_list ~f:Versioned_value.of_ast) ptype_cstrs); ("ptype_kind", Versioned_value.of_ast ptype_kind); ("ptype_private", Versioned_value.of_ast ptype_private); ("ptype_manifest", (Versioned_value.of_option ~f:Versioned_value.of_ast) ptype_manifest); ("ptype_attributes", Versioned_value.of_ast ptype_attributes); ("ptype_loc", Versioned_value.of_location ptype_loc)] }
 
     let to_concrete t : Concrete.t =
@@ -1959,7 +1959,7 @@ module V4_07 = struct
     let create ~pld_name ~pld_mutable ~pld_type ~pld_loc ~pld_attributes =
       Versioned_ast.create ~version { name = "label_declaration"; data = Record [("pld_name", Versioned_value.of_ast pld_name); ("pld_mutable", Versioned_value.of_ast pld_mutable); ("pld_type", Versioned_value.of_ast pld_type); ("pld_loc", Versioned_value.of_location pld_loc); ("pld_attributes", Versioned_value.of_ast pld_attributes)] }
 
-    let of_concrete ({ pld_name, pld_mutable, pld_type, pld_loc, pld_attributes } : Concrete.t) : t =
+    let of_concrete ({ pld_name; pld_mutable; pld_type; pld_loc; pld_attributes } : Concrete.t) : t =
       { name = "label_declaration"; data = Record [("pld_name", Versioned_value.of_ast pld_name); ("pld_mutable", Versioned_value.of_ast pld_mutable); ("pld_type", Versioned_value.of_ast pld_type); ("pld_loc", Versioned_value.of_location pld_loc); ("pld_attributes", Versioned_value.of_ast pld_attributes)] }
 
     let to_concrete t : Concrete.t =
@@ -1988,7 +1988,7 @@ module V4_07 = struct
     let create ~pcd_name ~pcd_args ~pcd_res ~pcd_loc ~pcd_attributes =
       Versioned_ast.create ~version { name = "constructor_declaration"; data = Record [("pcd_name", Versioned_value.of_ast pcd_name); ("pcd_args", Versioned_value.of_ast pcd_args); ("pcd_res", (Versioned_value.of_option ~f:Versioned_value.of_ast) pcd_res); ("pcd_loc", Versioned_value.of_location pcd_loc); ("pcd_attributes", Versioned_value.of_ast pcd_attributes)] }
 
-    let of_concrete ({ pcd_name, pcd_args, pcd_res, pcd_loc, pcd_attributes } : Concrete.t) : t =
+    let of_concrete ({ pcd_name; pcd_args; pcd_res; pcd_loc; pcd_attributes } : Concrete.t) : t =
       { name = "constructor_declaration"; data = Record [("pcd_name", Versioned_value.of_ast pcd_name); ("pcd_args", Versioned_value.of_ast pcd_args); ("pcd_res", (Versioned_value.of_option ~f:Versioned_value.of_ast) pcd_res); ("pcd_loc", Versioned_value.of_location pcd_loc); ("pcd_attributes", Versioned_value.of_ast pcd_attributes)] }
 
     let to_concrete t : Concrete.t =
@@ -2057,7 +2057,7 @@ module V4_07 = struct
     let create ~ptyext_path ~ptyext_params ~ptyext_constructors ~ptyext_private ~ptyext_attributes =
       Versioned_ast.create ~version { name = "type_extension"; data = Record [("ptyext_path", Versioned_value.of_ast ptyext_path); ("ptyext_params", (Versioned_value.of_list ~f:Versioned_value.of_ast) ptyext_params); ("ptyext_constructors", (Versioned_value.of_list ~f:Versioned_value.of_ast) ptyext_constructors); ("ptyext_private", Versioned_value.of_ast ptyext_private); ("ptyext_attributes", Versioned_value.of_ast ptyext_attributes)] }
 
-    let of_concrete ({ ptyext_path, ptyext_params, ptyext_constructors, ptyext_private, ptyext_attributes } : Concrete.t) : t =
+    let of_concrete ({ ptyext_path; ptyext_params; ptyext_constructors; ptyext_private; ptyext_attributes } : Concrete.t) : t =
       { name = "type_extension"; data = Record [("ptyext_path", Versioned_value.of_ast ptyext_path); ("ptyext_params", (Versioned_value.of_list ~f:Versioned_value.of_ast) ptyext_params); ("ptyext_constructors", (Versioned_value.of_list ~f:Versioned_value.of_ast) ptyext_constructors); ("ptyext_private", Versioned_value.of_ast ptyext_private); ("ptyext_attributes", Versioned_value.of_ast ptyext_attributes)] }
 
     let to_concrete t : Concrete.t =
@@ -2086,7 +2086,7 @@ module V4_07 = struct
     let create ~pext_name ~pext_kind ~pext_loc ~pext_attributes =
       Versioned_ast.create ~version { name = "extension_constructor"; data = Record [("pext_name", Versioned_value.of_ast pext_name); ("pext_kind", Versioned_value.of_ast pext_kind); ("pext_loc", Versioned_value.of_location pext_loc); ("pext_attributes", Versioned_value.of_ast pext_attributes)] }
 
-    let of_concrete ({ pext_name, pext_kind, pext_loc, pext_attributes } : Concrete.t) : t =
+    let of_concrete ({ pext_name; pext_kind; pext_loc; pext_attributes } : Concrete.t) : t =
       { name = "extension_constructor"; data = Record [("pext_name", Versioned_value.of_ast pext_name); ("pext_kind", Versioned_value.of_ast pext_kind); ("pext_loc", Versioned_value.of_location pext_loc); ("pext_attributes", Versioned_value.of_ast pext_attributes)] }
 
     let to_concrete t : Concrete.t =
@@ -2155,7 +2155,7 @@ module V4_07 = struct
     let create ~pcty_desc ~pcty_loc ~pcty_attributes =
       Versioned_ast.create ~version { name = "class_type"; data = Record [("pcty_desc", Versioned_value.of_ast pcty_desc); ("pcty_loc", Versioned_value.of_location pcty_loc); ("pcty_attributes", Versioned_value.of_ast pcty_attributes)] }
 
-    let of_concrete ({ pcty_desc, pcty_loc, pcty_attributes } : Concrete.t) : t =
+    let of_concrete ({ pcty_desc; pcty_loc; pcty_attributes } : Concrete.t) : t =
       { name = "class_type"; data = Record [("pcty_desc", Versioned_value.of_ast pcty_desc); ("pcty_loc", Versioned_value.of_location pcty_loc); ("pcty_attributes", Versioned_value.of_ast pcty_attributes)] }
 
     let to_concrete t : Concrete.t =
@@ -2254,7 +2254,7 @@ module V4_07 = struct
     let create ~pcsig_self ~pcsig_fields =
       Versioned_ast.create ~version { name = "class_signature"; data = Record [("pcsig_self", Versioned_value.of_ast pcsig_self); ("pcsig_fields", (Versioned_value.of_list ~f:Versioned_value.of_ast) pcsig_fields)] }
 
-    let of_concrete ({ pcsig_self, pcsig_fields } : Concrete.t) : t =
+    let of_concrete ({ pcsig_self; pcsig_fields } : Concrete.t) : t =
       { name = "class_signature"; data = Record [("pcsig_self", Versioned_value.of_ast pcsig_self); ("pcsig_fields", (Versioned_value.of_list ~f:Versioned_value.of_ast) pcsig_fields)] }
 
     let to_concrete t : Concrete.t =
@@ -2280,7 +2280,7 @@ module V4_07 = struct
     let create ~pctf_desc ~pctf_loc ~pctf_attributes =
       Versioned_ast.create ~version { name = "class_type_field"; data = Record [("pctf_desc", Versioned_value.of_ast pctf_desc); ("pctf_loc", Versioned_value.of_location pctf_loc); ("pctf_attributes", Versioned_value.of_ast pctf_attributes)] }
 
-    let of_concrete ({ pctf_desc, pctf_loc, pctf_attributes } : Concrete.t) : t =
+    let of_concrete ({ pctf_desc; pctf_loc; pctf_attributes } : Concrete.t) : t =
       { name = "class_type_field"; data = Record [("pctf_desc", Versioned_value.of_ast pctf_desc); ("pctf_loc", Versioned_value.of_location pctf_loc); ("pctf_attributes", Versioned_value.of_ast pctf_attributes)] }
 
     let to_concrete t : Concrete.t =
@@ -2452,7 +2452,7 @@ module V4_07 = struct
     let create ~pci_virt ~pci_params ~pci_name ~pci_expr ~pci_loc ~pci_attributes =
       Versioned_ast.create ~version { name = "class_infos"; data = Record [("pci_virt", Versioned_value.of_ast pci_virt); ("pci_params", (Versioned_value.of_list ~f:Versioned_value.of_ast) pci_params); ("pci_name", Versioned_value.of_ast pci_name); ("pci_expr", a_of_concrete pci_expr); ("pci_loc", Versioned_value.of_location pci_loc); ("pci_attributes", Versioned_value.of_ast pci_attributes)] }
 
-    let of_concrete ({ pci_virt, pci_params, pci_name, pci_expr, pci_loc, pci_attributes } : 'a Concrete.t) : 'a t =
+    let of_concrete ({ pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : 'a Concrete.t) : 'a t =
       { name = "class_infos"; data = Record [("pci_virt", Versioned_value.of_ast pci_virt); ("pci_params", (Versioned_value.of_list ~f:Versioned_value.of_ast) pci_params); ("pci_name", Versioned_value.of_ast pci_name); ("pci_expr", a_of_concrete pci_expr); ("pci_loc", Versioned_value.of_location pci_loc); ("pci_attributes", Versioned_value.of_ast pci_attributes)] }
 
     let to_concrete t : 'a Concrete.t =
@@ -2528,7 +2528,7 @@ module V4_07 = struct
     let create ~pcl_desc ~pcl_loc ~pcl_attributes =
       Versioned_ast.create ~version { name = "class_expr"; data = Record [("pcl_desc", Versioned_value.of_ast pcl_desc); ("pcl_loc", Versioned_value.of_location pcl_loc); ("pcl_attributes", Versioned_value.of_ast pcl_attributes)] }
 
-    let of_concrete ({ pcl_desc, pcl_loc, pcl_attributes } : Concrete.t) : t =
+    let of_concrete ({ pcl_desc; pcl_loc; pcl_attributes } : Concrete.t) : t =
       { name = "class_expr"; data = Record [("pcl_desc", Versioned_value.of_ast pcl_desc); ("pcl_loc", Versioned_value.of_location pcl_loc); ("pcl_attributes", Versioned_value.of_ast pcl_attributes)] }
 
     let to_concrete t : Concrete.t =
@@ -2659,7 +2659,7 @@ module V4_07 = struct
     let create ~pcstr_self ~pcstr_fields =
       Versioned_ast.create ~version { name = "class_structure"; data = Record [("pcstr_self", Versioned_value.of_ast pcstr_self); ("pcstr_fields", (Versioned_value.of_list ~f:Versioned_value.of_ast) pcstr_fields)] }
 
-    let of_concrete ({ pcstr_self, pcstr_fields } : Concrete.t) : t =
+    let of_concrete ({ pcstr_self; pcstr_fields } : Concrete.t) : t =
       { name = "class_structure"; data = Record [("pcstr_self", Versioned_value.of_ast pcstr_self); ("pcstr_fields", (Versioned_value.of_list ~f:Versioned_value.of_ast) pcstr_fields)] }
 
     let to_concrete t : Concrete.t =
@@ -2685,7 +2685,7 @@ module V4_07 = struct
     let create ~pcf_desc ~pcf_loc ~pcf_attributes =
       Versioned_ast.create ~version { name = "class_field"; data = Record [("pcf_desc", Versioned_value.of_ast pcf_desc); ("pcf_loc", Versioned_value.of_location pcf_loc); ("pcf_attributes", Versioned_value.of_ast pcf_attributes)] }
 
-    let of_concrete ({ pcf_desc, pcf_loc, pcf_attributes } : Concrete.t) : t =
+    let of_concrete ({ pcf_desc; pcf_loc; pcf_attributes } : Concrete.t) : t =
       { name = "class_field"; data = Record [("pcf_desc", Versioned_value.of_ast pcf_desc); ("pcf_loc", Versioned_value.of_location pcf_loc); ("pcf_attributes", Versioned_value.of_ast pcf_attributes)] }
 
     let to_concrete t : Concrete.t =
@@ -2909,7 +2909,7 @@ module V4_07 = struct
     let create ~pmty_desc ~pmty_loc ~pmty_attributes =
       Versioned_ast.create ~version { name = "module_type"; data = Record [("pmty_desc", Versioned_value.of_ast pmty_desc); ("pmty_loc", Versioned_value.of_location pmty_loc); ("pmty_attributes", Versioned_value.of_ast pmty_attributes)] }
 
-    let of_concrete ({ pmty_desc, pmty_loc, pmty_attributes } : Concrete.t) : t =
+    let of_concrete ({ pmty_desc; pmty_loc; pmty_attributes } : Concrete.t) : t =
       { name = "module_type"; data = Record [("pmty_desc", Versioned_value.of_ast pmty_desc); ("pmty_loc", Versioned_value.of_location pmty_loc); ("pmty_attributes", Versioned_value.of_ast pmty_attributes)] }
 
     let to_concrete t : Concrete.t =
@@ -3047,7 +3047,7 @@ module V4_07 = struct
     let create ~psig_desc ~psig_loc =
       Versioned_ast.create ~version { name = "signature_item"; data = Record [("psig_desc", Versioned_value.of_ast psig_desc); ("psig_loc", Versioned_value.of_location psig_loc)] }
 
-    let of_concrete ({ psig_desc, psig_loc } : Concrete.t) : t =
+    let of_concrete ({ psig_desc; psig_loc } : Concrete.t) : t =
       { name = "signature_item"; data = Record [("psig_desc", Versioned_value.of_ast psig_desc); ("psig_loc", Versioned_value.of_location psig_loc)] }
 
     let to_concrete t : Concrete.t =
@@ -3214,7 +3214,7 @@ module V4_07 = struct
     let create ~pmd_name ~pmd_type ~pmd_attributes ~pmd_loc =
       Versioned_ast.create ~version { name = "module_declaration"; data = Record [("pmd_name", Versioned_value.of_ast pmd_name); ("pmd_type", Versioned_value.of_ast pmd_type); ("pmd_attributes", Versioned_value.of_ast pmd_attributes); ("pmd_loc", Versioned_value.of_location pmd_loc)] }
 
-    let of_concrete ({ pmd_name, pmd_type, pmd_attributes, pmd_loc } : Concrete.t) : t =
+    let of_concrete ({ pmd_name; pmd_type; pmd_attributes; pmd_loc } : Concrete.t) : t =
       { name = "module_declaration"; data = Record [("pmd_name", Versioned_value.of_ast pmd_name); ("pmd_type", Versioned_value.of_ast pmd_type); ("pmd_attributes", Versioned_value.of_ast pmd_attributes); ("pmd_loc", Versioned_value.of_location pmd_loc)] }
 
     let to_concrete t : Concrete.t =
@@ -3242,7 +3242,7 @@ module V4_07 = struct
     let create ~pmtd_name ~pmtd_type ~pmtd_attributes ~pmtd_loc =
       Versioned_ast.create ~version { name = "module_type_declaration"; data = Record [("pmtd_name", Versioned_value.of_ast pmtd_name); ("pmtd_type", (Versioned_value.of_option ~f:Versioned_value.of_ast) pmtd_type); ("pmtd_attributes", Versioned_value.of_ast pmtd_attributes); ("pmtd_loc", Versioned_value.of_location pmtd_loc)] }
 
-    let of_concrete ({ pmtd_name, pmtd_type, pmtd_attributes, pmtd_loc } : Concrete.t) : t =
+    let of_concrete ({ pmtd_name; pmtd_type; pmtd_attributes; pmtd_loc } : Concrete.t) : t =
       { name = "module_type_declaration"; data = Record [("pmtd_name", Versioned_value.of_ast pmtd_name); ("pmtd_type", (Versioned_value.of_option ~f:Versioned_value.of_ast) pmtd_type); ("pmtd_attributes", Versioned_value.of_ast pmtd_attributes); ("pmtd_loc", Versioned_value.of_location pmtd_loc)] }
 
     let to_concrete t : Concrete.t =
@@ -3270,7 +3270,7 @@ module V4_07 = struct
     let create ~popen_lid ~popen_override ~popen_loc ~popen_attributes =
       Versioned_ast.create ~version { name = "open_description"; data = Record [("popen_lid", Versioned_value.of_ast popen_lid); ("popen_override", Versioned_value.of_ast popen_override); ("popen_loc", Versioned_value.of_location popen_loc); ("popen_attributes", Versioned_value.of_ast popen_attributes)] }
 
-    let of_concrete ({ popen_lid, popen_override, popen_loc, popen_attributes } : Concrete.t) : t =
+    let of_concrete ({ popen_lid; popen_override; popen_loc; popen_attributes } : Concrete.t) : t =
       { name = "open_description"; data = Record [("popen_lid", Versioned_value.of_ast popen_lid); ("popen_override", Versioned_value.of_ast popen_override); ("popen_loc", Versioned_value.of_location popen_loc); ("popen_attributes", Versioned_value.of_ast popen_attributes)] }
 
     let to_concrete t : Concrete.t =
@@ -3298,7 +3298,7 @@ module V4_07 = struct
     let create ~pincl_mod ~pincl_loc ~pincl_attributes =
       Versioned_ast.create ~version { name = "include_infos"; data = Record [("pincl_mod", a_of_concrete pincl_mod); ("pincl_loc", Versioned_value.of_location pincl_loc); ("pincl_attributes", Versioned_value.of_ast pincl_attributes)] }
 
-    let of_concrete ({ pincl_mod, pincl_loc, pincl_attributes } : 'a Concrete.t) : 'a t =
+    let of_concrete ({ pincl_mod; pincl_loc; pincl_attributes } : 'a Concrete.t) : 'a t =
       { name = "include_infos"; data = Record [("pincl_mod", a_of_concrete pincl_mod); ("pincl_loc", Versioned_value.of_location pincl_loc); ("pincl_attributes", Versioned_value.of_ast pincl_attributes)] }
 
     let to_concrete t : 'a Concrete.t =
@@ -3433,7 +3433,7 @@ module V4_07 = struct
     let create ~pmod_desc ~pmod_loc ~pmod_attributes =
       Versioned_ast.create ~version { name = "module_expr"; data = Record [("pmod_desc", Versioned_value.of_ast pmod_desc); ("pmod_loc", Versioned_value.of_location pmod_loc); ("pmod_attributes", Versioned_value.of_ast pmod_attributes)] }
 
-    let of_concrete ({ pmod_desc, pmod_loc, pmod_attributes } : Concrete.t) : t =
+    let of_concrete ({ pmod_desc; pmod_loc; pmod_attributes } : Concrete.t) : t =
       { name = "module_expr"; data = Record [("pmod_desc", Versioned_value.of_ast pmod_desc); ("pmod_loc", Versioned_value.of_location pmod_loc); ("pmod_attributes", Versioned_value.of_ast pmod_attributes)] }
 
     let to_concrete t : Concrete.t =
@@ -3572,7 +3572,7 @@ module V4_07 = struct
     let create ~pstr_desc ~pstr_loc =
       Versioned_ast.create ~version { name = "structure_item"; data = Record [("pstr_desc", Versioned_value.of_ast pstr_desc); ("pstr_loc", Versioned_value.of_location pstr_loc)] }
 
-    let of_concrete ({ pstr_desc, pstr_loc } : Concrete.t) : t =
+    let of_concrete ({ pstr_desc; pstr_loc } : Concrete.t) : t =
       { name = "structure_item"; data = Record [("pstr_desc", Versioned_value.of_ast pstr_desc); ("pstr_loc", Versioned_value.of_location pstr_loc)] }
 
     let to_concrete t : Concrete.t =
@@ -3759,7 +3759,7 @@ module V4_07 = struct
     let create ~pvb_pat ~pvb_expr ~pvb_attributes ~pvb_loc =
       Versioned_ast.create ~version { name = "value_binding"; data = Record [("pvb_pat", Versioned_value.of_ast pvb_pat); ("pvb_expr", Versioned_value.of_ast pvb_expr); ("pvb_attributes", Versioned_value.of_ast pvb_attributes); ("pvb_loc", Versioned_value.of_location pvb_loc)] }
 
-    let of_concrete ({ pvb_pat, pvb_expr, pvb_attributes, pvb_loc } : Concrete.t) : t =
+    let of_concrete ({ pvb_pat; pvb_expr; pvb_attributes; pvb_loc } : Concrete.t) : t =
       { name = "value_binding"; data = Record [("pvb_pat", Versioned_value.of_ast pvb_pat); ("pvb_expr", Versioned_value.of_ast pvb_expr); ("pvb_attributes", Versioned_value.of_ast pvb_attributes); ("pvb_loc", Versioned_value.of_location pvb_loc)] }
 
     let to_concrete t : Concrete.t =
@@ -3787,7 +3787,7 @@ module V4_07 = struct
     let create ~pmb_name ~pmb_expr ~pmb_attributes ~pmb_loc =
       Versioned_ast.create ~version { name = "module_binding"; data = Record [("pmb_name", Versioned_value.of_ast pmb_name); ("pmb_expr", Versioned_value.of_ast pmb_expr); ("pmb_attributes", Versioned_value.of_ast pmb_attributes); ("pmb_loc", Versioned_value.of_location pmb_loc)] }
 
-    let of_concrete ({ pmb_name, pmb_expr, pmb_attributes, pmb_loc } : Concrete.t) : t =
+    let of_concrete ({ pmb_name; pmb_expr; pmb_attributes; pmb_loc } : Concrete.t) : t =
       { name = "module_binding"; data = Record [("pmb_name", Versioned_value.of_ast pmb_name); ("pmb_expr", Versioned_value.of_ast pmb_expr); ("pmb_attributes", Versioned_value.of_ast pmb_attributes); ("pmb_loc", Versioned_value.of_location pmb_loc)] }
 
     let to_concrete t : Concrete.t =

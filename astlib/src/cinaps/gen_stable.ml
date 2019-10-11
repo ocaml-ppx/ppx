@@ -294,7 +294,7 @@ let print_nominal_of_concrete ~decl_name ~vars (nominal : Astlib_ast.Grammar.nom
     print_of_concrete
       ~vars
       ~pattern:(Printf.sprintf "{ %s }"
-                  (String.concat ~sep:", " (List.map record ~f:fst)))
+                  (String.concat ~sep:"; " (List.map record ~f:fst)))
       (fun () ->
          Print.format "{ name = %S; data = Record [%s] }"
            decl_name
