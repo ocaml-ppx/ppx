@@ -95,7 +95,7 @@ end
 module V4_07 = struct
   let version = "V4_07"
 
-  module loc = struct
+  module Loc = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -121,7 +121,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module longident = struct
+  module Longident = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -171,7 +171,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module longident_loc = struct
+  module Longident_loc = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -194,7 +194,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module rec_flag = struct
+  module Rec_flag = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -225,7 +225,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module direction_flag = struct
+  module Direction_flag = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -256,7 +256,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module private_flag = struct
+  module Private_flag = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -287,7 +287,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module mutable_flag = struct
+  module Mutable_flag = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -318,7 +318,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module virtual_flag = struct
+  module Virtual_flag = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -349,7 +349,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module override_flag = struct
+  module Override_flag = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -380,7 +380,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module closed_flag = struct
+  module Closed_flag = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -411,7 +411,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module label = struct
+  module Label = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -434,7 +434,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module label_loc = struct
+  module Label_loc = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -457,7 +457,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module string_loc = struct
+  module String_loc = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -480,7 +480,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module arg_label = struct
+  module Arg_label = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -526,7 +526,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module variance = struct
+  module Variance = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -562,7 +562,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module constant = struct
+  module Constant = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -622,7 +622,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module attribute = struct
+  module Attribute = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -645,7 +645,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module extension = struct
+  module Extension = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -668,7 +668,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module attributes = struct
+  module Attributes = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -691,7 +691,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module payload = struct
+  module Payload = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -749,7 +749,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module core_type = struct
+  module Core_type = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -776,7 +776,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module core_type_desc = struct
+  module Core_type_desc = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -912,7 +912,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module package_type = struct
+  module Package_type = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -935,7 +935,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module package_type_constraint = struct
+  module Package_type_constraint = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -958,7 +958,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module row_field = struct
+  module Row_field = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -1000,7 +1000,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module object_field = struct
+  module Object_field = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -1041,7 +1041,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module pattern = struct
+  module Pattern = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -1068,7 +1068,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module pattern_desc = struct
+  module Pattern_desc = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -1257,7 +1257,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module record_field_pattern = struct
+  module Record_field_pattern = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -1280,7 +1280,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module expression = struct
+  module Expression = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -1307,7 +1307,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module expression_desc = struct
+  module Expression_desc = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -1684,7 +1684,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module override_expression = struct
+  module Override_expression = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -1707,7 +1707,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module record_field_expression = struct
+  module Record_field_expression = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -1730,7 +1730,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module apply_arg = struct
+  module Apply_arg = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -1753,7 +1753,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module case = struct
+  module Case = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -1780,7 +1780,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module value_description = struct
+  module Value_description = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -1809,7 +1809,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module type_declaration = struct
+  module Type_declaration = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -1841,7 +1841,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module type_param = struct
+  module Type_param = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -1864,7 +1864,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module type_constraint = struct
+  module Type_constraint = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -1887,7 +1887,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module type_kind = struct
+  module Type_kind = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -1940,7 +1940,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module label_declaration = struct
+  module Label_declaration = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -1969,7 +1969,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module constructor_declaration = struct
+  module Constructor_declaration = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -1998,7 +1998,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module constructor_arguments = struct
+  module Constructor_arguments = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -2037,7 +2037,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module type_extension = struct
+  module Type_extension = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -2066,7 +2066,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module extension_constructor = struct
+  module Extension_constructor = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -2094,7 +2094,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module extension_constructor_kind = struct
+  module Extension_constructor_kind = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -2134,7 +2134,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module class_type = struct
+  module Class_type = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -2161,7 +2161,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module class_type_desc = struct
+  module Class_type_desc = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -2232,7 +2232,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module class_signature = struct
+  module Class_signature = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -2258,7 +2258,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module class_type_field = struct
+  module Class_type_field = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -2285,7 +2285,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module class_type_field_desc = struct
+  module Class_type_field_desc = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -2360,7 +2360,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module class_type_value_desc = struct
+  module Class_type_value_desc = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -2383,7 +2383,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module class_type_method_desc = struct
+  module Class_type_method_desc = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -2406,7 +2406,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module class_type_constraint = struct
+  module Class_type_constraint = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -2429,7 +2429,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module class_infos = struct
+  module Class_infos = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -2459,7 +2459,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module class_description = struct
+  module Class_description = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -2482,7 +2482,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module class_type_declaration = struct
+  module Class_type_declaration = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -2505,7 +2505,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module class_expr = struct
+  module Class_expr = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -2532,7 +2532,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module class_expr_desc = struct
+  module Class_expr_desc = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -2635,7 +2635,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module class_structure = struct
+  module Class_structure = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -2661,7 +2661,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module class_field = struct
+  module Class_field = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -2688,7 +2688,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module class_field_desc = struct
+  module Class_field_desc = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -2774,7 +2774,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module class_value_desc = struct
+  module Class_value_desc = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -2797,7 +2797,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module class_method_desc = struct
+  module Class_method_desc = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -2820,7 +2820,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module class_field_kind = struct
+  module Class_field_kind = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -2860,7 +2860,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module class_declaration = struct
+  module Class_declaration = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -2883,7 +2883,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module module_type = struct
+  module Module_type = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -2910,7 +2910,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module module_type_desc = struct
+  module Module_type_desc = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -2997,7 +2997,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module signature = struct
+  module Signature = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -3020,7 +3020,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module signature_item = struct
+  module Signature_item = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -3046,7 +3046,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module signature_item_desc = struct
+  module Signature_item_desc = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -3186,7 +3186,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module module_declaration = struct
+  module Module_declaration = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -3214,7 +3214,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module module_type_declaration = struct
+  module Module_type_declaration = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -3242,7 +3242,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module open_description = struct
+  module Open_description = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -3270,7 +3270,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module include_infos = struct
+  module Include_infos = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -3297,7 +3297,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module include_description = struct
+  module Include_description = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -3320,7 +3320,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module include_declaration = struct
+  module Include_declaration = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -3343,7 +3343,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module with_constraint = struct
+  module With_constraint = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -3404,7 +3404,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module module_expr = struct
+  module Module_expr = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -3431,7 +3431,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module module_expr_desc = struct
+  module Module_expr_desc = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -3519,7 +3519,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module structure = struct
+  module Structure = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -3542,7 +3542,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module structure_item = struct
+  module Structure_item = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -3568,7 +3568,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module structure_item_desc = struct
+  module Structure_item_desc = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -3728,7 +3728,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module value_binding = struct
+  module Value_binding = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -3756,7 +3756,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module module_binding = struct
+  module Module_binding = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -3784,7 +3784,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module toplevel_phrase = struct
+  module Toplevel_phrase = struct
     type t = Versioned_ast.t
 
     let of_ast t = t
@@ -3824,7 +3824,7 @@ module V4_07 = struct
       | _ -> None
   end
 
-  module directive_argument = struct
+  module Directive_argument = struct
     type t = Versioned_ast.t
 
     let of_ast t = t

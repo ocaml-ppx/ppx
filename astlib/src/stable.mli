@@ -93,7 +93,7 @@ module Unversioned : sig
 end
 
 module V4_07 : sig
-  module rec loc : sig
+  module rec Loc : sig
     type t = Unversioned.loc
 
     val of_ast : Versioned_ast.t -> t
@@ -108,7 +108,7 @@ module V4_07 : sig
     val create : txt:'a -> loc:Location.t -> 'a t
   end
 
-  and longident : sig
+  and Longident : sig
     type t = Unversioned.longident
 
     val of_ast : Versioned_ast.t -> t
@@ -127,7 +127,7 @@ module V4_07 : sig
     val create_lapply : longident.t -> longident.t -> t
   end
 
-  and longident_loc : sig
+  and Longident_loc : sig
     type t = Unversioned.longident_loc
 
     val of_ast : Versioned_ast.t -> t
@@ -142,7 +142,7 @@ module V4_07 : sig
     val create : (longident.t) loc -> t
   end
 
-  and rec_flag : sig
+  and Rec_flag : sig
     type t = Unversioned.rec_flag
 
     val of_ast : Versioned_ast.t -> t
@@ -159,7 +159,7 @@ module V4_07 : sig
     val create_recursive : t
   end
 
-  and direction_flag : sig
+  and Direction_flag : sig
     type t = Unversioned.direction_flag
 
     val of_ast : Versioned_ast.t -> t
@@ -176,7 +176,7 @@ module V4_07 : sig
     val create_downto : t
   end
 
-  and private_flag : sig
+  and Private_flag : sig
     type t = Unversioned.private_flag
 
     val of_ast : Versioned_ast.t -> t
@@ -193,7 +193,7 @@ module V4_07 : sig
     val create_public : t
   end
 
-  and mutable_flag : sig
+  and Mutable_flag : sig
     type t = Unversioned.mutable_flag
 
     val of_ast : Versioned_ast.t -> t
@@ -210,7 +210,7 @@ module V4_07 : sig
     val create_mutable : t
   end
 
-  and virtual_flag : sig
+  and Virtual_flag : sig
     type t = Unversioned.virtual_flag
 
     val of_ast : Versioned_ast.t -> t
@@ -227,7 +227,7 @@ module V4_07 : sig
     val create_concrete : t
   end
 
-  and override_flag : sig
+  and Override_flag : sig
     type t = Unversioned.override_flag
 
     val of_ast : Versioned_ast.t -> t
@@ -244,7 +244,7 @@ module V4_07 : sig
     val create_fresh : t
   end
 
-  and closed_flag : sig
+  and Closed_flag : sig
     type t = Unversioned.closed_flag
 
     val of_ast : Versioned_ast.t -> t
@@ -261,7 +261,7 @@ module V4_07 : sig
     val create_open : t
   end
 
-  and label : sig
+  and Label : sig
     type t = Unversioned.label
 
     val of_ast : Versioned_ast.t -> t
@@ -276,7 +276,7 @@ module V4_07 : sig
     val create : string -> t
   end
 
-  and label_loc : sig
+  and Label_loc : sig
     type t = Unversioned.label_loc
 
     val of_ast : Versioned_ast.t -> t
@@ -291,7 +291,7 @@ module V4_07 : sig
     val create : (label.t) loc -> t
   end
 
-  and string_loc : sig
+  and String_loc : sig
     type t = Unversioned.string_loc
 
     val of_ast : Versioned_ast.t -> t
@@ -306,7 +306,7 @@ module V4_07 : sig
     val create : (string) loc -> t
   end
 
-  and arg_label : sig
+  and Arg_label : sig
     type t = Unversioned.arg_label
 
     val of_ast : Versioned_ast.t -> t
@@ -325,7 +325,7 @@ module V4_07 : sig
     val create_optional : string -> t
   end
 
-  and variance : sig
+  and Variance : sig
     type t = Unversioned.variance
 
     val of_ast : Versioned_ast.t -> t
@@ -344,7 +344,7 @@ module V4_07 : sig
     val create_invariant : t
   end
 
-  and constant : sig
+  and Constant : sig
     type t = Unversioned.constant
 
     val of_ast : Versioned_ast.t -> t
@@ -365,7 +365,7 @@ module V4_07 : sig
     val create_pconst_float : string -> char option -> t
   end
 
-  and attribute : sig
+  and Attribute : sig
     type t = Unversioned.attribute
 
     val of_ast : Versioned_ast.t -> t
@@ -380,7 +380,7 @@ module V4_07 : sig
     val create : (string_loc.t * payload.t) -> t
   end
 
-  and extension : sig
+  and Extension : sig
     type t = Unversioned.extension
 
     val of_ast : Versioned_ast.t -> t
@@ -395,7 +395,7 @@ module V4_07 : sig
     val create : (string_loc.t * payload.t) -> t
   end
 
-  and attributes : sig
+  and Attributes : sig
     type t = Unversioned.attributes
 
     val of_ast : Versioned_ast.t -> t
@@ -410,7 +410,7 @@ module V4_07 : sig
     val create : attribute.t list -> t
   end
 
-  and payload : sig
+  and Payload : sig
     type t = Unversioned.payload
 
     val of_ast : Versioned_ast.t -> t
@@ -431,7 +431,7 @@ module V4_07 : sig
     val create_ppat : pattern.t -> expression.t option -> t
   end
 
-  and core_type : sig
+  and Core_type : sig
     type t = Unversioned.core_type
 
     val of_ast : Versioned_ast.t -> t
@@ -446,7 +446,7 @@ module V4_07 : sig
     val create : ptyp_desc:core_type_desc.t -> ptyp_loc:Location.t -> ptyp_attributes:attributes.t -> t
   end
 
-  and core_type_desc : sig
+  and Core_type_desc : sig
     type t = Unversioned.core_type_desc
 
     val of_ast : Versioned_ast.t -> t
@@ -483,7 +483,7 @@ module V4_07 : sig
     val create_ptyp_extension : extension.t -> t
   end
 
-  and package_type : sig
+  and Package_type : sig
     type t = Unversioned.package_type
 
     val of_ast : Versioned_ast.t -> t
@@ -498,7 +498,7 @@ module V4_07 : sig
     val create : (longident_loc.t * package_type_constraint.t list) -> t
   end
 
-  and package_type_constraint : sig
+  and Package_type_constraint : sig
     type t = Unversioned.package_type_constraint
 
     val of_ast : Versioned_ast.t -> t
@@ -513,7 +513,7 @@ module V4_07 : sig
     val create : (longident_loc.t * core_type.t) -> t
   end
 
-  and row_field : sig
+  and Row_field : sig
     type t = Unversioned.row_field
 
     val of_ast : Versioned_ast.t -> t
@@ -530,7 +530,7 @@ module V4_07 : sig
     val create_rinherit : core_type.t -> t
   end
 
-  and object_field : sig
+  and Object_field : sig
     type t = Unversioned.object_field
 
     val of_ast : Versioned_ast.t -> t
@@ -547,7 +547,7 @@ module V4_07 : sig
     val create_oinherit : core_type.t -> t
   end
 
-  and pattern : sig
+  and Pattern : sig
     type t = Unversioned.pattern
 
     val of_ast : Versioned_ast.t -> t
@@ -562,7 +562,7 @@ module V4_07 : sig
     val create : ppat_desc:pattern_desc.t -> ppat_loc:Location.t -> ppat_attributes:attributes.t -> t
   end
 
-  and pattern_desc : sig
+  and Pattern_desc : sig
     type t = Unversioned.pattern_desc
 
     val of_ast : Versioned_ast.t -> t
@@ -611,7 +611,7 @@ module V4_07 : sig
     val create_ppat_open : longident_loc.t -> pattern.t -> t
   end
 
-  and record_field_pattern : sig
+  and Record_field_pattern : sig
     type t = Unversioned.record_field_pattern
 
     val of_ast : Versioned_ast.t -> t
@@ -626,7 +626,7 @@ module V4_07 : sig
     val create : (longident_loc.t * pattern.t) -> t
   end
 
-  and expression : sig
+  and Expression : sig
     type t = Unversioned.expression
 
     val of_ast : Versioned_ast.t -> t
@@ -641,7 +641,7 @@ module V4_07 : sig
     val create : pexp_desc:expression_desc.t -> pexp_loc:Location.t -> pexp_attributes:attributes.t -> t
   end
 
-  and expression_desc : sig
+  and Expression_desc : sig
     type t = Unversioned.expression_desc
 
     val of_ast : Versioned_ast.t -> t
@@ -726,7 +726,7 @@ module V4_07 : sig
     val create_pexp_unreachable : t
   end
 
-  and override_expression : sig
+  and Override_expression : sig
     type t = Unversioned.override_expression
 
     val of_ast : Versioned_ast.t -> t
@@ -741,7 +741,7 @@ module V4_07 : sig
     val create : (label_loc.t * expression.t) -> t
   end
 
-  and record_field_expression : sig
+  and Record_field_expression : sig
     type t = Unversioned.record_field_expression
 
     val of_ast : Versioned_ast.t -> t
@@ -756,7 +756,7 @@ module V4_07 : sig
     val create : (longident_loc.t * expression.t) -> t
   end
 
-  and apply_arg : sig
+  and Apply_arg : sig
     type t = Unversioned.apply_arg
 
     val of_ast : Versioned_ast.t -> t
@@ -771,7 +771,7 @@ module V4_07 : sig
     val create : (arg_label.t * expression.t) -> t
   end
 
-  and case : sig
+  and Case : sig
     type t = Unversioned.case
 
     val of_ast : Versioned_ast.t -> t
@@ -786,7 +786,7 @@ module V4_07 : sig
     val create : pc_lhs:pattern.t -> pc_guard:expression.t option -> pc_rhs:expression.t -> t
   end
 
-  and value_description : sig
+  and Value_description : sig
     type t = Unversioned.value_description
 
     val of_ast : Versioned_ast.t -> t
@@ -801,7 +801,7 @@ module V4_07 : sig
     val create : pval_name:string_loc.t -> pval_type:core_type.t -> pval_prim:string list -> pval_attributes:attributes.t -> pval_loc:Location.t -> t
   end
 
-  and type_declaration : sig
+  and Type_declaration : sig
     type t = Unversioned.type_declaration
 
     val of_ast : Versioned_ast.t -> t
@@ -816,7 +816,7 @@ module V4_07 : sig
     val create : ptype_name:string_loc.t -> ptype_params:type_param.t list -> ptype_cstrs:type_constraint.t list -> ptype_kind:type_kind.t -> ptype_private:private_flag.t -> ptype_manifest:core_type.t option -> ptype_attributes:attributes.t -> ptype_loc:Location.t -> t
   end
 
-  and type_param : sig
+  and Type_param : sig
     type t = Unversioned.type_param
 
     val of_ast : Versioned_ast.t -> t
@@ -831,7 +831,7 @@ module V4_07 : sig
     val create : (core_type.t * variance.t) -> t
   end
 
-  and type_constraint : sig
+  and Type_constraint : sig
     type t = Unversioned.type_constraint
 
     val of_ast : Versioned_ast.t -> t
@@ -846,7 +846,7 @@ module V4_07 : sig
     val create : (core_type.t * core_type.t * Location.t) -> t
   end
 
-  and type_kind : sig
+  and Type_kind : sig
     type t = Unversioned.type_kind
 
     val of_ast : Versioned_ast.t -> t
@@ -867,7 +867,7 @@ module V4_07 : sig
     val create_ptype_open : t
   end
 
-  and label_declaration : sig
+  and Label_declaration : sig
     type t = Unversioned.label_declaration
 
     val of_ast : Versioned_ast.t -> t
@@ -882,7 +882,7 @@ module V4_07 : sig
     val create : pld_name:string_loc.t -> pld_mutable:mutable_flag.t -> pld_type:core_type.t -> pld_loc:Location.t -> pld_attributes:attributes.t -> t
   end
 
-  and constructor_declaration : sig
+  and Constructor_declaration : sig
     type t = Unversioned.constructor_declaration
 
     val of_ast : Versioned_ast.t -> t
@@ -897,7 +897,7 @@ module V4_07 : sig
     val create : pcd_name:string_loc.t -> pcd_args:constructor_arguments.t -> pcd_res:core_type.t option -> pcd_loc:Location.t -> pcd_attributes:attributes.t -> t
   end
 
-  and constructor_arguments : sig
+  and Constructor_arguments : sig
     type t = Unversioned.constructor_arguments
 
     val of_ast : Versioned_ast.t -> t
@@ -914,7 +914,7 @@ module V4_07 : sig
     val create_pcstr_record : label_declaration.t list -> t
   end
 
-  and type_extension : sig
+  and Type_extension : sig
     type t = Unversioned.type_extension
 
     val of_ast : Versioned_ast.t -> t
@@ -929,7 +929,7 @@ module V4_07 : sig
     val create : ptyext_path:longident_loc.t -> ptyext_params:type_param.t list -> ptyext_constructors:extension_constructor.t list -> ptyext_private:private_flag.t -> ptyext_attributes:attributes.t -> t
   end
 
-  and extension_constructor : sig
+  and Extension_constructor : sig
     type t = Unversioned.extension_constructor
 
     val of_ast : Versioned_ast.t -> t
@@ -944,7 +944,7 @@ module V4_07 : sig
     val create : pext_name:string_loc.t -> pext_kind:extension_constructor_kind.t -> pext_loc:Location.t -> pext_attributes:attributes.t -> t
   end
 
-  and extension_constructor_kind : sig
+  and Extension_constructor_kind : sig
     type t = Unversioned.extension_constructor_kind
 
     val of_ast : Versioned_ast.t -> t
@@ -961,7 +961,7 @@ module V4_07 : sig
     val create_pext_rebind : longident_loc.t -> t
   end
 
-  and class_type : sig
+  and Class_type : sig
     type t = Unversioned.class_type
 
     val of_ast : Versioned_ast.t -> t
@@ -976,7 +976,7 @@ module V4_07 : sig
     val create : pcty_desc:class_type_desc.t -> pcty_loc:Location.t -> pcty_attributes:attributes.t -> t
   end
 
-  and class_type_desc : sig
+  and Class_type_desc : sig
     type t = Unversioned.class_type_desc
 
     val of_ast : Versioned_ast.t -> t
@@ -999,7 +999,7 @@ module V4_07 : sig
     val create_pcty_open : override_flag.t -> longident_loc.t -> class_type.t -> t
   end
 
-  and class_signature : sig
+  and Class_signature : sig
     type t = Unversioned.class_signature
 
     val of_ast : Versioned_ast.t -> t
@@ -1014,7 +1014,7 @@ module V4_07 : sig
     val create : pcsig_self:core_type.t -> pcsig_fields:class_type_field.t list -> t
   end
 
-  and class_type_field : sig
+  and Class_type_field : sig
     type t = Unversioned.class_type_field
 
     val of_ast : Versioned_ast.t -> t
@@ -1029,7 +1029,7 @@ module V4_07 : sig
     val create : pctf_desc:class_type_field_desc.t -> pctf_loc:Location.t -> pctf_attributes:attributes.t -> t
   end
 
-  and class_type_field_desc : sig
+  and Class_type_field_desc : sig
     type t = Unversioned.class_type_field_desc
 
     val of_ast : Versioned_ast.t -> t
@@ -1054,7 +1054,7 @@ module V4_07 : sig
     val create_pctf_extension : extension.t -> t
   end
 
-  and class_type_value_desc : sig
+  and Class_type_value_desc : sig
     type t = Unversioned.class_type_value_desc
 
     val of_ast : Versioned_ast.t -> t
@@ -1069,7 +1069,7 @@ module V4_07 : sig
     val create : (label_loc.t * mutable_flag.t * virtual_flag.t * core_type.t) -> t
   end
 
-  and class_type_method_desc : sig
+  and Class_type_method_desc : sig
     type t = Unversioned.class_type_method_desc
 
     val of_ast : Versioned_ast.t -> t
@@ -1084,7 +1084,7 @@ module V4_07 : sig
     val create : (label_loc.t * private_flag.t * virtual_flag.t * core_type.t) -> t
   end
 
-  and class_type_constraint : sig
+  and Class_type_constraint : sig
     type t = Unversioned.class_type_constraint
 
     val of_ast : Versioned_ast.t -> t
@@ -1099,7 +1099,7 @@ module V4_07 : sig
     val create : (core_type.t * core_type.t) -> t
   end
 
-  and class_infos : sig
+  and Class_infos : sig
     type t = Unversioned.class_infos
 
     val of_ast : Versioned_ast.t -> t
@@ -1114,7 +1114,7 @@ module V4_07 : sig
     val create : pci_virt:virtual_flag.t -> pci_params:type_param.t list -> pci_name:string_loc.t -> pci_expr:'a -> pci_loc:Location.t -> pci_attributes:attributes.t -> 'a t
   end
 
-  and class_description : sig
+  and Class_description : sig
     type t = Unversioned.class_description
 
     val of_ast : Versioned_ast.t -> t
@@ -1129,7 +1129,7 @@ module V4_07 : sig
     val create : (class_type.t) class_infos -> t
   end
 
-  and class_type_declaration : sig
+  and Class_type_declaration : sig
     type t = Unversioned.class_type_declaration
 
     val of_ast : Versioned_ast.t -> t
@@ -1144,7 +1144,7 @@ module V4_07 : sig
     val create : (class_type.t) class_infos -> t
   end
 
-  and class_expr : sig
+  and Class_expr : sig
     type t = Unversioned.class_expr
 
     val of_ast : Versioned_ast.t -> t
@@ -1159,7 +1159,7 @@ module V4_07 : sig
     val create : pcl_desc:class_expr_desc.t -> pcl_loc:Location.t -> pcl_attributes:attributes.t -> t
   end
 
-  and class_expr_desc : sig
+  and Class_expr_desc : sig
     type t = Unversioned.class_expr_desc
 
     val of_ast : Versioned_ast.t -> t
@@ -1188,7 +1188,7 @@ module V4_07 : sig
     val create_pcl_open : override_flag.t -> longident_loc.t -> class_expr.t -> t
   end
 
-  and class_structure : sig
+  and Class_structure : sig
     type t = Unversioned.class_structure
 
     val of_ast : Versioned_ast.t -> t
@@ -1203,7 +1203,7 @@ module V4_07 : sig
     val create : pcstr_self:pattern.t -> pcstr_fields:class_field.t list -> t
   end
 
-  and class_field : sig
+  and Class_field : sig
     type t = Unversioned.class_field
 
     val of_ast : Versioned_ast.t -> t
@@ -1218,7 +1218,7 @@ module V4_07 : sig
     val create : pcf_desc:class_field_desc.t -> pcf_loc:Location.t -> pcf_attributes:attributes.t -> t
   end
 
-  and class_field_desc : sig
+  and Class_field_desc : sig
     type t = Unversioned.class_field_desc
 
     val of_ast : Versioned_ast.t -> t
@@ -1245,7 +1245,7 @@ module V4_07 : sig
     val create_pcf_extension : extension.t -> t
   end
 
-  and class_value_desc : sig
+  and Class_value_desc : sig
     type t = Unversioned.class_value_desc
 
     val of_ast : Versioned_ast.t -> t
@@ -1260,7 +1260,7 @@ module V4_07 : sig
     val create : (label_loc.t * mutable_flag.t * class_field_kind.t) -> t
   end
 
-  and class_method_desc : sig
+  and Class_method_desc : sig
     type t = Unversioned.class_method_desc
 
     val of_ast : Versioned_ast.t -> t
@@ -1275,7 +1275,7 @@ module V4_07 : sig
     val create : (label_loc.t * private_flag.t * class_field_kind.t) -> t
   end
 
-  and class_field_kind : sig
+  and Class_field_kind : sig
     type t = Unversioned.class_field_kind
 
     val of_ast : Versioned_ast.t -> t
@@ -1292,7 +1292,7 @@ module V4_07 : sig
     val create_cfk_concrete : override_flag.t -> expression.t -> t
   end
 
-  and class_declaration : sig
+  and Class_declaration : sig
     type t = Unversioned.class_declaration
 
     val of_ast : Versioned_ast.t -> t
@@ -1307,7 +1307,7 @@ module V4_07 : sig
     val create : (class_expr.t) class_infos -> t
   end
 
-  and module_type : sig
+  and Module_type : sig
     type t = Unversioned.module_type
 
     val of_ast : Versioned_ast.t -> t
@@ -1322,7 +1322,7 @@ module V4_07 : sig
     val create : pmty_desc:module_type_desc.t -> pmty_loc:Location.t -> pmty_attributes:attributes.t -> t
   end
 
-  and module_type_desc : sig
+  and Module_type_desc : sig
     type t = Unversioned.module_type_desc
 
     val of_ast : Versioned_ast.t -> t
@@ -1349,7 +1349,7 @@ module V4_07 : sig
     val create_pmty_alias : longident_loc.t -> t
   end
 
-  and signature : sig
+  and Signature : sig
     type t = Unversioned.signature
 
     val of_ast : Versioned_ast.t -> t
@@ -1364,7 +1364,7 @@ module V4_07 : sig
     val create : signature_item.t list -> t
   end
 
-  and signature_item : sig
+  and Signature_item : sig
     type t = Unversioned.signature_item
 
     val of_ast : Versioned_ast.t -> t
@@ -1379,7 +1379,7 @@ module V4_07 : sig
     val create : psig_desc:signature_item_desc.t -> psig_loc:Location.t -> t
   end
 
-  and signature_item_desc : sig
+  and Signature_item_desc : sig
     type t = Unversioned.signature_item_desc
 
     val of_ast : Versioned_ast.t -> t
@@ -1418,7 +1418,7 @@ module V4_07 : sig
     val create_psig_extension : extension.t -> attributes.t -> t
   end
 
-  and module_declaration : sig
+  and Module_declaration : sig
     type t = Unversioned.module_declaration
 
     val of_ast : Versioned_ast.t -> t
@@ -1433,7 +1433,7 @@ module V4_07 : sig
     val create : pmd_name:string_loc.t -> pmd_type:module_type.t -> pmd_attributes:attributes.t -> pmd_loc:Location.t -> t
   end
 
-  and module_type_declaration : sig
+  and Module_type_declaration : sig
     type t = Unversioned.module_type_declaration
 
     val of_ast : Versioned_ast.t -> t
@@ -1448,7 +1448,7 @@ module V4_07 : sig
     val create : pmtd_name:string_loc.t -> pmtd_type:module_type.t option -> pmtd_attributes:attributes.t -> pmtd_loc:Location.t -> t
   end
 
-  and open_description : sig
+  and Open_description : sig
     type t = Unversioned.open_description
 
     val of_ast : Versioned_ast.t -> t
@@ -1463,7 +1463,7 @@ module V4_07 : sig
     val create : popen_lid:longident_loc.t -> popen_override:override_flag.t -> popen_loc:Location.t -> popen_attributes:attributes.t -> t
   end
 
-  and include_infos : sig
+  and Include_infos : sig
     type t = Unversioned.include_infos
 
     val of_ast : Versioned_ast.t -> t
@@ -1478,7 +1478,7 @@ module V4_07 : sig
     val create : pincl_mod:'a -> pincl_loc:Location.t -> pincl_attributes:attributes.t -> 'a t
   end
 
-  and include_description : sig
+  and Include_description : sig
     type t = Unversioned.include_description
 
     val of_ast : Versioned_ast.t -> t
@@ -1493,7 +1493,7 @@ module V4_07 : sig
     val create : (module_type.t) include_infos -> t
   end
 
-  and include_declaration : sig
+  and Include_declaration : sig
     type t = Unversioned.include_declaration
 
     val of_ast : Versioned_ast.t -> t
@@ -1508,7 +1508,7 @@ module V4_07 : sig
     val create : (module_expr.t) include_infos -> t
   end
 
-  and with_constraint : sig
+  and With_constraint : sig
     type t = Unversioned.with_constraint
 
     val of_ast : Versioned_ast.t -> t
@@ -1529,7 +1529,7 @@ module V4_07 : sig
     val create_pwith_modsubst : longident_loc.t -> longident_loc.t -> t
   end
 
-  and module_expr : sig
+  and Module_expr : sig
     type t = Unversioned.module_expr
 
     val of_ast : Versioned_ast.t -> t
@@ -1544,7 +1544,7 @@ module V4_07 : sig
     val create : pmod_desc:module_expr_desc.t -> pmod_loc:Location.t -> pmod_attributes:attributes.t -> t
   end
 
-  and module_expr_desc : sig
+  and Module_expr_desc : sig
     type t = Unversioned.module_expr_desc
 
     val of_ast : Versioned_ast.t -> t
@@ -1571,7 +1571,7 @@ module V4_07 : sig
     val create_pmod_extension : extension.t -> t
   end
 
-  and structure : sig
+  and Structure : sig
     type t = Unversioned.structure
 
     val of_ast : Versioned_ast.t -> t
@@ -1586,7 +1586,7 @@ module V4_07 : sig
     val create : structure_item.t list -> t
   end
 
-  and structure_item : sig
+  and Structure_item : sig
     type t = Unversioned.structure_item
 
     val of_ast : Versioned_ast.t -> t
@@ -1601,7 +1601,7 @@ module V4_07 : sig
     val create : pstr_desc:structure_item_desc.t -> pstr_loc:Location.t -> t
   end
 
-  and structure_item_desc : sig
+  and Structure_item_desc : sig
     type t = Unversioned.structure_item_desc
 
     val of_ast : Versioned_ast.t -> t
@@ -1644,7 +1644,7 @@ module V4_07 : sig
     val create_pstr_extension : extension.t -> attributes.t -> t
   end
 
-  and value_binding : sig
+  and Value_binding : sig
     type t = Unversioned.value_binding
 
     val of_ast : Versioned_ast.t -> t
@@ -1659,7 +1659,7 @@ module V4_07 : sig
     val create : pvb_pat:pattern.t -> pvb_expr:expression.t -> pvb_attributes:attributes.t -> pvb_loc:Location.t -> t
   end
 
-  and module_binding : sig
+  and Module_binding : sig
     type t = Unversioned.module_binding
 
     val of_ast : Versioned_ast.t -> t
@@ -1674,7 +1674,7 @@ module V4_07 : sig
     val create : pmb_name:string_loc.t -> pmb_expr:module_expr.t -> pmb_attributes:attributes.t -> pmb_loc:Location.t -> t
   end
 
-  and toplevel_phrase : sig
+  and Toplevel_phrase : sig
     type t = Unversioned.toplevel_phrase
 
     val of_ast : Versioned_ast.t -> t
@@ -1691,7 +1691,7 @@ module V4_07 : sig
     val create_ptop_dir : string -> directive_argument.t -> t
   end
 
-  and directive_argument : sig
+  and Directive_argument : sig
     type t = Unversioned.directive_argument
 
     val of_ast : Versioned_ast.t -> t

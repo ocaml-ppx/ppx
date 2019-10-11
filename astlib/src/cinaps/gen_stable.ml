@@ -371,12 +371,13 @@ let print_decl_structure ~decl_name ({ vars; body = nominal } : Astlib_ast.Gramm
 let print_grammar_mli grammar =
   Print.declare_recursive_modules
     (List.map grammar ~f:(fun (decl_name, decl) ->
-       (decl_name, (fun () -> print_decl_signature ~decl_name decl))))
+       (String.capitalize_ascii decl_name,
+        (fun () -> print_decl_signature ~decl_name decl))))
 
 let print_grammar_ml grammar =
   List.iteri grammar ~f:(fun decl_index (decl_name, decl) ->
     if decl_index > 0 then Print.newline ();
-    Print.define_module decl_name (fun () ->
+    Print.define_module (String.capitalize_ascii decl_name) (fun () ->
       print_decl_structure ~decl_name decl))
 
 let names_of_versioned_grammars versioned_grammars =
