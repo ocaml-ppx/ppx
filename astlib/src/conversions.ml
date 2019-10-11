@@ -122,8 +122,7 @@ and string_loc_of_ast =
 and arg_label_of_ast =
   let of_concrete : Stable.V4_07.Arg_label.Concrete.t -> Astlib_parsetree.arg_label option =
     function
-    | Nolabel () ->
-      Some (Nolabel ())
+    | Nolabel -> Some Nolabel
     | Labelled (a) ->
       Some (Labelled (a))
       )
@@ -223,8 +222,7 @@ and core_type_of_ast =
 and core_type_desc_of_ast =
   let of_concrete : Stable.V4_07.Core_type_desc.Concrete.t -> Astlib_parsetree.core_type_desc option =
     function
-    | Ptyp_any () ->
-      Some (Ptyp_any ())
+    | Ptyp_any -> Some Ptyp_any
     | Ptyp_var (a) ->
       Some (Ptyp_var (a))
       )
@@ -342,8 +340,7 @@ and pattern_of_ast =
 and pattern_desc_of_ast =
   let of_concrete : Stable.V4_07.Pattern_desc.Concrete.t -> Astlib_parsetree.pattern_desc option =
     function
-    | Ppat_any () ->
-      Some (Ppat_any ())
+    | Ppat_any -> Some Ppat_any
     | Ppat_var (a) ->
       Optional.bind (string_loc_of_ast a) ~f:(fun a ->
         Some (Ppat_var (a))
@@ -619,8 +616,7 @@ and expression_desc_of_ast =
       Optional.bind (extension_of_ast a) ~f:(fun a ->
         Some (Pexp_extension (a))
       )
-    | Pexp_unreachable () ->
-      Some (Pexp_unreachable ())
+    | Pexp_unreachable -> Some Pexp_unreachable
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Expression_desc.to_concrete x)
 
@@ -709,8 +705,7 @@ and type_constraint_of_ast =
 and type_kind_of_ast =
   let of_concrete : Stable.V4_07.Type_kind.Concrete.t -> Astlib_parsetree.type_kind option =
     function
-    | Ptype_abstract () ->
-      Some (Ptype_abstract ())
+    | Ptype_abstract -> Some Ptype_abstract
     | Ptype_variant (a) ->
       Optional.bind (List.map ~f:(constructor_declaration_of_ast) a) ~f:(fun a ->
         Some (Ptype_variant (a))
@@ -719,8 +714,7 @@ and type_kind_of_ast =
       Optional.bind (List.map ~f:(label_declaration_of_ast) a) ~f:(fun a ->
         Some (Ptype_record (a))
       )
-    | Ptype_open () ->
-      Some (Ptype_open ())
+    | Ptype_open -> Some Ptype_open
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Type_kind.to_concrete x)
 
@@ -1493,8 +1487,7 @@ and toplevel_phrase_of_ast =
 and directive_argument_of_ast =
   let of_concrete : Stable.V4_07.Directive_argument.Concrete.t -> Astlib_parsetree.directive_argument option =
     function
-    | Pdir_none () ->
-      Some (Pdir_none ())
+    | Pdir_none -> Some Pdir_none
     | Pdir_string (a) ->
       Some (Pdir_string (a))
       )
@@ -1584,8 +1577,7 @@ and string_loc_to_ast : Astlib_parsetree.string_loc -> Stable.V4_07.String_loc.t
 
 and arg_label_to_ast : Astlib_parsetree.arg_label -> Stable.V4_07.Arg_label.t =
   function
-  | Nolabel () ->
-    Stable.V4_07.Arg_label.of_concrete (Nolabel ())
+  | Nolabel -> Stable.V4_07.Arg_label.of_concrete Nolabel
   | Labelled (a) ->
     Stable.V4_07.Arg_label.of_concrete (Labelled (a))
   | Optional (a) ->
@@ -1647,8 +1639,7 @@ and core_type_to_ast : Astlib_parsetree.core_type -> Stable.V4_07.Core_type.t =
 
 and core_type_desc_to_ast : Astlib_parsetree.core_type_desc -> Stable.V4_07.Core_type_desc.t =
   function
-  | Ptyp_any () ->
-    Stable.V4_07.Core_type_desc.of_concrete (Ptyp_any ())
+  | Ptyp_any -> Stable.V4_07.Core_type_desc.of_concrete Ptyp_any
   | Ptyp_var (a) ->
     Stable.V4_07.Core_type_desc.of_concrete (Ptyp_var (a))
   | Ptyp_arrow (a, b, c) ->
@@ -1730,8 +1721,7 @@ and pattern_to_ast : Astlib_parsetree.pattern -> Stable.V4_07.Pattern.t =
 
 and pattern_desc_to_ast : Astlib_parsetree.pattern_desc -> Stable.V4_07.Pattern_desc.t =
   function
-  | Ppat_any () ->
-    Stable.V4_07.Pattern_desc.of_concrete (Ppat_any ())
+  | Ppat_any -> Stable.V4_07.Pattern_desc.of_concrete Ppat_any
   | Ppat_var (a) ->
     let a = string_loc_to_ast a in
     Stable.V4_07.Pattern_desc.of_concrete (Ppat_var (a))
@@ -1944,8 +1934,7 @@ and expression_desc_to_ast : Astlib_parsetree.expression_desc -> Stable.V4_07.Ex
   | Pexp_extension (a) ->
     let a = extension_to_ast a in
     Stable.V4_07.Expression_desc.of_concrete (Pexp_extension (a))
-  | Pexp_unreachable () ->
-    Stable.V4_07.Expression_desc.of_concrete (Pexp_unreachable ())
+  | Pexp_unreachable -> Stable.V4_07.Expression_desc.of_concrete Pexp_unreachable
 
 and override_expression_to_ast : Astlib_parsetree.override_expression -> Stable.V4_07.Override_expression.t =
   fun x ->
@@ -1999,16 +1988,14 @@ and type_constraint_to_ast : Astlib_parsetree.type_constraint -> Stable.V4_07.Ty
 
 and type_kind_to_ast : Astlib_parsetree.type_kind -> Stable.V4_07.Type_kind.t =
   function
-  | Ptype_abstract () ->
-    Stable.V4_07.Type_kind.of_concrete (Ptype_abstract ())
+  | Ptype_abstract -> Stable.V4_07.Type_kind.of_concrete Ptype_abstract
   | Ptype_variant (a) ->
     let a = List.map ~f:(constructor_declaration_to_ast) a in
     Stable.V4_07.Type_kind.of_concrete (Ptype_variant (a))
   | Ptype_record (a) ->
     let a = List.map ~f:(label_declaration_to_ast) a in
     Stable.V4_07.Type_kind.of_concrete (Ptype_record (a))
-  | Ptype_open () ->
-    Stable.V4_07.Type_kind.of_concrete (Ptype_open ())
+  | Ptype_open -> Stable.V4_07.Type_kind.of_concrete Ptype_open
 
 and label_declaration_to_ast : Astlib_parsetree.label_declaration -> Stable.V4_07.Label_declaration.t =
   fun { pld_name; pld_mutable; pld_type; pld_loc; pld_attributes } ->
@@ -2527,8 +2514,7 @@ and toplevel_phrase_to_ast : Astlib_parsetree.toplevel_phrase -> Stable.V4_07.To
 
 and directive_argument_to_ast : Astlib_parsetree.directive_argument -> Stable.V4_07.Directive_argument.t =
   function
-  | Pdir_none () ->
-    Stable.V4_07.Directive_argument.of_concrete (Pdir_none ())
+  | Pdir_none -> Stable.V4_07.Directive_argument.of_concrete Pdir_none
   | Pdir_string (a) ->
     Stable.V4_07.Directive_argument.of_concrete (Pdir_string (a))
   | Pdir_int (a, b) ->

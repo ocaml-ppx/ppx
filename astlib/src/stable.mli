@@ -322,7 +322,7 @@ module V4_07 : sig
 
     module Concrete : sig
       type t =
-        | Nolabel of 
+        | Nolabel
         | Labelled of string
         | Optional of string
     end
@@ -466,7 +466,7 @@ module V4_07 : sig
 
     module Concrete : sig
       type t =
-        | Ptyp_any of 
+        | Ptyp_any
         | Ptyp_var of string
         | Ptyp_arrow of Arg_label.t * Core_type.t * Core_type.t
         | Ptyp_tuple of Core_type.t list
@@ -585,7 +585,7 @@ module V4_07 : sig
 
     module Concrete : sig
       type t =
-        | Ppat_any of 
+        | Ppat_any
         | Ppat_var of String_loc.t
         | Ppat_alias of Pattern.t * String_loc.t
         | Ppat_constant of Constant.t
@@ -700,7 +700,7 @@ module V4_07 : sig
         | Pexp_pack of Module_expr.t
         | Pexp_open of Override_flag.t * Longident_loc.t * Expression.t
         | Pexp_extension of Extension.t
-        | Pexp_unreachable of 
+        | Pexp_unreachable
     end
 
     val of_concrete : Concrete.t -> t
@@ -871,10 +871,10 @@ module V4_07 : sig
 
     module Concrete : sig
       type t =
-        | Ptype_abstract of 
+        | Ptype_abstract
         | Ptype_variant of Constructor_declaration.t list
         | Ptype_record of Label_declaration.t list
-        | Ptype_open of 
+        | Ptype_open
     end
 
     val of_concrete : Concrete.t -> t
@@ -1730,7 +1730,7 @@ module V4_07 : sig
 
     module Concrete : sig
       type t =
-        | Pdir_none of 
+        | Pdir_none
         | Pdir_string of string
         | Pdir_int of string * char option
         | Pdir_ident of Longident.t

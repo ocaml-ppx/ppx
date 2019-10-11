@@ -16,7 +16,13 @@ let record decl_name record = mono decl_name (Record record)
 let variant decl_name clauses =
   let clauses =
     List.map clauses ~f:(fun (name, tuple) ->
-      name, (Tuple tuple : Grammar.clause))
+      let clause : Grammar.clause =
+        match tuple with
+        | [] -> Empty
+        | _ -> Tuple tuple
+
+      in
+      name, clause)
   in
   mono decl_name (Variant clauses)
 

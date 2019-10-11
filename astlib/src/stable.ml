@@ -496,13 +496,13 @@ module V4_07 = struct
 
     module Concrete = struct
       type t =
-        | Nolabel of 
+        | Nolabel
         | Labelled of string
         | Optional of string
     end
 
     let _nolabel =
-      Versioned_ast.create ~version { name = "arg_label"; data = Variant ("Nolabel", Tuple []) }
+      Versioned_ast.create ~version { name = "arg_label"; data = Variant ("Nolabel", Empty) }
     let _labelled x1 =
       Versioned_ast.create ~version { name = "arg_label"; data = Variant ("Labelled", Tuple [Versioned_value.of_string x1]) }
     let _optional x1 =
@@ -510,8 +510,7 @@ module V4_07 = struct
 
     let of_concrete (concrete : Concrete.t) : t =
       match concrete with
-      | Nolabel () ->
-        _nolabel 
+      | Nolabel -> _nolabel
       | Labelled (x1) ->
         _labelled x1
       | Optional (x1) ->
@@ -521,8 +520,7 @@ module V4_07 = struct
       match Versioned_ast.convert t ~version with
       | { name = "arg_label"; data = data } ->
         ( match data with
-        | Variant ("Nolabel", Tuple []) ->
-          Some (Nolabel ())
+        | Variant ("Nolabel", Empty) -> Some Nolabel
         | Variant ("Labelled", Tuple [x1]) ->
           Optional.bind (Versioned_value.to_string x1) ~f:(fun x1 ->
             Some (Labelled (x1))
@@ -796,7 +794,7 @@ module V4_07 = struct
 
     module Concrete = struct
       type t =
-        | Ptyp_any of 
+        | Ptyp_any
         | Ptyp_var of string
         | Ptyp_arrow of Versioned_ast.t * Versioned_ast.t * Versioned_ast.t
         | Ptyp_tuple of Versioned_ast.t list
@@ -811,7 +809,7 @@ module V4_07 = struct
     end
 
     let _ptyp_any =
-      Versioned_ast.create ~version { name = "core_type_desc"; data = Variant ("Ptyp_any", Tuple []) }
+      Versioned_ast.create ~version { name = "core_type_desc"; data = Variant ("Ptyp_any", Empty) }
     let _ptyp_var x1 =
       Versioned_ast.create ~version { name = "core_type_desc"; data = Variant ("Ptyp_var", Tuple [Versioned_value.of_string x1]) }
     let _ptyp_arrow x1 x2 x3 =
@@ -837,8 +835,7 @@ module V4_07 = struct
 
     let of_concrete (concrete : Concrete.t) : t =
       match concrete with
-      | Ptyp_any () ->
-        _ptyp_any 
+      | Ptyp_any -> _ptyp_any
       | Ptyp_var (x1) ->
         _ptyp_var x1
       | Ptyp_arrow (x1, x2, x3) ->
@@ -866,8 +863,7 @@ module V4_07 = struct
       match Versioned_ast.convert t ~version with
       | { name = "core_type_desc"; data = data } ->
         ( match data with
-        | Variant ("Ptyp_any", Tuple []) ->
-          Some (Ptyp_any ())
+        | Variant ("Ptyp_any", Empty) -> Some Ptyp_any
         | Variant ("Ptyp_var", Tuple [x1]) ->
           Optional.bind (Versioned_value.to_string x1) ~f:(fun x1 ->
             Some (Ptyp_var (x1))
@@ -1091,7 +1087,7 @@ module V4_07 = struct
 
     module Concrete = struct
       type t =
-        | Ppat_any of 
+        | Ppat_any
         | Ppat_var of Versioned_ast.t
         | Ppat_alias of Versioned_ast.t * Versioned_ast.t
         | Ppat_constant of Versioned_ast.t
@@ -1112,7 +1108,7 @@ module V4_07 = struct
     end
 
     let _ppat_any =
-      Versioned_ast.create ~version { name = "pattern_desc"; data = Variant ("Ppat_any", Tuple []) }
+      Versioned_ast.create ~version { name = "pattern_desc"; data = Variant ("Ppat_any", Empty) }
     let _ppat_var x1 =
       Versioned_ast.create ~version { name = "pattern_desc"; data = Variant ("Ppat_var", Tuple [Versioned_value.of_ast x1]) }
     let _ppat_alias x1 x2 =
@@ -1150,8 +1146,7 @@ module V4_07 = struct
 
     let of_concrete (concrete : Concrete.t) : t =
       match concrete with
-      | Ppat_any () ->
-        _ppat_any 
+      | Ppat_any -> _ppat_any
       | Ppat_var (x1) ->
         _ppat_var x1
       | Ppat_alias (x1, x2) ->
@@ -1191,8 +1186,7 @@ module V4_07 = struct
       match Versioned_ast.convert t ~version with
       | { name = "pattern_desc"; data = data } ->
         ( match data with
-        | Variant ("Ppat_any", Tuple []) ->
-          Some (Ppat_any ())
+        | Variant ("Ppat_any", Empty) -> Some Ppat_any
         | Variant ("Ppat_var", Tuple [x1]) ->
           Optional.bind (Versioned_value.to_ast x1) ~f:(fun x1 ->
             Some (Ppat_var (x1))
@@ -1366,7 +1360,7 @@ module V4_07 = struct
         | Pexp_pack of Versioned_ast.t
         | Pexp_open of Versioned_ast.t * Versioned_ast.t * Versioned_ast.t
         | Pexp_extension of Versioned_ast.t
-        | Pexp_unreachable of 
+        | Pexp_unreachable
     end
 
     let _pexp_ident x1 =
@@ -1440,7 +1434,7 @@ module V4_07 = struct
     let _pexp_extension x1 =
       Versioned_ast.create ~version { name = "expression_desc"; data = Variant ("Pexp_extension", Tuple [Versioned_value.of_ast x1]) }
     let _pexp_unreachable =
-      Versioned_ast.create ~version { name = "expression_desc"; data = Variant ("Pexp_unreachable", Tuple []) }
+      Versioned_ast.create ~version { name = "expression_desc"; data = Variant ("Pexp_unreachable", Empty) }
 
     let of_concrete (concrete : Concrete.t) : t =
       match concrete with
@@ -1514,8 +1508,7 @@ module V4_07 = struct
         _pexp_open x1 x2 x3
       | Pexp_extension (x1) ->
         _pexp_extension x1
-      | Pexp_unreachable () ->
-        _pexp_unreachable 
+      | Pexp_unreachable -> _pexp_unreachable
 
     let to_concrete t : Concrete.t =
       match Versioned_ast.convert t ~version with
@@ -1695,8 +1688,7 @@ module V4_07 = struct
           Optional.bind (Versioned_value.to_ast x1) ~f:(fun x1 ->
             Some (Pexp_extension (x1))
           )
-        | Variant ("Pexp_unreachable", Tuple []) ->
-          Some (Pexp_unreachable ())
+        | Variant ("Pexp_unreachable", Empty) -> Some Pexp_unreachable
         )
       | _ -> None
   end
@@ -1912,38 +1904,35 @@ module V4_07 = struct
 
     module Concrete = struct
       type t =
-        | Ptype_abstract of 
+        | Ptype_abstract
         | Ptype_variant of Versioned_ast.t list
         | Ptype_record of Versioned_ast.t list
-        | Ptype_open of 
+        | Ptype_open
     end
 
     let _ptype_abstract =
-      Versioned_ast.create ~version { name = "type_kind"; data = Variant ("Ptype_abstract", Tuple []) }
+      Versioned_ast.create ~version { name = "type_kind"; data = Variant ("Ptype_abstract", Empty) }
     let _ptype_variant x1 =
       Versioned_ast.create ~version { name = "type_kind"; data = Variant ("Ptype_variant", Tuple [(Versioned_value.of_list ~f:Versioned_value.of_ast) x1]) }
     let _ptype_record x1 =
       Versioned_ast.create ~version { name = "type_kind"; data = Variant ("Ptype_record", Tuple [(Versioned_value.of_list ~f:Versioned_value.of_ast) x1]) }
     let _ptype_open =
-      Versioned_ast.create ~version { name = "type_kind"; data = Variant ("Ptype_open", Tuple []) }
+      Versioned_ast.create ~version { name = "type_kind"; data = Variant ("Ptype_open", Empty) }
 
     let of_concrete (concrete : Concrete.t) : t =
       match concrete with
-      | Ptype_abstract () ->
-        _ptype_abstract 
+      | Ptype_abstract -> _ptype_abstract
       | Ptype_variant (x1) ->
         _ptype_variant x1
       | Ptype_record (x1) ->
         _ptype_record x1
-      | Ptype_open () ->
-        _ptype_open 
+      | Ptype_open -> _ptype_open
 
     let to_concrete t : Concrete.t =
       match Versioned_ast.convert t ~version with
       | { name = "type_kind"; data = data } ->
         ( match data with
-        | Variant ("Ptype_abstract", Tuple []) ->
-          Some (Ptype_abstract ())
+        | Variant ("Ptype_abstract", Empty) -> Some Ptype_abstract
         | Variant ("Ptype_variant", Tuple [x1]) ->
           Optional.bind ((Versioned_value.to_list ~f:Versioned_value.to_ast) x1) ~f:(fun x1 ->
             Some (Ptype_variant (x1))
@@ -1952,8 +1941,7 @@ module V4_07 = struct
           Optional.bind ((Versioned_value.to_list ~f:Versioned_value.to_ast) x1) ~f:(fun x1 ->
             Some (Ptype_record (x1))
           )
-        | Variant ("Ptype_open", Tuple []) ->
-          Some (Ptype_open ())
+        | Variant ("Ptype_open", Empty) -> Some Ptype_open
         )
       | _ -> None
   end
@@ -3863,7 +3851,7 @@ module V4_07 = struct
 
     module Concrete = struct
       type t =
-        | Pdir_none of 
+        | Pdir_none
         | Pdir_string of string
         | Pdir_int of string * char option
         | Pdir_ident of Versioned_ast.t
@@ -3871,7 +3859,7 @@ module V4_07 = struct
     end
 
     let _pdir_none =
-      Versioned_ast.create ~version { name = "directive_argument"; data = Variant ("Pdir_none", Tuple []) }
+      Versioned_ast.create ~version { name = "directive_argument"; data = Variant ("Pdir_none", Empty) }
     let _pdir_string x1 =
       Versioned_ast.create ~version { name = "directive_argument"; data = Variant ("Pdir_string", Tuple [Versioned_value.of_string x1]) }
     let _pdir_int x1 x2 =
@@ -3883,8 +3871,7 @@ module V4_07 = struct
 
     let of_concrete (concrete : Concrete.t) : t =
       match concrete with
-      | Pdir_none () ->
-        _pdir_none 
+      | Pdir_none -> _pdir_none
       | Pdir_string (x1) ->
         _pdir_string x1
       | Pdir_int (x1, x2) ->
@@ -3898,8 +3885,7 @@ module V4_07 = struct
       match Versioned_ast.convert t ~version with
       | { name = "directive_argument"; data = data } ->
         ( match data with
-        | Variant ("Pdir_none", Tuple []) ->
-          Some (Pdir_none ())
+        | Variant ("Pdir_none", Empty) -> Some Pdir_none
         | Variant ("Pdir_string", Tuple [x1]) ->
           Optional.bind (Versioned_value.to_string x1) ~f:(fun x1 ->
             Some (Pdir_string (x1))
