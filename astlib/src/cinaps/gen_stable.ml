@@ -84,12 +84,15 @@ let print_clause_type name (clause : Astlib_ast.Grammar.clause) ~opaque =
     name
     (match clause with
      | Empty -> ""
-     | Tuple tuple -> " of " ^ type_of_tuple tuple ~opaque
+     | Tuple tuple ->
+       " of " ^ String.concat ~sep:" * " (List.map tuple ~f:(type_of_structural ~opaque))
      | Record record -> " of " ^ type_of_record record ~opaque)
 
 let print_variant_type variant ~opaque =
-  List.iter variant ~f:(fun (name, clause) ->
-    print_clause_type name clause ~opaque)
+  Print.format "type t =";
+  Print.indented (fun () ->
+    List.iter variant ~f:(fun (name, clause) ->
+      print_clause_type name clause ~opaque))
 
 let type_vars vars =
   match vars with
@@ -101,8 +104,8 @@ let type_vars vars =
 
 let print_nominal_type (nominal : Astlib_ast.Grammar.nominal) ~opaque =
   match nominal with
-  | Alias structural -> Print.format "%s" (type_of_structural structural ~opaque)
-  | Record record -> Print.format "%s" (type_of_record record ~opaque)
+  | Alias structural -> Print.format "type t = %s" (type_of_structural structural ~opaque)
+  | Record record -> Print.format "type t = %s" (type_of_record record ~opaque)
   | Variant variant -> print_variant_type variant ~opaque
 
 let tuple_argument_types tuple =

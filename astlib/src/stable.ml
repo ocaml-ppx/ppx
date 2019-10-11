@@ -102,7 +102,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { txt : 'a; loc : Location.t }
+      type t = { txt : 'a; loc : Location.t }
     end
 
     let  ~txt ~loc =
@@ -128,9 +128,10 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Lident of (string)
-      | Ldot of (Versioned_ast.t * string)
-      | Lapply of (Versioned_ast.t * Versioned_ast.t)
+      type t =
+        | Lident of string
+        | Ldot of Versioned_ast.t * string
+        | Lapply of Versioned_ast.t * Versioned_ast.t
     end
 
     let _lident x1 =
@@ -178,7 +179,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      (Versioned_ast.t) loc
+      type t = (Versioned_ast.t) loc
     end
 
     let  x =
@@ -201,8 +202,9 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Nonrecursive
-      | Recursive
+      type t =
+        | Nonrecursive
+        | Recursive
     end
 
     let _nonrecursive =
@@ -232,8 +234,9 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Upto
-      | Downto
+      type t =
+        | Upto
+        | Downto
     end
 
     let _upto =
@@ -263,8 +266,9 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Private
-      | Public
+      type t =
+        | Private
+        | Public
     end
 
     let _private =
@@ -294,8 +298,9 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Immutable
-      | Mutable
+      type t =
+        | Immutable
+        | Mutable
     end
 
     let _immutable =
@@ -325,8 +330,9 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Virtual
-      | Concrete
+      type t =
+        | Virtual
+        | Concrete
     end
 
     let _virtual =
@@ -356,8 +362,9 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Override
-      | Fresh
+      type t =
+        | Override
+        | Fresh
     end
 
     let _override =
@@ -387,8 +394,9 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Closed
-      | Open
+      type t =
+        | Closed
+        | Open
     end
 
     let _closed =
@@ -418,7 +426,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      string
+      type t = string
     end
 
     let  x =
@@ -441,7 +449,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      (Versioned_ast.t) loc
+      type t = (Versioned_ast.t) loc
     end
 
     let  x =
@@ -464,7 +472,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      (string) loc
+      type t = (string) loc
     end
 
     let  x =
@@ -487,9 +495,10 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Nolabel of ()
-      | Labelled of (string)
-      | Optional of (string)
+      type t =
+        | Nolabel of 
+        | Labelled of string
+        | Optional of string
     end
 
     let _nolabel =
@@ -533,9 +542,10 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Covariant
-      | Contravariant
-      | Invariant
+      type t =
+        | Covariant
+        | Contravariant
+        | Invariant
     end
 
     let _covariant =
@@ -569,10 +579,11 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Pconst_integer of (string * char option)
-      | Pconst_char of (char)
-      | Pconst_string of (string * string option)
-      | Pconst_float of (string * char option)
+      type t =
+        | Pconst_integer of string * char option
+        | Pconst_char of char
+        | Pconst_string of string * string option
+        | Pconst_float of string * char option
     end
 
     let _pconst_integer x1 x2 =
@@ -629,7 +640,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      (Versioned_ast.t * Versioned_ast.t)
+      type t = (Versioned_ast.t * Versioned_ast.t)
     end
 
     let  x =
@@ -652,7 +663,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      (Versioned_ast.t * Versioned_ast.t)
+      type t = (Versioned_ast.t * Versioned_ast.t)
     end
 
     let  x =
@@ -675,7 +686,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      Versioned_ast.t list
+      type t = Versioned_ast.t list
     end
 
     let  x =
@@ -698,10 +709,11 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | PStr of (Versioned_ast.t)
-      | PSig of (Versioned_ast.t)
-      | PTyp of (Versioned_ast.t)
-      | PPat of (Versioned_ast.t * Versioned_ast.t option)
+      type t =
+        | PStr of Versioned_ast.t
+        | PSig of Versioned_ast.t
+        | PTyp of Versioned_ast.t
+        | PPat of Versioned_ast.t * Versioned_ast.t option
     end
 
     let _pstr x1 =
@@ -756,7 +768,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { ptyp_desc : Versioned_ast.t; ptyp_loc : Location.t; ptyp_attributes : Versioned_ast.t }
+      type t = { ptyp_desc : Versioned_ast.t; ptyp_loc : Location.t; ptyp_attributes : Versioned_ast.t }
     end
 
     let  ~ptyp_desc ~ptyp_loc ~ptyp_attributes =
@@ -783,18 +795,19 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Ptyp_any of ()
-      | Ptyp_var of (string)
-      | Ptyp_arrow of (Versioned_ast.t * Versioned_ast.t * Versioned_ast.t)
-      | Ptyp_tuple of (Versioned_ast.t list)
-      | Ptyp_constr of (Versioned_ast.t * Versioned_ast.t list)
-      | Ptyp_object of (Versioned_ast.t list * Versioned_ast.t)
-      | Ptyp_class of (Versioned_ast.t * Versioned_ast.t list)
-      | Ptyp_alias of (Versioned_ast.t * string)
-      | Ptyp_variant of (Versioned_ast.t list * Versioned_ast.t * Versioned_ast.t list option)
-      | Ptyp_poly of (Versioned_ast.t list * Versioned_ast.t)
-      | Ptyp_package of (Versioned_ast.t)
-      | Ptyp_extension of (Versioned_ast.t)
+      type t =
+        | Ptyp_any of 
+        | Ptyp_var of string
+        | Ptyp_arrow of Versioned_ast.t * Versioned_ast.t * Versioned_ast.t
+        | Ptyp_tuple of Versioned_ast.t list
+        | Ptyp_constr of Versioned_ast.t * Versioned_ast.t list
+        | Ptyp_object of Versioned_ast.t list * Versioned_ast.t
+        | Ptyp_class of Versioned_ast.t * Versioned_ast.t list
+        | Ptyp_alias of Versioned_ast.t * string
+        | Ptyp_variant of Versioned_ast.t list * Versioned_ast.t * Versioned_ast.t list option
+        | Ptyp_poly of Versioned_ast.t list * Versioned_ast.t
+        | Ptyp_package of Versioned_ast.t
+        | Ptyp_extension of Versioned_ast.t
     end
 
     let _ptyp_any =
@@ -919,7 +932,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      (Versioned_ast.t * Versioned_ast.t list)
+      type t = (Versioned_ast.t * Versioned_ast.t list)
     end
 
     let  x =
@@ -942,7 +955,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      (Versioned_ast.t * Versioned_ast.t)
+      type t = (Versioned_ast.t * Versioned_ast.t)
     end
 
     let  x =
@@ -965,8 +978,9 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Rtag of (Versioned_ast.t * Versioned_ast.t * bool * Versioned_ast.t list)
-      | Rinherit of (Versioned_ast.t)
+      type t =
+        | Rtag of Versioned_ast.t * Versioned_ast.t * bool * Versioned_ast.t list
+        | Rinherit of Versioned_ast.t
     end
 
     let _rtag x1 x2 x3 x4 =
@@ -1007,8 +1021,9 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Otag of (Versioned_ast.t * Versioned_ast.t * Versioned_ast.t)
-      | Oinherit of (Versioned_ast.t)
+      type t =
+        | Otag of Versioned_ast.t * Versioned_ast.t * Versioned_ast.t
+        | Oinherit of Versioned_ast.t
     end
 
     let _otag x1 x2 x3 =
@@ -1048,7 +1063,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { ppat_desc : Versioned_ast.t; ppat_loc : Location.t; ppat_attributes : Versioned_ast.t }
+      type t = { ppat_desc : Versioned_ast.t; ppat_loc : Location.t; ppat_attributes : Versioned_ast.t }
     end
 
     let  ~ppat_desc ~ppat_loc ~ppat_attributes =
@@ -1075,24 +1090,25 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Ppat_any of ()
-      | Ppat_var of (Versioned_ast.t)
-      | Ppat_alias of (Versioned_ast.t * Versioned_ast.t)
-      | Ppat_constant of (Versioned_ast.t)
-      | Ppat_interval of (Versioned_ast.t * Versioned_ast.t)
-      | Ppat_tuple of (Versioned_ast.t list)
-      | Ppat_construct of (Versioned_ast.t * Versioned_ast.t option)
-      | Ppat_variant of (Versioned_ast.t * Versioned_ast.t option)
-      | Ppat_record of (Versioned_ast.t list * Versioned_ast.t)
-      | Ppat_array of (Versioned_ast.t list)
-      | Ppat_or of (Versioned_ast.t * Versioned_ast.t)
-      | Ppat_constraint of (Versioned_ast.t * Versioned_ast.t)
-      | Ppat_type of (Versioned_ast.t)
-      | Ppat_lazy of (Versioned_ast.t)
-      | Ppat_unpack of (Versioned_ast.t)
-      | Ppat_exception of (Versioned_ast.t)
-      | Ppat_extension of (Versioned_ast.t)
-      | Ppat_open of (Versioned_ast.t * Versioned_ast.t)
+      type t =
+        | Ppat_any of 
+        | Ppat_var of Versioned_ast.t
+        | Ppat_alias of Versioned_ast.t * Versioned_ast.t
+        | Ppat_constant of Versioned_ast.t
+        | Ppat_interval of Versioned_ast.t * Versioned_ast.t
+        | Ppat_tuple of Versioned_ast.t list
+        | Ppat_construct of Versioned_ast.t * Versioned_ast.t option
+        | Ppat_variant of Versioned_ast.t * Versioned_ast.t option
+        | Ppat_record of Versioned_ast.t list * Versioned_ast.t
+        | Ppat_array of Versioned_ast.t list
+        | Ppat_or of Versioned_ast.t * Versioned_ast.t
+        | Ppat_constraint of Versioned_ast.t * Versioned_ast.t
+        | Ppat_type of Versioned_ast.t
+        | Ppat_lazy of Versioned_ast.t
+        | Ppat_unpack of Versioned_ast.t
+        | Ppat_exception of Versioned_ast.t
+        | Ppat_extension of Versioned_ast.t
+        | Ppat_open of Versioned_ast.t * Versioned_ast.t
     end
 
     let _ppat_any =
@@ -1264,7 +1280,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      (Versioned_ast.t * Versioned_ast.t)
+      type t = (Versioned_ast.t * Versioned_ast.t)
     end
 
     let  x =
@@ -1287,7 +1303,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { pexp_desc : Versioned_ast.t; pexp_loc : Location.t; pexp_attributes : Versioned_ast.t }
+      type t = { pexp_desc : Versioned_ast.t; pexp_loc : Location.t; pexp_attributes : Versioned_ast.t }
     end
 
     let  ~pexp_desc ~pexp_loc ~pexp_attributes =
@@ -1314,42 +1330,43 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Pexp_ident of (Versioned_ast.t)
-      | Pexp_constant of (Versioned_ast.t)
-      | Pexp_let of (Versioned_ast.t * Versioned_ast.t list * Versioned_ast.t)
-      | Pexp_function of (Versioned_ast.t list)
-      | Pexp_fun of (Versioned_ast.t * Versioned_ast.t option * Versioned_ast.t * Versioned_ast.t)
-      | Pexp_apply of (Versioned_ast.t * Versioned_ast.t list)
-      | Pexp_match of (Versioned_ast.t * Versioned_ast.t list)
-      | Pexp_try of (Versioned_ast.t * Versioned_ast.t list)
-      | Pexp_tuple of (Versioned_ast.t list)
-      | Pexp_construct of (Versioned_ast.t * Versioned_ast.t option)
-      | Pexp_variant of (Versioned_ast.t * Versioned_ast.t option)
-      | Pexp_record of (Versioned_ast.t list * Versioned_ast.t option)
-      | Pexp_field of (Versioned_ast.t * Versioned_ast.t)
-      | Pexp_setfield of (Versioned_ast.t * Versioned_ast.t * Versioned_ast.t)
-      | Pexp_array of (Versioned_ast.t list)
-      | Pexp_ifthenelse of (Versioned_ast.t * Versioned_ast.t * Versioned_ast.t option)
-      | Pexp_sequence of (Versioned_ast.t * Versioned_ast.t)
-      | Pexp_while of (Versioned_ast.t * Versioned_ast.t)
-      | Pexp_for of (Versioned_ast.t * Versioned_ast.t * Versioned_ast.t * Versioned_ast.t * Versioned_ast.t)
-      | Pexp_constraint of (Versioned_ast.t * Versioned_ast.t)
-      | Pexp_coerce of (Versioned_ast.t * Versioned_ast.t option * Versioned_ast.t)
-      | Pexp_send of (Versioned_ast.t * Versioned_ast.t)
-      | Pexp_new of (Versioned_ast.t)
-      | Pexp_setinstvar of (Versioned_ast.t * Versioned_ast.t)
-      | Pexp_override of (Versioned_ast.t list)
-      | Pexp_letmodule of (Versioned_ast.t * Versioned_ast.t * Versioned_ast.t)
-      | Pexp_letexception of (Versioned_ast.t * Versioned_ast.t)
-      | Pexp_assert of (Versioned_ast.t)
-      | Pexp_lazy of (Versioned_ast.t)
-      | Pexp_poly of (Versioned_ast.t * Versioned_ast.t option)
-      | Pexp_object of (Versioned_ast.t)
-      | Pexp_newtype of (Versioned_ast.t * Versioned_ast.t)
-      | Pexp_pack of (Versioned_ast.t)
-      | Pexp_open of (Versioned_ast.t * Versioned_ast.t * Versioned_ast.t)
-      | Pexp_extension of (Versioned_ast.t)
-      | Pexp_unreachable of ()
+      type t =
+        | Pexp_ident of Versioned_ast.t
+        | Pexp_constant of Versioned_ast.t
+        | Pexp_let of Versioned_ast.t * Versioned_ast.t list * Versioned_ast.t
+        | Pexp_function of Versioned_ast.t list
+        | Pexp_fun of Versioned_ast.t * Versioned_ast.t option * Versioned_ast.t * Versioned_ast.t
+        | Pexp_apply of Versioned_ast.t * Versioned_ast.t list
+        | Pexp_match of Versioned_ast.t * Versioned_ast.t list
+        | Pexp_try of Versioned_ast.t * Versioned_ast.t list
+        | Pexp_tuple of Versioned_ast.t list
+        | Pexp_construct of Versioned_ast.t * Versioned_ast.t option
+        | Pexp_variant of Versioned_ast.t * Versioned_ast.t option
+        | Pexp_record of Versioned_ast.t list * Versioned_ast.t option
+        | Pexp_field of Versioned_ast.t * Versioned_ast.t
+        | Pexp_setfield of Versioned_ast.t * Versioned_ast.t * Versioned_ast.t
+        | Pexp_array of Versioned_ast.t list
+        | Pexp_ifthenelse of Versioned_ast.t * Versioned_ast.t * Versioned_ast.t option
+        | Pexp_sequence of Versioned_ast.t * Versioned_ast.t
+        | Pexp_while of Versioned_ast.t * Versioned_ast.t
+        | Pexp_for of Versioned_ast.t * Versioned_ast.t * Versioned_ast.t * Versioned_ast.t * Versioned_ast.t
+        | Pexp_constraint of Versioned_ast.t * Versioned_ast.t
+        | Pexp_coerce of Versioned_ast.t * Versioned_ast.t option * Versioned_ast.t
+        | Pexp_send of Versioned_ast.t * Versioned_ast.t
+        | Pexp_new of Versioned_ast.t
+        | Pexp_setinstvar of Versioned_ast.t * Versioned_ast.t
+        | Pexp_override of Versioned_ast.t list
+        | Pexp_letmodule of Versioned_ast.t * Versioned_ast.t * Versioned_ast.t
+        | Pexp_letexception of Versioned_ast.t * Versioned_ast.t
+        | Pexp_assert of Versioned_ast.t
+        | Pexp_lazy of Versioned_ast.t
+        | Pexp_poly of Versioned_ast.t * Versioned_ast.t option
+        | Pexp_object of Versioned_ast.t
+        | Pexp_newtype of Versioned_ast.t * Versioned_ast.t
+        | Pexp_pack of Versioned_ast.t
+        | Pexp_open of Versioned_ast.t * Versioned_ast.t * Versioned_ast.t
+        | Pexp_extension of Versioned_ast.t
+        | Pexp_unreachable of 
     end
 
     let _pexp_ident x1 =
@@ -1691,7 +1708,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      (Versioned_ast.t * Versioned_ast.t)
+      type t = (Versioned_ast.t * Versioned_ast.t)
     end
 
     let  x =
@@ -1714,7 +1731,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      (Versioned_ast.t * Versioned_ast.t)
+      type t = (Versioned_ast.t * Versioned_ast.t)
     end
 
     let  x =
@@ -1737,7 +1754,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      (Versioned_ast.t * Versioned_ast.t)
+      type t = (Versioned_ast.t * Versioned_ast.t)
     end
 
     let  x =
@@ -1760,7 +1777,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { pc_lhs : Versioned_ast.t; pc_guard : Versioned_ast.t option; pc_rhs : Versioned_ast.t }
+      type t = { pc_lhs : Versioned_ast.t; pc_guard : Versioned_ast.t option; pc_rhs : Versioned_ast.t }
     end
 
     let  ~pc_lhs ~pc_guard ~pc_rhs =
@@ -1787,7 +1804,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { pval_name : Versioned_ast.t; pval_type : Versioned_ast.t; pval_prim : string list; pval_attributes : Versioned_ast.t; pval_loc : Location.t }
+      type t = { pval_name : Versioned_ast.t; pval_type : Versioned_ast.t; pval_prim : string list; pval_attributes : Versioned_ast.t; pval_loc : Location.t }
     end
 
     let  ~pval_name ~pval_type ~pval_prim ~pval_attributes ~pval_loc =
@@ -1816,7 +1833,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { ptype_name : Versioned_ast.t; ptype_params : Versioned_ast.t list; ptype_cstrs : Versioned_ast.t list; ptype_kind : Versioned_ast.t; ptype_private : Versioned_ast.t; ptype_manifest : Versioned_ast.t option; ptype_attributes : Versioned_ast.t; ptype_loc : Location.t }
+      type t = { ptype_name : Versioned_ast.t; ptype_params : Versioned_ast.t list; ptype_cstrs : Versioned_ast.t list; ptype_kind : Versioned_ast.t; ptype_private : Versioned_ast.t; ptype_manifest : Versioned_ast.t option; ptype_attributes : Versioned_ast.t; ptype_loc : Location.t }
     end
 
     let  ~ptype_name ~ptype_params ~ptype_cstrs ~ptype_kind ~ptype_private ~ptype_manifest ~ptype_attributes ~ptype_loc =
@@ -1848,7 +1865,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      (Versioned_ast.t * Versioned_ast.t)
+      type t = (Versioned_ast.t * Versioned_ast.t)
     end
 
     let  x =
@@ -1871,7 +1888,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      (Versioned_ast.t * Versioned_ast.t * Location.t)
+      type t = (Versioned_ast.t * Versioned_ast.t * Location.t)
     end
 
     let  x =
@@ -1894,10 +1911,11 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Ptype_abstract of ()
-      | Ptype_variant of (Versioned_ast.t list)
-      | Ptype_record of (Versioned_ast.t list)
-      | Ptype_open of ()
+      type t =
+        | Ptype_abstract of 
+        | Ptype_variant of Versioned_ast.t list
+        | Ptype_record of Versioned_ast.t list
+        | Ptype_open of 
     end
 
     let _ptype_abstract =
@@ -1947,7 +1965,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { pld_name : Versioned_ast.t; pld_mutable : Versioned_ast.t; pld_type : Versioned_ast.t; pld_loc : Location.t; pld_attributes : Versioned_ast.t }
+      type t = { pld_name : Versioned_ast.t; pld_mutable : Versioned_ast.t; pld_type : Versioned_ast.t; pld_loc : Location.t; pld_attributes : Versioned_ast.t }
     end
 
     let  ~pld_name ~pld_mutable ~pld_type ~pld_loc ~pld_attributes =
@@ -1976,7 +1994,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { pcd_name : Versioned_ast.t; pcd_args : Versioned_ast.t; pcd_res : Versioned_ast.t option; pcd_loc : Location.t; pcd_attributes : Versioned_ast.t }
+      type t = { pcd_name : Versioned_ast.t; pcd_args : Versioned_ast.t; pcd_res : Versioned_ast.t option; pcd_loc : Location.t; pcd_attributes : Versioned_ast.t }
     end
 
     let  ~pcd_name ~pcd_args ~pcd_res ~pcd_loc ~pcd_attributes =
@@ -2005,8 +2023,9 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Pcstr_tuple of (Versioned_ast.t list)
-      | Pcstr_record of (Versioned_ast.t list)
+      type t =
+        | Pcstr_tuple of Versioned_ast.t list
+        | Pcstr_record of Versioned_ast.t list
     end
 
     let _pcstr_tuple x1 =
@@ -2044,7 +2063,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { ptyext_path : Versioned_ast.t; ptyext_params : Versioned_ast.t list; ptyext_constructors : Versioned_ast.t list; ptyext_private : Versioned_ast.t; ptyext_attributes : Versioned_ast.t }
+      type t = { ptyext_path : Versioned_ast.t; ptyext_params : Versioned_ast.t list; ptyext_constructors : Versioned_ast.t list; ptyext_private : Versioned_ast.t; ptyext_attributes : Versioned_ast.t }
     end
 
     let  ~ptyext_path ~ptyext_params ~ptyext_constructors ~ptyext_private ~ptyext_attributes =
@@ -2073,7 +2092,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { pext_name : Versioned_ast.t; pext_kind : Versioned_ast.t; pext_loc : Location.t; pext_attributes : Versioned_ast.t }
+      type t = { pext_name : Versioned_ast.t; pext_kind : Versioned_ast.t; pext_loc : Location.t; pext_attributes : Versioned_ast.t }
     end
 
     let  ~pext_name ~pext_kind ~pext_loc ~pext_attributes =
@@ -2101,8 +2120,9 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Pext_decl of (Versioned_ast.t * Versioned_ast.t option)
-      | Pext_rebind of (Versioned_ast.t)
+      type t =
+        | Pext_decl of Versioned_ast.t * Versioned_ast.t option
+        | Pext_rebind of Versioned_ast.t
     end
 
     let _pext_decl x1 x2 =
@@ -2141,7 +2161,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { pcty_desc : Versioned_ast.t; pcty_loc : Location.t; pcty_attributes : Versioned_ast.t }
+      type t = { pcty_desc : Versioned_ast.t; pcty_loc : Location.t; pcty_attributes : Versioned_ast.t }
     end
 
     let  ~pcty_desc ~pcty_loc ~pcty_attributes =
@@ -2168,11 +2188,12 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Pcty_constr of (Versioned_ast.t * Versioned_ast.t list)
-      | Pcty_signature of (Versioned_ast.t)
-      | Pcty_arrow of (Versioned_ast.t * Versioned_ast.t * Versioned_ast.t)
-      | Pcty_extension of (Versioned_ast.t)
-      | Pcty_open of (Versioned_ast.t * Versioned_ast.t * Versioned_ast.t)
+      type t =
+        | Pcty_constr of Versioned_ast.t * Versioned_ast.t list
+        | Pcty_signature of Versioned_ast.t
+        | Pcty_arrow of Versioned_ast.t * Versioned_ast.t * Versioned_ast.t
+        | Pcty_extension of Versioned_ast.t
+        | Pcty_open of Versioned_ast.t * Versioned_ast.t * Versioned_ast.t
     end
 
     let _pcty_constr x1 x2 =
@@ -2239,7 +2260,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { pcsig_self : Versioned_ast.t; pcsig_fields : Versioned_ast.t list }
+      type t = { pcsig_self : Versioned_ast.t; pcsig_fields : Versioned_ast.t list }
     end
 
     let  ~pcsig_self ~pcsig_fields =
@@ -2265,7 +2286,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { pctf_desc : Versioned_ast.t; pctf_loc : Location.t; pctf_attributes : Versioned_ast.t }
+      type t = { pctf_desc : Versioned_ast.t; pctf_loc : Location.t; pctf_attributes : Versioned_ast.t }
     end
 
     let  ~pctf_desc ~pctf_loc ~pctf_attributes =
@@ -2292,12 +2313,13 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Pctf_inherit of (Versioned_ast.t)
-      | Pctf_val of (Versioned_ast.t)
-      | Pctf_method of (Versioned_ast.t)
-      | Pctf_constraint of (Versioned_ast.t)
-      | Pctf_attribute of (Versioned_ast.t)
-      | Pctf_extension of (Versioned_ast.t)
+      type t =
+        | Pctf_inherit of Versioned_ast.t
+        | Pctf_val of Versioned_ast.t
+        | Pctf_method of Versioned_ast.t
+        | Pctf_constraint of Versioned_ast.t
+        | Pctf_attribute of Versioned_ast.t
+        | Pctf_extension of Versioned_ast.t
     end
 
     let _pctf_inherit x1 =
@@ -2367,7 +2389,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      (Versioned_ast.t * Versioned_ast.t * Versioned_ast.t * Versioned_ast.t)
+      type t = (Versioned_ast.t * Versioned_ast.t * Versioned_ast.t * Versioned_ast.t)
     end
 
     let  x =
@@ -2390,7 +2412,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      (Versioned_ast.t * Versioned_ast.t * Versioned_ast.t * Versioned_ast.t)
+      type t = (Versioned_ast.t * Versioned_ast.t * Versioned_ast.t * Versioned_ast.t)
     end
 
     let  x =
@@ -2413,7 +2435,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      (Versioned_ast.t * Versioned_ast.t)
+      type t = (Versioned_ast.t * Versioned_ast.t)
     end
 
     let  x =
@@ -2436,7 +2458,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { pci_virt : Versioned_ast.t; pci_params : Versioned_ast.t list; pci_name : Versioned_ast.t; pci_expr : 'a; pci_loc : Location.t; pci_attributes : Versioned_ast.t }
+      type t = { pci_virt : Versioned_ast.t; pci_params : Versioned_ast.t list; pci_name : Versioned_ast.t; pci_expr : 'a; pci_loc : Location.t; pci_attributes : Versioned_ast.t }
     end
 
     let  ~pci_virt ~pci_params ~pci_name ~pci_expr ~pci_loc ~pci_attributes =
@@ -2466,7 +2488,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      (Versioned_ast.t) class_infos
+      type t = (Versioned_ast.t) class_infos
     end
 
     let  x =
@@ -2489,7 +2511,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      (Versioned_ast.t) class_infos
+      type t = (Versioned_ast.t) class_infos
     end
 
     let  x =
@@ -2512,7 +2534,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { pcl_desc : Versioned_ast.t; pcl_loc : Location.t; pcl_attributes : Versioned_ast.t }
+      type t = { pcl_desc : Versioned_ast.t; pcl_loc : Location.t; pcl_attributes : Versioned_ast.t }
     end
 
     let  ~pcl_desc ~pcl_loc ~pcl_attributes =
@@ -2539,14 +2561,15 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Pcl_constr of (Versioned_ast.t * Versioned_ast.t list)
-      | Pcl_structure of (Versioned_ast.t)
-      | Pcl_fun of (Versioned_ast.t * Versioned_ast.t option * Versioned_ast.t * Versioned_ast.t)
-      | Pcl_apply of (Versioned_ast.t * Versioned_ast.t list)
-      | Pcl_let of (Versioned_ast.t * Versioned_ast.t list * Versioned_ast.t)
-      | Pcl_constraint of (Versioned_ast.t * Versioned_ast.t)
-      | Pcl_extension of (Versioned_ast.t)
-      | Pcl_open of (Versioned_ast.t * Versioned_ast.t * Versioned_ast.t)
+      type t =
+        | Pcl_constr of Versioned_ast.t * Versioned_ast.t list
+        | Pcl_structure of Versioned_ast.t
+        | Pcl_fun of Versioned_ast.t * Versioned_ast.t option * Versioned_ast.t * Versioned_ast.t
+        | Pcl_apply of Versioned_ast.t * Versioned_ast.t list
+        | Pcl_let of Versioned_ast.t * Versioned_ast.t list * Versioned_ast.t
+        | Pcl_constraint of Versioned_ast.t * Versioned_ast.t
+        | Pcl_extension of Versioned_ast.t
+        | Pcl_open of Versioned_ast.t * Versioned_ast.t * Versioned_ast.t
     end
 
     let _pcl_constr x1 x2 =
@@ -2642,7 +2665,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { pcstr_self : Versioned_ast.t; pcstr_fields : Versioned_ast.t list }
+      type t = { pcstr_self : Versioned_ast.t; pcstr_fields : Versioned_ast.t list }
     end
 
     let  ~pcstr_self ~pcstr_fields =
@@ -2668,7 +2691,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { pcf_desc : Versioned_ast.t; pcf_loc : Location.t; pcf_attributes : Versioned_ast.t }
+      type t = { pcf_desc : Versioned_ast.t; pcf_loc : Location.t; pcf_attributes : Versioned_ast.t }
     end
 
     let  ~pcf_desc ~pcf_loc ~pcf_attributes =
@@ -2695,13 +2718,14 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Pcf_inherit of (Versioned_ast.t * Versioned_ast.t * Versioned_ast.t option)
-      | Pcf_val of (Versioned_ast.t)
-      | Pcf_method of (Versioned_ast.t)
-      | Pcf_constraint of (Versioned_ast.t)
-      | Pcf_initializer of (Versioned_ast.t)
-      | Pcf_attribute of (Versioned_ast.t)
-      | Pcf_extension of (Versioned_ast.t)
+      type t =
+        | Pcf_inherit of Versioned_ast.t * Versioned_ast.t * Versioned_ast.t option
+        | Pcf_val of Versioned_ast.t
+        | Pcf_method of Versioned_ast.t
+        | Pcf_constraint of Versioned_ast.t
+        | Pcf_initializer of Versioned_ast.t
+        | Pcf_attribute of Versioned_ast.t
+        | Pcf_extension of Versioned_ast.t
     end
 
     let _pcf_inherit x1 x2 x3 =
@@ -2781,7 +2805,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      (Versioned_ast.t * Versioned_ast.t * Versioned_ast.t)
+      type t = (Versioned_ast.t * Versioned_ast.t * Versioned_ast.t)
     end
 
     let  x =
@@ -2804,7 +2828,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      (Versioned_ast.t * Versioned_ast.t * Versioned_ast.t)
+      type t = (Versioned_ast.t * Versioned_ast.t * Versioned_ast.t)
     end
 
     let  x =
@@ -2827,8 +2851,9 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Cfk_virtual of (Versioned_ast.t)
-      | Cfk_concrete of (Versioned_ast.t * Versioned_ast.t)
+      type t =
+        | Cfk_virtual of Versioned_ast.t
+        | Cfk_concrete of Versioned_ast.t * Versioned_ast.t
     end
 
     let _cfk_virtual x1 =
@@ -2867,7 +2892,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      (Versioned_ast.t) class_infos
+      type t = (Versioned_ast.t) class_infos
     end
 
     let  x =
@@ -2890,7 +2915,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { pmty_desc : Versioned_ast.t; pmty_loc : Location.t; pmty_attributes : Versioned_ast.t }
+      type t = { pmty_desc : Versioned_ast.t; pmty_loc : Location.t; pmty_attributes : Versioned_ast.t }
     end
 
     let  ~pmty_desc ~pmty_loc ~pmty_attributes =
@@ -2917,13 +2942,14 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Pmty_ident of (Versioned_ast.t)
-      | Pmty_signature of (Versioned_ast.t)
-      | Pmty_functor of (Versioned_ast.t * Versioned_ast.t option * Versioned_ast.t)
-      | Pmty_with of (Versioned_ast.t * Versioned_ast.t list)
-      | Pmty_typeof of (Versioned_ast.t)
-      | Pmty_extension of (Versioned_ast.t)
-      | Pmty_alias of (Versioned_ast.t)
+      type t =
+        | Pmty_ident of Versioned_ast.t
+        | Pmty_signature of Versioned_ast.t
+        | Pmty_functor of Versioned_ast.t * Versioned_ast.t option * Versioned_ast.t
+        | Pmty_with of Versioned_ast.t * Versioned_ast.t list
+        | Pmty_typeof of Versioned_ast.t
+        | Pmty_extension of Versioned_ast.t
+        | Pmty_alias of Versioned_ast.t
     end
 
     let _pmty_ident x1 =
@@ -3004,7 +3030,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      Versioned_ast.t list
+      type t = Versioned_ast.t list
     end
 
     let  x =
@@ -3027,7 +3053,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { psig_desc : Versioned_ast.t; psig_loc : Location.t }
+      type t = { psig_desc : Versioned_ast.t; psig_loc : Location.t }
     end
 
     let  ~psig_desc ~psig_loc =
@@ -3053,19 +3079,20 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Psig_value of (Versioned_ast.t)
-      | Psig_type of (Versioned_ast.t * Versioned_ast.t list)
-      | Psig_typext of (Versioned_ast.t)
-      | Psig_exception of (Versioned_ast.t)
-      | Psig_module of (Versioned_ast.t)
-      | Psig_recmodule of (Versioned_ast.t list)
-      | Psig_modtype of (Versioned_ast.t)
-      | Psig_open of (Versioned_ast.t)
-      | Psig_include of (Versioned_ast.t)
-      | Psig_class of (Versioned_ast.t list)
-      | Psig_class_type of (Versioned_ast.t list)
-      | Psig_attribute of (Versioned_ast.t)
-      | Psig_extension of (Versioned_ast.t * Versioned_ast.t)
+      type t =
+        | Psig_value of Versioned_ast.t
+        | Psig_type of Versioned_ast.t * Versioned_ast.t list
+        | Psig_typext of Versioned_ast.t
+        | Psig_exception of Versioned_ast.t
+        | Psig_module of Versioned_ast.t
+        | Psig_recmodule of Versioned_ast.t list
+        | Psig_modtype of Versioned_ast.t
+        | Psig_open of Versioned_ast.t
+        | Psig_include of Versioned_ast.t
+        | Psig_class of Versioned_ast.t list
+        | Psig_class_type of Versioned_ast.t list
+        | Psig_attribute of Versioned_ast.t
+        | Psig_extension of Versioned_ast.t * Versioned_ast.t
     end
 
     let _psig_value x1 =
@@ -3193,7 +3220,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { pmd_name : Versioned_ast.t; pmd_type : Versioned_ast.t; pmd_attributes : Versioned_ast.t; pmd_loc : Location.t }
+      type t = { pmd_name : Versioned_ast.t; pmd_type : Versioned_ast.t; pmd_attributes : Versioned_ast.t; pmd_loc : Location.t }
     end
 
     let  ~pmd_name ~pmd_type ~pmd_attributes ~pmd_loc =
@@ -3221,7 +3248,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { pmtd_name : Versioned_ast.t; pmtd_type : Versioned_ast.t option; pmtd_attributes : Versioned_ast.t; pmtd_loc : Location.t }
+      type t = { pmtd_name : Versioned_ast.t; pmtd_type : Versioned_ast.t option; pmtd_attributes : Versioned_ast.t; pmtd_loc : Location.t }
     end
 
     let  ~pmtd_name ~pmtd_type ~pmtd_attributes ~pmtd_loc =
@@ -3249,7 +3276,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { popen_lid : Versioned_ast.t; popen_override : Versioned_ast.t; popen_loc : Location.t; popen_attributes : Versioned_ast.t }
+      type t = { popen_lid : Versioned_ast.t; popen_override : Versioned_ast.t; popen_loc : Location.t; popen_attributes : Versioned_ast.t }
     end
 
     let  ~popen_lid ~popen_override ~popen_loc ~popen_attributes =
@@ -3277,7 +3304,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { pincl_mod : 'a; pincl_loc : Location.t; pincl_attributes : Versioned_ast.t }
+      type t = { pincl_mod : 'a; pincl_loc : Location.t; pincl_attributes : Versioned_ast.t }
     end
 
     let  ~pincl_mod ~pincl_loc ~pincl_attributes =
@@ -3304,7 +3331,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      (Versioned_ast.t) include_infos
+      type t = (Versioned_ast.t) include_infos
     end
 
     let  x =
@@ -3327,7 +3354,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      (Versioned_ast.t) include_infos
+      type t = (Versioned_ast.t) include_infos
     end
 
     let  x =
@@ -3350,10 +3377,11 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Pwith_type of (Versioned_ast.t * Versioned_ast.t)
-      | Pwith_module of (Versioned_ast.t * Versioned_ast.t)
-      | Pwith_typesubst of (Versioned_ast.t * Versioned_ast.t)
-      | Pwith_modsubst of (Versioned_ast.t * Versioned_ast.t)
+      type t =
+        | Pwith_type of Versioned_ast.t * Versioned_ast.t
+        | Pwith_module of Versioned_ast.t * Versioned_ast.t
+        | Pwith_typesubst of Versioned_ast.t * Versioned_ast.t
+        | Pwith_modsubst of Versioned_ast.t * Versioned_ast.t
     end
 
     let _pwith_type x1 x2 =
@@ -3411,7 +3439,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { pmod_desc : Versioned_ast.t; pmod_loc : Location.t; pmod_attributes : Versioned_ast.t }
+      type t = { pmod_desc : Versioned_ast.t; pmod_loc : Location.t; pmod_attributes : Versioned_ast.t }
     end
 
     let  ~pmod_desc ~pmod_loc ~pmod_attributes =
@@ -3438,13 +3466,14 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Pmod_ident of (Versioned_ast.t)
-      | Pmod_structure of (Versioned_ast.t)
-      | Pmod_functor of (Versioned_ast.t * Versioned_ast.t option * Versioned_ast.t)
-      | Pmod_apply of (Versioned_ast.t * Versioned_ast.t)
-      | Pmod_constraint of (Versioned_ast.t * Versioned_ast.t)
-      | Pmod_unpack of (Versioned_ast.t)
-      | Pmod_extension of (Versioned_ast.t)
+      type t =
+        | Pmod_ident of Versioned_ast.t
+        | Pmod_structure of Versioned_ast.t
+        | Pmod_functor of Versioned_ast.t * Versioned_ast.t option * Versioned_ast.t
+        | Pmod_apply of Versioned_ast.t * Versioned_ast.t
+        | Pmod_constraint of Versioned_ast.t * Versioned_ast.t
+        | Pmod_unpack of Versioned_ast.t
+        | Pmod_extension of Versioned_ast.t
     end
 
     let _pmod_ident x1 =
@@ -3526,7 +3555,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      Versioned_ast.t list
+      type t = Versioned_ast.t list
     end
 
     let  x =
@@ -3549,7 +3578,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { pstr_desc : Versioned_ast.t; pstr_loc : Location.t }
+      type t = { pstr_desc : Versioned_ast.t; pstr_loc : Location.t }
     end
 
     let  ~pstr_desc ~pstr_loc =
@@ -3575,21 +3604,22 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Pstr_eval of (Versioned_ast.t * Versioned_ast.t)
-      | Pstr_value of (Versioned_ast.t * Versioned_ast.t list)
-      | Pstr_primitive of (Versioned_ast.t)
-      | Pstr_type of (Versioned_ast.t * Versioned_ast.t list)
-      | Pstr_typext of (Versioned_ast.t)
-      | Pstr_exception of (Versioned_ast.t)
-      | Pstr_module of (Versioned_ast.t)
-      | Pstr_recmodule of (Versioned_ast.t list)
-      | Pstr_modtype of (Versioned_ast.t)
-      | Pstr_open of (Versioned_ast.t)
-      | Pstr_class of (Versioned_ast.t list)
-      | Pstr_class_type of (Versioned_ast.t list)
-      | Pstr_include of (Versioned_ast.t)
-      | Pstr_attribute of (Versioned_ast.t)
-      | Pstr_extension of (Versioned_ast.t * Versioned_ast.t)
+      type t =
+        | Pstr_eval of Versioned_ast.t * Versioned_ast.t
+        | Pstr_value of Versioned_ast.t * Versioned_ast.t list
+        | Pstr_primitive of Versioned_ast.t
+        | Pstr_type of Versioned_ast.t * Versioned_ast.t list
+        | Pstr_typext of Versioned_ast.t
+        | Pstr_exception of Versioned_ast.t
+        | Pstr_module of Versioned_ast.t
+        | Pstr_recmodule of Versioned_ast.t list
+        | Pstr_modtype of Versioned_ast.t
+        | Pstr_open of Versioned_ast.t
+        | Pstr_class of Versioned_ast.t list
+        | Pstr_class_type of Versioned_ast.t list
+        | Pstr_include of Versioned_ast.t
+        | Pstr_attribute of Versioned_ast.t
+        | Pstr_extension of Versioned_ast.t * Versioned_ast.t
     end
 
     let _pstr_eval x1 x2 =
@@ -3735,7 +3765,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { pvb_pat : Versioned_ast.t; pvb_expr : Versioned_ast.t; pvb_attributes : Versioned_ast.t; pvb_loc : Location.t }
+      type t = { pvb_pat : Versioned_ast.t; pvb_expr : Versioned_ast.t; pvb_attributes : Versioned_ast.t; pvb_loc : Location.t }
     end
 
     let  ~pvb_pat ~pvb_expr ~pvb_attributes ~pvb_loc =
@@ -3763,7 +3793,7 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      { pmb_name : Versioned_ast.t; pmb_expr : Versioned_ast.t; pmb_attributes : Versioned_ast.t; pmb_loc : Location.t }
+      type t = { pmb_name : Versioned_ast.t; pmb_expr : Versioned_ast.t; pmb_attributes : Versioned_ast.t; pmb_loc : Location.t }
     end
 
     let  ~pmb_name ~pmb_expr ~pmb_attributes ~pmb_loc =
@@ -3791,8 +3821,9 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Ptop_def of (Versioned_ast.t)
-      | Ptop_dir of (string * Versioned_ast.t)
+      type t =
+        | Ptop_def of Versioned_ast.t
+        | Ptop_dir of string * Versioned_ast.t
     end
 
     let _ptop_def x1 =
@@ -3831,11 +3862,12 @@ module V4_07 = struct
     let to_ast t = t
 
     module Concrete = struct
-      | Pdir_none of ()
-      | Pdir_string of (string)
-      | Pdir_int of (string * char option)
-      | Pdir_ident of (Versioned_ast.t)
-      | Pdir_bool of (bool)
+      type t =
+        | Pdir_none of 
+        | Pdir_string of string
+        | Pdir_int of string * char option
+        | Pdir_ident of Versioned_ast.t
+        | Pdir_bool of bool
     end
 
     let _pdir_none =
