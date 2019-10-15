@@ -6,7 +6,7 @@ let rec loc_of_ast a_of_ast =
     fun (Loc { txt; loc }) ->
       Optional.bind (a_of_ast txt) ~f:(fun txt ->
         Some ({ txt; loc } : Astlib_parsetree.loc)
-      ))
+      )
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Loc.to_concrete x)
 
@@ -15,11 +15,10 @@ and longident_of_ast =
     function
     | Lident (a) ->
       Some (Lident (a))
-      )
     | Ldot (a, b) ->
       Optional.bind (longident_of_ast a) ~f:(fun a ->
         Some (Ldot (a, b))
-      ))
+      )
     | Lapply (a, b) ->
       Optional.bind (longident_of_ast a) ~f:(fun a ->
         Optional.bind (longident_of_ast b) ~f:(fun b ->
@@ -97,7 +96,6 @@ and label_of_ast =
   let of_concrete : Stable.V4_07.Label.Concrete.t -> Astlib_parsetree.label option =
     fun (Label { a }) ->
       Some a
-      )
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Label.to_concrete x)
 
@@ -125,10 +123,8 @@ and arg_label_of_ast =
     | Nolabel -> Some Nolabel
     | Labelled (a) ->
       Some (Labelled (a))
-      )
     | Optional (a) ->
       Some (Optional (a))
-      )
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Arg_label.to_concrete x)
 
@@ -146,16 +142,12 @@ and constant_of_ast =
     function
     | Pconst_integer (a, b) ->
       Some (Pconst_integer (a, b))
-      ))
     | Pconst_char (a) ->
       Some (Pconst_char (a))
-      )
     | Pconst_string (a, b) ->
       Some (Pconst_string (a, b))
-      ))
     | Pconst_float (a, b) ->
       Some (Pconst_float (a, b))
-      ))
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Constant.to_concrete x)
 
@@ -215,7 +207,7 @@ and core_type_of_ast =
       Optional.bind (core_type_desc_of_ast ptyp_desc) ~f:(fun ptyp_desc ->
         Optional.bind (attributes_of_ast ptyp_attributes) ~f:(fun ptyp_attributes ->
           Some ({ ptyp_desc; ptyp_loc; ptyp_attributes } : Astlib_parsetree.core_type)
-      )))
+      ))
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Core_type.to_concrete x)
 
@@ -225,7 +217,6 @@ and core_type_desc_of_ast =
     | Ptyp_any -> Some Ptyp_any
     | Ptyp_var (a) ->
       Some (Ptyp_var (a))
-      )
     | Ptyp_arrow (a, b, c) ->
       Optional.bind (arg_label_of_ast a) ~f:(fun a ->
         Optional.bind (core_type_of_ast b) ~f:(fun b ->
@@ -254,7 +245,7 @@ and core_type_desc_of_ast =
     | Ptyp_alias (a, b) ->
       Optional.bind (core_type_of_ast a) ~f:(fun a ->
         Some (Ptyp_alias (a, b))
-      ))
+      )
     | Ptyp_variant (a, b, c) ->
       Optional.bind (List.map ~f:(row_field_of_ast) a) ~f:(fun a ->
         Optional.bind (closed_flag_of_ast b) ~f:(fun b ->
@@ -303,7 +294,7 @@ and row_field_of_ast =
         Optional.bind (attributes_of_ast b) ~f:(fun b ->
           Optional.bind (List.map ~f:(core_type_of_ast) d) ~f:(fun d ->
             Some (Rtag (a, b, c, d))
-      ))))
+      )))
     | Rinherit (a) ->
       Optional.bind (core_type_of_ast a) ~f:(fun a ->
         Some (Rinherit (a))
@@ -333,7 +324,7 @@ and pattern_of_ast =
       Optional.bind (pattern_desc_of_ast ppat_desc) ~f:(fun ppat_desc ->
         Optional.bind (attributes_of_ast ppat_attributes) ~f:(fun ppat_attributes ->
           Some ({ ppat_desc; ppat_loc; ppat_attributes } : Astlib_parsetree.pattern)
-      )))
+      ))
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Pattern.to_concrete x)
 
@@ -435,7 +426,7 @@ and expression_of_ast =
       Optional.bind (expression_desc_of_ast pexp_desc) ~f:(fun pexp_desc ->
         Optional.bind (attributes_of_ast pexp_attributes) ~f:(fun pexp_attributes ->
           Some ({ pexp_desc; pexp_loc; pexp_attributes } : Astlib_parsetree.expression)
-      )))
+      ))
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Expression.to_concrete x)
 
@@ -665,7 +656,7 @@ and value_description_of_ast =
         Optional.bind (core_type_of_ast pval_type) ~f:(fun pval_type ->
           Optional.bind (attributes_of_ast pval_attributes) ~f:(fun pval_attributes ->
             Some ({ pval_name; pval_type; pval_prim; pval_attributes; pval_loc } : Astlib_parsetree.value_description)
-      )))))
+      )))
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Value_description.to_concrete x)
 
@@ -680,7 +671,7 @@ and type_declaration_of_ast =
                 Optional.bind (Optional.map ~f:(core_type_of_ast) ptype_manifest) ~f:(fun ptype_manifest ->
                   Optional.bind (attributes_of_ast ptype_attributes) ~f:(fun ptype_attributes ->
                     Some ({ ptype_name; ptype_params; ptype_cstrs; ptype_kind; ptype_private; ptype_manifest; ptype_attributes; ptype_loc } : Astlib_parsetree.type_declaration)
-      ))))))))
+      )))))))
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Type_declaration.to_concrete x)
 
@@ -726,7 +717,7 @@ and label_declaration_of_ast =
           Optional.bind (core_type_of_ast pld_type) ~f:(fun pld_type ->
             Optional.bind (attributes_of_ast pld_attributes) ~f:(fun pld_attributes ->
               Some ({ pld_name; pld_mutable; pld_type; pld_loc; pld_attributes } : Astlib_parsetree.label_declaration)
-      )))))
+      ))))
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Label_declaration.to_concrete x)
 
@@ -738,7 +729,7 @@ and constructor_declaration_of_ast =
           Optional.bind (Optional.map ~f:(core_type_of_ast) pcd_res) ~f:(fun pcd_res ->
             Optional.bind (attributes_of_ast pcd_attributes) ~f:(fun pcd_attributes ->
               Some ({ pcd_name; pcd_args; pcd_res; pcd_loc; pcd_attributes } : Astlib_parsetree.constructor_declaration)
-      )))))
+      ))))
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Constructor_declaration.to_concrete x)
 
@@ -776,7 +767,7 @@ and extension_constructor_of_ast =
         Optional.bind (extension_constructor_kind_of_ast pext_kind) ~f:(fun pext_kind ->
           Optional.bind (attributes_of_ast pext_attributes) ~f:(fun pext_attributes ->
             Some ({ pext_name; pext_kind; pext_loc; pext_attributes } : Astlib_parsetree.extension_constructor)
-      ))))
+      )))
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Extension_constructor.to_concrete x)
 
@@ -801,7 +792,7 @@ and class_type_of_ast =
       Optional.bind (class_type_desc_of_ast pcty_desc) ~f:(fun pcty_desc ->
         Optional.bind (attributes_of_ast pcty_attributes) ~f:(fun pcty_attributes ->
           Some ({ pcty_desc; pcty_loc; pcty_attributes } : Astlib_parsetree.class_type)
-      )))
+      ))
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Class_type.to_concrete x)
 
@@ -852,7 +843,7 @@ and class_type_field_of_ast =
       Optional.bind (class_type_field_desc_of_ast pctf_desc) ~f:(fun pctf_desc ->
         Optional.bind (attributes_of_ast pctf_attributes) ~f:(fun pctf_attributes ->
           Some ({ pctf_desc; pctf_loc; pctf_attributes } : Astlib_parsetree.class_type_field)
-      )))
+      ))
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Class_type_field.to_concrete x)
 
@@ -922,7 +913,7 @@ and class_infos_of_ast a_of_ast =
             Optional.bind (a_of_ast pci_expr) ~f:(fun pci_expr ->
               Optional.bind (attributes_of_ast pci_attributes) ~f:(fun pci_attributes ->
                 Some ({ pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Astlib_parsetree.class_infos)
-      ))))))
+      )))))
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Class_infos.to_concrete x)
 
@@ -950,7 +941,7 @@ and class_expr_of_ast =
       Optional.bind (class_expr_desc_of_ast pcl_desc) ~f:(fun pcl_desc ->
         Optional.bind (attributes_of_ast pcl_attributes) ~f:(fun pcl_attributes ->
           Some ({ pcl_desc; pcl_loc; pcl_attributes } : Astlib_parsetree.class_expr)
-      )))
+      ))
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Class_expr.to_concrete x)
 
@@ -1018,7 +1009,7 @@ and class_field_of_ast =
       Optional.bind (class_field_desc_of_ast pcf_desc) ~f:(fun pcf_desc ->
         Optional.bind (attributes_of_ast pcf_attributes) ~f:(fun pcf_attributes ->
           Some ({ pcf_desc; pcf_loc; pcf_attributes } : Astlib_parsetree.class_field)
-      )))
+      ))
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Class_field.to_concrete x)
 
@@ -1106,7 +1097,7 @@ and module_type_of_ast =
       Optional.bind (module_type_desc_of_ast pmty_desc) ~f:(fun pmty_desc ->
         Optional.bind (attributes_of_ast pmty_attributes) ~f:(fun pmty_attributes ->
           Some ({ pmty_desc; pmty_loc; pmty_attributes } : Astlib_parsetree.module_type)
-      )))
+      ))
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Module_type.to_concrete x)
 
@@ -1161,7 +1152,7 @@ and signature_item_of_ast =
     fun (Signature_item { psig_desc; psig_loc }) ->
       Optional.bind (signature_item_desc_of_ast psig_desc) ~f:(fun psig_desc ->
         Some ({ psig_desc; psig_loc } : Astlib_parsetree.signature_item)
-      ))
+      )
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Signature_item.to_concrete x)
 
@@ -1232,7 +1223,7 @@ and module_declaration_of_ast =
         Optional.bind (module_type_of_ast pmd_type) ~f:(fun pmd_type ->
           Optional.bind (attributes_of_ast pmd_attributes) ~f:(fun pmd_attributes ->
             Some ({ pmd_name; pmd_type; pmd_attributes; pmd_loc } : Astlib_parsetree.module_declaration)
-      ))))
+      )))
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Module_declaration.to_concrete x)
 
@@ -1243,7 +1234,7 @@ and module_type_declaration_of_ast =
         Optional.bind (Optional.map ~f:(module_type_of_ast) pmtd_type) ~f:(fun pmtd_type ->
           Optional.bind (attributes_of_ast pmtd_attributes) ~f:(fun pmtd_attributes ->
             Some ({ pmtd_name; pmtd_type; pmtd_attributes; pmtd_loc } : Astlib_parsetree.module_type_declaration)
-      ))))
+      )))
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Module_type_declaration.to_concrete x)
 
@@ -1254,7 +1245,7 @@ and open_description_of_ast =
         Optional.bind (override_flag_of_ast popen_override) ~f:(fun popen_override ->
           Optional.bind (attributes_of_ast popen_attributes) ~f:(fun popen_attributes ->
             Some ({ popen_lid; popen_override; popen_loc; popen_attributes } : Astlib_parsetree.open_description)
-      ))))
+      )))
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Open_description.to_concrete x)
 
@@ -1264,7 +1255,7 @@ and include_infos_of_ast a_of_ast =
       Optional.bind (a_of_ast pincl_mod) ~f:(fun pincl_mod ->
         Optional.bind (attributes_of_ast pincl_attributes) ~f:(fun pincl_attributes ->
           Some ({ pincl_mod; pincl_loc; pincl_attributes } : Astlib_parsetree.include_infos)
-      )))
+      ))
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Include_infos.to_concrete x)
 
@@ -1318,7 +1309,7 @@ and module_expr_of_ast =
       Optional.bind (module_expr_desc_of_ast pmod_desc) ~f:(fun pmod_desc ->
         Optional.bind (attributes_of_ast pmod_attributes) ~f:(fun pmod_attributes ->
           Some ({ pmod_desc; pmod_loc; pmod_attributes } : Astlib_parsetree.module_expr)
-      )))
+      ))
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Module_expr.to_concrete x)
 
@@ -1374,7 +1365,7 @@ and structure_item_of_ast =
     fun (Structure_item { pstr_desc; pstr_loc }) ->
       Optional.bind (structure_item_desc_of_ast pstr_desc) ~f:(fun pstr_desc ->
         Some ({ pstr_desc; pstr_loc } : Astlib_parsetree.structure_item)
-      ))
+      )
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Structure_item.to_concrete x)
 
@@ -1455,7 +1446,7 @@ and value_binding_of_ast =
         Optional.bind (expression_of_ast pvb_expr) ~f:(fun pvb_expr ->
           Optional.bind (attributes_of_ast pvb_attributes) ~f:(fun pvb_attributes ->
             Some ({ pvb_pat; pvb_expr; pvb_attributes; pvb_loc } : Astlib_parsetree.value_binding)
-      ))))
+      )))
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Value_binding.to_concrete x)
 
@@ -1466,7 +1457,7 @@ and module_binding_of_ast =
         Optional.bind (module_expr_of_ast pmb_expr) ~f:(fun pmb_expr ->
           Optional.bind (attributes_of_ast pmb_attributes) ~f:(fun pmb_attributes ->
             Some ({ pmb_name; pmb_expr; pmb_attributes; pmb_loc } : Astlib_parsetree.module_binding)
-      ))))
+      )))
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Module_binding.to_concrete x)
 
@@ -1480,7 +1471,7 @@ and toplevel_phrase_of_ast =
     | Ptop_dir (a, b) ->
       Optional.bind (directive_argument_of_ast b) ~f:(fun b ->
         Some (Ptop_dir (a, b))
-      ))
+      )
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Toplevel_phrase.to_concrete x)
 
@@ -1490,17 +1481,14 @@ and directive_argument_of_ast =
     | Pdir_none -> Some Pdir_none
     | Pdir_string (a) ->
       Some (Pdir_string (a))
-      )
     | Pdir_int (a, b) ->
       Some (Pdir_int (a, b))
-      ))
     | Pdir_ident (a) ->
       Optional.bind (longident_of_ast a) ~f:(fun a ->
         Some (Pdir_ident (a))
       )
     | Pdir_bool (a) ->
       Some (Pdir_bool (a))
-      )
   in
   fun x -> Optional.bind ~f:of_concrete (Stable.V4_07.Directive_argument.to_concrete x)
 

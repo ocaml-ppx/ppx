@@ -214,17 +214,16 @@ and of_ast_or_id structural =
 let bind_of_ast =
   let rec loop ~bindings ~print =
     match bindings with
-    | [] -> print ()
+    | [] -> print (); 0
     | (name, structural) :: bindings ->
       match of_ast structural with
       | None -> loop ~bindings ~print
       | Some expr ->
         Print.format "Optional.bind (%s %s) ~f:(fun %s ->" expr name name;
-        Print.indented (fun () -> loop ~bindings ~print)
+        Print.indented (fun () -> loop ~bindings ~print + 1)
   in
   fun bindings print ->
-    loop ~bindings ~print;
-    let count = List.length bindings in
+    let count = loop ~bindings ~print in
     if count > 0 then Print.format "%s" (String.make count ')')
 
 let print_nominal_of_ast nominal ~name =
