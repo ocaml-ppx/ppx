@@ -1,5 +1,0 @@
-(library
- (name astlib_test_cinaps)
- (public_name astlib.test_cinaps)
- (libraries astlib.ast astlib.cinaps astlib.src_cinaps base)
- (flags (:standard -open Ocaml_shadow -safe-string)))

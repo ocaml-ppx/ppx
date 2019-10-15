@@ -36,7 +36,7 @@ A comprehensive toolbox for ppx development. It features:
   (ocamlfind :with-test)))
 
 (package
- (name astlib)
+ (name astlib_first_draft)
  (synopsis "Compatibility layer for OCaml compiler AST")
  (description "Provides types for the OCaml compiler AST, along with versioned
 interfaces for constructing and deconstructing them so that ppx transformers can
