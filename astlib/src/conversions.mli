@@ -1,6 +1,6 @@
 (*$ Astlib_src_cinaps.print_conversions_mli () *)
-val loc_to_ast : ('a1 -> 'a2) ->  'a1Astlib_parsetree.loc ->  'a2Stable.V4_07.Loc.t
-val loc_of_ast : ('a1 -> 'a2) ->  'a1Stable.V4_07.Loc.t ->  'a2Astlib_parsetree.loc option
+val loc_to_ast : ('a1 -> 'a2) -> 'a1 Astlib_parsetree.loc -> 'a2 Stable.V4_07.Loc.t
+val loc_of_ast : ('a1 -> 'a2) -> 'a1 Stable.V4_07.Loc.t -> 'a2 Astlib_parsetree.loc option
 
 val longident_to_ast : Astlib_parsetree.longident -> Stable.V4_07.Longident.t
 val longident_of_ast : Stable.V4_07.Longident.t -> Astlib_parsetree.longident option
@@ -161,8 +161,8 @@ val class_type_method_desc_of_ast : Stable.V4_07.Class_type_method_desc.t -> Ast
 val class_type_constraint_to_ast : Astlib_parsetree.class_type_constraint -> Stable.V4_07.Class_type_constraint.t
 val class_type_constraint_of_ast : Stable.V4_07.Class_type_constraint.t -> Astlib_parsetree.class_type_constraint option
 
-val class_infos_to_ast : ('a1 -> 'a2) ->  'a1Astlib_parsetree.class_infos ->  'a2Stable.V4_07.Class_infos.t
-val class_infos_of_ast : ('a1 -> 'a2) ->  'a1Stable.V4_07.Class_infos.t ->  'a2Astlib_parsetree.class_infos option
+val class_infos_to_ast : ('a1 -> 'a2) -> 'a1 Astlib_parsetree.class_infos -> 'a2 Stable.V4_07.Class_infos.t
+val class_infos_of_ast : ('a1 -> 'a2) -> 'a1 Stable.V4_07.Class_infos.t -> 'a2 Astlib_parsetree.class_infos option
 
 val class_description_to_ast : Astlib_parsetree.class_description -> Stable.V4_07.Class_description.t
 val class_description_of_ast : Stable.V4_07.Class_description.t -> Astlib_parsetree.class_description option
@@ -221,8 +221,8 @@ val module_type_declaration_of_ast : Stable.V4_07.Module_type_declaration.t -> A
 val open_description_to_ast : Astlib_parsetree.open_description -> Stable.V4_07.Open_description.t
 val open_description_of_ast : Stable.V4_07.Open_description.t -> Astlib_parsetree.open_description option
 
-val include_infos_to_ast : ('a1 -> 'a2) ->  'a1Astlib_parsetree.include_infos ->  'a2Stable.V4_07.Include_infos.t
-val include_infos_of_ast : ('a1 -> 'a2) ->  'a1Stable.V4_07.Include_infos.t ->  'a2Astlib_parsetree.include_infos option
+val include_infos_to_ast : ('a1 -> 'a2) -> 'a1 Astlib_parsetree.include_infos -> 'a2 Stable.V4_07.Include_infos.t
+val include_infos_of_ast : ('a1 -> 'a2) -> 'a1 Stable.V4_07.Include_infos.t -> 'a2 Astlib_parsetree.include_infos option
 
 val include_description_to_ast : Astlib_parsetree.include_description -> Stable.V4_07.Include_description.t
 val include_description_of_ast : Stable.V4_07.Include_description.t -> Astlib_parsetree.include_description option

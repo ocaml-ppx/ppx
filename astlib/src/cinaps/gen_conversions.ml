@@ -33,9 +33,9 @@ let current_grammar =
 let poly_args vars n =
   match vars with
   | [] -> ""
-  | [var] -> Printf.sprintf " '%s%d" var n
+  | [var] -> Printf.sprintf "'%s%d " var n
   | _ ->
-    Printf.sprintf " (%s)"
+    Printf.sprintf "(%s) "
       (String.concat ~sep:", "
          (List.map vars ~f:(fun var ->
             Printf.sprintf "'%s%d" var n)))
