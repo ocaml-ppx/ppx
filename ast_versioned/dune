@@ -1,0 +1,11 @@
+(library
+ (name ppx_ast_versioned)
+ (public_name ppx.ast_versioned)
+ (libraries
+  astlib
+  ppx_ast)
+ (flags (:standard -safe-string)))
+
+(cinaps
+ (files *.mli *.ml)
+ (libraries ppx_ast_versioned_cinaps))

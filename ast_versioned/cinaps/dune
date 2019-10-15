@@ -1,0 +1,5 @@
+(library
+ (name ppx_ast_versioned_cinaps)
+ (libraries
+  astlib)
+ (flags (:standard -open Ocaml_shadow -safe-string)))
