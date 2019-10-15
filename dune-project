@@ -36,6 +36,25 @@ A comprehensive toolbox for ppx development. It features:
   (ocamlfind :with-test)))
 
 (package
+ (name astlib)
+ (synopsis "Compatibility layer for OCaml compiler AST")
+ (description "Provides types for the OCaml compiler AST, along with versioned
+interfaces for constructing and deconstructing them so that ppx transformers can
+be easily migrated to new versions of the compiler.")
+ (depends
+  (ocaml (and (>= 4.07) (< 4.08)))
+  (base (>= v0.11.0))
+  (dune (>= 1.8.0))
+  (ocaml-compiler-libs (>= v0.11.0))
+  (ocaml-migrate-parsetree (>= 1.0.9))
+  (ppx_derivers (>= 1.0))
+  (cinaps :with-test)
+  ppx_jane
+  base_quickcheck
+  expect_test_helpers_kernel
+  (stdio (>= v0.11.0))))
+
+(package
  (name astlib_first_draft)
  (synopsis "Compatibility layer for OCaml compiler AST")
  (description "Provides types for the OCaml compiler AST, along with versioned
