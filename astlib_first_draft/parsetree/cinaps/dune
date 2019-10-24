@@ -1,5 +1,0 @@
-(library
- (name astlib_first_draft_parsetree_cinaps)
- (public_name astlib_first_draft.parsetree_cinaps)
- (libraries astlib_first_draft.cinaps astlib_first_draft.parsetree_types)
- (flags (:standard -open Ocaml_shadow -safe-string)))

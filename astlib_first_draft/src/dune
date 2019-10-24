@@ -1,9 +1,0 @@
-(library
- (name astlib_first_draft)
- (public_name astlib_first_draft)
- (libraries astlib_first_draft.ast astlib_first_draft.parsetree)
- (flags (:standard -open Ocaml_shadow -safe-string)))
-
-(cinaps
- (files *.ml *.mli)
- (libraries astlib_first_draft.src_cinaps))
