@@ -1,9 +1,8 @@
+open Stdppx
+
 module Helpers = struct
   module Option = struct
-    let bind option ~f =
-      match option with
-      | None -> None
-      | Some x -> f x
+    let bind = Option.bind
   end
 end
 

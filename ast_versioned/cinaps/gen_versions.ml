@@ -1,27 +1,9 @@
 open StdLabels
 
 module Render (Config : sig val internal : bool end) = struct
-  let rec string_of_ty ty =
-    match (ty : Astlib.Grammar.ty) with
-    | Var var -> Ml.tvar var
-    | Name name -> if Config.internal then "Node.t" else Ml.module_name name ^ ".t"
-    | Bool -> "bool"
-    | Char -> "char"
-    | Int -> "int"
-    | String -> "string"
-    | Location -> "Astlib.Location.t"
-    | Loc ty -> string_of_ty ty ^ " Astlib.Loc.t"
-    | List ty -> string_of_ty ty ^ " list"
-    | Option ty -> string_of_ty ty ^ " option"
-    | Tuple tuple -> string_of_tuple_type tuple
-    | Instance (poly, args) ->
-      Ml.poly_inst (poly ^ ".t") ~args:(List.map args ~f:(string_of_ty))
-
-  and string_of_tuple_type ?(parens = true) tuple =
-    Printf.sprintf "%s%s%s"
-      (if parens then "(" else "")
-      (String.concat ~sep:" * " (List.map tuple ~f:string_of_ty))
-      (if parens then ")" else "")
+  let string_of_ty ty = Grammar.string_of_ty ~internal:Config.internal ty
+  let string_of_tuple_type ?(parens = true) tuple =
+    Grammar.string_of_tuple_type ~internal:Config.internal ~parens tuple
 
   let print_record_type record =
     Ml.print_record_type record ~f:string_of_ty

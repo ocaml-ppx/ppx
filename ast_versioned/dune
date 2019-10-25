@@ -1,9 +1,7 @@
 (library
  (name ppx_ast_versioned)
  (public_name ppx.ast_versioned)
- (libraries
-  astlib
-  ppx_ast)
+ (libraries astlib ppx_ast stdppx)
  (flags (:standard -safe-string)))
 
 (cinaps

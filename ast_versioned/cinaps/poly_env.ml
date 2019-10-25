@@ -59,6 +59,26 @@ let rec subst_ty ty ~env : Astlib.Grammar.ty =
 
 and subst_tuple tuple ~env = List.map tuple ~f:(subst_ty ~env)
 
+let subst_fields fields ~env =
+  List.map fields ~f:(fun (name, ty) -> (name, subst_ty ~env ty))
+
+let subst_clause ~env clause =
+  let open Astlib.Grammar in
+  match clause with
+  | Empty -> Empty
+  | Tuple tyl -> Tuple (subst_tuple ~env tyl)
+  | Record fields -> Record (subst_fields ~env fields)
+
+let subst_variants variants ~env =
+  List.map variants ~f:(fun (cname, clause) -> (cname, subst_clause ~env clause))
+
+let subst_decl decl ~env =
+  let open Astlib.Grammar in
+  match decl with
+  | Alias ty -> Alias (subst_ty ~env ty)
+  | Record fields -> Record (subst_fields ~env fields)
+  | Variant variants -> Variant (subst_variants ~env variants)
+
 let rec ty_instances ty =
   match (ty : Astlib.Grammar.ty) with
   | Var _ | Name _ | Bool | Char | Int | String | Location -> []
