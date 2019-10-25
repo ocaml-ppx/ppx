@@ -19,6 +19,16 @@ let tvar string = "'" ^ id string
 let module_name string = String.capitalize_ascii (raw_id string)
 let tag string = String.capitalize_ascii (raw_id string)
 
+let list_lit elms =
+  Printf.sprintf "[%s]" (String.concat ~sep:"; " elms)
+
+let tuple elms =
+  Printf.sprintf "(%s)" (String.concat ~sep:", " elms)
+
+let arrow_type types = String.concat ~sep:" -> " types
+
+let tuple_type types = String.concat ~sep:" * " types
+
 let dotted_list ~id list =
   let len = List.length list in
   List.mapi list ~f:(fun i string ->
@@ -116,3 +126,47 @@ let print_arrow list ~f return =
 
 let print_labelled_arrow alist ~f return =
   print_arrow alist ~f:(fun (label, x) -> id label ^ ":" ^ f x) return
+
+let class_params = function
+  | [] -> ""
+  | params ->
+    let str_params = String.concat ~sep:", " params in
+    Printf.sprintf "[%s] " str_params
+
+let virtual_qualifier virtual_ =
+  if virtual_ then "virtual " else ""
+
+let define_class ?(virtual_=false) ?(params=[]) name f =
+  Print.println "class %s%s%s =" (virtual_qualifier virtual_) (class_params params) name;
+  Print.indented f
+
+let declare_class ?(virtual_=false) ?(params=[]) name f =
+  Print.println "class %s%s%s :" (virtual_qualifier virtual_) (class_params params) name;
+  Print.indented f
+
+let define_object ?(bind_self=false) f =
+  let self = if bind_self then " (self)" else "" in
+  Print.println "object%s" self;
+  Print.indented f;
+  Print.println "end"
+
+let declare_object f =
+  define_object ~bind_self:false f
+
+let define_method ?signature name f =
+  let signature =
+    match signature with
+    | None -> ""
+    | Some s -> Printf.sprintf " : %s " s
+  in
+  Print.println "method %s%s =" name signature;
+  Print.indented f
+
+let declare_method ?(virtual_=false) ~name ~signature () =
+  let qualifier = if virtual_ then "virtual " else "" in
+  Print.println "method %s%s : %s" qualifier name signature
+
+let define_anon_fun ~args f =
+  let args_str = String.concat ~sep:" " args in
+  Print.println "fun %s ->" args_str;
+  Print.indented f

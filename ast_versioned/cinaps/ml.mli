@@ -3,6 +3,12 @@ val tvar : string -> string
 val tag : string -> string
 val module_name : string -> string
 
+val list_lit : string list -> string
+val tuple : string list -> string
+
+val arrow_type : string list -> string
+val tuple_type : string list -> string
+
 val poly_type : string -> tvars:string list -> string
 val poly_inst : string -> args:string list -> string
 
@@ -39,3 +45,16 @@ val declare_type : ?tvars:string list -> string -> element -> unit
 val declare_val : string -> element -> unit
 
 val print_variant_type : (string * 'a) list -> f:('a -> element) -> unit
+
+val declare_class :
+  ?virtual_: bool -> ?params: string list -> string -> (unit -> unit) -> unit
+val define_class :
+  ?virtual_: bool -> ?params: string list -> string -> (unit -> unit) -> unit
+
+val declare_object : (unit -> unit) -> unit
+val define_object : ?bind_self: bool -> (unit -> unit) -> unit
+
+val declare_method : ?virtual_: bool -> name: string -> signature: string -> unit -> unit
+val define_method : ?signature: string -> string -> (unit -> unit) -> unit
+
+val define_anon_fun : args: string list -> (unit -> unit) -> unit
