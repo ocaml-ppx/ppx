@@ -13,14 +13,14 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_lident :
+    val lident :
       string
       -> t
-    val create_ldot :
+    val ldot :
       Longident.t
       -> string
       -> t
-    val create_lapply :
+    val lapply :
       Longident.t
       -> Longident.t
       -> t
@@ -47,8 +47,8 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_nonrecursive : t
-    val create_recursive : t
+    val nonrecursive : t
+    val recursive : t
   end
 
   and Direction_flag : sig
@@ -61,8 +61,8 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_upto : t
-    val create_downto : t
+    val upto : t
+    val downto_ : t
   end
 
   and Private_flag : sig
@@ -75,8 +75,8 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_private : t
-    val create_public : t
+    val private_ : t
+    val public : t
   end
 
   and Mutable_flag : sig
@@ -89,8 +89,8 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_immutable : t
-    val create_mutable : t
+    val immutable : t
+    val mutable_ : t
   end
 
   and Virtual_flag : sig
@@ -103,8 +103,8 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_virtual : t
-    val create_concrete : t
+    val virtual_ : t
+    val concrete : t
   end
 
   and Override_flag : sig
@@ -117,8 +117,8 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_override : t
-    val create_fresh : t
+    val override : t
+    val fresh : t
   end
 
   and Closed_flag : sig
@@ -131,8 +131,8 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_closed : t
-    val create_open : t
+    val closed : t
+    val open_ : t
   end
 
   and Label : sig
@@ -157,11 +157,11 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_nolabel : t
-    val create_labelled :
+    val nolabel : t
+    val labelled :
       string
       -> t
-    val create_optional :
+    val optional :
       string
       -> t
   end
@@ -177,9 +177,9 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_covariant : t
-    val create_contravariant : t
-    val create_invariant : t
+    val covariant : t
+    val contravariant : t
+    val invariant : t
   end
 
   and Constant : sig
@@ -194,18 +194,18 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pconst_integer :
+    val pconst_integer :
       string
       -> char option
       -> t
-    val create_pconst_char :
+    val pconst_char :
       char
       -> t
-    val create_pconst_string :
+    val pconst_string :
       string
       -> string option
       -> t
-    val create_pconst_float :
+    val pconst_float :
       string
       -> char option
       -> t
@@ -256,16 +256,16 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pstr :
+    val pstr :
       Structure.t
       -> t
-    val create_psig :
+    val psig :
       Signature.t
       -> t
-    val create_ptyp :
+    val ptyp :
       Core_type.t
       -> t
-    val create_ppat :
+    val ppat :
       Pattern.t
       -> Expression.t option
       -> t
@@ -310,47 +310,47 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_ptyp_any : t
-    val create_ptyp_var :
+    val ptyp_any : t
+    val ptyp_var :
       string
       -> t
-    val create_ptyp_arrow :
+    val ptyp_arrow :
       Arg_label.t
       -> Core_type.t
       -> Core_type.t
       -> t
-    val create_ptyp_tuple :
+    val ptyp_tuple :
       Core_type.t list
       -> t
-    val create_ptyp_constr :
+    val ptyp_constr :
       Longident_loc.t
       -> Core_type.t list
       -> t
-    val create_ptyp_object :
+    val ptyp_object :
       Object_field.t list
       -> Closed_flag.t
       -> t
-    val create_ptyp_class :
+    val ptyp_class :
       Longident_loc.t
       -> Core_type.t list
       -> t
-    val create_ptyp_alias :
+    val ptyp_alias :
       Core_type.t
       -> string
       -> t
-    val create_ptyp_variant :
+    val ptyp_variant :
       Row_field.t list
       -> Closed_flag.t
       -> Label.t list option
       -> t
-    val create_ptyp_poly :
+    val ptyp_poly :
       string Location.loc list
       -> Core_type.t
       -> t
-    val create_ptyp_package :
+    val ptyp_package :
       Package_type.t
       -> t
-    val create_ptyp_extension :
+    val ptyp_extension :
       Extension.t
       -> t
   end
@@ -376,13 +376,13 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_rtag :
+    val rtag :
       Label.t Location.loc
       -> Attributes.t
       -> bool
       -> Core_type.t list
       -> t
-    val create_rinherit :
+    val rinherit :
       Core_type.t
       -> t
   end
@@ -397,12 +397,12 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_otag :
+    val otag :
       Label.t Location.loc
       -> Attributes.t
       -> Core_type.t
       -> t
-    val create_oinherit :
+    val oinherit :
       Core_type.t
       -> t
   end
@@ -452,63 +452,63 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_ppat_any : t
-    val create_ppat_var :
+    val ppat_any : t
+    val ppat_var :
       string Location.loc
       -> t
-    val create_ppat_alias :
+    val ppat_alias :
       Pattern.t
       -> string Location.loc
       -> t
-    val create_ppat_constant :
+    val ppat_constant :
       Constant.t
       -> t
-    val create_ppat_interval :
+    val ppat_interval :
       Constant.t
       -> Constant.t
       -> t
-    val create_ppat_tuple :
+    val ppat_tuple :
       Pattern.t list
       -> t
-    val create_ppat_construct :
+    val ppat_construct :
       Longident_loc.t
       -> Pattern.t option
       -> t
-    val create_ppat_variant :
+    val ppat_variant :
       Label.t
       -> Pattern.t option
       -> t
-    val create_ppat_record :
+    val ppat_record :
       (Longident_loc.t * Pattern.t) list
       -> Closed_flag.t
       -> t
-    val create_ppat_array :
+    val ppat_array :
       Pattern.t list
       -> t
-    val create_ppat_or :
+    val ppat_or :
       Pattern.t
       -> Pattern.t
       -> t
-    val create_ppat_constraint :
+    val ppat_constraint :
       Pattern.t
       -> Core_type.t
       -> t
-    val create_ppat_type :
+    val ppat_type :
       Longident_loc.t
       -> t
-    val create_ppat_lazy :
+    val ppat_lazy :
       Pattern.t
       -> t
-    val create_ppat_unpack :
+    val ppat_unpack :
       string Location.loc
       -> t
-    val create_ppat_exception :
+    val ppat_exception :
       Pattern.t
       -> t
-    val create_ppat_extension :
+    val ppat_extension :
       Extension.t
       -> t
-    val create_ppat_open :
+    val ppat_open :
       Longident_loc.t
       -> Pattern.t
       -> t
@@ -577,146 +577,146 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pexp_ident :
+    val pexp_ident :
       Longident_loc.t
       -> t
-    val create_pexp_constant :
+    val pexp_constant :
       Constant.t
       -> t
-    val create_pexp_let :
+    val pexp_let :
       Rec_flag.t
       -> Value_binding.t list
       -> Expression.t
       -> t
-    val create_pexp_function :
+    val pexp_function :
       Case.t list
       -> t
-    val create_pexp_fun :
+    val pexp_fun :
       Arg_label.t
       -> Expression.t option
       -> Pattern.t
       -> Expression.t
       -> t
-    val create_pexp_apply :
+    val pexp_apply :
       Expression.t
       -> (Arg_label.t * Expression.t) list
       -> t
-    val create_pexp_match :
+    val pexp_match :
       Expression.t
       -> Case.t list
       -> t
-    val create_pexp_try :
+    val pexp_try :
       Expression.t
       -> Case.t list
       -> t
-    val create_pexp_tuple :
+    val pexp_tuple :
       Expression.t list
       -> t
-    val create_pexp_construct :
+    val pexp_construct :
       Longident_loc.t
       -> Expression.t option
       -> t
-    val create_pexp_variant :
+    val pexp_variant :
       Label.t
       -> Expression.t option
       -> t
-    val create_pexp_record :
+    val pexp_record :
       (Longident_loc.t * Expression.t) list
       -> Expression.t option
       -> t
-    val create_pexp_field :
+    val pexp_field :
       Expression.t
       -> Longident_loc.t
       -> t
-    val create_pexp_setfield :
+    val pexp_setfield :
       Expression.t
       -> Longident_loc.t
       -> Expression.t
       -> t
-    val create_pexp_array :
+    val pexp_array :
       Expression.t list
       -> t
-    val create_pexp_ifthenelse :
+    val pexp_ifthenelse :
       Expression.t
       -> Expression.t
       -> Expression.t option
       -> t
-    val create_pexp_sequence :
+    val pexp_sequence :
       Expression.t
       -> Expression.t
       -> t
-    val create_pexp_while :
+    val pexp_while :
       Expression.t
       -> Expression.t
       -> t
-    val create_pexp_for :
+    val pexp_for :
       Pattern.t
       -> Expression.t
       -> Expression.t
       -> Direction_flag.t
       -> Expression.t
       -> t
-    val create_pexp_constraint :
+    val pexp_constraint :
       Expression.t
       -> Core_type.t
       -> t
-    val create_pexp_coerce :
+    val pexp_coerce :
       Expression.t
       -> Core_type.t option
       -> Core_type.t
       -> t
-    val create_pexp_send :
+    val pexp_send :
       Expression.t
       -> Label.t Location.loc
       -> t
-    val create_pexp_new :
+    val pexp_new :
       Longident_loc.t
       -> t
-    val create_pexp_setinstvar :
+    val pexp_setinstvar :
       Label.t Location.loc
       -> Expression.t
       -> t
-    val create_pexp_override :
+    val pexp_override :
       (Label.t Location.loc * Expression.t) list
       -> t
-    val create_pexp_letmodule :
+    val pexp_letmodule :
       string Location.loc
       -> Module_expr.t
       -> Expression.t
       -> t
-    val create_pexp_letexception :
+    val pexp_letexception :
       Extension_constructor.t
       -> Expression.t
       -> t
-    val create_pexp_assert :
+    val pexp_assert :
       Expression.t
       -> t
-    val create_pexp_lazy :
+    val pexp_lazy :
       Expression.t
       -> t
-    val create_pexp_poly :
+    val pexp_poly :
       Expression.t
       -> Core_type.t option
       -> t
-    val create_pexp_object :
+    val pexp_object :
       Class_structure.t
       -> t
-    val create_pexp_newtype :
+    val pexp_newtype :
       string Location.loc
       -> Expression.t
       -> t
-    val create_pexp_pack :
+    val pexp_pack :
       Module_expr.t
       -> t
-    val create_pexp_open :
+    val pexp_open :
       Override_flag.t
       -> Longident_loc.t
       -> Expression.t
       -> t
-    val create_pexp_extension :
+    val pexp_extension :
       Extension.t
       -> t
-    val create_pexp_unreachable : t
+    val pexp_unreachable : t
   end
 
   and Case : sig
@@ -802,14 +802,14 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_ptype_abstract : t
-    val create_ptype_variant :
+    val ptype_abstract : t
+    val ptype_variant :
       Constructor_declaration.t list
       -> t
-    val create_ptype_record :
+    val ptype_record :
       Label_declaration.t list
       -> t
-    val create_ptype_open : t
+    val ptype_open : t
   end
 
   and Label_declaration : sig
@@ -868,10 +868,10 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pcstr_tuple :
+    val pcstr_tuple :
       Core_type.t list
       -> t
-    val create_pcstr_record :
+    val pcstr_record :
       Label_declaration.t list
       -> t
   end
@@ -930,11 +930,11 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pext_decl :
+    val pext_decl :
       Constructor_arguments.t
       -> Core_type.t option
       -> t
-    val create_pext_rebind :
+    val pext_rebind :
       Longident_loc.t
       -> t
   end
@@ -971,22 +971,22 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pcty_constr :
+    val pcty_constr :
       Longident_loc.t
       -> Core_type.t list
       -> t
-    val create_pcty_signature :
+    val pcty_signature :
       Class_signature.t
       -> t
-    val create_pcty_arrow :
+    val pcty_arrow :
       Arg_label.t
       -> Core_type.t
       -> Class_type.t
       -> t
-    val create_pcty_extension :
+    val pcty_extension :
       Extension.t
       -> t
-    val create_pcty_open :
+    val pcty_open :
       Override_flag.t
       -> Longident_loc.t
       -> Class_type.t
@@ -1043,22 +1043,22 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pctf_inherit :
+    val pctf_inherit :
       Class_type.t
       -> t
-    val create_pctf_val :
+    val pctf_val :
       (Label.t Location.loc * Mutable_flag.t * Virtual_flag.t * Core_type.t)
       -> t
-    val create_pctf_method :
+    val pctf_method :
       (Label.t Location.loc * Private_flag.t * Virtual_flag.t * Core_type.t)
       -> t
-    val create_pctf_constraint :
+    val pctf_constraint :
       (Core_type.t * Core_type.t)
       -> t
-    val create_pctf_attribute :
+    val pctf_attribute :
       Attribute.t
       -> t
-    val create_pctf_extension :
+    val pctf_extension :
       Extension.t
       -> t
   end
@@ -1157,36 +1157,36 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pcl_constr :
+    val pcl_constr :
       Longident_loc.t
       -> Core_type.t list
       -> t
-    val create_pcl_structure :
+    val pcl_structure :
       Class_structure.t
       -> t
-    val create_pcl_fun :
+    val pcl_fun :
       Arg_label.t
       -> Expression.t option
       -> Pattern.t
       -> Class_expr.t
       -> t
-    val create_pcl_apply :
+    val pcl_apply :
       Class_expr.t
       -> (Arg_label.t * Expression.t) list
       -> t
-    val create_pcl_let :
+    val pcl_let :
       Rec_flag.t
       -> Value_binding.t list
       -> Class_expr.t
       -> t
-    val create_pcl_constraint :
+    val pcl_constraint :
       Class_expr.t
       -> Class_type.t
       -> t
-    val create_pcl_extension :
+    val pcl_extension :
       Extension.t
       -> t
-    val create_pcl_open :
+    val pcl_open :
       Override_flag.t
       -> Longident_loc.t
       -> Class_expr.t
@@ -1244,27 +1244,27 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pcf_inherit :
+    val pcf_inherit :
       Override_flag.t
       -> Class_expr.t
       -> string Location.loc option
       -> t
-    val create_pcf_val :
+    val pcf_val :
       (Label.t Location.loc * Mutable_flag.t * Class_field_kind.t)
       -> t
-    val create_pcf_method :
+    val pcf_method :
       (Label.t Location.loc * Private_flag.t * Class_field_kind.t)
       -> t
-    val create_pcf_constraint :
+    val pcf_constraint :
       (Core_type.t * Core_type.t)
       -> t
-    val create_pcf_initializer :
+    val pcf_initializer :
       Expression.t
       -> t
-    val create_pcf_attribute :
+    val pcf_attribute :
       Attribute.t
       -> t
-    val create_pcf_extension :
+    val pcf_extension :
       Extension.t
       -> t
   end
@@ -1279,10 +1279,10 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_cfk_virtual :
+    val cfk_virtual :
       Core_type.t
       -> t
-    val create_cfk_concrete :
+    val cfk_concrete :
       Override_flag.t
       -> Expression.t
       -> t
@@ -1333,28 +1333,28 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pmty_ident :
+    val pmty_ident :
       Longident_loc.t
       -> t
-    val create_pmty_signature :
+    val pmty_signature :
       Signature.t
       -> t
-    val create_pmty_functor :
+    val pmty_functor :
       string Location.loc
       -> Module_type.t option
       -> Module_type.t
       -> t
-    val create_pmty_with :
+    val pmty_with :
       Module_type.t
       -> With_constraint.t list
       -> t
-    val create_pmty_typeof :
+    val pmty_typeof :
       Module_expr.t
       -> t
-    val create_pmty_extension :
+    val pmty_extension :
       Extension.t
       -> t
-    val create_pmty_alias :
+    val pmty_alias :
       Longident_loc.t
       -> t
   end
@@ -1408,44 +1408,44 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_psig_value :
+    val psig_value :
       Value_description.t
       -> t
-    val create_psig_type :
+    val psig_type :
       Rec_flag.t
       -> Type_declaration.t list
       -> t
-    val create_psig_typext :
+    val psig_typext :
       Type_extension.t
       -> t
-    val create_psig_exception :
+    val psig_exception :
       Extension_constructor.t
       -> t
-    val create_psig_module :
+    val psig_module :
       Module_declaration.t
       -> t
-    val create_psig_recmodule :
+    val psig_recmodule :
       Module_declaration.t list
       -> t
-    val create_psig_modtype :
+    val psig_modtype :
       Module_type_declaration.t
       -> t
-    val create_psig_open :
+    val psig_open :
       Open_description.t
       -> t
-    val create_psig_include :
+    val psig_include :
       Include_description.t
       -> t
-    val create_psig_class :
+    val psig_class :
       Class_description.t list
       -> t
-    val create_psig_class_type :
+    val psig_class_type :
       Class_type_declaration.t list
       -> t
-    val create_psig_attribute :
+    val psig_attribute :
       Attribute.t
       -> t
-    val create_psig_extension :
+    val psig_extension :
       Extension.t
       -> Attributes.t
       -> t
@@ -1576,19 +1576,19 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pwith_type :
+    val pwith_type :
       Longident_loc.t
       -> Type_declaration.t
       -> t
-    val create_pwith_module :
+    val pwith_module :
       Longident_loc.t
       -> Longident_loc.t
       -> t
-    val create_pwith_typesubst :
+    val pwith_typesubst :
       Longident_loc.t
       -> Type_declaration.t
       -> t
-    val create_pwith_modsubst :
+    val pwith_modsubst :
       Longident_loc.t
       -> Longident_loc.t
       -> t
@@ -1628,29 +1628,29 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pmod_ident :
+    val pmod_ident :
       Longident_loc.t
       -> t
-    val create_pmod_structure :
+    val pmod_structure :
       Structure.t
       -> t
-    val create_pmod_functor :
+    val pmod_functor :
       string Location.loc
       -> Module_type.t option
       -> Module_expr.t
       -> t
-    val create_pmod_apply :
+    val pmod_apply :
       Module_expr.t
       -> Module_expr.t
       -> t
-    val create_pmod_constraint :
+    val pmod_constraint :
       Module_expr.t
       -> Module_type.t
       -> t
-    val create_pmod_unpack :
+    val pmod_unpack :
       Expression.t
       -> t
-    val create_pmod_extension :
+    val pmod_extension :
       Extension.t
       -> t
   end
@@ -1706,52 +1706,52 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pstr_eval :
+    val pstr_eval :
       Expression.t
       -> Attributes.t
       -> t
-    val create_pstr_value :
+    val pstr_value :
       Rec_flag.t
       -> Value_binding.t list
       -> t
-    val create_pstr_primitive :
+    val pstr_primitive :
       Value_description.t
       -> t
-    val create_pstr_type :
+    val pstr_type :
       Rec_flag.t
       -> Type_declaration.t list
       -> t
-    val create_pstr_typext :
+    val pstr_typext :
       Type_extension.t
       -> t
-    val create_pstr_exception :
+    val pstr_exception :
       Extension_constructor.t
       -> t
-    val create_pstr_module :
+    val pstr_module :
       Module_binding.t
       -> t
-    val create_pstr_recmodule :
+    val pstr_recmodule :
       Module_binding.t list
       -> t
-    val create_pstr_modtype :
+    val pstr_modtype :
       Module_type_declaration.t
       -> t
-    val create_pstr_open :
+    val pstr_open :
       Open_description.t
       -> t
-    val create_pstr_class :
+    val pstr_class :
       Class_declaration.t list
       -> t
-    val create_pstr_class_type :
+    val pstr_class_type :
       Class_type_declaration.t list
       -> t
-    val create_pstr_include :
+    val pstr_include :
       Include_declaration.t
       -> t
-    val create_pstr_attribute :
+    val pstr_attribute :
       Attribute.t
       -> t
-    val create_pstr_extension :
+    val pstr_extension :
       Extension.t
       -> Attributes.t
       -> t
@@ -1809,10 +1809,10 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_ptop_def :
+    val ptop_def :
       Structure.t
       -> t
-    val create_ptop_dir :
+    val ptop_dir :
       string
       -> Directive_argument.t
       -> t
@@ -1831,18 +1831,18 @@ module V4_07 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pdir_none : t
-    val create_pdir_string :
+    val pdir_none : t
+    val pdir_string :
       string
       -> t
-    val create_pdir_int :
+    val pdir_int :
       string
       -> char option
       -> t
-    val create_pdir_ident :
+    val pdir_ident :
       Longident.t
       -> t
-    val create_pdir_bool :
+    val pdir_bool :
       bool
       -> t
   end
@@ -1860,14 +1860,14 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_lident :
+    val lident :
       string
       -> t
-    val create_ldot :
+    val ldot :
       Longident.t
       -> string
       -> t
-    val create_lapply :
+    val lapply :
       Longident.t
       -> Longident.t
       -> t
@@ -1894,8 +1894,8 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_nonrecursive : t
-    val create_recursive : t
+    val nonrecursive : t
+    val recursive : t
   end
 
   and Direction_flag : sig
@@ -1908,8 +1908,8 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_upto : t
-    val create_downto : t
+    val upto : t
+    val downto_ : t
   end
 
   and Private_flag : sig
@@ -1922,8 +1922,8 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_private : t
-    val create_public : t
+    val private_ : t
+    val public : t
   end
 
   and Mutable_flag : sig
@@ -1936,8 +1936,8 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_immutable : t
-    val create_mutable : t
+    val immutable : t
+    val mutable_ : t
   end
 
   and Virtual_flag : sig
@@ -1950,8 +1950,8 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_virtual : t
-    val create_concrete : t
+    val virtual_ : t
+    val concrete : t
   end
 
   and Override_flag : sig
@@ -1964,8 +1964,8 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_override : t
-    val create_fresh : t
+    val override : t
+    val fresh : t
   end
 
   and Closed_flag : sig
@@ -1978,8 +1978,8 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_closed : t
-    val create_open : t
+    val closed : t
+    val open_ : t
   end
 
   and Label : sig
@@ -2004,11 +2004,11 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_nolabel : t
-    val create_labelled :
+    val nolabel : t
+    val labelled :
       string
       -> t
-    val create_optional :
+    val optional :
       string
       -> t
   end
@@ -2024,9 +2024,9 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_covariant : t
-    val create_contravariant : t
-    val create_invariant : t
+    val covariant : t
+    val contravariant : t
+    val invariant : t
   end
 
   and Constant : sig
@@ -2041,18 +2041,18 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pconst_integer :
+    val pconst_integer :
       string
       -> char option
       -> t
-    val create_pconst_char :
+    val pconst_char :
       char
       -> t
-    val create_pconst_string :
+    val pconst_string :
       string
       -> string option
       -> t
-    val create_pconst_float :
+    val pconst_float :
       string
       -> char option
       -> t
@@ -2103,16 +2103,16 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pstr :
+    val pstr :
       Structure.t
       -> t
-    val create_psig :
+    val psig :
       Signature.t
       -> t
-    val create_ptyp :
+    val ptyp :
       Core_type.t
       -> t
-    val create_ppat :
+    val ppat :
       Pattern.t
       -> Expression.t option
       -> t
@@ -2157,47 +2157,47 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_ptyp_any : t
-    val create_ptyp_var :
+    val ptyp_any : t
+    val ptyp_var :
       string
       -> t
-    val create_ptyp_arrow :
+    val ptyp_arrow :
       Arg_label.t
       -> Core_type.t
       -> Core_type.t
       -> t
-    val create_ptyp_tuple :
+    val ptyp_tuple :
       Core_type.t list
       -> t
-    val create_ptyp_constr :
+    val ptyp_constr :
       Longident_loc.t
       -> Core_type.t list
       -> t
-    val create_ptyp_object :
+    val ptyp_object :
       Object_field.t list
       -> Closed_flag.t
       -> t
-    val create_ptyp_class :
+    val ptyp_class :
       Longident_loc.t
       -> Core_type.t list
       -> t
-    val create_ptyp_alias :
+    val ptyp_alias :
       Core_type.t
       -> string
       -> t
-    val create_ptyp_variant :
+    val ptyp_variant :
       Row_field.t list
       -> Closed_flag.t
       -> Label.t list option
       -> t
-    val create_ptyp_poly :
+    val ptyp_poly :
       string Location.loc list
       -> Core_type.t
       -> t
-    val create_ptyp_package :
+    val ptyp_package :
       Package_type.t
       -> t
-    val create_ptyp_extension :
+    val ptyp_extension :
       Extension.t
       -> t
   end
@@ -2223,13 +2223,13 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_rtag :
+    val rtag :
       Label.t Location.loc
       -> Attributes.t
       -> bool
       -> Core_type.t list
       -> t
-    val create_rinherit :
+    val rinherit :
       Core_type.t
       -> t
   end
@@ -2244,12 +2244,12 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_otag :
+    val otag :
       Label.t Location.loc
       -> Attributes.t
       -> Core_type.t
       -> t
-    val create_oinherit :
+    val oinherit :
       Core_type.t
       -> t
   end
@@ -2299,63 +2299,63 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_ppat_any : t
-    val create_ppat_var :
+    val ppat_any : t
+    val ppat_var :
       string Location.loc
       -> t
-    val create_ppat_alias :
+    val ppat_alias :
       Pattern.t
       -> string Location.loc
       -> t
-    val create_ppat_constant :
+    val ppat_constant :
       Constant.t
       -> t
-    val create_ppat_interval :
+    val ppat_interval :
       Constant.t
       -> Constant.t
       -> t
-    val create_ppat_tuple :
+    val ppat_tuple :
       Pattern.t list
       -> t
-    val create_ppat_construct :
+    val ppat_construct :
       Longident_loc.t
       -> Pattern.t option
       -> t
-    val create_ppat_variant :
+    val ppat_variant :
       Label.t
       -> Pattern.t option
       -> t
-    val create_ppat_record :
+    val ppat_record :
       (Longident_loc.t * Pattern.t) list
       -> Closed_flag.t
       -> t
-    val create_ppat_array :
+    val ppat_array :
       Pattern.t list
       -> t
-    val create_ppat_or :
+    val ppat_or :
       Pattern.t
       -> Pattern.t
       -> t
-    val create_ppat_constraint :
+    val ppat_constraint :
       Pattern.t
       -> Core_type.t
       -> t
-    val create_ppat_type :
+    val ppat_type :
       Longident_loc.t
       -> t
-    val create_ppat_lazy :
+    val ppat_lazy :
       Pattern.t
       -> t
-    val create_ppat_unpack :
+    val ppat_unpack :
       string Location.loc
       -> t
-    val create_ppat_exception :
+    val ppat_exception :
       Pattern.t
       -> t
-    val create_ppat_extension :
+    val ppat_extension :
       Extension.t
       -> t
-    val create_ppat_open :
+    val ppat_open :
       Longident_loc.t
       -> Pattern.t
       -> t
@@ -2424,146 +2424,146 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pexp_ident :
+    val pexp_ident :
       Longident_loc.t
       -> t
-    val create_pexp_constant :
+    val pexp_constant :
       Constant.t
       -> t
-    val create_pexp_let :
+    val pexp_let :
       Rec_flag.t
       -> Value_binding.t list
       -> Expression.t
       -> t
-    val create_pexp_function :
+    val pexp_function :
       Case.t list
       -> t
-    val create_pexp_fun :
+    val pexp_fun :
       Arg_label.t
       -> Expression.t option
       -> Pattern.t
       -> Expression.t
       -> t
-    val create_pexp_apply :
+    val pexp_apply :
       Expression.t
       -> (Arg_label.t * Expression.t) list
       -> t
-    val create_pexp_match :
+    val pexp_match :
       Expression.t
       -> Case.t list
       -> t
-    val create_pexp_try :
+    val pexp_try :
       Expression.t
       -> Case.t list
       -> t
-    val create_pexp_tuple :
+    val pexp_tuple :
       Expression.t list
       -> t
-    val create_pexp_construct :
+    val pexp_construct :
       Longident_loc.t
       -> Expression.t option
       -> t
-    val create_pexp_variant :
+    val pexp_variant :
       Label.t
       -> Expression.t option
       -> t
-    val create_pexp_record :
+    val pexp_record :
       (Longident_loc.t * Expression.t) list
       -> Expression.t option
       -> t
-    val create_pexp_field :
+    val pexp_field :
       Expression.t
       -> Longident_loc.t
       -> t
-    val create_pexp_setfield :
+    val pexp_setfield :
       Expression.t
       -> Longident_loc.t
       -> Expression.t
       -> t
-    val create_pexp_array :
+    val pexp_array :
       Expression.t list
       -> t
-    val create_pexp_ifthenelse :
+    val pexp_ifthenelse :
       Expression.t
       -> Expression.t
       -> Expression.t option
       -> t
-    val create_pexp_sequence :
+    val pexp_sequence :
       Expression.t
       -> Expression.t
       -> t
-    val create_pexp_while :
+    val pexp_while :
       Expression.t
       -> Expression.t
       -> t
-    val create_pexp_for :
+    val pexp_for :
       Pattern.t
       -> Expression.t
       -> Expression.t
       -> Direction_flag.t
       -> Expression.t
       -> t
-    val create_pexp_constraint :
+    val pexp_constraint :
       Expression.t
       -> Core_type.t
       -> t
-    val create_pexp_coerce :
+    val pexp_coerce :
       Expression.t
       -> Core_type.t option
       -> Core_type.t
       -> t
-    val create_pexp_send :
+    val pexp_send :
       Expression.t
       -> Label.t Location.loc
       -> t
-    val create_pexp_new :
+    val pexp_new :
       Longident_loc.t
       -> t
-    val create_pexp_setinstvar :
+    val pexp_setinstvar :
       Label.t Location.loc
       -> Expression.t
       -> t
-    val create_pexp_override :
+    val pexp_override :
       (Label.t Location.loc * Expression.t) list
       -> t
-    val create_pexp_letmodule :
+    val pexp_letmodule :
       string Location.loc
       -> Module_expr.t
       -> Expression.t
       -> t
-    val create_pexp_letexception :
+    val pexp_letexception :
       Extension_constructor.t
       -> Expression.t
       -> t
-    val create_pexp_assert :
+    val pexp_assert :
       Expression.t
       -> t
-    val create_pexp_lazy :
+    val pexp_lazy :
       Expression.t
       -> t
-    val create_pexp_poly :
+    val pexp_poly :
       Expression.t
       -> Core_type.t option
       -> t
-    val create_pexp_object :
+    val pexp_object :
       Class_structure.t
       -> t
-    val create_pexp_newtype :
+    val pexp_newtype :
       string Location.loc
       -> Expression.t
       -> t
-    val create_pexp_pack :
+    val pexp_pack :
       Module_expr.t
       -> t
-    val create_pexp_open :
+    val pexp_open :
       Override_flag.t
       -> Longident_loc.t
       -> Expression.t
       -> t
-    val create_pexp_extension :
+    val pexp_extension :
       Extension.t
       -> t
-    val create_pexp_unreachable : t
+    val pexp_unreachable : t
   end
 
   and Case : sig
@@ -2649,14 +2649,14 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_ptype_abstract : t
-    val create_ptype_variant :
+    val ptype_abstract : t
+    val ptype_variant :
       Constructor_declaration.t list
       -> t
-    val create_ptype_record :
+    val ptype_record :
       Label_declaration.t list
       -> t
-    val create_ptype_open : t
+    val ptype_open : t
   end
 
   and Label_declaration : sig
@@ -2715,10 +2715,10 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pcstr_tuple :
+    val pcstr_tuple :
       Core_type.t list
       -> t
-    val create_pcstr_record :
+    val pcstr_record :
       Label_declaration.t list
       -> t
   end
@@ -2777,11 +2777,11 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pext_decl :
+    val pext_decl :
       Constructor_arguments.t
       -> Core_type.t option
       -> t
-    val create_pext_rebind :
+    val pext_rebind :
       Longident_loc.t
       -> t
   end
@@ -2818,22 +2818,22 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pcty_constr :
+    val pcty_constr :
       Longident_loc.t
       -> Core_type.t list
       -> t
-    val create_pcty_signature :
+    val pcty_signature :
       Class_signature.t
       -> t
-    val create_pcty_arrow :
+    val pcty_arrow :
       Arg_label.t
       -> Core_type.t
       -> Class_type.t
       -> t
-    val create_pcty_extension :
+    val pcty_extension :
       Extension.t
       -> t
-    val create_pcty_open :
+    val pcty_open :
       Override_flag.t
       -> Longident_loc.t
       -> Class_type.t
@@ -2890,22 +2890,22 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pctf_inherit :
+    val pctf_inherit :
       Class_type.t
       -> t
-    val create_pctf_val :
+    val pctf_val :
       (Label.t Location.loc * Mutable_flag.t * Virtual_flag.t * Core_type.t)
       -> t
-    val create_pctf_method :
+    val pctf_method :
       (Label.t Location.loc * Private_flag.t * Virtual_flag.t * Core_type.t)
       -> t
-    val create_pctf_constraint :
+    val pctf_constraint :
       (Core_type.t * Core_type.t)
       -> t
-    val create_pctf_attribute :
+    val pctf_attribute :
       Attribute.t
       -> t
-    val create_pctf_extension :
+    val pctf_extension :
       Extension.t
       -> t
   end
@@ -3004,36 +3004,36 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pcl_constr :
+    val pcl_constr :
       Longident_loc.t
       -> Core_type.t list
       -> t
-    val create_pcl_structure :
+    val pcl_structure :
       Class_structure.t
       -> t
-    val create_pcl_fun :
+    val pcl_fun :
       Arg_label.t
       -> Expression.t option
       -> Pattern.t
       -> Class_expr.t
       -> t
-    val create_pcl_apply :
+    val pcl_apply :
       Class_expr.t
       -> (Arg_label.t * Expression.t) list
       -> t
-    val create_pcl_let :
+    val pcl_let :
       Rec_flag.t
       -> Value_binding.t list
       -> Class_expr.t
       -> t
-    val create_pcl_constraint :
+    val pcl_constraint :
       Class_expr.t
       -> Class_type.t
       -> t
-    val create_pcl_extension :
+    val pcl_extension :
       Extension.t
       -> t
-    val create_pcl_open :
+    val pcl_open :
       Override_flag.t
       -> Longident_loc.t
       -> Class_expr.t
@@ -3091,27 +3091,27 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pcf_inherit :
+    val pcf_inherit :
       Override_flag.t
       -> Class_expr.t
       -> string Location.loc option
       -> t
-    val create_pcf_val :
+    val pcf_val :
       (Label.t Location.loc * Mutable_flag.t * Class_field_kind.t)
       -> t
-    val create_pcf_method :
+    val pcf_method :
       (Label.t Location.loc * Private_flag.t * Class_field_kind.t)
       -> t
-    val create_pcf_constraint :
+    val pcf_constraint :
       (Core_type.t * Core_type.t)
       -> t
-    val create_pcf_initializer :
+    val pcf_initializer :
       Expression.t
       -> t
-    val create_pcf_attribute :
+    val pcf_attribute :
       Attribute.t
       -> t
-    val create_pcf_extension :
+    val pcf_extension :
       Extension.t
       -> t
   end
@@ -3126,10 +3126,10 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_cfk_virtual :
+    val cfk_virtual :
       Core_type.t
       -> t
-    val create_cfk_concrete :
+    val cfk_concrete :
       Override_flag.t
       -> Expression.t
       -> t
@@ -3180,28 +3180,28 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pmty_ident :
+    val pmty_ident :
       Longident_loc.t
       -> t
-    val create_pmty_signature :
+    val pmty_signature :
       Signature.t
       -> t
-    val create_pmty_functor :
+    val pmty_functor :
       string Location.loc
       -> Module_type.t option
       -> Module_type.t
       -> t
-    val create_pmty_with :
+    val pmty_with :
       Module_type.t
       -> With_constraint.t list
       -> t
-    val create_pmty_typeof :
+    val pmty_typeof :
       Module_expr.t
       -> t
-    val create_pmty_extension :
+    val pmty_extension :
       Extension.t
       -> t
-    val create_pmty_alias :
+    val pmty_alias :
       Longident_loc.t
       -> t
   end
@@ -3255,44 +3255,44 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_psig_value :
+    val psig_value :
       Value_description.t
       -> t
-    val create_psig_type :
+    val psig_type :
       Rec_flag.t
       -> Type_declaration.t list
       -> t
-    val create_psig_typext :
+    val psig_typext :
       Type_extension.t
       -> t
-    val create_psig_exception :
+    val psig_exception :
       Extension_constructor.t
       -> t
-    val create_psig_module :
+    val psig_module :
       Module_declaration.t
       -> t
-    val create_psig_recmodule :
+    val psig_recmodule :
       Module_declaration.t list
       -> t
-    val create_psig_modtype :
+    val psig_modtype :
       Module_type_declaration.t
       -> t
-    val create_psig_open :
+    val psig_open :
       Open_description.t
       -> t
-    val create_psig_include :
+    val psig_include :
       Include_description.t
       -> t
-    val create_psig_class :
+    val psig_class :
       Class_description.t list
       -> t
-    val create_psig_class_type :
+    val psig_class_type :
       Class_type_declaration.t list
       -> t
-    val create_psig_attribute :
+    val psig_attribute :
       Attribute.t
       -> t
-    val create_psig_extension :
+    val psig_extension :
       Extension.t
       -> Attributes.t
       -> t
@@ -3423,19 +3423,19 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pwith_type :
+    val pwith_type :
       Longident_loc.t
       -> Type_declaration.t
       -> t
-    val create_pwith_module :
+    val pwith_module :
       Longident_loc.t
       -> Longident_loc.t
       -> t
-    val create_pwith_typesubst :
+    val pwith_typesubst :
       Longident_loc.t
       -> Type_declaration.t
       -> t
-    val create_pwith_modsubst :
+    val pwith_modsubst :
       Longident_loc.t
       -> Longident_loc.t
       -> t
@@ -3475,29 +3475,29 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pmod_ident :
+    val pmod_ident :
       Longident_loc.t
       -> t
-    val create_pmod_structure :
+    val pmod_structure :
       Structure.t
       -> t
-    val create_pmod_functor :
+    val pmod_functor :
       string Location.loc
       -> Module_type.t option
       -> Module_expr.t
       -> t
-    val create_pmod_apply :
+    val pmod_apply :
       Module_expr.t
       -> Module_expr.t
       -> t
-    val create_pmod_constraint :
+    val pmod_constraint :
       Module_expr.t
       -> Module_type.t
       -> t
-    val create_pmod_unpack :
+    val pmod_unpack :
       Expression.t
       -> t
-    val create_pmod_extension :
+    val pmod_extension :
       Extension.t
       -> t
   end
@@ -3553,52 +3553,52 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pstr_eval :
+    val pstr_eval :
       Expression.t
       -> Attributes.t
       -> t
-    val create_pstr_value :
+    val pstr_value :
       Rec_flag.t
       -> Value_binding.t list
       -> t
-    val create_pstr_primitive :
+    val pstr_primitive :
       Value_description.t
       -> t
-    val create_pstr_type :
+    val pstr_type :
       Rec_flag.t
       -> Type_declaration.t list
       -> t
-    val create_pstr_typext :
+    val pstr_typext :
       Type_extension.t
       -> t
-    val create_pstr_exception :
+    val pstr_exception :
       Extension_constructor.t
       -> t
-    val create_pstr_module :
+    val pstr_module :
       Module_binding.t
       -> t
-    val create_pstr_recmodule :
+    val pstr_recmodule :
       Module_binding.t list
       -> t
-    val create_pstr_modtype :
+    val pstr_modtype :
       Module_type_declaration.t
       -> t
-    val create_pstr_open :
+    val pstr_open :
       Open_description.t
       -> t
-    val create_pstr_class :
+    val pstr_class :
       Class_declaration.t list
       -> t
-    val create_pstr_class_type :
+    val pstr_class_type :
       Class_type_declaration.t list
       -> t
-    val create_pstr_include :
+    val pstr_include :
       Include_declaration.t
       -> t
-    val create_pstr_attribute :
+    val pstr_attribute :
       Attribute.t
       -> t
-    val create_pstr_extension :
+    val pstr_extension :
       Extension.t
       -> Attributes.t
       -> t
@@ -3656,10 +3656,10 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_ptop_def :
+    val ptop_def :
       Structure.t
       -> t
-    val create_ptop_dir :
+    val ptop_dir :
       string
       -> Directive_argument.t
       -> t
@@ -3678,18 +3678,18 @@ module V4_06 : sig
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create_pdir_none : t
-    val create_pdir_string :
+    val pdir_none : t
+    val pdir_string :
       string
       -> t
-    val create_pdir_int :
+    val pdir_int :
       string
       -> char option
       -> t
-    val create_pdir_ident :
+    val pdir_ident :
       Longident.t
       -> t
-    val create_pdir_bool :
+    val pdir_bool :
       bool
       -> t
   end

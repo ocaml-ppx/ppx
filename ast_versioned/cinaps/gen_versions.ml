@@ -53,17 +53,17 @@ module Signature = struct
     match (decl : Astlib.Grammar.decl) with
     | Alias ty ->
       Ml.declare_val
-        ("create" ^ Poly.suffix env)
+        (Name.make ["create"] (Poly.args env))
         (Line (Printf.sprintf "%s -> %s" (string_of_ty ty) (inst "t" ~env)))
     | Record record ->
       Ml.declare_val
-        ("create" ^ Poly.suffix env)
+        (Name.make ["create"] (Poly.args env))
         (Block (fun () ->
            Ml.print_labelled_arrow record ~f:string_of_ty (inst "t" ~env)))
     | Variant variant ->
-      List.iter variant ~f:(fun (name, clause) ->
+      List.iter variant ~f:(fun (tag, clause) ->
         Ml.declare_val
-          ("create_" ^ Ml.id name ^ Poly.suffix env)
+          (Name.make [tag] (Poly.args env))
           (match (clause : Astlib.Grammar.clause) with
            | Empty -> Line (inst "t" ~env)
            | Tuple tuple ->
@@ -80,13 +80,13 @@ module Signature = struct
     List.iter envs ~f:(fun env ->
       Print.newline ();
       Ml.declare_val
-        ("of_concrete" ^ Poly.suffix env)
+        (Name.make ["of_concrete"] (Poly.args env))
         (Line
            (Printf.sprintf "%s -> %s"
               (inst "concrete" ~env)
               (inst "t" ~env)));
       Ml.declare_val
-        ("to_concrete" ^ Poly.suffix env)
+        (Name.make ["to_concrete"] (Poly.args env))
         (Line
            (Printf.sprintf "%s -> %s option"
               (inst "t" ~env)
@@ -167,12 +167,12 @@ module Structure = struct
       List.iter variant ~f:(fun (tag, clause) ->
         match (clause : Astlib.Grammar.clause) with
         | Empty ->
-          Print.println "let create_%s%s =" (Ml.id tag) poly_args;
+          Print.println "let %s%s =" (Name.make [tag] []) poly_args;
           Print.indented (fun () ->
             Print.println "node %S (Variant { tag = %S; args = [||] })" node_name tag)
         | Tuple tuple ->
-          Print.println "let create_%s%s %s ="
-            (Ml.id tag)
+          Print.println "let %s%s %s ="
+            (Name.make [tag] [])
             poly_args
             (String.concat ~sep:" " (List.mapi tuple ~f:(fun i _ -> tuple_var i)));
           Print.indented (fun () ->
@@ -187,8 +187,8 @@ module Structure = struct
                     Printf.sprintf "%s %s" (ast_of_ty ty) (tuple_var i)));
                 Print.println "})")))
         | Record record ->
-          Print.println "let create_%s%s %s ="
-            (Ml.id tag)
+          Print.println "let %s%s %s ="
+            (Name.make [tag] [])
             poly_args
             (String.concat ~sep:" "
                (List.map record ~f:(fun (field, _) ->
@@ -230,20 +230,20 @@ module Structure = struct
           (String.concat ~sep:" "
              (List.map record ~f:(fun (field, _) -> "~" ^ Ml.id field))))
     | Variant variant ->
-      Print.println "let of_concrete%s (concrete : %sconcrete) ="
+      Print.println "let of_concrete%s (c : %sconcrete) ="
         poly_args
         (underscore ~tvars);
       Print.indented (fun () ->
-        Print.println "match concrete with";
+        Print.println "match c with";
         List.iter variant ~f:(fun (tag, clause) ->
           match (clause : Astlib.Grammar.clause) with
-          | Empty -> Print.println "| %s -> create_%s" (Ml.tag tag) (Ml.id tag)
+          | Empty -> Print.println "| %s -> %s" (Ml.tag tag) (Name.make [tag] [])
           | Tuple tuple ->
             let vars = List.mapi tuple ~f:(fun i _ -> tuple_var i) in
             Print.println "| %s (%s) ->" (Ml.tag tag) (String.concat ~sep:", " vars);
             Print.indented (fun () ->
-              Print.println "create_%s%s %s"
-                (Ml.id tag)
+              Print.println "%s%s %s"
+                (Name.make [tag] [])
                 poly_args
                 (String.concat ~sep:" " vars))
           | Record record ->
@@ -252,8 +252,8 @@ module Structure = struct
               (String.concat ~sep:"; "
                  (List.map record ~f:(fun (field, _) -> Ml.id field)));
             Print.indented (fun () ->
-              Print.println "create_%s%s %s"
-                (Ml.id tag)
+              Print.println "%s%s %s"
+                (Name.make [tag] [])
                 poly_args
                 (String.concat ~sep:" "
                    (List.map record ~f:(fun (field, _) -> "~" ^ Ml.id field))))))
@@ -357,14 +357,14 @@ module Structure = struct
 
   let define_instances decl ~env =
     Print.newline ();
-    Print.println "let of_concrete%s =" (Poly.suffix env);
+    Print.println "let %s =" (Name.make ["of_concrete"] (Poly.args env));
     Print.indented (fun () ->
       Print.println "of_concrete";
       Print.indented (fun () ->
         List.iter (Poly.args env) ~f:(fun ty ->
           Print.println "%s" (ast_of_ty ty))));
     Print.newline ();
-    Print.println "let to_concrete%s =" (Poly.suffix env);
+    Print.println "let %s =" (Name.make ["to_concrete"] (Poly.args env));
     Print.indented (fun () ->
       Print.println "to_concrete";
       Print.indented (fun () ->
@@ -373,7 +373,7 @@ module Structure = struct
     match (decl : Astlib.Grammar.decl) with
     | Alias _ | Record _ ->
       Print.newline ();
-      Print.println "let create%s =" (Poly.suffix env);
+      Print.println "let %s =" (Name.make ["create"] (Poly.args env));
       Print.indented (fun () ->
         Print.println "create";
         Print.indented (fun () ->
@@ -382,9 +382,9 @@ module Structure = struct
     | Variant variant ->
       List.iter variant ~f:(fun (tag, _) ->
         Print.newline ();
-        Print.println "let create_%s%s =" (Ml.id tag) (Poly.suffix env);
+        Print.println "let %s =" (Name.make [tag] (Poly.args env));
         Print.indented (fun () ->
-          Print.println "create_%s" (Ml.id tag);
+          Print.println "%s" (Name.make [tag] []);
           Print.indented (fun () ->
             List.iter (Poly.args env) ~f:(fun ty ->
               Print.println "%s" (ast_of_ty ty)))))
