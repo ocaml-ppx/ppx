@@ -47,32 +47,6 @@ let env_is_empty = function
   | [] -> true
   | _ :: _ -> false
 
-let rec ty_suffix ty =
-  match (ty : Astlib.Grammar.ty) with
-  | Var var -> Ml.id var
-  | Name name -> Ml.id name
-  | Bool -> "bool"
-  | Char -> "char"
-  | Int -> "int"
-  | String -> "string"
-  | Location -> "location"
-  | Loc ty -> ty_suffix ty ^ "_loc"
-  | List ty -> ty_suffix ty ^ "_list"
-  | Option ty -> ty_suffix ty ^ "_option"
-  | Tuple tuple -> tuple_suffix tuple
-  | Instance (poly, args) ->
-    String.concat ~sep:"_" (List.map args ~f:ty_suffix) ^ "_" ^ Ml.id poly
-
-and tuple_suffix tuple =
-  String.concat ~sep:"_and_" (List.map tuple ~f:ty_suffix)
-
-let suffix_of_args args =
-  match args with
-  | [] -> ""
-  | _ -> "_" ^ String.concat ~sep:"_" (List.map args ~f:ty_suffix)
-
-let suffix env = suffix_of_args (args env)
-
 let rec subst_ty ty ~env : Astlib.Grammar.ty =
   match (ty : Astlib.Grammar.ty) with
   | Var string -> List.assoc string env

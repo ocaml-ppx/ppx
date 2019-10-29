@@ -65,14 +65,13 @@ let node_ty ~node_name ~env =
   else Astlib.Grammar.Instance (node_name, Poly.args env)
 
 let print_conversion_intf ~node_name ~env =
-  let suffix = Poly.suffix env in
   let ty = node_ty ~node_name ~env in
   let ast_ty = ast_ty ty in
   let parsetree_ty = parsetree_ty ty in
-  Ml.declare_val (Ml.id ("ast_of_" ^ node_name ^ suffix)) (Block (fun () ->
+  Ml.declare_val (Name.make ["ast_of"; node_name] (Poly.args env)) (Block (fun () ->
     Ml.print_arrow [parsetree_ty] ast_ty ~f:(fun x -> x)));
   Print.newline ();
-  Ml.declare_val (Ml.id ("ast_to_" ^ node_name ^ suffix)) (Block (fun () ->
+  Ml.declare_val (Name.make ["ast_to"; node_name] (Poly.args env)) (Block (fun () ->
     Ml.print_arrow [ast_ty] parsetree_ty ~f:(fun x -> x)))
 
 let fn_value option =
@@ -82,18 +81,18 @@ let fn_value option =
 
 let conversion_prefix ~conv =
   match conv with
-  | `concrete_of -> "ast_of_"
-  | `concrete_to -> "ast_to_"
+  | `concrete_of -> "ast_of"
+  | `concrete_to -> "ast_to"
 
 let concrete_prefix ~conv =
   match conv with
-  | `concrete_of -> "concrete_of_"
-  | `concrete_to -> "concrete_to_"
+  | `concrete_of -> "concrete_of"
+  | `concrete_to -> "concrete_to"
 
 let rec ty_conversion ty ~conv =
   match (ty : Astlib.Grammar.ty) with
-  | Var var -> Some (Ml.id (conversion_prefix ~conv ^ var))
-  | Name name -> Some (Ml.id (conversion_prefix ~conv ^ name))
+  | Var var -> Some (Ml.id (conversion_prefix ~conv ^ "_" ^ var))
+  | Name name -> Some (Ml.id (conversion_prefix ~conv ^ "_" ^ name))
   | Bool | Char | Int | String | Location -> None
   | Loc ty ->
     Helpers.Option.map (ty_conversion ty ~conv)
@@ -106,7 +105,7 @@ let rec ty_conversion ty ~conv =
       ~f:(Printf.sprintf "(Helpers.Option.map ~f:%s)")
   | Tuple tuple -> tuple_conversion tuple ~conv
   | Instance (poly, args) ->
-    Some (Ml.id (conversion_prefix ~conv ^ poly ^ Poly.suffix_of_args args))
+    Some (Name.make [conversion_prefix ~conv; poly] args)
 
 and tuple_conversion tuple ~conv =
   let conversions = List.map tuple ~f:(ty_conversion ~conv) in
@@ -133,7 +132,7 @@ let output_ty ty ~conv =
 let tuple_var i = Ml.id (Printf.sprintf "x%d" (i + 1))
 
 let define_conversion decl ~node_name ~env ~conv =
-  let name = Ml.id (concrete_prefix ~conv ^ node_name ^ Poly.suffix env) in
+  let name = Name.make [concrete_prefix ~conv; node_name] (Poly.args env) in
   let node_ty = node_ty ~node_name ~env in
   match (decl : Astlib.Grammar.decl) with
   | Alias ty ->
@@ -194,34 +193,35 @@ let define_conversion decl ~node_name ~env ~conv =
                  (List.map record ~f:(fun (field, _) -> Ml.id field))))))
 
 let print_conversion_impl decl ~node_name ~env ~is_initial =
-  let suffix = Ml.id (node_name ^ Poly.suffix env) in
   Print.println
-    "%s ast_of_%s x ="
+    "%s %s x ="
     (if is_initial then "let rec" else "and")
-    suffix;
+    (Name.make ["ast_of"; node_name] (Poly.args env));
   Print.indented (fun () ->
-    Print.println "Versions.%s.%s.of_concrete%s (concrete_of_%s x)"
+    Print.println "Versions.%s.%s.%s (%s x)"
       (Ml.module_name version)
       (Ml.module_name node_name)
-      (Poly.suffix env)
-      suffix);
+      (Name.make ["of_concrete"] (Poly.args env))
+      (Name.make ["concrete_of"; node_name] (Poly.args env)));
   Print.newline ();
   define_conversion decl ~node_name ~env ~conv:`concrete_of;
   Print.newline ();
-  Print.println "and ast_to_%s x =" suffix;
+  Print.println "and %s x =" (Name.make ["ast_to"; node_name] (Poly.args env));
   Print.indented (fun () ->
-    Print.println "let option = Versions.%s.%s.to_concrete%s x in"
+    Print.println "let option = Versions.%s.%s.%s x in"
       (Ml.module_name version)
       (Ml.module_name node_name)
-      (Poly.suffix env);
+      (Name.make ["to_concrete"] (Poly.args env));
     Print.println "let concrete =";
     Print.indented (fun () ->
       Print.println "Helpers.Option.value_exn option";
       Print.indented (fun () ->
         Print.println "~message:%S"
-          (Printf.sprintf "concrete_to_%s: conversion failed" suffix)));
+          (Printf.sprintf "%s: conversion failed"
+             (Name.make ["concrete_to"; node_name] (Poly.args env)))));
     Print.println "in";
-    Print.println "concrete_to_%s concrete" suffix);
+    Print.println "%s concrete"
+      (Name.make ["concrete_to"; node_name] (Poly.args env)));
   Print.newline ();
   define_conversion decl ~node_name ~env ~conv:`concrete_to
 
