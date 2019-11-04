@@ -36,8 +36,17 @@ let rec string_of_ty ty ~view =
   | Char -> "char"
   | Int -> "int"
   | String -> "string"
-  | Location -> "Location.t"
-  | Loc ty -> string_of_ty ty ~view ^ " Location.loc"
+  | Location ->
+    (match view with
+     | `ast | `concrete -> "Astlib.Location.t"
+     | `parsetree -> "Ocaml_common.Location.t")
+  | Loc ty ->
+    let suffix =
+      match view with
+      | `ast | `concrete -> " Astlib.Loc.t"
+      | `parsetree -> " Ocaml_common.Location.loc"
+    in
+    string_of_ty ty ~view ^ suffix
   | List ty -> string_of_ty ty ~view ^ " list"
   | Option ty -> string_of_ty ty ~view ^ " option"
   | Tuple tuple -> string_of_tuple tuple ~view
@@ -93,10 +102,30 @@ let rec ty_conversion ty ~conv =
   match (ty : Astlib.Grammar.ty) with
   | Var var -> Some (Ml.id (conversion_prefix ~conv ^ "_" ^ var))
   | Name name -> Some (Ml.id (conversion_prefix ~conv ^ "_" ^ name))
-  | Bool | Char | Int | String | Location -> None
+  | Bool | Char | Int | String -> None
+  | Location ->
+    (match conv with
+     | `concrete_of -> Some "Astlib.Location.of_location"
+     | `concrete_to -> Some "Astlib.Location.to_location")
   | Loc ty ->
-    Helpers.Option.map (ty_conversion ty ~conv)
-      ~f:(Printf.sprintf "(Helpers.Loc.map ~f:%s)")
+    let conv_string =
+      let loc_conv =
+        match conv with
+        | `concrete_of -> "Astlib.Loc.of_loc"
+        | `concrete_to -> "Astlib.Loc.to_loc"
+      in
+      let loc_map =
+        Helpers.Option.map (ty_conversion ty ~conv) ~f:(fun ty_conv ->
+          Printf.sprintf "(Astlib.Loc.map ~f:%s)" ty_conv)
+      in
+      match loc_map with
+      | None -> loc_conv
+      | Some loc_map ->
+        (match conv with
+         | `concrete_of -> Printf.sprintf "(Helpers.Fn.compose %s %s)" loc_map loc_conv
+         | `concrete_to -> Printf.sprintf "(Helpers.Fn.compose %s %s)" loc_conv loc_map)
+    in
+    Some conv_string
   | List ty ->
     Helpers.Option.map (ty_conversion ty ~conv)
       ~f:(Printf.sprintf "(List.map ~f:%s)")

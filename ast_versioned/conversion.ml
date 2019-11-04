@@ -1,11 +1,6 @@
 open StdLabels
 
 module Helpers = struct
-  module Loc = struct
-    let map (loc : _ Location.loc) ~f =
-      { loc with txt = f loc.txt }
-  end
-
   module Tuple = struct
     let map2 (x1, x2) ~f1 ~f2 = (f1 x1, f2 x2)
     let map3 (x1, x2, x3) ~f1 ~f2 ~f3 = (f1 x1, f2 x2, f3 x3)
@@ -26,6 +21,8 @@ module Helpers = struct
 
   module Fn = struct
     let id x = x
+
+    let compose f g x = f (g x)
   end
 end
 
@@ -69,7 +66,7 @@ and ast_of_longident_loc x =
   Versions.V4_07.Longident_loc.of_concrete (concrete_of_longident_loc x)
 
 and concrete_of_longident_loc x =
-  (Helpers.Loc.map ~f:ast_of_longident) x
+  (Helpers.Fn.compose (Astlib.Loc.map ~f:ast_of_longident) Astlib.Loc.of_loc) x
 
 and ast_to_longident_loc x =
   let option = Versions.V4_07.Longident_loc.to_concrete x in
@@ -80,7 +77,7 @@ and ast_to_longident_loc x =
   concrete_to_longident_loc concrete
 
 and concrete_to_longident_loc x =
-  (Helpers.Loc.map ~f:ast_to_longident) x
+  (Helpers.Fn.compose Astlib.Loc.to_loc (Astlib.Loc.map ~f:ast_to_longident)) x
 
 and ast_of_rec_flag x =
   Versions.V4_07.Rec_flag.of_concrete (concrete_of_rec_flag x)
@@ -333,7 +330,7 @@ and ast_of_attribute x =
   Versions.V4_07.Attribute.of_concrete (concrete_of_attribute x)
 
 and concrete_of_attribute x =
-  (Helpers.Tuple.map2 ~f1:Helpers.Fn.id ~f2:ast_of_payload) x
+  (Helpers.Tuple.map2 ~f1:Astlib.Loc.of_loc ~f2:ast_of_payload) x
 
 and ast_to_attribute x =
   let option = Versions.V4_07.Attribute.to_concrete x in
@@ -344,13 +341,13 @@ and ast_to_attribute x =
   concrete_to_attribute concrete
 
 and concrete_to_attribute x =
-  (Helpers.Tuple.map2 ~f1:Helpers.Fn.id ~f2:ast_to_payload) x
+  (Helpers.Tuple.map2 ~f1:Astlib.Loc.to_loc ~f2:ast_to_payload) x
 
 and ast_of_extension x =
   Versions.V4_07.Extension.of_concrete (concrete_of_extension x)
 
 and concrete_of_extension x =
-  (Helpers.Tuple.map2 ~f1:Helpers.Fn.id ~f2:ast_of_payload) x
+  (Helpers.Tuple.map2 ~f1:Astlib.Loc.of_loc ~f2:ast_of_payload) x
 
 and ast_to_extension x =
   let option = Versions.V4_07.Extension.to_concrete x in
@@ -361,7 +358,7 @@ and ast_to_extension x =
   concrete_to_extension concrete
 
 and concrete_to_extension x =
-  (Helpers.Tuple.map2 ~f1:Helpers.Fn.id ~f2:ast_to_payload) x
+  (Helpers.Tuple.map2 ~f1:Astlib.Loc.to_loc ~f2:ast_to_payload) x
 
 and ast_of_attributes x =
   Versions.V4_07.Attributes.of_concrete (concrete_of_attributes x)
@@ -430,6 +427,7 @@ and concrete_of_core_type
   ({ ptyp_desc; ptyp_loc; ptyp_attributes } : Compiler_types.core_type)
 =
   let ptyp_desc = ast_of_core_type_desc ptyp_desc in
+  let ptyp_loc = Astlib.Location.of_location ptyp_loc in
   let ptyp_attributes = ast_of_attributes ptyp_attributes in
   ({ ptyp_desc; ptyp_loc; ptyp_attributes } : Versions.V4_07.Core_type.concrete)
 
@@ -445,6 +443,7 @@ and concrete_to_core_type
   ({ ptyp_desc; ptyp_loc; ptyp_attributes } : Versions.V4_07.Core_type.concrete)
 =
   let ptyp_desc = ast_to_core_type_desc ptyp_desc in
+  let ptyp_loc = Astlib.Location.to_location ptyp_loc in
   let ptyp_attributes = ast_to_attributes ptyp_attributes in
   ({ ptyp_desc; ptyp_loc; ptyp_attributes } : Compiler_types.core_type)
 
@@ -485,6 +484,7 @@ and concrete_of_core_type_desc x : Versions.V4_07.Core_type_desc.concrete =
     let x3 = (Helpers.Option.map ~f:(List.map ~f:ast_of_label)) x3 in
     Ptyp_variant (x1, x2, x3)
   | Ptyp_poly (x1, x2) ->
+    let x1 = (List.map ~f:Astlib.Loc.of_loc) x1 in
     let x2 = ast_of_core_type x2 in
     Ptyp_poly (x1, x2)
   | Ptyp_package (x1) ->
@@ -536,6 +536,7 @@ and concrete_to_core_type_desc x : Compiler_types.core_type_desc =
     let x3 = (Helpers.Option.map ~f:(List.map ~f:ast_to_label)) x3 in
     Ptyp_variant (x1, x2, x3)
   | Ptyp_poly (x1, x2) ->
+    let x1 = (List.map ~f:Astlib.Loc.to_loc) x1 in
     let x2 = ast_to_core_type x2 in
     Ptyp_poly (x1, x2)
   | Ptyp_package (x1) ->
@@ -568,7 +569,7 @@ and ast_of_row_field x =
 and concrete_of_row_field x : Versions.V4_07.Row_field.concrete =
   match (x : Compiler_types.row_field) with
   | Rtag (x1, x2, x3, x4) ->
-    let x1 = (Helpers.Loc.map ~f:ast_of_label) x1 in
+    let x1 = (Helpers.Fn.compose (Astlib.Loc.map ~f:ast_of_label) Astlib.Loc.of_loc) x1 in
     let x2 = ast_of_attributes x2 in
     let x4 = (List.map ~f:ast_of_core_type) x4 in
     Rtag (x1, x2, x3, x4)
@@ -587,7 +588,7 @@ and ast_to_row_field x =
 and concrete_to_row_field x : Compiler_types.row_field =
   match (x : Versions.V4_07.Row_field.concrete) with
   | Rtag (x1, x2, x3, x4) ->
-    let x1 = (Helpers.Loc.map ~f:ast_to_label) x1 in
+    let x1 = (Helpers.Fn.compose Astlib.Loc.to_loc (Astlib.Loc.map ~f:ast_to_label)) x1 in
     let x2 = ast_to_attributes x2 in
     let x4 = (List.map ~f:ast_to_core_type) x4 in
     Rtag (x1, x2, x3, x4)
@@ -601,7 +602,7 @@ and ast_of_object_field x =
 and concrete_of_object_field x : Versions.V4_07.Object_field.concrete =
   match (x : Compiler_types.object_field) with
   | Otag (x1, x2, x3) ->
-    let x1 = (Helpers.Loc.map ~f:ast_of_label) x1 in
+    let x1 = (Helpers.Fn.compose (Astlib.Loc.map ~f:ast_of_label) Astlib.Loc.of_loc) x1 in
     let x2 = ast_of_attributes x2 in
     let x3 = ast_of_core_type x3 in
     Otag (x1, x2, x3)
@@ -620,7 +621,7 @@ and ast_to_object_field x =
 and concrete_to_object_field x : Compiler_types.object_field =
   match (x : Versions.V4_07.Object_field.concrete) with
   | Otag (x1, x2, x3) ->
-    let x1 = (Helpers.Loc.map ~f:ast_to_label) x1 in
+    let x1 = (Helpers.Fn.compose Astlib.Loc.to_loc (Astlib.Loc.map ~f:ast_to_label)) x1 in
     let x2 = ast_to_attributes x2 in
     let x3 = ast_to_core_type x3 in
     Otag (x1, x2, x3)
@@ -635,6 +636,7 @@ and concrete_of_pattern
   ({ ppat_desc; ppat_loc; ppat_attributes } : Compiler_types.pattern)
 =
   let ppat_desc = ast_of_pattern_desc ppat_desc in
+  let ppat_loc = Astlib.Location.of_location ppat_loc in
   let ppat_attributes = ast_of_attributes ppat_attributes in
   ({ ppat_desc; ppat_loc; ppat_attributes } : Versions.V4_07.Pattern.concrete)
 
@@ -650,6 +652,7 @@ and concrete_to_pattern
   ({ ppat_desc; ppat_loc; ppat_attributes } : Versions.V4_07.Pattern.concrete)
 =
   let ppat_desc = ast_to_pattern_desc ppat_desc in
+  let ppat_loc = Astlib.Location.to_location ppat_loc in
   let ppat_attributes = ast_to_attributes ppat_attributes in
   ({ ppat_desc; ppat_loc; ppat_attributes } : Compiler_types.pattern)
 
@@ -660,9 +663,11 @@ and concrete_of_pattern_desc x : Versions.V4_07.Pattern_desc.concrete =
   match (x : Compiler_types.pattern_desc) with
   | Ppat_any -> Ppat_any
   | Ppat_var (x1) ->
+    let x1 = Astlib.Loc.of_loc x1 in
     Ppat_var (x1)
   | Ppat_alias (x1, x2) ->
     let x1 = ast_of_pattern x1 in
+    let x2 = Astlib.Loc.of_loc x2 in
     Ppat_alias (x1, x2)
   | Ppat_constant (x1) ->
     let x1 = ast_of_constant x1 in
@@ -704,6 +709,7 @@ and concrete_of_pattern_desc x : Versions.V4_07.Pattern_desc.concrete =
     let x1 = ast_of_pattern x1 in
     Ppat_lazy (x1)
   | Ppat_unpack (x1) ->
+    let x1 = Astlib.Loc.of_loc x1 in
     Ppat_unpack (x1)
   | Ppat_exception (x1) ->
     let x1 = ast_of_pattern x1 in
@@ -728,9 +734,11 @@ and concrete_to_pattern_desc x : Compiler_types.pattern_desc =
   match (x : Versions.V4_07.Pattern_desc.concrete) with
   | Ppat_any -> Ppat_any
   | Ppat_var (x1) ->
+    let x1 = Astlib.Loc.to_loc x1 in
     Ppat_var (x1)
   | Ppat_alias (x1, x2) ->
     let x1 = ast_to_pattern x1 in
+    let x2 = Astlib.Loc.to_loc x2 in
     Ppat_alias (x1, x2)
   | Ppat_constant (x1) ->
     let x1 = ast_to_constant x1 in
@@ -772,6 +780,7 @@ and concrete_to_pattern_desc x : Compiler_types.pattern_desc =
     let x1 = ast_to_pattern x1 in
     Ppat_lazy (x1)
   | Ppat_unpack (x1) ->
+    let x1 = Astlib.Loc.to_loc x1 in
     Ppat_unpack (x1)
   | Ppat_exception (x1) ->
     let x1 = ast_to_pattern x1 in
@@ -791,6 +800,7 @@ and concrete_of_expression
   ({ pexp_desc; pexp_loc; pexp_attributes } : Compiler_types.expression)
 =
   let pexp_desc = ast_of_expression_desc pexp_desc in
+  let pexp_loc = Astlib.Location.of_location pexp_loc in
   let pexp_attributes = ast_of_attributes pexp_attributes in
   ({ pexp_desc; pexp_loc; pexp_attributes } : Versions.V4_07.Expression.concrete)
 
@@ -806,6 +816,7 @@ and concrete_to_expression
   ({ pexp_desc; pexp_loc; pexp_attributes } : Versions.V4_07.Expression.concrete)
 =
   let pexp_desc = ast_to_expression_desc pexp_desc in
+  let pexp_loc = Astlib.Location.to_location pexp_loc in
   let pexp_attributes = ast_to_attributes pexp_attributes in
   ({ pexp_desc; pexp_loc; pexp_attributes } : Compiler_types.expression)
 
@@ -904,19 +915,20 @@ and concrete_of_expression_desc x : Versions.V4_07.Expression_desc.concrete =
     Pexp_coerce (x1, x2, x3)
   | Pexp_send (x1, x2) ->
     let x1 = ast_of_expression x1 in
-    let x2 = (Helpers.Loc.map ~f:ast_of_label) x2 in
+    let x2 = (Helpers.Fn.compose (Astlib.Loc.map ~f:ast_of_label) Astlib.Loc.of_loc) x2 in
     Pexp_send (x1, x2)
   | Pexp_new (x1) ->
     let x1 = ast_of_longident_loc x1 in
     Pexp_new (x1)
   | Pexp_setinstvar (x1, x2) ->
-    let x1 = (Helpers.Loc.map ~f:ast_of_label) x1 in
+    let x1 = (Helpers.Fn.compose (Astlib.Loc.map ~f:ast_of_label) Astlib.Loc.of_loc) x1 in
     let x2 = ast_of_expression x2 in
     Pexp_setinstvar (x1, x2)
   | Pexp_override (x1) ->
-    let x1 = (List.map ~f:(Helpers.Tuple.map2 ~f1:(Helpers.Loc.map ~f:ast_of_label) ~f2:ast_of_expression)) x1 in
+    let x1 = (List.map ~f:(Helpers.Tuple.map2 ~f1:(Helpers.Fn.compose (Astlib.Loc.map ~f:ast_of_label) Astlib.Loc.of_loc) ~f2:ast_of_expression)) x1 in
     Pexp_override (x1)
   | Pexp_letmodule (x1, x2, x3) ->
+    let x1 = Astlib.Loc.of_loc x1 in
     let x2 = ast_of_module_expr x2 in
     let x3 = ast_of_expression x3 in
     Pexp_letmodule (x1, x2, x3)
@@ -938,6 +950,7 @@ and concrete_of_expression_desc x : Versions.V4_07.Expression_desc.concrete =
     let x1 = ast_of_class_structure x1 in
     Pexp_object (x1)
   | Pexp_newtype (x1, x2) ->
+    let x1 = Astlib.Loc.of_loc x1 in
     let x2 = ast_of_expression x2 in
     Pexp_newtype (x1, x2)
   | Pexp_pack (x1) ->
@@ -1053,19 +1066,20 @@ and concrete_to_expression_desc x : Compiler_types.expression_desc =
     Pexp_coerce (x1, x2, x3)
   | Pexp_send (x1, x2) ->
     let x1 = ast_to_expression x1 in
-    let x2 = (Helpers.Loc.map ~f:ast_to_label) x2 in
+    let x2 = (Helpers.Fn.compose Astlib.Loc.to_loc (Astlib.Loc.map ~f:ast_to_label)) x2 in
     Pexp_send (x1, x2)
   | Pexp_new (x1) ->
     let x1 = ast_to_longident_loc x1 in
     Pexp_new (x1)
   | Pexp_setinstvar (x1, x2) ->
-    let x1 = (Helpers.Loc.map ~f:ast_to_label) x1 in
+    let x1 = (Helpers.Fn.compose Astlib.Loc.to_loc (Astlib.Loc.map ~f:ast_to_label)) x1 in
     let x2 = ast_to_expression x2 in
     Pexp_setinstvar (x1, x2)
   | Pexp_override (x1) ->
-    let x1 = (List.map ~f:(Helpers.Tuple.map2 ~f1:(Helpers.Loc.map ~f:ast_to_label) ~f2:ast_to_expression)) x1 in
+    let x1 = (List.map ~f:(Helpers.Tuple.map2 ~f1:(Helpers.Fn.compose Astlib.Loc.to_loc (Astlib.Loc.map ~f:ast_to_label)) ~f2:ast_to_expression)) x1 in
     Pexp_override (x1)
   | Pexp_letmodule (x1, x2, x3) ->
+    let x1 = Astlib.Loc.to_loc x1 in
     let x2 = ast_to_module_expr x2 in
     let x3 = ast_to_expression x3 in
     Pexp_letmodule (x1, x2, x3)
@@ -1087,6 +1101,7 @@ and concrete_to_expression_desc x : Compiler_types.expression_desc =
     let x1 = ast_to_class_structure x1 in
     Pexp_object (x1)
   | Pexp_newtype (x1, x2) ->
+    let x1 = Astlib.Loc.to_loc x1 in
     let x2 = ast_to_expression x2 in
     Pexp_newtype (x1, x2)
   | Pexp_pack (x1) ->
@@ -1135,8 +1150,10 @@ and ast_of_value_description x =
 and concrete_of_value_description
   ({ pval_name; pval_type; pval_prim; pval_attributes; pval_loc } : Compiler_types.value_description)
 =
+  let pval_name = Astlib.Loc.of_loc pval_name in
   let pval_type = ast_of_core_type pval_type in
   let pval_attributes = ast_of_attributes pval_attributes in
+  let pval_loc = Astlib.Location.of_location pval_loc in
   ({ pval_name; pval_type; pval_prim; pval_attributes; pval_loc } : Versions.V4_07.Value_description.concrete)
 
 and ast_to_value_description x =
@@ -1150,8 +1167,10 @@ and ast_to_value_description x =
 and concrete_to_value_description
   ({ pval_name; pval_type; pval_prim; pval_attributes; pval_loc } : Versions.V4_07.Value_description.concrete)
 =
+  let pval_name = Astlib.Loc.to_loc pval_name in
   let pval_type = ast_to_core_type pval_type in
   let pval_attributes = ast_to_attributes pval_attributes in
+  let pval_loc = Astlib.Location.to_location pval_loc in
   ({ pval_name; pval_type; pval_prim; pval_attributes; pval_loc } : Compiler_types.value_description)
 
 and ast_of_type_declaration x =
@@ -1160,12 +1179,14 @@ and ast_of_type_declaration x =
 and concrete_of_type_declaration
   ({ ptype_name; ptype_params; ptype_cstrs; ptype_kind; ptype_private; ptype_manifest; ptype_attributes; ptype_loc } : Compiler_types.type_declaration)
 =
+  let ptype_name = Astlib.Loc.of_loc ptype_name in
   let ptype_params = (List.map ~f:(Helpers.Tuple.map2 ~f1:ast_of_core_type ~f2:ast_of_variance)) ptype_params in
-  let ptype_cstrs = (List.map ~f:(Helpers.Tuple.map3 ~f1:ast_of_core_type ~f2:ast_of_core_type ~f3:Helpers.Fn.id)) ptype_cstrs in
+  let ptype_cstrs = (List.map ~f:(Helpers.Tuple.map3 ~f1:ast_of_core_type ~f2:ast_of_core_type ~f3:Astlib.Location.of_location)) ptype_cstrs in
   let ptype_kind = ast_of_type_kind ptype_kind in
   let ptype_private = ast_of_private_flag ptype_private in
   let ptype_manifest = (Helpers.Option.map ~f:ast_of_core_type) ptype_manifest in
   let ptype_attributes = ast_of_attributes ptype_attributes in
+  let ptype_loc = Astlib.Location.of_location ptype_loc in
   ({ ptype_name; ptype_params; ptype_cstrs; ptype_kind; ptype_private; ptype_manifest; ptype_attributes; ptype_loc } : Versions.V4_07.Type_declaration.concrete)
 
 and ast_to_type_declaration x =
@@ -1179,12 +1200,14 @@ and ast_to_type_declaration x =
 and concrete_to_type_declaration
   ({ ptype_name; ptype_params; ptype_cstrs; ptype_kind; ptype_private; ptype_manifest; ptype_attributes; ptype_loc } : Versions.V4_07.Type_declaration.concrete)
 =
+  let ptype_name = Astlib.Loc.to_loc ptype_name in
   let ptype_params = (List.map ~f:(Helpers.Tuple.map2 ~f1:ast_to_core_type ~f2:ast_to_variance)) ptype_params in
-  let ptype_cstrs = (List.map ~f:(Helpers.Tuple.map3 ~f1:ast_to_core_type ~f2:ast_to_core_type ~f3:Helpers.Fn.id)) ptype_cstrs in
+  let ptype_cstrs = (List.map ~f:(Helpers.Tuple.map3 ~f1:ast_to_core_type ~f2:ast_to_core_type ~f3:Astlib.Location.to_location)) ptype_cstrs in
   let ptype_kind = ast_to_type_kind ptype_kind in
   let ptype_private = ast_to_private_flag ptype_private in
   let ptype_manifest = (Helpers.Option.map ~f:ast_to_core_type) ptype_manifest in
   let ptype_attributes = ast_to_attributes ptype_attributes in
+  let ptype_loc = Astlib.Location.to_location ptype_loc in
   ({ ptype_name; ptype_params; ptype_cstrs; ptype_kind; ptype_private; ptype_manifest; ptype_attributes; ptype_loc } : Compiler_types.type_declaration)
 
 and ast_of_type_kind x =
@@ -1226,8 +1249,10 @@ and ast_of_label_declaration x =
 and concrete_of_label_declaration
   ({ pld_name; pld_mutable; pld_type; pld_loc; pld_attributes } : Compiler_types.label_declaration)
 =
+  let pld_name = Astlib.Loc.of_loc pld_name in
   let pld_mutable = ast_of_mutable_flag pld_mutable in
   let pld_type = ast_of_core_type pld_type in
+  let pld_loc = Astlib.Location.of_location pld_loc in
   let pld_attributes = ast_of_attributes pld_attributes in
   ({ pld_name; pld_mutable; pld_type; pld_loc; pld_attributes } : Versions.V4_07.Label_declaration.concrete)
 
@@ -1242,8 +1267,10 @@ and ast_to_label_declaration x =
 and concrete_to_label_declaration
   ({ pld_name; pld_mutable; pld_type; pld_loc; pld_attributes } : Versions.V4_07.Label_declaration.concrete)
 =
+  let pld_name = Astlib.Loc.to_loc pld_name in
   let pld_mutable = ast_to_mutable_flag pld_mutable in
   let pld_type = ast_to_core_type pld_type in
+  let pld_loc = Astlib.Location.to_location pld_loc in
   let pld_attributes = ast_to_attributes pld_attributes in
   ({ pld_name; pld_mutable; pld_type; pld_loc; pld_attributes } : Compiler_types.label_declaration)
 
@@ -1253,8 +1280,10 @@ and ast_of_constructor_declaration x =
 and concrete_of_constructor_declaration
   ({ pcd_name; pcd_args; pcd_res; pcd_loc; pcd_attributes } : Compiler_types.constructor_declaration)
 =
+  let pcd_name = Astlib.Loc.of_loc pcd_name in
   let pcd_args = ast_of_constructor_arguments pcd_args in
   let pcd_res = (Helpers.Option.map ~f:ast_of_core_type) pcd_res in
+  let pcd_loc = Astlib.Location.of_location pcd_loc in
   let pcd_attributes = ast_of_attributes pcd_attributes in
   ({ pcd_name; pcd_args; pcd_res; pcd_loc; pcd_attributes } : Versions.V4_07.Constructor_declaration.concrete)
 
@@ -1269,8 +1298,10 @@ and ast_to_constructor_declaration x =
 and concrete_to_constructor_declaration
   ({ pcd_name; pcd_args; pcd_res; pcd_loc; pcd_attributes } : Versions.V4_07.Constructor_declaration.concrete)
 =
+  let pcd_name = Astlib.Loc.to_loc pcd_name in
   let pcd_args = ast_to_constructor_arguments pcd_args in
   let pcd_res = (Helpers.Option.map ~f:ast_to_core_type) pcd_res in
+  let pcd_loc = Astlib.Location.to_location pcd_loc in
   let pcd_attributes = ast_to_attributes pcd_attributes in
   ({ pcd_name; pcd_args; pcd_res; pcd_loc; pcd_attributes } : Compiler_types.constructor_declaration)
 
@@ -1340,7 +1371,9 @@ and ast_of_extension_constructor x =
 and concrete_of_extension_constructor
   ({ pext_name; pext_kind; pext_loc; pext_attributes } : Compiler_types.extension_constructor)
 =
+  let pext_name = Astlib.Loc.of_loc pext_name in
   let pext_kind = ast_of_extension_constructor_kind pext_kind in
+  let pext_loc = Astlib.Location.of_location pext_loc in
   let pext_attributes = ast_of_attributes pext_attributes in
   ({ pext_name; pext_kind; pext_loc; pext_attributes } : Versions.V4_07.Extension_constructor.concrete)
 
@@ -1355,7 +1388,9 @@ and ast_to_extension_constructor x =
 and concrete_to_extension_constructor
   ({ pext_name; pext_kind; pext_loc; pext_attributes } : Versions.V4_07.Extension_constructor.concrete)
 =
+  let pext_name = Astlib.Loc.to_loc pext_name in
   let pext_kind = ast_to_extension_constructor_kind pext_kind in
+  let pext_loc = Astlib.Location.to_location pext_loc in
   let pext_attributes = ast_to_attributes pext_attributes in
   ({ pext_name; pext_kind; pext_loc; pext_attributes } : Compiler_types.extension_constructor)
 
@@ -1397,6 +1432,7 @@ and concrete_of_class_type
   ({ pcty_desc; pcty_loc; pcty_attributes } : Compiler_types.class_type)
 =
   let pcty_desc = ast_of_class_type_desc pcty_desc in
+  let pcty_loc = Astlib.Location.of_location pcty_loc in
   let pcty_attributes = ast_of_attributes pcty_attributes in
   ({ pcty_desc; pcty_loc; pcty_attributes } : Versions.V4_07.Class_type.concrete)
 
@@ -1412,6 +1448,7 @@ and concrete_to_class_type
   ({ pcty_desc; pcty_loc; pcty_attributes } : Versions.V4_07.Class_type.concrete)
 =
   let pcty_desc = ast_to_class_type_desc pcty_desc in
+  let pcty_loc = Astlib.Location.to_location pcty_loc in
   let pcty_attributes = ast_to_attributes pcty_attributes in
   ({ pcty_desc; pcty_loc; pcty_attributes } : Compiler_types.class_type)
 
@@ -1504,6 +1541,7 @@ and concrete_of_class_type_field
   ({ pctf_desc; pctf_loc; pctf_attributes } : Compiler_types.class_type_field)
 =
   let pctf_desc = ast_of_class_type_field_desc pctf_desc in
+  let pctf_loc = Astlib.Location.of_location pctf_loc in
   let pctf_attributes = ast_of_attributes pctf_attributes in
   ({ pctf_desc; pctf_loc; pctf_attributes } : Versions.V4_07.Class_type_field.concrete)
 
@@ -1519,6 +1557,7 @@ and concrete_to_class_type_field
   ({ pctf_desc; pctf_loc; pctf_attributes } : Versions.V4_07.Class_type_field.concrete)
 =
   let pctf_desc = ast_to_class_type_field_desc pctf_desc in
+  let pctf_loc = Astlib.Location.to_location pctf_loc in
   let pctf_attributes = ast_to_attributes pctf_attributes in
   ({ pctf_desc; pctf_loc; pctf_attributes } : Compiler_types.class_type_field)
 
@@ -1531,10 +1570,10 @@ and concrete_of_class_type_field_desc x : Versions.V4_07.Class_type_field_desc.c
     let x1 = ast_of_class_type x1 in
     Pctf_inherit (x1)
   | Pctf_val (x1) ->
-    let x1 = (Helpers.Tuple.map4 ~f1:(Helpers.Loc.map ~f:ast_of_label) ~f2:ast_of_mutable_flag ~f3:ast_of_virtual_flag ~f4:ast_of_core_type) x1 in
+    let x1 = (Helpers.Tuple.map4 ~f1:(Helpers.Fn.compose (Astlib.Loc.map ~f:ast_of_label) Astlib.Loc.of_loc) ~f2:ast_of_mutable_flag ~f3:ast_of_virtual_flag ~f4:ast_of_core_type) x1 in
     Pctf_val (x1)
   | Pctf_method (x1) ->
-    let x1 = (Helpers.Tuple.map4 ~f1:(Helpers.Loc.map ~f:ast_of_label) ~f2:ast_of_private_flag ~f3:ast_of_virtual_flag ~f4:ast_of_core_type) x1 in
+    let x1 = (Helpers.Tuple.map4 ~f1:(Helpers.Fn.compose (Astlib.Loc.map ~f:ast_of_label) Astlib.Loc.of_loc) ~f2:ast_of_private_flag ~f3:ast_of_virtual_flag ~f4:ast_of_core_type) x1 in
     Pctf_method (x1)
   | Pctf_constraint (x1) ->
     let x1 = (Helpers.Tuple.map2 ~f1:ast_of_core_type ~f2:ast_of_core_type) x1 in
@@ -1560,10 +1599,10 @@ and concrete_to_class_type_field_desc x : Compiler_types.class_type_field_desc =
     let x1 = ast_to_class_type x1 in
     Pctf_inherit (x1)
   | Pctf_val (x1) ->
-    let x1 = (Helpers.Tuple.map4 ~f1:(Helpers.Loc.map ~f:ast_to_label) ~f2:ast_to_mutable_flag ~f3:ast_to_virtual_flag ~f4:ast_to_core_type) x1 in
+    let x1 = (Helpers.Tuple.map4 ~f1:(Helpers.Fn.compose Astlib.Loc.to_loc (Astlib.Loc.map ~f:ast_to_label)) ~f2:ast_to_mutable_flag ~f3:ast_to_virtual_flag ~f4:ast_to_core_type) x1 in
     Pctf_val (x1)
   | Pctf_method (x1) ->
-    let x1 = (Helpers.Tuple.map4 ~f1:(Helpers.Loc.map ~f:ast_to_label) ~f2:ast_to_private_flag ~f3:ast_to_virtual_flag ~f4:ast_to_core_type) x1 in
+    let x1 = (Helpers.Tuple.map4 ~f1:(Helpers.Fn.compose Astlib.Loc.to_loc (Astlib.Loc.map ~f:ast_to_label)) ~f2:ast_to_private_flag ~f3:ast_to_virtual_flag ~f4:ast_to_core_type) x1 in
     Pctf_method (x1)
   | Pctf_constraint (x1) ->
     let x1 = (Helpers.Tuple.map2 ~f1:ast_to_core_type ~f2:ast_to_core_type) x1 in
@@ -1583,7 +1622,9 @@ and concrete_of_class_infos_class_expr
 =
   let pci_virt = ast_of_virtual_flag pci_virt in
   let pci_params = (List.map ~f:(Helpers.Tuple.map2 ~f1:ast_of_core_type ~f2:ast_of_variance)) pci_params in
+  let pci_name = Astlib.Loc.of_loc pci_name in
   let pci_expr = ast_of_class_expr pci_expr in
+  let pci_loc = Astlib.Location.of_location pci_loc in
   let pci_attributes = ast_of_attributes pci_attributes in
   ({ pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Versions.V4_07.Class_expr.t Versions.V4_07.Class_infos.concrete)
 
@@ -1600,7 +1641,9 @@ and concrete_to_class_infos_class_expr
 =
   let pci_virt = ast_to_virtual_flag pci_virt in
   let pci_params = (List.map ~f:(Helpers.Tuple.map2 ~f1:ast_to_core_type ~f2:ast_to_variance)) pci_params in
+  let pci_name = Astlib.Loc.to_loc pci_name in
   let pci_expr = ast_to_class_expr pci_expr in
+  let pci_loc = Astlib.Location.to_location pci_loc in
   let pci_attributes = ast_to_attributes pci_attributes in
   ({ pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Compiler_types.class_expr Compiler_types.class_infos)
 
@@ -1612,7 +1655,9 @@ and concrete_of_class_infos_class_type
 =
   let pci_virt = ast_of_virtual_flag pci_virt in
   let pci_params = (List.map ~f:(Helpers.Tuple.map2 ~f1:ast_of_core_type ~f2:ast_of_variance)) pci_params in
+  let pci_name = Astlib.Loc.of_loc pci_name in
   let pci_expr = ast_of_class_type pci_expr in
+  let pci_loc = Astlib.Location.of_location pci_loc in
   let pci_attributes = ast_of_attributes pci_attributes in
   ({ pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Versions.V4_07.Class_type.t Versions.V4_07.Class_infos.concrete)
 
@@ -1629,7 +1674,9 @@ and concrete_to_class_infos_class_type
 =
   let pci_virt = ast_to_virtual_flag pci_virt in
   let pci_params = (List.map ~f:(Helpers.Tuple.map2 ~f1:ast_to_core_type ~f2:ast_to_variance)) pci_params in
+  let pci_name = Astlib.Loc.to_loc pci_name in
   let pci_expr = ast_to_class_type pci_expr in
+  let pci_loc = Astlib.Location.to_location pci_loc in
   let pci_attributes = ast_to_attributes pci_attributes in
   ({ pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Compiler_types.class_type Compiler_types.class_infos)
 
@@ -1674,6 +1721,7 @@ and concrete_of_class_expr
   ({ pcl_desc; pcl_loc; pcl_attributes } : Compiler_types.class_expr)
 =
   let pcl_desc = ast_of_class_expr_desc pcl_desc in
+  let pcl_loc = Astlib.Location.of_location pcl_loc in
   let pcl_attributes = ast_of_attributes pcl_attributes in
   ({ pcl_desc; pcl_loc; pcl_attributes } : Versions.V4_07.Class_expr.concrete)
 
@@ -1689,6 +1737,7 @@ and concrete_to_class_expr
   ({ pcl_desc; pcl_loc; pcl_attributes } : Versions.V4_07.Class_expr.concrete)
 =
   let pcl_desc = ast_to_class_expr_desc pcl_desc in
+  let pcl_loc = Astlib.Location.to_location pcl_loc in
   let pcl_attributes = ast_to_attributes pcl_attributes in
   ({ pcl_desc; pcl_loc; pcl_attributes } : Compiler_types.class_expr)
 
@@ -1809,6 +1858,7 @@ and concrete_of_class_field
   ({ pcf_desc; pcf_loc; pcf_attributes } : Compiler_types.class_field)
 =
   let pcf_desc = ast_of_class_field_desc pcf_desc in
+  let pcf_loc = Astlib.Location.of_location pcf_loc in
   let pcf_attributes = ast_of_attributes pcf_attributes in
   ({ pcf_desc; pcf_loc; pcf_attributes } : Versions.V4_07.Class_field.concrete)
 
@@ -1824,6 +1874,7 @@ and concrete_to_class_field
   ({ pcf_desc; pcf_loc; pcf_attributes } : Versions.V4_07.Class_field.concrete)
 =
   let pcf_desc = ast_to_class_field_desc pcf_desc in
+  let pcf_loc = Astlib.Location.to_location pcf_loc in
   let pcf_attributes = ast_to_attributes pcf_attributes in
   ({ pcf_desc; pcf_loc; pcf_attributes } : Compiler_types.class_field)
 
@@ -1835,12 +1886,13 @@ and concrete_of_class_field_desc x : Versions.V4_07.Class_field_desc.concrete =
   | Pcf_inherit (x1, x2, x3) ->
     let x1 = ast_of_override_flag x1 in
     let x2 = ast_of_class_expr x2 in
+    let x3 = (Helpers.Option.map ~f:Astlib.Loc.of_loc) x3 in
     Pcf_inherit (x1, x2, x3)
   | Pcf_val (x1) ->
-    let x1 = (Helpers.Tuple.map3 ~f1:(Helpers.Loc.map ~f:ast_of_label) ~f2:ast_of_mutable_flag ~f3:ast_of_class_field_kind) x1 in
+    let x1 = (Helpers.Tuple.map3 ~f1:(Helpers.Fn.compose (Astlib.Loc.map ~f:ast_of_label) Astlib.Loc.of_loc) ~f2:ast_of_mutable_flag ~f3:ast_of_class_field_kind) x1 in
     Pcf_val (x1)
   | Pcf_method (x1) ->
-    let x1 = (Helpers.Tuple.map3 ~f1:(Helpers.Loc.map ~f:ast_of_label) ~f2:ast_of_private_flag ~f3:ast_of_class_field_kind) x1 in
+    let x1 = (Helpers.Tuple.map3 ~f1:(Helpers.Fn.compose (Astlib.Loc.map ~f:ast_of_label) Astlib.Loc.of_loc) ~f2:ast_of_private_flag ~f3:ast_of_class_field_kind) x1 in
     Pcf_method (x1)
   | Pcf_constraint (x1) ->
     let x1 = (Helpers.Tuple.map2 ~f1:ast_of_core_type ~f2:ast_of_core_type) x1 in
@@ -1868,12 +1920,13 @@ and concrete_to_class_field_desc x : Compiler_types.class_field_desc =
   | Pcf_inherit (x1, x2, x3) ->
     let x1 = ast_to_override_flag x1 in
     let x2 = ast_to_class_expr x2 in
+    let x3 = (Helpers.Option.map ~f:Astlib.Loc.to_loc) x3 in
     Pcf_inherit (x1, x2, x3)
   | Pcf_val (x1) ->
-    let x1 = (Helpers.Tuple.map3 ~f1:(Helpers.Loc.map ~f:ast_to_label) ~f2:ast_to_mutable_flag ~f3:ast_to_class_field_kind) x1 in
+    let x1 = (Helpers.Tuple.map3 ~f1:(Helpers.Fn.compose Astlib.Loc.to_loc (Astlib.Loc.map ~f:ast_to_label)) ~f2:ast_to_mutable_flag ~f3:ast_to_class_field_kind) x1 in
     Pcf_val (x1)
   | Pcf_method (x1) ->
-    let x1 = (Helpers.Tuple.map3 ~f1:(Helpers.Loc.map ~f:ast_to_label) ~f2:ast_to_private_flag ~f3:ast_to_class_field_kind) x1 in
+    let x1 = (Helpers.Tuple.map3 ~f1:(Helpers.Fn.compose Astlib.Loc.to_loc (Astlib.Loc.map ~f:ast_to_label)) ~f2:ast_to_private_flag ~f3:ast_to_class_field_kind) x1 in
     Pcf_method (x1)
   | Pcf_constraint (x1) ->
     let x1 = (Helpers.Tuple.map2 ~f1:ast_to_core_type ~f2:ast_to_core_type) x1 in
@@ -1943,6 +1996,7 @@ and concrete_of_module_type
   ({ pmty_desc; pmty_loc; pmty_attributes } : Compiler_types.module_type)
 =
   let pmty_desc = ast_of_module_type_desc pmty_desc in
+  let pmty_loc = Astlib.Location.of_location pmty_loc in
   let pmty_attributes = ast_of_attributes pmty_attributes in
   ({ pmty_desc; pmty_loc; pmty_attributes } : Versions.V4_07.Module_type.concrete)
 
@@ -1958,6 +2012,7 @@ and concrete_to_module_type
   ({ pmty_desc; pmty_loc; pmty_attributes } : Versions.V4_07.Module_type.concrete)
 =
   let pmty_desc = ast_to_module_type_desc pmty_desc in
+  let pmty_loc = Astlib.Location.to_location pmty_loc in
   let pmty_attributes = ast_to_attributes pmty_attributes in
   ({ pmty_desc; pmty_loc; pmty_attributes } : Compiler_types.module_type)
 
@@ -1973,6 +2028,7 @@ and concrete_of_module_type_desc x : Versions.V4_07.Module_type_desc.concrete =
     let x1 = ast_of_signature x1 in
     Pmty_signature (x1)
   | Pmty_functor (x1, x2, x3) ->
+    let x1 = Astlib.Loc.of_loc x1 in
     let x2 = (Helpers.Option.map ~f:ast_of_module_type) x2 in
     let x3 = ast_of_module_type x3 in
     Pmty_functor (x1, x2, x3)
@@ -2007,6 +2063,7 @@ and concrete_to_module_type_desc x : Compiler_types.module_type_desc =
     let x1 = ast_to_signature x1 in
     Pmty_signature (x1)
   | Pmty_functor (x1, x2, x3) ->
+    let x1 = Astlib.Loc.to_loc x1 in
     let x2 = (Helpers.Option.map ~f:ast_to_module_type) x2 in
     let x3 = ast_to_module_type x3 in
     Pmty_functor (x1, x2, x3)
@@ -2048,6 +2105,7 @@ and concrete_of_signature_item
   ({ psig_desc; psig_loc } : Compiler_types.signature_item)
 =
   let psig_desc = ast_of_signature_item_desc psig_desc in
+  let psig_loc = Astlib.Location.of_location psig_loc in
   ({ psig_desc; psig_loc } : Versions.V4_07.Signature_item.concrete)
 
 and ast_to_signature_item x =
@@ -2062,6 +2120,7 @@ and concrete_to_signature_item
   ({ psig_desc; psig_loc } : Versions.V4_07.Signature_item.concrete)
 =
   let psig_desc = ast_to_signature_item_desc psig_desc in
+  let psig_loc = Astlib.Location.to_location psig_loc in
   ({ psig_desc; psig_loc } : Compiler_types.signature_item)
 
 and ast_of_signature_item_desc x =
@@ -2169,8 +2228,10 @@ and ast_of_module_declaration x =
 and concrete_of_module_declaration
   ({ pmd_name; pmd_type; pmd_attributes; pmd_loc } : Compiler_types.module_declaration)
 =
+  let pmd_name = Astlib.Loc.of_loc pmd_name in
   let pmd_type = ast_of_module_type pmd_type in
   let pmd_attributes = ast_of_attributes pmd_attributes in
+  let pmd_loc = Astlib.Location.of_location pmd_loc in
   ({ pmd_name; pmd_type; pmd_attributes; pmd_loc } : Versions.V4_07.Module_declaration.concrete)
 
 and ast_to_module_declaration x =
@@ -2184,8 +2245,10 @@ and ast_to_module_declaration x =
 and concrete_to_module_declaration
   ({ pmd_name; pmd_type; pmd_attributes; pmd_loc } : Versions.V4_07.Module_declaration.concrete)
 =
+  let pmd_name = Astlib.Loc.to_loc pmd_name in
   let pmd_type = ast_to_module_type pmd_type in
   let pmd_attributes = ast_to_attributes pmd_attributes in
+  let pmd_loc = Astlib.Location.to_location pmd_loc in
   ({ pmd_name; pmd_type; pmd_attributes; pmd_loc } : Compiler_types.module_declaration)
 
 and ast_of_module_type_declaration x =
@@ -2194,8 +2257,10 @@ and ast_of_module_type_declaration x =
 and concrete_of_module_type_declaration
   ({ pmtd_name; pmtd_type; pmtd_attributes; pmtd_loc } : Compiler_types.module_type_declaration)
 =
+  let pmtd_name = Astlib.Loc.of_loc pmtd_name in
   let pmtd_type = (Helpers.Option.map ~f:ast_of_module_type) pmtd_type in
   let pmtd_attributes = ast_of_attributes pmtd_attributes in
+  let pmtd_loc = Astlib.Location.of_location pmtd_loc in
   ({ pmtd_name; pmtd_type; pmtd_attributes; pmtd_loc } : Versions.V4_07.Module_type_declaration.concrete)
 
 and ast_to_module_type_declaration x =
@@ -2209,8 +2274,10 @@ and ast_to_module_type_declaration x =
 and concrete_to_module_type_declaration
   ({ pmtd_name; pmtd_type; pmtd_attributes; pmtd_loc } : Versions.V4_07.Module_type_declaration.concrete)
 =
+  let pmtd_name = Astlib.Loc.to_loc pmtd_name in
   let pmtd_type = (Helpers.Option.map ~f:ast_to_module_type) pmtd_type in
   let pmtd_attributes = ast_to_attributes pmtd_attributes in
+  let pmtd_loc = Astlib.Location.to_location pmtd_loc in
   ({ pmtd_name; pmtd_type; pmtd_attributes; pmtd_loc } : Compiler_types.module_type_declaration)
 
 and ast_of_open_description x =
@@ -2221,6 +2288,7 @@ and concrete_of_open_description
 =
   let popen_lid = ast_of_longident_loc popen_lid in
   let popen_override = ast_of_override_flag popen_override in
+  let popen_loc = Astlib.Location.of_location popen_loc in
   let popen_attributes = ast_of_attributes popen_attributes in
   ({ popen_lid; popen_override; popen_loc; popen_attributes } : Versions.V4_07.Open_description.concrete)
 
@@ -2237,6 +2305,7 @@ and concrete_to_open_description
 =
   let popen_lid = ast_to_longident_loc popen_lid in
   let popen_override = ast_to_override_flag popen_override in
+  let popen_loc = Astlib.Location.to_location popen_loc in
   let popen_attributes = ast_to_attributes popen_attributes in
   ({ popen_lid; popen_override; popen_loc; popen_attributes } : Compiler_types.open_description)
 
@@ -2247,6 +2316,7 @@ and concrete_of_include_infos_module_expr
   ({ pincl_mod; pincl_loc; pincl_attributes } : Compiler_types.module_expr Compiler_types.include_infos)
 =
   let pincl_mod = ast_of_module_expr pincl_mod in
+  let pincl_loc = Astlib.Location.of_location pincl_loc in
   let pincl_attributes = ast_of_attributes pincl_attributes in
   ({ pincl_mod; pincl_loc; pincl_attributes } : Versions.V4_07.Module_expr.t Versions.V4_07.Include_infos.concrete)
 
@@ -2262,6 +2332,7 @@ and concrete_to_include_infos_module_expr
   ({ pincl_mod; pincl_loc; pincl_attributes } : Versions.V4_07.Module_expr.t Versions.V4_07.Include_infos.concrete)
 =
   let pincl_mod = ast_to_module_expr pincl_mod in
+  let pincl_loc = Astlib.Location.to_location pincl_loc in
   let pincl_attributes = ast_to_attributes pincl_attributes in
   ({ pincl_mod; pincl_loc; pincl_attributes } : Compiler_types.module_expr Compiler_types.include_infos)
 
@@ -2272,6 +2343,7 @@ and concrete_of_include_infos_module_type
   ({ pincl_mod; pincl_loc; pincl_attributes } : Compiler_types.module_type Compiler_types.include_infos)
 =
   let pincl_mod = ast_of_module_type pincl_mod in
+  let pincl_loc = Astlib.Location.of_location pincl_loc in
   let pincl_attributes = ast_of_attributes pincl_attributes in
   ({ pincl_mod; pincl_loc; pincl_attributes } : Versions.V4_07.Module_type.t Versions.V4_07.Include_infos.concrete)
 
@@ -2287,6 +2359,7 @@ and concrete_to_include_infos_module_type
   ({ pincl_mod; pincl_loc; pincl_attributes } : Versions.V4_07.Module_type.t Versions.V4_07.Include_infos.concrete)
 =
   let pincl_mod = ast_to_module_type pincl_mod in
+  let pincl_loc = Astlib.Location.to_location pincl_loc in
   let pincl_attributes = ast_to_attributes pincl_attributes in
   ({ pincl_mod; pincl_loc; pincl_attributes } : Compiler_types.module_type Compiler_types.include_infos)
 
@@ -2380,6 +2453,7 @@ and concrete_of_module_expr
   ({ pmod_desc; pmod_loc; pmod_attributes } : Compiler_types.module_expr)
 =
   let pmod_desc = ast_of_module_expr_desc pmod_desc in
+  let pmod_loc = Astlib.Location.of_location pmod_loc in
   let pmod_attributes = ast_of_attributes pmod_attributes in
   ({ pmod_desc; pmod_loc; pmod_attributes } : Versions.V4_07.Module_expr.concrete)
 
@@ -2395,6 +2469,7 @@ and concrete_to_module_expr
   ({ pmod_desc; pmod_loc; pmod_attributes } : Versions.V4_07.Module_expr.concrete)
 =
   let pmod_desc = ast_to_module_expr_desc pmod_desc in
+  let pmod_loc = Astlib.Location.to_location pmod_loc in
   let pmod_attributes = ast_to_attributes pmod_attributes in
   ({ pmod_desc; pmod_loc; pmod_attributes } : Compiler_types.module_expr)
 
@@ -2410,6 +2485,7 @@ and concrete_of_module_expr_desc x : Versions.V4_07.Module_expr_desc.concrete =
     let x1 = ast_of_structure x1 in
     Pmod_structure (x1)
   | Pmod_functor (x1, x2, x3) ->
+    let x1 = Astlib.Loc.of_loc x1 in
     let x2 = (Helpers.Option.map ~f:ast_of_module_type) x2 in
     let x3 = ast_of_module_expr x3 in
     Pmod_functor (x1, x2, x3)
@@ -2445,6 +2521,7 @@ and concrete_to_module_expr_desc x : Compiler_types.module_expr_desc =
     let x1 = ast_to_structure x1 in
     Pmod_structure (x1)
   | Pmod_functor (x1, x2, x3) ->
+    let x1 = Astlib.Loc.to_loc x1 in
     let x2 = (Helpers.Option.map ~f:ast_to_module_type) x2 in
     let x3 = ast_to_module_expr x3 in
     Pmod_functor (x1, x2, x3)
@@ -2487,6 +2564,7 @@ and concrete_of_structure_item
   ({ pstr_desc; pstr_loc } : Compiler_types.structure_item)
 =
   let pstr_desc = ast_of_structure_item_desc pstr_desc in
+  let pstr_loc = Astlib.Location.of_location pstr_loc in
   ({ pstr_desc; pstr_loc } : Versions.V4_07.Structure_item.concrete)
 
 and ast_to_structure_item x =
@@ -2501,6 +2579,7 @@ and concrete_to_structure_item
   ({ pstr_desc; pstr_loc } : Versions.V4_07.Structure_item.concrete)
 =
   let pstr_desc = ast_to_structure_item_desc pstr_desc in
+  let pstr_loc = Astlib.Location.to_location pstr_loc in
   ({ pstr_desc; pstr_loc } : Compiler_types.structure_item)
 
 and ast_of_structure_item_desc x =
@@ -2627,6 +2706,7 @@ and concrete_of_value_binding
   let pvb_pat = ast_of_pattern pvb_pat in
   let pvb_expr = ast_of_expression pvb_expr in
   let pvb_attributes = ast_of_attributes pvb_attributes in
+  let pvb_loc = Astlib.Location.of_location pvb_loc in
   ({ pvb_pat; pvb_expr; pvb_attributes; pvb_loc } : Versions.V4_07.Value_binding.concrete)
 
 and ast_to_value_binding x =
@@ -2643,6 +2723,7 @@ and concrete_to_value_binding
   let pvb_pat = ast_to_pattern pvb_pat in
   let pvb_expr = ast_to_expression pvb_expr in
   let pvb_attributes = ast_to_attributes pvb_attributes in
+  let pvb_loc = Astlib.Location.to_location pvb_loc in
   ({ pvb_pat; pvb_expr; pvb_attributes; pvb_loc } : Compiler_types.value_binding)
 
 and ast_of_module_binding x =
@@ -2651,8 +2732,10 @@ and ast_of_module_binding x =
 and concrete_of_module_binding
   ({ pmb_name; pmb_expr; pmb_attributes; pmb_loc } : Compiler_types.module_binding)
 =
+  let pmb_name = Astlib.Loc.of_loc pmb_name in
   let pmb_expr = ast_of_module_expr pmb_expr in
   let pmb_attributes = ast_of_attributes pmb_attributes in
+  let pmb_loc = Astlib.Location.of_location pmb_loc in
   ({ pmb_name; pmb_expr; pmb_attributes; pmb_loc } : Versions.V4_07.Module_binding.concrete)
 
 and ast_to_module_binding x =
@@ -2666,8 +2749,10 @@ and ast_to_module_binding x =
 and concrete_to_module_binding
   ({ pmb_name; pmb_expr; pmb_attributes; pmb_loc } : Versions.V4_07.Module_binding.concrete)
 =
+  let pmb_name = Astlib.Loc.to_loc pmb_name in
   let pmb_expr = ast_to_module_expr pmb_expr in
   let pmb_attributes = ast_to_attributes pmb_attributes in
+  let pmb_loc = Astlib.Location.to_location pmb_loc in
   ({ pmb_name; pmb_expr; pmb_attributes; pmb_loc } : Compiler_types.module_binding)
 
 and ast_of_toplevel_phrase x =

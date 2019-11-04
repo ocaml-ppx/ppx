@@ -9,8 +9,8 @@ module Render (Config : sig val internal : bool end) = struct
     | Char -> "char"
     | Int -> "int"
     | String -> "string"
-    | Location -> "Location.t"
-    | Loc ty -> string_of_ty ty ^ " Location.loc"
+    | Location -> "Astlib.Location.t"
+    | Loc ty -> string_of_ty ty ^ " Astlib.Loc.t"
     | List ty -> string_of_ty ty ^ " list"
     | Option ty -> string_of_ty ty ^ " option"
     | Tuple tuple -> string_of_tuple_type tuple

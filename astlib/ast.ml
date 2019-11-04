@@ -1,5 +1,3 @@
-open Ocaml_common
-
 type 'a data =
   | Node of 'a
   | Bool of bool
@@ -7,7 +5,7 @@ type 'a data =
   | Int of int
   | String of string
   | Location of Location.t
-  | Loc of 'a data Location.loc
+  | Loc of 'a data Loc.t
   | List of 'a data list
   | Option of 'a data option
   | Tuple of 'a data array
