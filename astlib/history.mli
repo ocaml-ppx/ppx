@@ -12,6 +12,9 @@ type conversion =
   ; f : 'a . 'a conversion_function
   }
 
+(** It is expected that [versioned_grammars] are provided consecutively in order, and that
+    [conversions] contains exactly one up-conversion and one down-conversion for each
+    consecutive pair of versions. Raises otherwise. *)
 val create
   :  versioned_grammars : (string * Grammar.t) list
   -> conversions : conversion list
