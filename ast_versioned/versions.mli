@@ -1,5 +1,3 @@
-open Ocaml_common
-
 (*$ Ppx_ast_versioned_cinaps.print_versions_mli () *)
 module V4_07 : sig
   module rec Longident : sig
@@ -29,12 +27,12 @@ module V4_07 : sig
   and Longident_loc : sig
     type t
 
-    type concrete = Longident.t Location.loc
+    type concrete = Longident.t Astlib.Loc.t
 
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create : Longident.t Location.loc -> t
+    val create : Longident.t Astlib.Loc.t -> t
   end
 
   and Rec_flag : sig
@@ -214,23 +212,23 @@ module V4_07 : sig
   and Attribute : sig
     type t
 
-    type concrete = (string Location.loc * Payload.t)
+    type concrete = (string Astlib.Loc.t * Payload.t)
 
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create : (string Location.loc * Payload.t) -> t
+    val create : (string Astlib.Loc.t * Payload.t) -> t
   end
 
   and Extension : sig
     type t
 
-    type concrete = (string Location.loc * Payload.t)
+    type concrete = (string Astlib.Loc.t * Payload.t)
 
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create : (string Location.loc * Payload.t) -> t
+    val create : (string Astlib.Loc.t * Payload.t) -> t
   end
 
   and Attributes : sig
@@ -276,7 +274,7 @@ module V4_07 : sig
 
     type concrete =
       { ptyp_desc : Core_type_desc.t
-      ; ptyp_loc : Location.t
+      ; ptyp_loc : Astlib.Location.t
       ; ptyp_attributes : Attributes.t
       }
 
@@ -285,7 +283,7 @@ module V4_07 : sig
 
     val create :
       ptyp_desc:Core_type_desc.t
-      -> ptyp_loc:Location.t
+      -> ptyp_loc:Astlib.Location.t
       -> ptyp_attributes:Attributes.t
       -> t
   end
@@ -303,7 +301,7 @@ module V4_07 : sig
       | Ptyp_class of Longident_loc.t * Core_type.t list
       | Ptyp_alias of Core_type.t * string
       | Ptyp_variant of Row_field.t list * Closed_flag.t * Label.t list option
-      | Ptyp_poly of string Location.loc list * Core_type.t
+      | Ptyp_poly of string Astlib.Loc.t list * Core_type.t
       | Ptyp_package of Package_type.t
       | Ptyp_extension of Extension.t
 
@@ -344,7 +342,7 @@ module V4_07 : sig
       -> Label.t list option
       -> t
     val ptyp_poly :
-      string Location.loc list
+      string Astlib.Loc.t list
       -> Core_type.t
       -> t
     val ptyp_package :
@@ -370,14 +368,14 @@ module V4_07 : sig
     type t
 
     type concrete =
-      | Rtag of Label.t Location.loc * Attributes.t * bool * Core_type.t list
+      | Rtag of Label.t Astlib.Loc.t * Attributes.t * bool * Core_type.t list
       | Rinherit of Core_type.t
 
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
     val rtag :
-      Label.t Location.loc
+      Label.t Astlib.Loc.t
       -> Attributes.t
       -> bool
       -> Core_type.t list
@@ -391,14 +389,14 @@ module V4_07 : sig
     type t
 
     type concrete =
-      | Otag of Label.t Location.loc * Attributes.t * Core_type.t
+      | Otag of Label.t Astlib.Loc.t * Attributes.t * Core_type.t
       | Oinherit of Core_type.t
 
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
     val otag :
-      Label.t Location.loc
+      Label.t Astlib.Loc.t
       -> Attributes.t
       -> Core_type.t
       -> t
@@ -412,7 +410,7 @@ module V4_07 : sig
 
     type concrete =
       { ppat_desc : Pattern_desc.t
-      ; ppat_loc : Location.t
+      ; ppat_loc : Astlib.Location.t
       ; ppat_attributes : Attributes.t
       }
 
@@ -421,7 +419,7 @@ module V4_07 : sig
 
     val create :
       ppat_desc:Pattern_desc.t
-      -> ppat_loc:Location.t
+      -> ppat_loc:Astlib.Location.t
       -> ppat_attributes:Attributes.t
       -> t
   end
@@ -431,8 +429,8 @@ module V4_07 : sig
 
     type concrete =
       | Ppat_any
-      | Ppat_var of string Location.loc
-      | Ppat_alias of Pattern.t * string Location.loc
+      | Ppat_var of string Astlib.Loc.t
+      | Ppat_alias of Pattern.t * string Astlib.Loc.t
       | Ppat_constant of Constant.t
       | Ppat_interval of Constant.t * Constant.t
       | Ppat_tuple of Pattern.t list
@@ -444,7 +442,7 @@ module V4_07 : sig
       | Ppat_constraint of Pattern.t * Core_type.t
       | Ppat_type of Longident_loc.t
       | Ppat_lazy of Pattern.t
-      | Ppat_unpack of string Location.loc
+      | Ppat_unpack of string Astlib.Loc.t
       | Ppat_exception of Pattern.t
       | Ppat_extension of Extension.t
       | Ppat_open of Longident_loc.t * Pattern.t
@@ -454,11 +452,11 @@ module V4_07 : sig
 
     val ppat_any : t
     val ppat_var :
-      string Location.loc
+      string Astlib.Loc.t
       -> t
     val ppat_alias :
       Pattern.t
-      -> string Location.loc
+      -> string Astlib.Loc.t
       -> t
     val ppat_constant :
       Constant.t
@@ -500,7 +498,7 @@ module V4_07 : sig
       Pattern.t
       -> t
     val ppat_unpack :
-      string Location.loc
+      string Astlib.Loc.t
       -> t
     val ppat_exception :
       Pattern.t
@@ -519,7 +517,7 @@ module V4_07 : sig
 
     type concrete =
       { pexp_desc : Expression_desc.t
-      ; pexp_loc : Location.t
+      ; pexp_loc : Astlib.Location.t
       ; pexp_attributes : Attributes.t
       }
 
@@ -528,7 +526,7 @@ module V4_07 : sig
 
     val create :
       pexp_desc:Expression_desc.t
-      -> pexp_loc:Location.t
+      -> pexp_loc:Astlib.Location.t
       -> pexp_attributes:Attributes.t
       -> t
   end
@@ -558,17 +556,17 @@ module V4_07 : sig
       | Pexp_for of Pattern.t * Expression.t * Expression.t * Direction_flag.t * Expression.t
       | Pexp_constraint of Expression.t * Core_type.t
       | Pexp_coerce of Expression.t * Core_type.t option * Core_type.t
-      | Pexp_send of Expression.t * Label.t Location.loc
+      | Pexp_send of Expression.t * Label.t Astlib.Loc.t
       | Pexp_new of Longident_loc.t
-      | Pexp_setinstvar of Label.t Location.loc * Expression.t
-      | Pexp_override of (Label.t Location.loc * Expression.t) list
-      | Pexp_letmodule of string Location.loc * Module_expr.t * Expression.t
+      | Pexp_setinstvar of Label.t Astlib.Loc.t * Expression.t
+      | Pexp_override of (Label.t Astlib.Loc.t * Expression.t) list
+      | Pexp_letmodule of string Astlib.Loc.t * Module_expr.t * Expression.t
       | Pexp_letexception of Extension_constructor.t * Expression.t
       | Pexp_assert of Expression.t
       | Pexp_lazy of Expression.t
       | Pexp_poly of Expression.t * Core_type.t option
       | Pexp_object of Class_structure.t
-      | Pexp_newtype of string Location.loc * Expression.t
+      | Pexp_newtype of string Astlib.Loc.t * Expression.t
       | Pexp_pack of Module_expr.t
       | Pexp_open of Override_flag.t * Longident_loc.t * Expression.t
       | Pexp_extension of Extension.t
@@ -667,20 +665,20 @@ module V4_07 : sig
       -> t
     val pexp_send :
       Expression.t
-      -> Label.t Location.loc
+      -> Label.t Astlib.Loc.t
       -> t
     val pexp_new :
       Longident_loc.t
       -> t
     val pexp_setinstvar :
-      Label.t Location.loc
+      Label.t Astlib.Loc.t
       -> Expression.t
       -> t
     val pexp_override :
-      (Label.t Location.loc * Expression.t) list
+      (Label.t Astlib.Loc.t * Expression.t) list
       -> t
     val pexp_letmodule :
-      string Location.loc
+      string Astlib.Loc.t
       -> Module_expr.t
       -> Expression.t
       -> t
@@ -702,7 +700,7 @@ module V4_07 : sig
       Class_structure.t
       -> t
     val pexp_newtype :
-      string Location.loc
+      string Astlib.Loc.t
       -> Expression.t
       -> t
     val pexp_pack :
@@ -742,22 +740,22 @@ module V4_07 : sig
     type t
 
     type concrete =
-      { pval_name : string Location.loc
+      { pval_name : string Astlib.Loc.t
       ; pval_type : Core_type.t
       ; pval_prim : string list
       ; pval_attributes : Attributes.t
-      ; pval_loc : Location.t
+      ; pval_loc : Astlib.Location.t
       }
 
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
     val create :
-      pval_name:string Location.loc
+      pval_name:string Astlib.Loc.t
       -> pval_type:Core_type.t
       -> pval_prim:string list
       -> pval_attributes:Attributes.t
-      -> pval_loc:Location.t
+      -> pval_loc:Astlib.Location.t
       -> t
   end
 
@@ -765,28 +763,28 @@ module V4_07 : sig
     type t
 
     type concrete =
-      { ptype_name : string Location.loc
+      { ptype_name : string Astlib.Loc.t
       ; ptype_params : (Core_type.t * Variance.t) list
-      ; ptype_cstrs : (Core_type.t * Core_type.t * Location.t) list
+      ; ptype_cstrs : (Core_type.t * Core_type.t * Astlib.Location.t) list
       ; ptype_kind : Type_kind.t
       ; ptype_private : Private_flag.t
       ; ptype_manifest : Core_type.t option
       ; ptype_attributes : Attributes.t
-      ; ptype_loc : Location.t
+      ; ptype_loc : Astlib.Location.t
       }
 
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
     val create :
-      ptype_name:string Location.loc
+      ptype_name:string Astlib.Loc.t
       -> ptype_params:(Core_type.t * Variance.t) list
-      -> ptype_cstrs:(Core_type.t * Core_type.t * Location.t) list
+      -> ptype_cstrs:(Core_type.t * Core_type.t * Astlib.Location.t) list
       -> ptype_kind:Type_kind.t
       -> ptype_private:Private_flag.t
       -> ptype_manifest:Core_type.t option
       -> ptype_attributes:Attributes.t
-      -> ptype_loc:Location.t
+      -> ptype_loc:Astlib.Location.t
       -> t
   end
 
@@ -816,10 +814,10 @@ module V4_07 : sig
     type t
 
     type concrete =
-      { pld_name : string Location.loc
+      { pld_name : string Astlib.Loc.t
       ; pld_mutable : Mutable_flag.t
       ; pld_type : Core_type.t
-      ; pld_loc : Location.t
+      ; pld_loc : Astlib.Location.t
       ; pld_attributes : Attributes.t
       }
 
@@ -827,10 +825,10 @@ module V4_07 : sig
     val to_concrete : t -> concrete option
 
     val create :
-      pld_name:string Location.loc
+      pld_name:string Astlib.Loc.t
       -> pld_mutable:Mutable_flag.t
       -> pld_type:Core_type.t
-      -> pld_loc:Location.t
+      -> pld_loc:Astlib.Location.t
       -> pld_attributes:Attributes.t
       -> t
   end
@@ -839,10 +837,10 @@ module V4_07 : sig
     type t
 
     type concrete =
-      { pcd_name : string Location.loc
+      { pcd_name : string Astlib.Loc.t
       ; pcd_args : Constructor_arguments.t
       ; pcd_res : Core_type.t option
-      ; pcd_loc : Location.t
+      ; pcd_loc : Astlib.Location.t
       ; pcd_attributes : Attributes.t
       }
 
@@ -850,10 +848,10 @@ module V4_07 : sig
     val to_concrete : t -> concrete option
 
     val create :
-      pcd_name:string Location.loc
+      pcd_name:string Astlib.Loc.t
       -> pcd_args:Constructor_arguments.t
       -> pcd_res:Core_type.t option
-      -> pcd_loc:Location.t
+      -> pcd_loc:Astlib.Location.t
       -> pcd_attributes:Attributes.t
       -> t
   end
@@ -903,9 +901,9 @@ module V4_07 : sig
     type t
 
     type concrete =
-      { pext_name : string Location.loc
+      { pext_name : string Astlib.Loc.t
       ; pext_kind : Extension_constructor_kind.t
-      ; pext_loc : Location.t
+      ; pext_loc : Astlib.Location.t
       ; pext_attributes : Attributes.t
       }
 
@@ -913,9 +911,9 @@ module V4_07 : sig
     val to_concrete : t -> concrete option
 
     val create :
-      pext_name:string Location.loc
+      pext_name:string Astlib.Loc.t
       -> pext_kind:Extension_constructor_kind.t
-      -> pext_loc:Location.t
+      -> pext_loc:Astlib.Location.t
       -> pext_attributes:Attributes.t
       -> t
   end
@@ -944,7 +942,7 @@ module V4_07 : sig
 
     type concrete =
       { pcty_desc : Class_type_desc.t
-      ; pcty_loc : Location.t
+      ; pcty_loc : Astlib.Location.t
       ; pcty_attributes : Attributes.t
       }
 
@@ -953,7 +951,7 @@ module V4_07 : sig
 
     val create :
       pcty_desc:Class_type_desc.t
-      -> pcty_loc:Location.t
+      -> pcty_loc:Astlib.Location.t
       -> pcty_attributes:Attributes.t
       -> t
   end
@@ -1015,7 +1013,7 @@ module V4_07 : sig
 
     type concrete =
       { pctf_desc : Class_type_field_desc.t
-      ; pctf_loc : Location.t
+      ; pctf_loc : Astlib.Location.t
       ; pctf_attributes : Attributes.t
       }
 
@@ -1024,7 +1022,7 @@ module V4_07 : sig
 
     val create :
       pctf_desc:Class_type_field_desc.t
-      -> pctf_loc:Location.t
+      -> pctf_loc:Astlib.Location.t
       -> pctf_attributes:Attributes.t
       -> t
   end
@@ -1034,8 +1032,8 @@ module V4_07 : sig
 
     type concrete =
       | Pctf_inherit of Class_type.t
-      | Pctf_val of (Label.t Location.loc * Mutable_flag.t * Virtual_flag.t * Core_type.t)
-      | Pctf_method of (Label.t Location.loc * Private_flag.t * Virtual_flag.t * Core_type.t)
+      | Pctf_val of (Label.t Astlib.Loc.t * Mutable_flag.t * Virtual_flag.t * Core_type.t)
+      | Pctf_method of (Label.t Astlib.Loc.t * Private_flag.t * Virtual_flag.t * Core_type.t)
       | Pctf_constraint of (Core_type.t * Core_type.t)
       | Pctf_attribute of Attribute.t
       | Pctf_extension of Extension.t
@@ -1047,10 +1045,10 @@ module V4_07 : sig
       Class_type.t
       -> t
     val pctf_val :
-      (Label.t Location.loc * Mutable_flag.t * Virtual_flag.t * Core_type.t)
+      (Label.t Astlib.Loc.t * Mutable_flag.t * Virtual_flag.t * Core_type.t)
       -> t
     val pctf_method :
-      (Label.t Location.loc * Private_flag.t * Virtual_flag.t * Core_type.t)
+      (Label.t Astlib.Loc.t * Private_flag.t * Virtual_flag.t * Core_type.t)
       -> t
     val pctf_constraint :
       (Core_type.t * Core_type.t)
@@ -1069,9 +1067,9 @@ module V4_07 : sig
     type 'a concrete =
       { pci_virt : Virtual_flag.t
       ; pci_params : (Core_type.t * Variance.t) list
-      ; pci_name : string Location.loc
+      ; pci_name : string Astlib.Loc.t
       ; pci_expr : 'a
-      ; pci_loc : Location.t
+      ; pci_loc : Astlib.Location.t
       ; pci_attributes : Attributes.t
       }
 
@@ -1081,9 +1079,9 @@ module V4_07 : sig
     val create_class_expr :
       pci_virt:Virtual_flag.t
       -> pci_params:(Core_type.t * Variance.t) list
-      -> pci_name:string Location.loc
+      -> pci_name:string Astlib.Loc.t
       -> pci_expr:Class_expr.t
-      -> pci_loc:Location.t
+      -> pci_loc:Astlib.Location.t
       -> pci_attributes:Attributes.t
       -> Class_expr.t t
 
@@ -1093,9 +1091,9 @@ module V4_07 : sig
     val create_class_type :
       pci_virt:Virtual_flag.t
       -> pci_params:(Core_type.t * Variance.t) list
-      -> pci_name:string Location.loc
+      -> pci_name:string Astlib.Loc.t
       -> pci_expr:Class_type.t
-      -> pci_loc:Location.t
+      -> pci_loc:Astlib.Location.t
       -> pci_attributes:Attributes.t
       -> Class_type.t t
   end
@@ -1127,7 +1125,7 @@ module V4_07 : sig
 
     type concrete =
       { pcl_desc : Class_expr_desc.t
-      ; pcl_loc : Location.t
+      ; pcl_loc : Astlib.Location.t
       ; pcl_attributes : Attributes.t
       }
 
@@ -1136,7 +1134,7 @@ module V4_07 : sig
 
     val create :
       pcl_desc:Class_expr_desc.t
-      -> pcl_loc:Location.t
+      -> pcl_loc:Astlib.Location.t
       -> pcl_attributes:Attributes.t
       -> t
   end
@@ -1215,7 +1213,7 @@ module V4_07 : sig
 
     type concrete =
       { pcf_desc : Class_field_desc.t
-      ; pcf_loc : Location.t
+      ; pcf_loc : Astlib.Location.t
       ; pcf_attributes : Attributes.t
       }
 
@@ -1224,7 +1222,7 @@ module V4_07 : sig
 
     val create :
       pcf_desc:Class_field_desc.t
-      -> pcf_loc:Location.t
+      -> pcf_loc:Astlib.Location.t
       -> pcf_attributes:Attributes.t
       -> t
   end
@@ -1233,9 +1231,9 @@ module V4_07 : sig
     type t
 
     type concrete =
-      | Pcf_inherit of Override_flag.t * Class_expr.t * string Location.loc option
-      | Pcf_val of (Label.t Location.loc * Mutable_flag.t * Class_field_kind.t)
-      | Pcf_method of (Label.t Location.loc * Private_flag.t * Class_field_kind.t)
+      | Pcf_inherit of Override_flag.t * Class_expr.t * string Astlib.Loc.t option
+      | Pcf_val of (Label.t Astlib.Loc.t * Mutable_flag.t * Class_field_kind.t)
+      | Pcf_method of (Label.t Astlib.Loc.t * Private_flag.t * Class_field_kind.t)
       | Pcf_constraint of (Core_type.t * Core_type.t)
       | Pcf_initializer of Expression.t
       | Pcf_attribute of Attribute.t
@@ -1247,13 +1245,13 @@ module V4_07 : sig
     val pcf_inherit :
       Override_flag.t
       -> Class_expr.t
-      -> string Location.loc option
+      -> string Astlib.Loc.t option
       -> t
     val pcf_val :
-      (Label.t Location.loc * Mutable_flag.t * Class_field_kind.t)
+      (Label.t Astlib.Loc.t * Mutable_flag.t * Class_field_kind.t)
       -> t
     val pcf_method :
-      (Label.t Location.loc * Private_flag.t * Class_field_kind.t)
+      (Label.t Astlib.Loc.t * Private_flag.t * Class_field_kind.t)
       -> t
     val pcf_constraint :
       (Core_type.t * Core_type.t)
@@ -1304,7 +1302,7 @@ module V4_07 : sig
 
     type concrete =
       { pmty_desc : Module_type_desc.t
-      ; pmty_loc : Location.t
+      ; pmty_loc : Astlib.Location.t
       ; pmty_attributes : Attributes.t
       }
 
@@ -1313,7 +1311,7 @@ module V4_07 : sig
 
     val create :
       pmty_desc:Module_type_desc.t
-      -> pmty_loc:Location.t
+      -> pmty_loc:Astlib.Location.t
       -> pmty_attributes:Attributes.t
       -> t
   end
@@ -1324,7 +1322,7 @@ module V4_07 : sig
     type concrete =
       | Pmty_ident of Longident_loc.t
       | Pmty_signature of Signature.t
-      | Pmty_functor of string Location.loc * Module_type.t option * Module_type.t
+      | Pmty_functor of string Astlib.Loc.t * Module_type.t option * Module_type.t
       | Pmty_with of Module_type.t * With_constraint.t list
       | Pmty_typeof of Module_expr.t
       | Pmty_extension of Extension.t
@@ -1340,7 +1338,7 @@ module V4_07 : sig
       Signature.t
       -> t
     val pmty_functor :
-      string Location.loc
+      string Astlib.Loc.t
       -> Module_type.t option
       -> Module_type.t
       -> t
@@ -1375,7 +1373,7 @@ module V4_07 : sig
 
     type concrete =
       { psig_desc : Signature_item_desc.t
-      ; psig_loc : Location.t
+      ; psig_loc : Astlib.Location.t
       }
 
     val of_concrete : concrete -> t
@@ -1383,7 +1381,7 @@ module V4_07 : sig
 
     val create :
       psig_desc:Signature_item_desc.t
-      -> psig_loc:Location.t
+      -> psig_loc:Astlib.Location.t
       -> t
   end
 
@@ -1455,20 +1453,20 @@ module V4_07 : sig
     type t
 
     type concrete =
-      { pmd_name : string Location.loc
+      { pmd_name : string Astlib.Loc.t
       ; pmd_type : Module_type.t
       ; pmd_attributes : Attributes.t
-      ; pmd_loc : Location.t
+      ; pmd_loc : Astlib.Location.t
       }
 
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
     val create :
-      pmd_name:string Location.loc
+      pmd_name:string Astlib.Loc.t
       -> pmd_type:Module_type.t
       -> pmd_attributes:Attributes.t
-      -> pmd_loc:Location.t
+      -> pmd_loc:Astlib.Location.t
       -> t
   end
 
@@ -1476,20 +1474,20 @@ module V4_07 : sig
     type t
 
     type concrete =
-      { pmtd_name : string Location.loc
+      { pmtd_name : string Astlib.Loc.t
       ; pmtd_type : Module_type.t option
       ; pmtd_attributes : Attributes.t
-      ; pmtd_loc : Location.t
+      ; pmtd_loc : Astlib.Location.t
       }
 
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
     val create :
-      pmtd_name:string Location.loc
+      pmtd_name:string Astlib.Loc.t
       -> pmtd_type:Module_type.t option
       -> pmtd_attributes:Attributes.t
-      -> pmtd_loc:Location.t
+      -> pmtd_loc:Astlib.Location.t
       -> t
   end
 
@@ -1499,7 +1497,7 @@ module V4_07 : sig
     type concrete =
       { popen_lid : Longident_loc.t
       ; popen_override : Override_flag.t
-      ; popen_loc : Location.t
+      ; popen_loc : Astlib.Location.t
       ; popen_attributes : Attributes.t
       }
 
@@ -1509,7 +1507,7 @@ module V4_07 : sig
     val create :
       popen_lid:Longident_loc.t
       -> popen_override:Override_flag.t
-      -> popen_loc:Location.t
+      -> popen_loc:Astlib.Location.t
       -> popen_attributes:Attributes.t
       -> t
   end
@@ -1519,7 +1517,7 @@ module V4_07 : sig
 
     type 'a concrete =
       { pincl_mod : 'a
-      ; pincl_loc : Location.t
+      ; pincl_loc : Astlib.Location.t
       ; pincl_attributes : Attributes.t
       }
 
@@ -1528,7 +1526,7 @@ module V4_07 : sig
 
     val create_module_expr :
       pincl_mod:Module_expr.t
-      -> pincl_loc:Location.t
+      -> pincl_loc:Astlib.Location.t
       -> pincl_attributes:Attributes.t
       -> Module_expr.t t
 
@@ -1537,7 +1535,7 @@ module V4_07 : sig
 
     val create_module_type :
       pincl_mod:Module_type.t
-      -> pincl_loc:Location.t
+      -> pincl_loc:Astlib.Location.t
       -> pincl_attributes:Attributes.t
       -> Module_type.t t
   end
@@ -1599,7 +1597,7 @@ module V4_07 : sig
 
     type concrete =
       { pmod_desc : Module_expr_desc.t
-      ; pmod_loc : Location.t
+      ; pmod_loc : Astlib.Location.t
       ; pmod_attributes : Attributes.t
       }
 
@@ -1608,7 +1606,7 @@ module V4_07 : sig
 
     val create :
       pmod_desc:Module_expr_desc.t
-      -> pmod_loc:Location.t
+      -> pmod_loc:Astlib.Location.t
       -> pmod_attributes:Attributes.t
       -> t
   end
@@ -1619,7 +1617,7 @@ module V4_07 : sig
     type concrete =
       | Pmod_ident of Longident_loc.t
       | Pmod_structure of Structure.t
-      | Pmod_functor of string Location.loc * Module_type.t option * Module_expr.t
+      | Pmod_functor of string Astlib.Loc.t * Module_type.t option * Module_expr.t
       | Pmod_apply of Module_expr.t * Module_expr.t
       | Pmod_constraint of Module_expr.t * Module_type.t
       | Pmod_unpack of Expression.t
@@ -1635,7 +1633,7 @@ module V4_07 : sig
       Structure.t
       -> t
     val pmod_functor :
-      string Location.loc
+      string Astlib.Loc.t
       -> Module_type.t option
       -> Module_expr.t
       -> t
@@ -1671,7 +1669,7 @@ module V4_07 : sig
 
     type concrete =
       { pstr_desc : Structure_item_desc.t
-      ; pstr_loc : Location.t
+      ; pstr_loc : Astlib.Location.t
       }
 
     val of_concrete : concrete -> t
@@ -1679,7 +1677,7 @@ module V4_07 : sig
 
     val create :
       pstr_desc:Structure_item_desc.t
-      -> pstr_loc:Location.t
+      -> pstr_loc:Astlib.Location.t
       -> t
   end
 
@@ -1764,7 +1762,7 @@ module V4_07 : sig
       { pvb_pat : Pattern.t
       ; pvb_expr : Expression.t
       ; pvb_attributes : Attributes.t
-      ; pvb_loc : Location.t
+      ; pvb_loc : Astlib.Location.t
       }
 
     val of_concrete : concrete -> t
@@ -1774,7 +1772,7 @@ module V4_07 : sig
       pvb_pat:Pattern.t
       -> pvb_expr:Expression.t
       -> pvb_attributes:Attributes.t
-      -> pvb_loc:Location.t
+      -> pvb_loc:Astlib.Location.t
       -> t
   end
 
@@ -1782,20 +1780,20 @@ module V4_07 : sig
     type t
 
     type concrete =
-      { pmb_name : string Location.loc
+      { pmb_name : string Astlib.Loc.t
       ; pmb_expr : Module_expr.t
       ; pmb_attributes : Attributes.t
-      ; pmb_loc : Location.t
+      ; pmb_loc : Astlib.Location.t
       }
 
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
     val create :
-      pmb_name:string Location.loc
+      pmb_name:string Astlib.Loc.t
       -> pmb_expr:Module_expr.t
       -> pmb_attributes:Attributes.t
-      -> pmb_loc:Location.t
+      -> pmb_loc:Astlib.Location.t
       -> t
   end
 
@@ -1876,12 +1874,12 @@ module V4_06 : sig
   and Longident_loc : sig
     type t
 
-    type concrete = Longident.t Location.loc
+    type concrete = Longident.t Astlib.Loc.t
 
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create : Longident.t Location.loc -> t
+    val create : Longident.t Astlib.Loc.t -> t
   end
 
   and Rec_flag : sig
@@ -2061,23 +2059,23 @@ module V4_06 : sig
   and Attribute : sig
     type t
 
-    type concrete = (string Location.loc * Payload.t)
+    type concrete = (string Astlib.Loc.t * Payload.t)
 
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create : (string Location.loc * Payload.t) -> t
+    val create : (string Astlib.Loc.t * Payload.t) -> t
   end
 
   and Extension : sig
     type t
 
-    type concrete = (string Location.loc * Payload.t)
+    type concrete = (string Astlib.Loc.t * Payload.t)
 
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
-    val create : (string Location.loc * Payload.t) -> t
+    val create : (string Astlib.Loc.t * Payload.t) -> t
   end
 
   and Attributes : sig
@@ -2123,7 +2121,7 @@ module V4_06 : sig
 
     type concrete =
       { ptyp_desc : Core_type_desc.t
-      ; ptyp_loc : Location.t
+      ; ptyp_loc : Astlib.Location.t
       ; ptyp_attributes : Attributes.t
       }
 
@@ -2132,7 +2130,7 @@ module V4_06 : sig
 
     val create :
       ptyp_desc:Core_type_desc.t
-      -> ptyp_loc:Location.t
+      -> ptyp_loc:Astlib.Location.t
       -> ptyp_attributes:Attributes.t
       -> t
   end
@@ -2150,7 +2148,7 @@ module V4_06 : sig
       | Ptyp_class of Longident_loc.t * Core_type.t list
       | Ptyp_alias of Core_type.t * string
       | Ptyp_variant of Row_field.t list * Closed_flag.t * Label.t list option
-      | Ptyp_poly of string Location.loc list * Core_type.t
+      | Ptyp_poly of string Astlib.Loc.t list * Core_type.t
       | Ptyp_package of Package_type.t
       | Ptyp_extension of Extension.t
 
@@ -2191,7 +2189,7 @@ module V4_06 : sig
       -> Label.t list option
       -> t
     val ptyp_poly :
-      string Location.loc list
+      string Astlib.Loc.t list
       -> Core_type.t
       -> t
     val ptyp_package :
@@ -2217,14 +2215,14 @@ module V4_06 : sig
     type t
 
     type concrete =
-      | Rtag of Label.t Location.loc * Attributes.t * bool * Core_type.t list
+      | Rtag of Label.t Astlib.Loc.t * Attributes.t * bool * Core_type.t list
       | Rinherit of Core_type.t
 
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
     val rtag :
-      Label.t Location.loc
+      Label.t Astlib.Loc.t
       -> Attributes.t
       -> bool
       -> Core_type.t list
@@ -2238,14 +2236,14 @@ module V4_06 : sig
     type t
 
     type concrete =
-      | Otag of Label.t Location.loc * Attributes.t * Core_type.t
+      | Otag of Label.t Astlib.Loc.t * Attributes.t * Core_type.t
       | Oinherit of Core_type.t
 
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
     val otag :
-      Label.t Location.loc
+      Label.t Astlib.Loc.t
       -> Attributes.t
       -> Core_type.t
       -> t
@@ -2259,7 +2257,7 @@ module V4_06 : sig
 
     type concrete =
       { ppat_desc : Pattern_desc.t
-      ; ppat_loc : Location.t
+      ; ppat_loc : Astlib.Location.t
       ; ppat_attributes : Attributes.t
       }
 
@@ -2268,7 +2266,7 @@ module V4_06 : sig
 
     val create :
       ppat_desc:Pattern_desc.t
-      -> ppat_loc:Location.t
+      -> ppat_loc:Astlib.Location.t
       -> ppat_attributes:Attributes.t
       -> t
   end
@@ -2278,8 +2276,8 @@ module V4_06 : sig
 
     type concrete =
       | Ppat_any
-      | Ppat_var of string Location.loc
-      | Ppat_alias of Pattern.t * string Location.loc
+      | Ppat_var of string Astlib.Loc.t
+      | Ppat_alias of Pattern.t * string Astlib.Loc.t
       | Ppat_constant of Constant.t
       | Ppat_interval of Constant.t * Constant.t
       | Ppat_tuple of Pattern.t list
@@ -2291,7 +2289,7 @@ module V4_06 : sig
       | Ppat_constraint of Pattern.t * Core_type.t
       | Ppat_type of Longident_loc.t
       | Ppat_lazy of Pattern.t
-      | Ppat_unpack of string Location.loc
+      | Ppat_unpack of string Astlib.Loc.t
       | Ppat_exception of Pattern.t
       | Ppat_extension of Extension.t
       | Ppat_open of Longident_loc.t * Pattern.t
@@ -2301,11 +2299,11 @@ module V4_06 : sig
 
     val ppat_any : t
     val ppat_var :
-      string Location.loc
+      string Astlib.Loc.t
       -> t
     val ppat_alias :
       Pattern.t
-      -> string Location.loc
+      -> string Astlib.Loc.t
       -> t
     val ppat_constant :
       Constant.t
@@ -2347,7 +2345,7 @@ module V4_06 : sig
       Pattern.t
       -> t
     val ppat_unpack :
-      string Location.loc
+      string Astlib.Loc.t
       -> t
     val ppat_exception :
       Pattern.t
@@ -2366,7 +2364,7 @@ module V4_06 : sig
 
     type concrete =
       { pexp_desc : Expression_desc.t
-      ; pexp_loc : Location.t
+      ; pexp_loc : Astlib.Location.t
       ; pexp_attributes : Attributes.t
       }
 
@@ -2375,7 +2373,7 @@ module V4_06 : sig
 
     val create :
       pexp_desc:Expression_desc.t
-      -> pexp_loc:Location.t
+      -> pexp_loc:Astlib.Location.t
       -> pexp_attributes:Attributes.t
       -> t
   end
@@ -2405,17 +2403,17 @@ module V4_06 : sig
       | Pexp_for of Pattern.t * Expression.t * Expression.t * Direction_flag.t * Expression.t
       | Pexp_constraint of Expression.t * Core_type.t
       | Pexp_coerce of Expression.t * Core_type.t option * Core_type.t
-      | Pexp_send of Expression.t * Label.t Location.loc
+      | Pexp_send of Expression.t * Label.t Astlib.Loc.t
       | Pexp_new of Longident_loc.t
-      | Pexp_setinstvar of Label.t Location.loc * Expression.t
-      | Pexp_override of (Label.t Location.loc * Expression.t) list
-      | Pexp_letmodule of string Location.loc * Module_expr.t * Expression.t
+      | Pexp_setinstvar of Label.t Astlib.Loc.t * Expression.t
+      | Pexp_override of (Label.t Astlib.Loc.t * Expression.t) list
+      | Pexp_letmodule of string Astlib.Loc.t * Module_expr.t * Expression.t
       | Pexp_letexception of Extension_constructor.t * Expression.t
       | Pexp_assert of Expression.t
       | Pexp_lazy of Expression.t
       | Pexp_poly of Expression.t * Core_type.t option
       | Pexp_object of Class_structure.t
-      | Pexp_newtype of string Location.loc * Expression.t
+      | Pexp_newtype of string Astlib.Loc.t * Expression.t
       | Pexp_pack of Module_expr.t
       | Pexp_open of Override_flag.t * Longident_loc.t * Expression.t
       | Pexp_extension of Extension.t
@@ -2514,20 +2512,20 @@ module V4_06 : sig
       -> t
     val pexp_send :
       Expression.t
-      -> Label.t Location.loc
+      -> Label.t Astlib.Loc.t
       -> t
     val pexp_new :
       Longident_loc.t
       -> t
     val pexp_setinstvar :
-      Label.t Location.loc
+      Label.t Astlib.Loc.t
       -> Expression.t
       -> t
     val pexp_override :
-      (Label.t Location.loc * Expression.t) list
+      (Label.t Astlib.Loc.t * Expression.t) list
       -> t
     val pexp_letmodule :
-      string Location.loc
+      string Astlib.Loc.t
       -> Module_expr.t
       -> Expression.t
       -> t
@@ -2549,7 +2547,7 @@ module V4_06 : sig
       Class_structure.t
       -> t
     val pexp_newtype :
-      string Location.loc
+      string Astlib.Loc.t
       -> Expression.t
       -> t
     val pexp_pack :
@@ -2589,22 +2587,22 @@ module V4_06 : sig
     type t
 
     type concrete =
-      { pval_name : string Location.loc
+      { pval_name : string Astlib.Loc.t
       ; pval_type : Core_type.t
       ; pval_prim : string list
       ; pval_attributes : Attributes.t
-      ; pval_loc : Location.t
+      ; pval_loc : Astlib.Location.t
       }
 
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
     val create :
-      pval_name:string Location.loc
+      pval_name:string Astlib.Loc.t
       -> pval_type:Core_type.t
       -> pval_prim:string list
       -> pval_attributes:Attributes.t
-      -> pval_loc:Location.t
+      -> pval_loc:Astlib.Location.t
       -> t
   end
 
@@ -2612,28 +2610,28 @@ module V4_06 : sig
     type t
 
     type concrete =
-      { ptype_name : string Location.loc
+      { ptype_name : string Astlib.Loc.t
       ; ptype_params : (Core_type.t * Variance.t) list
-      ; ptype_cstrs : (Core_type.t * Core_type.t * Location.t) list
+      ; ptype_cstrs : (Core_type.t * Core_type.t * Astlib.Location.t) list
       ; ptype_kind : Type_kind.t
       ; ptype_private : Private_flag.t
       ; ptype_manifest : Core_type.t option
       ; ptype_attributes : Attributes.t
-      ; ptype_loc : Location.t
+      ; ptype_loc : Astlib.Location.t
       }
 
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
     val create :
-      ptype_name:string Location.loc
+      ptype_name:string Astlib.Loc.t
       -> ptype_params:(Core_type.t * Variance.t) list
-      -> ptype_cstrs:(Core_type.t * Core_type.t * Location.t) list
+      -> ptype_cstrs:(Core_type.t * Core_type.t * Astlib.Location.t) list
       -> ptype_kind:Type_kind.t
       -> ptype_private:Private_flag.t
       -> ptype_manifest:Core_type.t option
       -> ptype_attributes:Attributes.t
-      -> ptype_loc:Location.t
+      -> ptype_loc:Astlib.Location.t
       -> t
   end
 
@@ -2663,10 +2661,10 @@ module V4_06 : sig
     type t
 
     type concrete =
-      { pld_name : string Location.loc
+      { pld_name : string Astlib.Loc.t
       ; pld_mutable : Mutable_flag.t
       ; pld_type : Core_type.t
-      ; pld_loc : Location.t
+      ; pld_loc : Astlib.Location.t
       ; pld_attributes : Attributes.t
       }
 
@@ -2674,10 +2672,10 @@ module V4_06 : sig
     val to_concrete : t -> concrete option
 
     val create :
-      pld_name:string Location.loc
+      pld_name:string Astlib.Loc.t
       -> pld_mutable:Mutable_flag.t
       -> pld_type:Core_type.t
-      -> pld_loc:Location.t
+      -> pld_loc:Astlib.Location.t
       -> pld_attributes:Attributes.t
       -> t
   end
@@ -2686,10 +2684,10 @@ module V4_06 : sig
     type t
 
     type concrete =
-      { pcd_name : string Location.loc
+      { pcd_name : string Astlib.Loc.t
       ; pcd_args : Constructor_arguments.t
       ; pcd_res : Core_type.t option
-      ; pcd_loc : Location.t
+      ; pcd_loc : Astlib.Location.t
       ; pcd_attributes : Attributes.t
       }
 
@@ -2697,10 +2695,10 @@ module V4_06 : sig
     val to_concrete : t -> concrete option
 
     val create :
-      pcd_name:string Location.loc
+      pcd_name:string Astlib.Loc.t
       -> pcd_args:Constructor_arguments.t
       -> pcd_res:Core_type.t option
-      -> pcd_loc:Location.t
+      -> pcd_loc:Astlib.Location.t
       -> pcd_attributes:Attributes.t
       -> t
   end
@@ -2750,9 +2748,9 @@ module V4_06 : sig
     type t
 
     type concrete =
-      { pext_name : string Location.loc
+      { pext_name : string Astlib.Loc.t
       ; pext_kind : Extension_constructor_kind.t
-      ; pext_loc : Location.t
+      ; pext_loc : Astlib.Location.t
       ; pext_attributes : Attributes.t
       }
 
@@ -2760,9 +2758,9 @@ module V4_06 : sig
     val to_concrete : t -> concrete option
 
     val create :
-      pext_name:string Location.loc
+      pext_name:string Astlib.Loc.t
       -> pext_kind:Extension_constructor_kind.t
-      -> pext_loc:Location.t
+      -> pext_loc:Astlib.Location.t
       -> pext_attributes:Attributes.t
       -> t
   end
@@ -2791,7 +2789,7 @@ module V4_06 : sig
 
     type concrete =
       { pcty_desc : Class_type_desc.t
-      ; pcty_loc : Location.t
+      ; pcty_loc : Astlib.Location.t
       ; pcty_attributes : Attributes.t
       }
 
@@ -2800,7 +2798,7 @@ module V4_06 : sig
 
     val create :
       pcty_desc:Class_type_desc.t
-      -> pcty_loc:Location.t
+      -> pcty_loc:Astlib.Location.t
       -> pcty_attributes:Attributes.t
       -> t
   end
@@ -2862,7 +2860,7 @@ module V4_06 : sig
 
     type concrete =
       { pctf_desc : Class_type_field_desc.t
-      ; pctf_loc : Location.t
+      ; pctf_loc : Astlib.Location.t
       ; pctf_attributes : Attributes.t
       }
 
@@ -2871,7 +2869,7 @@ module V4_06 : sig
 
     val create :
       pctf_desc:Class_type_field_desc.t
-      -> pctf_loc:Location.t
+      -> pctf_loc:Astlib.Location.t
       -> pctf_attributes:Attributes.t
       -> t
   end
@@ -2881,8 +2879,8 @@ module V4_06 : sig
 
     type concrete =
       | Pctf_inherit of Class_type.t
-      | Pctf_val of (Label.t Location.loc * Mutable_flag.t * Virtual_flag.t * Core_type.t)
-      | Pctf_method of (Label.t Location.loc * Private_flag.t * Virtual_flag.t * Core_type.t)
+      | Pctf_val of (Label.t Astlib.Loc.t * Mutable_flag.t * Virtual_flag.t * Core_type.t)
+      | Pctf_method of (Label.t Astlib.Loc.t * Private_flag.t * Virtual_flag.t * Core_type.t)
       | Pctf_constraint of (Core_type.t * Core_type.t)
       | Pctf_attribute of Attribute.t
       | Pctf_extension of Extension.t
@@ -2894,10 +2892,10 @@ module V4_06 : sig
       Class_type.t
       -> t
     val pctf_val :
-      (Label.t Location.loc * Mutable_flag.t * Virtual_flag.t * Core_type.t)
+      (Label.t Astlib.Loc.t * Mutable_flag.t * Virtual_flag.t * Core_type.t)
       -> t
     val pctf_method :
-      (Label.t Location.loc * Private_flag.t * Virtual_flag.t * Core_type.t)
+      (Label.t Astlib.Loc.t * Private_flag.t * Virtual_flag.t * Core_type.t)
       -> t
     val pctf_constraint :
       (Core_type.t * Core_type.t)
@@ -2916,9 +2914,9 @@ module V4_06 : sig
     type 'a concrete =
       { pci_virt : Virtual_flag.t
       ; pci_params : (Core_type.t * Variance.t) list
-      ; pci_name : string Location.loc
+      ; pci_name : string Astlib.Loc.t
       ; pci_expr : 'a
-      ; pci_loc : Location.t
+      ; pci_loc : Astlib.Location.t
       ; pci_attributes : Attributes.t
       }
 
@@ -2928,9 +2926,9 @@ module V4_06 : sig
     val create_class_expr :
       pci_virt:Virtual_flag.t
       -> pci_params:(Core_type.t * Variance.t) list
-      -> pci_name:string Location.loc
+      -> pci_name:string Astlib.Loc.t
       -> pci_expr:Class_expr.t
-      -> pci_loc:Location.t
+      -> pci_loc:Astlib.Location.t
       -> pci_attributes:Attributes.t
       -> Class_expr.t t
 
@@ -2940,9 +2938,9 @@ module V4_06 : sig
     val create_class_type :
       pci_virt:Virtual_flag.t
       -> pci_params:(Core_type.t * Variance.t) list
-      -> pci_name:string Location.loc
+      -> pci_name:string Astlib.Loc.t
       -> pci_expr:Class_type.t
-      -> pci_loc:Location.t
+      -> pci_loc:Astlib.Location.t
       -> pci_attributes:Attributes.t
       -> Class_type.t t
   end
@@ -2974,7 +2972,7 @@ module V4_06 : sig
 
     type concrete =
       { pcl_desc : Class_expr_desc.t
-      ; pcl_loc : Location.t
+      ; pcl_loc : Astlib.Location.t
       ; pcl_attributes : Attributes.t
       }
 
@@ -2983,7 +2981,7 @@ module V4_06 : sig
 
     val create :
       pcl_desc:Class_expr_desc.t
-      -> pcl_loc:Location.t
+      -> pcl_loc:Astlib.Location.t
       -> pcl_attributes:Attributes.t
       -> t
   end
@@ -3062,7 +3060,7 @@ module V4_06 : sig
 
     type concrete =
       { pcf_desc : Class_field_desc.t
-      ; pcf_loc : Location.t
+      ; pcf_loc : Astlib.Location.t
       ; pcf_attributes : Attributes.t
       }
 
@@ -3071,7 +3069,7 @@ module V4_06 : sig
 
     val create :
       pcf_desc:Class_field_desc.t
-      -> pcf_loc:Location.t
+      -> pcf_loc:Astlib.Location.t
       -> pcf_attributes:Attributes.t
       -> t
   end
@@ -3080,9 +3078,9 @@ module V4_06 : sig
     type t
 
     type concrete =
-      | Pcf_inherit of Override_flag.t * Class_expr.t * string Location.loc option
-      | Pcf_val of (Label.t Location.loc * Mutable_flag.t * Class_field_kind.t)
-      | Pcf_method of (Label.t Location.loc * Private_flag.t * Class_field_kind.t)
+      | Pcf_inherit of Override_flag.t * Class_expr.t * string Astlib.Loc.t option
+      | Pcf_val of (Label.t Astlib.Loc.t * Mutable_flag.t * Class_field_kind.t)
+      | Pcf_method of (Label.t Astlib.Loc.t * Private_flag.t * Class_field_kind.t)
       | Pcf_constraint of (Core_type.t * Core_type.t)
       | Pcf_initializer of Expression.t
       | Pcf_attribute of Attribute.t
@@ -3094,13 +3092,13 @@ module V4_06 : sig
     val pcf_inherit :
       Override_flag.t
       -> Class_expr.t
-      -> string Location.loc option
+      -> string Astlib.Loc.t option
       -> t
     val pcf_val :
-      (Label.t Location.loc * Mutable_flag.t * Class_field_kind.t)
+      (Label.t Astlib.Loc.t * Mutable_flag.t * Class_field_kind.t)
       -> t
     val pcf_method :
-      (Label.t Location.loc * Private_flag.t * Class_field_kind.t)
+      (Label.t Astlib.Loc.t * Private_flag.t * Class_field_kind.t)
       -> t
     val pcf_constraint :
       (Core_type.t * Core_type.t)
@@ -3151,7 +3149,7 @@ module V4_06 : sig
 
     type concrete =
       { pmty_desc : Module_type_desc.t
-      ; pmty_loc : Location.t
+      ; pmty_loc : Astlib.Location.t
       ; pmty_attributes : Attributes.t
       }
 
@@ -3160,7 +3158,7 @@ module V4_06 : sig
 
     val create :
       pmty_desc:Module_type_desc.t
-      -> pmty_loc:Location.t
+      -> pmty_loc:Astlib.Location.t
       -> pmty_attributes:Attributes.t
       -> t
   end
@@ -3171,7 +3169,7 @@ module V4_06 : sig
     type concrete =
       | Pmty_ident of Longident_loc.t
       | Pmty_signature of Signature.t
-      | Pmty_functor of string Location.loc * Module_type.t option * Module_type.t
+      | Pmty_functor of string Astlib.Loc.t * Module_type.t option * Module_type.t
       | Pmty_with of Module_type.t * With_constraint.t list
       | Pmty_typeof of Module_expr.t
       | Pmty_extension of Extension.t
@@ -3187,7 +3185,7 @@ module V4_06 : sig
       Signature.t
       -> t
     val pmty_functor :
-      string Location.loc
+      string Astlib.Loc.t
       -> Module_type.t option
       -> Module_type.t
       -> t
@@ -3222,7 +3220,7 @@ module V4_06 : sig
 
     type concrete =
       { psig_desc : Signature_item_desc.t
-      ; psig_loc : Location.t
+      ; psig_loc : Astlib.Location.t
       }
 
     val of_concrete : concrete -> t
@@ -3230,7 +3228,7 @@ module V4_06 : sig
 
     val create :
       psig_desc:Signature_item_desc.t
-      -> psig_loc:Location.t
+      -> psig_loc:Astlib.Location.t
       -> t
   end
 
@@ -3302,20 +3300,20 @@ module V4_06 : sig
     type t
 
     type concrete =
-      { pmd_name : string Location.loc
+      { pmd_name : string Astlib.Loc.t
       ; pmd_type : Module_type.t
       ; pmd_attributes : Attributes.t
-      ; pmd_loc : Location.t
+      ; pmd_loc : Astlib.Location.t
       }
 
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
     val create :
-      pmd_name:string Location.loc
+      pmd_name:string Astlib.Loc.t
       -> pmd_type:Module_type.t
       -> pmd_attributes:Attributes.t
-      -> pmd_loc:Location.t
+      -> pmd_loc:Astlib.Location.t
       -> t
   end
 
@@ -3323,20 +3321,20 @@ module V4_06 : sig
     type t
 
     type concrete =
-      { pmtd_name : string Location.loc
+      { pmtd_name : string Astlib.Loc.t
       ; pmtd_type : Module_type.t option
       ; pmtd_attributes : Attributes.t
-      ; pmtd_loc : Location.t
+      ; pmtd_loc : Astlib.Location.t
       }
 
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
     val create :
-      pmtd_name:string Location.loc
+      pmtd_name:string Astlib.Loc.t
       -> pmtd_type:Module_type.t option
       -> pmtd_attributes:Attributes.t
-      -> pmtd_loc:Location.t
+      -> pmtd_loc:Astlib.Location.t
       -> t
   end
 
@@ -3346,7 +3344,7 @@ module V4_06 : sig
     type concrete =
       { popen_lid : Longident_loc.t
       ; popen_override : Override_flag.t
-      ; popen_loc : Location.t
+      ; popen_loc : Astlib.Location.t
       ; popen_attributes : Attributes.t
       }
 
@@ -3356,7 +3354,7 @@ module V4_06 : sig
     val create :
       popen_lid:Longident_loc.t
       -> popen_override:Override_flag.t
-      -> popen_loc:Location.t
+      -> popen_loc:Astlib.Location.t
       -> popen_attributes:Attributes.t
       -> t
   end
@@ -3366,7 +3364,7 @@ module V4_06 : sig
 
     type 'a concrete =
       { pincl_mod : 'a
-      ; pincl_loc : Location.t
+      ; pincl_loc : Astlib.Location.t
       ; pincl_attributes : Attributes.t
       }
 
@@ -3375,7 +3373,7 @@ module V4_06 : sig
 
     val create_module_expr :
       pincl_mod:Module_expr.t
-      -> pincl_loc:Location.t
+      -> pincl_loc:Astlib.Location.t
       -> pincl_attributes:Attributes.t
       -> Module_expr.t t
 
@@ -3384,7 +3382,7 @@ module V4_06 : sig
 
     val create_module_type :
       pincl_mod:Module_type.t
-      -> pincl_loc:Location.t
+      -> pincl_loc:Astlib.Location.t
       -> pincl_attributes:Attributes.t
       -> Module_type.t t
   end
@@ -3446,7 +3444,7 @@ module V4_06 : sig
 
     type concrete =
       { pmod_desc : Module_expr_desc.t
-      ; pmod_loc : Location.t
+      ; pmod_loc : Astlib.Location.t
       ; pmod_attributes : Attributes.t
       }
 
@@ -3455,7 +3453,7 @@ module V4_06 : sig
 
     val create :
       pmod_desc:Module_expr_desc.t
-      -> pmod_loc:Location.t
+      -> pmod_loc:Astlib.Location.t
       -> pmod_attributes:Attributes.t
       -> t
   end
@@ -3466,7 +3464,7 @@ module V4_06 : sig
     type concrete =
       | Pmod_ident of Longident_loc.t
       | Pmod_structure of Structure.t
-      | Pmod_functor of string Location.loc * Module_type.t option * Module_expr.t
+      | Pmod_functor of string Astlib.Loc.t * Module_type.t option * Module_expr.t
       | Pmod_apply of Module_expr.t * Module_expr.t
       | Pmod_constraint of Module_expr.t * Module_type.t
       | Pmod_unpack of Expression.t
@@ -3482,7 +3480,7 @@ module V4_06 : sig
       Structure.t
       -> t
     val pmod_functor :
-      string Location.loc
+      string Astlib.Loc.t
       -> Module_type.t option
       -> Module_expr.t
       -> t
@@ -3518,7 +3516,7 @@ module V4_06 : sig
 
     type concrete =
       { pstr_desc : Structure_item_desc.t
-      ; pstr_loc : Location.t
+      ; pstr_loc : Astlib.Location.t
       }
 
     val of_concrete : concrete -> t
@@ -3526,7 +3524,7 @@ module V4_06 : sig
 
     val create :
       pstr_desc:Structure_item_desc.t
-      -> pstr_loc:Location.t
+      -> pstr_loc:Astlib.Location.t
       -> t
   end
 
@@ -3611,7 +3609,7 @@ module V4_06 : sig
       { pvb_pat : Pattern.t
       ; pvb_expr : Expression.t
       ; pvb_attributes : Attributes.t
-      ; pvb_loc : Location.t
+      ; pvb_loc : Astlib.Location.t
       }
 
     val of_concrete : concrete -> t
@@ -3621,7 +3619,7 @@ module V4_06 : sig
       pvb_pat:Pattern.t
       -> pvb_expr:Expression.t
       -> pvb_attributes:Attributes.t
-      -> pvb_loc:Location.t
+      -> pvb_loc:Astlib.Location.t
       -> t
   end
 
@@ -3629,20 +3627,20 @@ module V4_06 : sig
     type t
 
     type concrete =
-      { pmb_name : string Location.loc
+      { pmb_name : string Astlib.Loc.t
       ; pmb_expr : Module_expr.t
       ; pmb_attributes : Attributes.t
-      ; pmb_loc : Location.t
+      ; pmb_loc : Astlib.Location.t
       }
 
     val of_concrete : concrete -> t
     val to_concrete : t -> concrete option
 
     val create :
-      pmb_name:string Location.loc
+      pmb_name:string Astlib.Loc.t
       -> pmb_expr:Module_expr.t
       -> pmb_attributes:Attributes.t
-      -> pmb_loc:Location.t
+      -> pmb_loc:Astlib.Location.t
       -> t
   end
 

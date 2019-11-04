@@ -22,16 +22,10 @@ module Helpers = struct
       loop list []
   end
 
-  module Loc = struct
-    type 'a t = 'a Location.loc
-
-    let map ({ loc; txt } : _ t) ~f = ({ loc; txt = f txt } : _ t)
-  end
-
   module Optional = struct
     module Loc = struct
-      let map (loc : _ Loc.t) ~f =
-        Option.map (f loc.txt) ~f:(fun txt -> { loc with txt })
+      let map (loc : _ Astlib.Loc.t) ~f =
+        Option.map (f (Astlib.Loc.txt loc)) ~f:(fun txt -> Astlib.Loc.update_txt loc ~txt)
     end
 
     module List = struct
@@ -58,7 +52,7 @@ let of_char x : t = Char x
 let of_int x : t = Int x
 let of_string x : t = String x
 let of_location x : t = Location x
-let of_loc x ~f : t = Loc (Helpers.Loc.map x ~f)
+let of_loc x ~f : t = Loc (Astlib.Loc.map x ~f)
 let of_list x ~f : t = List (List.map x ~f)
 let of_option x ~f : t = Option (Helpers.Option.map x ~f)
 let of_tuple2 (x1, x2) ~f1 ~f2 : t = Tuple [|f1 x1; f2 x2|]

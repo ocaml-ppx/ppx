@@ -1,5 +1,3 @@
-open Ocaml_common
-
 module Helpers = struct
   module Option = struct
     let bind option ~f =
@@ -85,7 +83,7 @@ module V4_07 = struct
   module Longident_loc = struct
     type t = Node.t
 
-    type concrete = Node.t Location.loc
+    type concrete = Node.t Astlib.Loc.t
 
     let create =
       let data = (Data.of_loc ~f:Data.of_node) in
@@ -495,7 +493,7 @@ module V4_07 = struct
   module Attribute = struct
     type t = Node.t
 
-    type concrete = (string Location.loc * Node.t)
+    type concrete = (string Astlib.Loc.t * Node.t)
 
     let create =
       let data = (Data.of_tuple2 ~f1:(Data.of_loc ~f:Data.of_string) ~f2:Data.of_node) in
@@ -512,7 +510,7 @@ module V4_07 = struct
   module Extension = struct
     type t = Node.t
 
-    type concrete = (string Location.loc * Node.t)
+    type concrete = (string Astlib.Loc.t * Node.t)
 
     let create =
       let data = (Data.of_tuple2 ~f1:(Data.of_loc ~f:Data.of_string) ~f2:Data.of_node) in
@@ -629,7 +627,7 @@ module V4_07 = struct
 
     type concrete =
       { ptyp_desc : Node.t
-      ; ptyp_loc : Location.t
+      ; ptyp_loc : Astlib.Location.t
       ; ptyp_attributes : Node.t
       }
 
@@ -671,7 +669,7 @@ module V4_07 = struct
       | Ptyp_class of Node.t * Node.t list
       | Ptyp_alias of Node.t * string
       | Ptyp_variant of Node.t list * Node.t * Node.t list option
-      | Ptyp_poly of string Location.loc list * Node.t
+      | Ptyp_poly of string Astlib.Loc.t list * Node.t
       | Ptyp_package of Node.t
       | Ptyp_extension of Node.t
 
@@ -886,7 +884,7 @@ module V4_07 = struct
     type t = Node.t
 
     type concrete =
-      | Rtag of Node.t Location.loc * Node.t * bool * Node.t list
+      | Rtag of Node.t Astlib.Loc.t * Node.t * bool * Node.t list
       | Rinherit of Node.t
 
     let rtag x1 x2 x3 x4 =
@@ -941,7 +939,7 @@ module V4_07 = struct
     type t = Node.t
 
     type concrete =
-      | Otag of Node.t Location.loc * Node.t * Node.t
+      | Otag of Node.t Astlib.Loc.t * Node.t * Node.t
       | Oinherit of Node.t
 
     let otag x1 x2 x3 =
@@ -995,7 +993,7 @@ module V4_07 = struct
 
     type concrete =
       { ppat_desc : Node.t
-      ; ppat_loc : Location.t
+      ; ppat_loc : Astlib.Location.t
       ; ppat_attributes : Node.t
       }
 
@@ -1029,8 +1027,8 @@ module V4_07 = struct
 
     type concrete =
       | Ppat_any
-      | Ppat_var of string Location.loc
-      | Ppat_alias of Node.t * string Location.loc
+      | Ppat_var of string Astlib.Loc.t
+      | Ppat_alias of Node.t * string Astlib.Loc.t
       | Ppat_constant of Node.t
       | Ppat_interval of Node.t * Node.t
       | Ppat_tuple of Node.t list
@@ -1042,7 +1040,7 @@ module V4_07 = struct
       | Ppat_constraint of Node.t * Node.t
       | Ppat_type of Node.t
       | Ppat_lazy of Node.t
-      | Ppat_unpack of string Location.loc
+      | Ppat_unpack of string Astlib.Loc.t
       | Ppat_exception of Node.t
       | Ppat_extension of Node.t
       | Ppat_open of Node.t * Node.t
@@ -1324,7 +1322,7 @@ module V4_07 = struct
 
     type concrete =
       { pexp_desc : Node.t
-      ; pexp_loc : Location.t
+      ; pexp_loc : Astlib.Location.t
       ; pexp_attributes : Node.t
       }
 
@@ -1378,17 +1376,17 @@ module V4_07 = struct
       | Pexp_for of Node.t * Node.t * Node.t * Node.t * Node.t
       | Pexp_constraint of Node.t * Node.t
       | Pexp_coerce of Node.t * Node.t option * Node.t
-      | Pexp_send of Node.t * Node.t Location.loc
+      | Pexp_send of Node.t * Node.t Astlib.Loc.t
       | Pexp_new of Node.t
-      | Pexp_setinstvar of Node.t Location.loc * Node.t
-      | Pexp_override of (Node.t Location.loc * Node.t) list
-      | Pexp_letmodule of string Location.loc * Node.t * Node.t
+      | Pexp_setinstvar of Node.t Astlib.Loc.t * Node.t
+      | Pexp_override of (Node.t Astlib.Loc.t * Node.t) list
+      | Pexp_letmodule of string Astlib.Loc.t * Node.t * Node.t
       | Pexp_letexception of Node.t * Node.t
       | Pexp_assert of Node.t
       | Pexp_lazy of Node.t
       | Pexp_poly of Node.t * Node.t option
       | Pexp_object of Node.t
-      | Pexp_newtype of string Location.loc * Node.t
+      | Pexp_newtype of string Astlib.Loc.t * Node.t
       | Pexp_pack of Node.t
       | Pexp_open of Node.t * Node.t * Node.t
       | Pexp_extension of Node.t
@@ -2008,11 +2006,11 @@ module V4_07 = struct
     type t = Node.t
 
     type concrete =
-      { pval_name : string Location.loc
+      { pval_name : string Astlib.Loc.t
       ; pval_type : Node.t
       ; pval_prim : string list
       ; pval_attributes : Node.t
-      ; pval_loc : Location.t
+      ; pval_loc : Astlib.Location.t
       }
 
     let create ~pval_name ~pval_type ~pval_prim ~pval_attributes ~pval_loc =
@@ -2048,14 +2046,14 @@ module V4_07 = struct
     type t = Node.t
 
     type concrete =
-      { ptype_name : string Location.loc
+      { ptype_name : string Astlib.Loc.t
       ; ptype_params : (Node.t * Node.t) list
-      ; ptype_cstrs : (Node.t * Node.t * Location.t) list
+      ; ptype_cstrs : (Node.t * Node.t * Astlib.Location.t) list
       ; ptype_kind : Node.t
       ; ptype_private : Node.t
       ; ptype_manifest : Node.t option
       ; ptype_attributes : Node.t
-      ; ptype_loc : Location.t
+      ; ptype_loc : Astlib.Location.t
       }
 
     let create ~ptype_name ~ptype_params ~ptype_cstrs ~ptype_kind ~ptype_private ~ptype_manifest ~ptype_attributes ~ptype_loc =
@@ -2156,10 +2154,10 @@ module V4_07 = struct
     type t = Node.t
 
     type concrete =
-      { pld_name : string Location.loc
+      { pld_name : string Astlib.Loc.t
       ; pld_mutable : Node.t
       ; pld_type : Node.t
-      ; pld_loc : Location.t
+      ; pld_loc : Astlib.Location.t
       ; pld_attributes : Node.t
       }
 
@@ -2196,10 +2194,10 @@ module V4_07 = struct
     type t = Node.t
 
     type concrete =
-      { pcd_name : string Location.loc
+      { pcd_name : string Astlib.Loc.t
       ; pcd_args : Node.t
       ; pcd_res : Node.t option
-      ; pcd_loc : Location.t
+      ; pcd_loc : Astlib.Location.t
       ; pcd_attributes : Node.t
       }
 
@@ -2325,9 +2323,9 @@ module V4_07 = struct
     type t = Node.t
 
     type concrete =
-      { pext_name : string Location.loc
+      { pext_name : string Astlib.Loc.t
       ; pext_kind : Node.t
-      ; pext_loc : Location.t
+      ; pext_loc : Astlib.Location.t
       ; pext_attributes : Node.t
       }
 
@@ -2414,7 +2412,7 @@ module V4_07 = struct
 
     type concrete =
       { pcty_desc : Node.t
-      ; pcty_loc : Location.t
+      ; pcty_loc : Astlib.Location.t
       ; pcty_attributes : Node.t
       }
 
@@ -2583,7 +2581,7 @@ module V4_07 = struct
 
     type concrete =
       { pctf_desc : Node.t
-      ; pctf_loc : Location.t
+      ; pctf_loc : Astlib.Location.t
       ; pctf_attributes : Node.t
       }
 
@@ -2617,8 +2615,8 @@ module V4_07 = struct
 
     type concrete =
       | Pctf_inherit of Node.t
-      | Pctf_val of (Node.t Location.loc * Node.t * Node.t * Node.t)
-      | Pctf_method of (Node.t Location.loc * Node.t * Node.t * Node.t)
+      | Pctf_val of (Node.t Astlib.Loc.t * Node.t * Node.t * Node.t)
+      | Pctf_method of (Node.t Astlib.Loc.t * Node.t * Node.t * Node.t)
       | Pctf_constraint of (Node.t * Node.t)
       | Pctf_attribute of Node.t
       | Pctf_extension of Node.t
@@ -2727,9 +2725,9 @@ module V4_07 = struct
     type 'a concrete =
       { pci_virt : Node.t
       ; pci_params : (Node.t * Node.t) list
-      ; pci_name : string Location.loc
+      ; pci_name : string Astlib.Loc.t
       ; pci_expr : 'a
-      ; pci_loc : Location.t
+      ; pci_loc : Astlib.Location.t
       ; pci_attributes : Node.t
       }
 
@@ -2827,7 +2825,7 @@ module V4_07 = struct
 
     type concrete =
       { pcl_desc : Node.t
-      ; pcl_loc : Location.t
+      ; pcl_loc : Astlib.Location.t
       ; pcl_attributes : Node.t
       }
 
@@ -3051,7 +3049,7 @@ module V4_07 = struct
 
     type concrete =
       { pcf_desc : Node.t
-      ; pcf_loc : Location.t
+      ; pcf_loc : Astlib.Location.t
       ; pcf_attributes : Node.t
       }
 
@@ -3084,9 +3082,9 @@ module V4_07 = struct
     type t = Node.t
 
     type concrete =
-      | Pcf_inherit of Node.t * Node.t * string Location.loc option
-      | Pcf_val of (Node.t Location.loc * Node.t * Node.t)
-      | Pcf_method of (Node.t Location.loc * Node.t * Node.t)
+      | Pcf_inherit of Node.t * Node.t * string Astlib.Loc.t option
+      | Pcf_val of (Node.t Astlib.Loc.t * Node.t * Node.t)
+      | Pcf_method of (Node.t Astlib.Loc.t * Node.t * Node.t)
       | Pcf_constraint of (Node.t * Node.t)
       | Pcf_initializer of Node.t
       | Pcf_attribute of Node.t
@@ -3281,7 +3279,7 @@ module V4_07 = struct
 
     type concrete =
       { pmty_desc : Node.t
-      ; pmty_loc : Location.t
+      ; pmty_loc : Astlib.Location.t
       ; pmty_attributes : Node.t
       }
 
@@ -3316,7 +3314,7 @@ module V4_07 = struct
     type concrete =
       | Pmty_ident of Node.t
       | Pmty_signature of Node.t
-      | Pmty_functor of string Location.loc * Node.t option * Node.t
+      | Pmty_functor of string Astlib.Loc.t * Node.t option * Node.t
       | Pmty_with of Node.t * Node.t list
       | Pmty_typeof of Node.t
       | Pmty_extension of Node.t
@@ -3462,7 +3460,7 @@ module V4_07 = struct
 
     type concrete =
       { psig_desc : Node.t
-      ; psig_loc : Location.t
+      ; psig_loc : Astlib.Location.t
       }
 
     let create ~psig_desc ~psig_loc =
@@ -3710,10 +3708,10 @@ module V4_07 = struct
     type t = Node.t
 
     type concrete =
-      { pmd_name : string Location.loc
+      { pmd_name : string Astlib.Loc.t
       ; pmd_type : Node.t
       ; pmd_attributes : Node.t
-      ; pmd_loc : Location.t
+      ; pmd_loc : Astlib.Location.t
       }
 
     let create ~pmd_name ~pmd_type ~pmd_attributes ~pmd_loc =
@@ -3747,10 +3745,10 @@ module V4_07 = struct
     type t = Node.t
 
     type concrete =
-      { pmtd_name : string Location.loc
+      { pmtd_name : string Astlib.Loc.t
       ; pmtd_type : Node.t option
       ; pmtd_attributes : Node.t
-      ; pmtd_loc : Location.t
+      ; pmtd_loc : Astlib.Location.t
       }
 
     let create ~pmtd_name ~pmtd_type ~pmtd_attributes ~pmtd_loc =
@@ -3786,7 +3784,7 @@ module V4_07 = struct
     type concrete =
       { popen_lid : Node.t
       ; popen_override : Node.t
-      ; popen_loc : Location.t
+      ; popen_loc : Astlib.Location.t
       ; popen_attributes : Node.t
       }
 
@@ -3822,7 +3820,7 @@ module V4_07 = struct
 
     type 'a concrete =
       { pincl_mod : 'a
-      ; pincl_loc : Location.t
+      ; pincl_loc : Astlib.Location.t
       ; pincl_attributes : Node.t
       }
 
@@ -4001,7 +3999,7 @@ module V4_07 = struct
 
     type concrete =
       { pmod_desc : Node.t
-      ; pmod_loc : Location.t
+      ; pmod_loc : Astlib.Location.t
       ; pmod_attributes : Node.t
       }
 
@@ -4036,7 +4034,7 @@ module V4_07 = struct
     type concrete =
       | Pmod_ident of Node.t
       | Pmod_structure of Node.t
-      | Pmod_functor of string Location.loc * Node.t option * Node.t
+      | Pmod_functor of string Astlib.Loc.t * Node.t option * Node.t
       | Pmod_apply of Node.t * Node.t
       | Pmod_constraint of Node.t * Node.t
       | Pmod_unpack of Node.t
@@ -4184,7 +4182,7 @@ module V4_07 = struct
 
     type concrete =
       { pstr_desc : Node.t
-      ; pstr_loc : Location.t
+      ; pstr_loc : Astlib.Location.t
       }
 
     let create ~pstr_desc ~pstr_loc =
@@ -4469,7 +4467,7 @@ module V4_07 = struct
       { pvb_pat : Node.t
       ; pvb_expr : Node.t
       ; pvb_attributes : Node.t
-      ; pvb_loc : Location.t
+      ; pvb_loc : Astlib.Location.t
       }
 
     let create ~pvb_pat ~pvb_expr ~pvb_attributes ~pvb_loc =
@@ -4503,10 +4501,10 @@ module V4_07 = struct
     type t = Node.t
 
     type concrete =
-      { pmb_name : string Location.loc
+      { pmb_name : string Astlib.Loc.t
       ; pmb_expr : Node.t
       ; pmb_attributes : Node.t
-      ; pmb_loc : Location.t
+      ; pmb_loc : Astlib.Location.t
       }
 
     let create ~pmb_name ~pmb_expr ~pmb_attributes ~pmb_loc =
@@ -4749,7 +4747,7 @@ module V4_06 = struct
   module Longident_loc = struct
     type t = Node.t
 
-    type concrete = Node.t Location.loc
+    type concrete = Node.t Astlib.Loc.t
 
     let create =
       let data = (Data.of_loc ~f:Data.of_node) in
@@ -5159,7 +5157,7 @@ module V4_06 = struct
   module Attribute = struct
     type t = Node.t
 
-    type concrete = (string Location.loc * Node.t)
+    type concrete = (string Astlib.Loc.t * Node.t)
 
     let create =
       let data = (Data.of_tuple2 ~f1:(Data.of_loc ~f:Data.of_string) ~f2:Data.of_node) in
@@ -5176,7 +5174,7 @@ module V4_06 = struct
   module Extension = struct
     type t = Node.t
 
-    type concrete = (string Location.loc * Node.t)
+    type concrete = (string Astlib.Loc.t * Node.t)
 
     let create =
       let data = (Data.of_tuple2 ~f1:(Data.of_loc ~f:Data.of_string) ~f2:Data.of_node) in
@@ -5293,7 +5291,7 @@ module V4_06 = struct
 
     type concrete =
       { ptyp_desc : Node.t
-      ; ptyp_loc : Location.t
+      ; ptyp_loc : Astlib.Location.t
       ; ptyp_attributes : Node.t
       }
 
@@ -5335,7 +5333,7 @@ module V4_06 = struct
       | Ptyp_class of Node.t * Node.t list
       | Ptyp_alias of Node.t * string
       | Ptyp_variant of Node.t list * Node.t * Node.t list option
-      | Ptyp_poly of string Location.loc list * Node.t
+      | Ptyp_poly of string Astlib.Loc.t list * Node.t
       | Ptyp_package of Node.t
       | Ptyp_extension of Node.t
 
@@ -5550,7 +5548,7 @@ module V4_06 = struct
     type t = Node.t
 
     type concrete =
-      | Rtag of Node.t Location.loc * Node.t * bool * Node.t list
+      | Rtag of Node.t Astlib.Loc.t * Node.t * bool * Node.t list
       | Rinherit of Node.t
 
     let rtag x1 x2 x3 x4 =
@@ -5605,7 +5603,7 @@ module V4_06 = struct
     type t = Node.t
 
     type concrete =
-      | Otag of Node.t Location.loc * Node.t * Node.t
+      | Otag of Node.t Astlib.Loc.t * Node.t * Node.t
       | Oinherit of Node.t
 
     let otag x1 x2 x3 =
@@ -5659,7 +5657,7 @@ module V4_06 = struct
 
     type concrete =
       { ppat_desc : Node.t
-      ; ppat_loc : Location.t
+      ; ppat_loc : Astlib.Location.t
       ; ppat_attributes : Node.t
       }
 
@@ -5693,8 +5691,8 @@ module V4_06 = struct
 
     type concrete =
       | Ppat_any
-      | Ppat_var of string Location.loc
-      | Ppat_alias of Node.t * string Location.loc
+      | Ppat_var of string Astlib.Loc.t
+      | Ppat_alias of Node.t * string Astlib.Loc.t
       | Ppat_constant of Node.t
       | Ppat_interval of Node.t * Node.t
       | Ppat_tuple of Node.t list
@@ -5706,7 +5704,7 @@ module V4_06 = struct
       | Ppat_constraint of Node.t * Node.t
       | Ppat_type of Node.t
       | Ppat_lazy of Node.t
-      | Ppat_unpack of string Location.loc
+      | Ppat_unpack of string Astlib.Loc.t
       | Ppat_exception of Node.t
       | Ppat_extension of Node.t
       | Ppat_open of Node.t * Node.t
@@ -5988,7 +5986,7 @@ module V4_06 = struct
 
     type concrete =
       { pexp_desc : Node.t
-      ; pexp_loc : Location.t
+      ; pexp_loc : Astlib.Location.t
       ; pexp_attributes : Node.t
       }
 
@@ -6042,17 +6040,17 @@ module V4_06 = struct
       | Pexp_for of Node.t * Node.t * Node.t * Node.t * Node.t
       | Pexp_constraint of Node.t * Node.t
       | Pexp_coerce of Node.t * Node.t option * Node.t
-      | Pexp_send of Node.t * Node.t Location.loc
+      | Pexp_send of Node.t * Node.t Astlib.Loc.t
       | Pexp_new of Node.t
-      | Pexp_setinstvar of Node.t Location.loc * Node.t
-      | Pexp_override of (Node.t Location.loc * Node.t) list
-      | Pexp_letmodule of string Location.loc * Node.t * Node.t
+      | Pexp_setinstvar of Node.t Astlib.Loc.t * Node.t
+      | Pexp_override of (Node.t Astlib.Loc.t * Node.t) list
+      | Pexp_letmodule of string Astlib.Loc.t * Node.t * Node.t
       | Pexp_letexception of Node.t * Node.t
       | Pexp_assert of Node.t
       | Pexp_lazy of Node.t
       | Pexp_poly of Node.t * Node.t option
       | Pexp_object of Node.t
-      | Pexp_newtype of string Location.loc * Node.t
+      | Pexp_newtype of string Astlib.Loc.t * Node.t
       | Pexp_pack of Node.t
       | Pexp_open of Node.t * Node.t * Node.t
       | Pexp_extension of Node.t
@@ -6672,11 +6670,11 @@ module V4_06 = struct
     type t = Node.t
 
     type concrete =
-      { pval_name : string Location.loc
+      { pval_name : string Astlib.Loc.t
       ; pval_type : Node.t
       ; pval_prim : string list
       ; pval_attributes : Node.t
-      ; pval_loc : Location.t
+      ; pval_loc : Astlib.Location.t
       }
 
     let create ~pval_name ~pval_type ~pval_prim ~pval_attributes ~pval_loc =
@@ -6712,14 +6710,14 @@ module V4_06 = struct
     type t = Node.t
 
     type concrete =
-      { ptype_name : string Location.loc
+      { ptype_name : string Astlib.Loc.t
       ; ptype_params : (Node.t * Node.t) list
-      ; ptype_cstrs : (Node.t * Node.t * Location.t) list
+      ; ptype_cstrs : (Node.t * Node.t * Astlib.Location.t) list
       ; ptype_kind : Node.t
       ; ptype_private : Node.t
       ; ptype_manifest : Node.t option
       ; ptype_attributes : Node.t
-      ; ptype_loc : Location.t
+      ; ptype_loc : Astlib.Location.t
       }
 
     let create ~ptype_name ~ptype_params ~ptype_cstrs ~ptype_kind ~ptype_private ~ptype_manifest ~ptype_attributes ~ptype_loc =
@@ -6820,10 +6818,10 @@ module V4_06 = struct
     type t = Node.t
 
     type concrete =
-      { pld_name : string Location.loc
+      { pld_name : string Astlib.Loc.t
       ; pld_mutable : Node.t
       ; pld_type : Node.t
-      ; pld_loc : Location.t
+      ; pld_loc : Astlib.Location.t
       ; pld_attributes : Node.t
       }
 
@@ -6860,10 +6858,10 @@ module V4_06 = struct
     type t = Node.t
 
     type concrete =
-      { pcd_name : string Location.loc
+      { pcd_name : string Astlib.Loc.t
       ; pcd_args : Node.t
       ; pcd_res : Node.t option
-      ; pcd_loc : Location.t
+      ; pcd_loc : Astlib.Location.t
       ; pcd_attributes : Node.t
       }
 
@@ -6989,9 +6987,9 @@ module V4_06 = struct
     type t = Node.t
 
     type concrete =
-      { pext_name : string Location.loc
+      { pext_name : string Astlib.Loc.t
       ; pext_kind : Node.t
-      ; pext_loc : Location.t
+      ; pext_loc : Astlib.Location.t
       ; pext_attributes : Node.t
       }
 
@@ -7078,7 +7076,7 @@ module V4_06 = struct
 
     type concrete =
       { pcty_desc : Node.t
-      ; pcty_loc : Location.t
+      ; pcty_loc : Astlib.Location.t
       ; pcty_attributes : Node.t
       }
 
@@ -7247,7 +7245,7 @@ module V4_06 = struct
 
     type concrete =
       { pctf_desc : Node.t
-      ; pctf_loc : Location.t
+      ; pctf_loc : Astlib.Location.t
       ; pctf_attributes : Node.t
       }
 
@@ -7281,8 +7279,8 @@ module V4_06 = struct
 
     type concrete =
       | Pctf_inherit of Node.t
-      | Pctf_val of (Node.t Location.loc * Node.t * Node.t * Node.t)
-      | Pctf_method of (Node.t Location.loc * Node.t * Node.t * Node.t)
+      | Pctf_val of (Node.t Astlib.Loc.t * Node.t * Node.t * Node.t)
+      | Pctf_method of (Node.t Astlib.Loc.t * Node.t * Node.t * Node.t)
       | Pctf_constraint of (Node.t * Node.t)
       | Pctf_attribute of Node.t
       | Pctf_extension of Node.t
@@ -7391,9 +7389,9 @@ module V4_06 = struct
     type 'a concrete =
       { pci_virt : Node.t
       ; pci_params : (Node.t * Node.t) list
-      ; pci_name : string Location.loc
+      ; pci_name : string Astlib.Loc.t
       ; pci_expr : 'a
-      ; pci_loc : Location.t
+      ; pci_loc : Astlib.Location.t
       ; pci_attributes : Node.t
       }
 
@@ -7491,7 +7489,7 @@ module V4_06 = struct
 
     type concrete =
       { pcl_desc : Node.t
-      ; pcl_loc : Location.t
+      ; pcl_loc : Astlib.Location.t
       ; pcl_attributes : Node.t
       }
 
@@ -7715,7 +7713,7 @@ module V4_06 = struct
 
     type concrete =
       { pcf_desc : Node.t
-      ; pcf_loc : Location.t
+      ; pcf_loc : Astlib.Location.t
       ; pcf_attributes : Node.t
       }
 
@@ -7748,9 +7746,9 @@ module V4_06 = struct
     type t = Node.t
 
     type concrete =
-      | Pcf_inherit of Node.t * Node.t * string Location.loc option
-      | Pcf_val of (Node.t Location.loc * Node.t * Node.t)
-      | Pcf_method of (Node.t Location.loc * Node.t * Node.t)
+      | Pcf_inherit of Node.t * Node.t * string Astlib.Loc.t option
+      | Pcf_val of (Node.t Astlib.Loc.t * Node.t * Node.t)
+      | Pcf_method of (Node.t Astlib.Loc.t * Node.t * Node.t)
       | Pcf_constraint of (Node.t * Node.t)
       | Pcf_initializer of Node.t
       | Pcf_attribute of Node.t
@@ -7945,7 +7943,7 @@ module V4_06 = struct
 
     type concrete =
       { pmty_desc : Node.t
-      ; pmty_loc : Location.t
+      ; pmty_loc : Astlib.Location.t
       ; pmty_attributes : Node.t
       }
 
@@ -7980,7 +7978,7 @@ module V4_06 = struct
     type concrete =
       | Pmty_ident of Node.t
       | Pmty_signature of Node.t
-      | Pmty_functor of string Location.loc * Node.t option * Node.t
+      | Pmty_functor of string Astlib.Loc.t * Node.t option * Node.t
       | Pmty_with of Node.t * Node.t list
       | Pmty_typeof of Node.t
       | Pmty_extension of Node.t
@@ -8126,7 +8124,7 @@ module V4_06 = struct
 
     type concrete =
       { psig_desc : Node.t
-      ; psig_loc : Location.t
+      ; psig_loc : Astlib.Location.t
       }
 
     let create ~psig_desc ~psig_loc =
@@ -8374,10 +8372,10 @@ module V4_06 = struct
     type t = Node.t
 
     type concrete =
-      { pmd_name : string Location.loc
+      { pmd_name : string Astlib.Loc.t
       ; pmd_type : Node.t
       ; pmd_attributes : Node.t
-      ; pmd_loc : Location.t
+      ; pmd_loc : Astlib.Location.t
       }
 
     let create ~pmd_name ~pmd_type ~pmd_attributes ~pmd_loc =
@@ -8411,10 +8409,10 @@ module V4_06 = struct
     type t = Node.t
 
     type concrete =
-      { pmtd_name : string Location.loc
+      { pmtd_name : string Astlib.Loc.t
       ; pmtd_type : Node.t option
       ; pmtd_attributes : Node.t
-      ; pmtd_loc : Location.t
+      ; pmtd_loc : Astlib.Location.t
       }
 
     let create ~pmtd_name ~pmtd_type ~pmtd_attributes ~pmtd_loc =
@@ -8450,7 +8448,7 @@ module V4_06 = struct
     type concrete =
       { popen_lid : Node.t
       ; popen_override : Node.t
-      ; popen_loc : Location.t
+      ; popen_loc : Astlib.Location.t
       ; popen_attributes : Node.t
       }
 
@@ -8486,7 +8484,7 @@ module V4_06 = struct
 
     type 'a concrete =
       { pincl_mod : 'a
-      ; pincl_loc : Location.t
+      ; pincl_loc : Astlib.Location.t
       ; pincl_attributes : Node.t
       }
 
@@ -8665,7 +8663,7 @@ module V4_06 = struct
 
     type concrete =
       { pmod_desc : Node.t
-      ; pmod_loc : Location.t
+      ; pmod_loc : Astlib.Location.t
       ; pmod_attributes : Node.t
       }
 
@@ -8700,7 +8698,7 @@ module V4_06 = struct
     type concrete =
       | Pmod_ident of Node.t
       | Pmod_structure of Node.t
-      | Pmod_functor of string Location.loc * Node.t option * Node.t
+      | Pmod_functor of string Astlib.Loc.t * Node.t option * Node.t
       | Pmod_apply of Node.t * Node.t
       | Pmod_constraint of Node.t * Node.t
       | Pmod_unpack of Node.t
@@ -8848,7 +8846,7 @@ module V4_06 = struct
 
     type concrete =
       { pstr_desc : Node.t
-      ; pstr_loc : Location.t
+      ; pstr_loc : Astlib.Location.t
       }
 
     let create ~pstr_desc ~pstr_loc =
@@ -9133,7 +9131,7 @@ module V4_06 = struct
       { pvb_pat : Node.t
       ; pvb_expr : Node.t
       ; pvb_attributes : Node.t
-      ; pvb_loc : Location.t
+      ; pvb_loc : Astlib.Location.t
       }
 
     let create ~pvb_pat ~pvb_expr ~pvb_attributes ~pvb_loc =
@@ -9167,10 +9165,10 @@ module V4_06 = struct
     type t = Node.t
 
     type concrete =
-      { pmb_name : string Location.loc
+      { pmb_name : string Astlib.Loc.t
       ; pmb_expr : Node.t
       ; pmb_attributes : Node.t
-      ; pmb_loc : Location.t
+      ; pmb_loc : Astlib.Location.t
       }
 
     let create ~pmb_name ~pmb_expr ~pmb_attributes ~pmb_loc =
