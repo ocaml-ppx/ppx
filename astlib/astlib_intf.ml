@@ -2,7 +2,7 @@ module type History = sig
   (** Represents the history of AST grammars in the OCaml compiler. *)
   type t
 
-  (** Produces an alist of grammars, paired with their version numbers. *)
+  (** Produces an association list of grammars, paired with their version numbers. *)
   val versioned_grammars : t -> (string * Grammar.t) list
 
   (** Produces the grammar corresponding to a given version number. Raises if there is no
