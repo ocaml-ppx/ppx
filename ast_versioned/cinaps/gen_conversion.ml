@@ -69,18 +69,18 @@ let concrete_ty ty = string_of_ty ty ~view:`concrete
 let parsetree_ty ty = string_of_ty ty ~view:`parsetree
 
 let node_ty ~node_name ~env =
-  if Poly.env_is_empty env
+  if Poly_env.env_is_empty env
   then Astlib.Grammar.Name node_name
-  else Astlib.Grammar.Instance (node_name, Poly.args env)
+  else Astlib.Grammar.Instance (node_name, Poly_env.args env)
 
 let print_conversion_intf ~node_name ~env =
   let ty = node_ty ~node_name ~env in
   let ast_ty = ast_ty ty in
   let parsetree_ty = parsetree_ty ty in
-  Ml.declare_val (Name.make ["ast_of"; node_name] (Poly.args env)) (Block (fun () ->
+  Ml.declare_val (Name.make ["ast_of"; node_name] (Poly_env.args env)) (Block (fun () ->
     Ml.print_arrow [parsetree_ty] ast_ty ~f:(fun x -> x)));
   Print.newline ();
-  Ml.declare_val (Name.make ["ast_to"; node_name] (Poly.args env)) (Block (fun () ->
+  Ml.declare_val (Name.make ["ast_to"; node_name] (Poly_env.args env)) (Block (fun () ->
     Ml.print_arrow [ast_ty] parsetree_ty ~f:(fun x -> x)))
 
 let fn_value option =
@@ -161,13 +161,13 @@ let output_ty ty ~conv =
 let tuple_var i = Ml.id (Printf.sprintf "x%d" (i + 1))
 
 let define_conversion decl ~node_name ~env ~conv =
-  let name = Name.make [concrete_prefix ~conv; node_name] (Poly.args env) in
+  let name = Name.make [concrete_prefix ~conv; node_name] (Poly_env.args env) in
   let node_ty = node_ty ~node_name ~env in
   match (decl : Astlib.Grammar.decl) with
   | Alias ty ->
     Print.println "and %s x =" name;
     Print.indented (fun () ->
-      Print.println "%s x" (fn_value (ty_conversion ~conv (Poly.subst_ty ty ~env))))
+      Print.println "%s x" (fn_value (ty_conversion ~conv (Poly_env.subst_ty ty ~env))))
   | Record record ->
     let fields =
       String.concat ~sep:"; "
@@ -179,7 +179,7 @@ let define_conversion decl ~node_name ~env ~conv =
     Print.println "=";
     Print.indented (fun () ->
       List.iter record ~f:(fun (field, ty) ->
-        match ty_conversion ~conv (Poly.subst_ty ty ~env) with
+        match ty_conversion ~conv (Poly_env.subst_ty ty ~env) with
         | None -> ()
         | Some fn -> Print.println "let %s = %s %s in" (Ml.id field) fn (Ml.id field));
       Print.println "({ %s } : %s)" fields (output_ty ~conv node_ty))
@@ -197,7 +197,7 @@ let define_conversion decl ~node_name ~env ~conv =
             (String.concat ~sep:", " (List.mapi tuple ~f:(fun i _ -> tuple_var i)));
           Print.indented (fun () ->
             List.iteri tuple ~f:(fun i ty ->
-              match ty_conversion (Poly.subst_ty ty ~env) ~conv with
+              match ty_conversion (Poly_env.subst_ty ty ~env) ~conv with
               | None -> ()
               | Some fn ->
                 Print.println "let %s = %s %s in" (tuple_var i) fn (tuple_var i));
@@ -212,7 +212,7 @@ let define_conversion decl ~node_name ~env ~conv =
                (List.map record ~f:(fun (field, _) -> Ml.id field)));
           Print.indented (fun () ->
             List.iter record ~f:(fun (field, ty) ->
-              match ty_conversion (Poly.subst_ty ty ~env) ~conv with
+              match ty_conversion (Poly_env.subst_ty ty ~env) ~conv with
               | None -> ()
               | Some fn ->
                 Print.println "let %s = %s %s in" (Ml.id field) fn (Ml.id field));
@@ -225,60 +225,60 @@ let print_conversion_impl decl ~node_name ~env ~is_initial =
   Print.println
     "%s %s x ="
     (if is_initial then "let rec" else "and")
-    (Name.make ["ast_of"; node_name] (Poly.args env));
+    (Name.make ["ast_of"; node_name] (Poly_env.args env));
   Print.indented (fun () ->
     Print.println "Versions.%s.%s.%s (%s x)"
       (Ml.module_name version)
       (Ml.module_name node_name)
-      (Name.make ["of_concrete"] (Poly.args env))
-      (Name.make ["concrete_of"; node_name] (Poly.args env)));
+      (Name.make ["of_concrete"] (Poly_env.args env))
+      (Name.make ["concrete_of"; node_name] (Poly_env.args env)));
   Print.newline ();
   define_conversion decl ~node_name ~env ~conv:`concrete_of;
   Print.newline ();
-  Print.println "and %s x =" (Name.make ["ast_to"; node_name] (Poly.args env));
+  Print.println "and %s x =" (Name.make ["ast_to"; node_name] (Poly_env.args env));
   Print.indented (fun () ->
     Print.println "let option = Versions.%s.%s.%s x in"
       (Ml.module_name version)
       (Ml.module_name node_name)
-      (Name.make ["to_concrete"] (Poly.args env));
+      (Name.make ["to_concrete"] (Poly_env.args env));
     Print.println "let concrete =";
     Print.indented (fun () ->
       Print.println "Helpers.Option.value_exn option";
       Print.indented (fun () ->
         Print.println "~message:%S"
           (Printf.sprintf "%s: conversion failed"
-             (Name.make ["concrete_to"; node_name] (Poly.args env)))));
+             (Name.make ["concrete_to"; node_name] (Poly_env.args env)))));
     Print.println "in";
     Print.println "%s concrete"
-      (Name.make ["concrete_to"; node_name] (Poly.args env)));
+      (Name.make ["concrete_to"; node_name] (Poly_env.args env)));
   Print.newline ();
   define_conversion decl ~node_name ~env ~conv:`concrete_to
 
 let print_conversion_mli () =
   let grammar = Astlib.History.find_grammar Astlib.history ~version in
-  let env_table = Poly.env_table grammar in
+  let env_table = Poly_env.env_table grammar in
   List.iter grammar ~f:(fun (node_name, kind) ->
     match (kind : Astlib.Grammar.kind) with
     | Mono _ ->
       Print.newline ();
-      print_conversion_intf ~node_name ~env:Poly.empty_env
+      print_conversion_intf ~node_name ~env:Poly_env.empty_env
     | Poly _ ->
-      List.iter (Poly.find env_table node_name) ~f:(fun env ->
+      List.iter (Poly_env.find env_table node_name) ~f:(fun env ->
         Print.newline ();
         print_conversion_intf ~node_name ~env))
 
 let print_conversion_ml () =
   let grammar = Astlib.History.find_grammar Astlib.history ~version in
-  let env_table = Poly.env_table grammar in
+  let env_table = Poly_env.env_table grammar in
   List.iteri grammar ~f:(fun node_index (node_name, kind) ->
     match (kind : Astlib.Grammar.kind) with
     | Mono decl ->
       Print.newline ();
       print_conversion_impl decl ~node_name
-        ~env:Poly.empty_env
+        ~env:Poly_env.empty_env
         ~is_initial:(node_index = 0)
     | Poly (_, decl) ->
-      List.iteri (Poly.find env_table node_name) ~f:(fun env_index env ->
+      List.iteri (Poly_env.find env_table node_name) ~f:(fun env_index env ->
         Print.newline ();
         let is_initial = node_index = 0 && env_index = 0 in
         print_conversion_impl decl ~node_name ~env ~is_initial))
