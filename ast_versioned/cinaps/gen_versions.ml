@@ -46,24 +46,24 @@ module Signature = struct
   module Render = Render (struct let internal = false end)
 
   let inst ty ~env =
-    Ml.poly_inst ty ~args:(List.map (Poly.args env) ~f:Render.string_of_ty)
+    Ml.poly_inst ty ~args:(List.map (Poly_env.args env) ~f:Render.string_of_ty)
 
   let declare_constructors decl ~env =
-    let string_of_ty ty = Render.string_of_ty (Poly.subst_ty ty ~env) in
+    let string_of_ty ty = Render.string_of_ty (Poly_env.subst_ty ty ~env) in
     match (decl : Astlib.Grammar.decl) with
     | Alias ty ->
       Ml.declare_val
-        (Name.make ["create"] (Poly.args env))
+        (Name.make ["create"] (Poly_env.args env))
         (Line (Printf.sprintf "%s -> %s" (string_of_ty ty) (inst "t" ~env)))
     | Record record ->
       Ml.declare_val
-        (Name.make ["create"] (Poly.args env))
+        (Name.make ["create"] (Poly_env.args env))
         (Block (fun () ->
            Ml.print_labelled_arrow record ~f:string_of_ty (inst "t" ~env)))
     | Variant variant ->
       List.iter variant ~f:(fun (tag, clause) ->
         Ml.declare_val
-          (Name.make [tag] (Poly.args env))
+          (Name.make [tag] (Poly_env.args env))
           (match (clause : Astlib.Grammar.clause) with
            | Empty -> Line (inst "t" ~env)
            | Tuple tuple ->
@@ -80,13 +80,13 @@ module Signature = struct
     List.iter envs ~f:(fun env ->
       Print.newline ();
       Ml.declare_val
-        (Name.make ["of_concrete"] (Poly.args env))
+        (Name.make ["of_concrete"] (Poly_env.args env))
         (Line
            (Printf.sprintf "%s -> %s"
               (inst "concrete" ~env)
               (inst "t" ~env)));
       Ml.declare_val
-        (Name.make ["to_concrete"] (Poly.args env))
+        (Name.make ["to_concrete"] (Poly_env.args env))
         (Line
            (Printf.sprintf "%s -> %s option"
               (inst "t" ~env)
@@ -357,36 +357,36 @@ module Structure = struct
 
   let define_instances decl ~env =
     Print.newline ();
-    Print.println "let %s =" (Name.make ["of_concrete"] (Poly.args env));
+    Print.println "let %s =" (Name.make ["of_concrete"] (Poly_env.args env));
     Print.indented (fun () ->
       Print.println "of_concrete";
       Print.indented (fun () ->
-        List.iter (Poly.args env) ~f:(fun ty ->
+        List.iter (Poly_env.args env) ~f:(fun ty ->
           Print.println "%s" (ast_of_ty ty))));
     Print.newline ();
-    Print.println "let %s =" (Name.make ["to_concrete"] (Poly.args env));
+    Print.println "let %s =" (Name.make ["to_concrete"] (Poly_env.args env));
     Print.indented (fun () ->
       Print.println "to_concrete";
       Print.indented (fun () ->
-        List.iter (Poly.args env) ~f:(fun ty ->
+        List.iter (Poly_env.args env) ~f:(fun ty ->
           Print.println "%s" (ast_to_ty ty))));
     match (decl : Astlib.Grammar.decl) with
     | Alias _ | Record _ ->
       Print.newline ();
-      Print.println "let %s =" (Name.make ["create"] (Poly.args env));
+      Print.println "let %s =" (Name.make ["create"] (Poly_env.args env));
       Print.indented (fun () ->
         Print.println "create";
         Print.indented (fun () ->
-          List.iter (Poly.args env) ~f:(fun ty ->
+          List.iter (Poly_env.args env) ~f:(fun ty ->
             Print.println "%s" (ast_of_ty ty))))
     | Variant variant ->
       List.iter variant ~f:(fun (tag, _) ->
         Print.newline ();
-        Print.println "let %s =" (Name.make [tag] (Poly.args env));
+        Print.println "let %s =" (Name.make [tag] (Poly_env.args env));
         Print.indented (fun () ->
           Print.println "%s" (Name.make [tag] []);
           Print.indented (fun () ->
-            List.iter (Poly.args env) ~f:(fun ty ->
+            List.iter (Poly_env.args env) ~f:(fun ty ->
               Print.println "%s" (ast_of_ty ty)))))
 
   let print decl ~node_name ~tvars ~envs =
@@ -400,7 +400,7 @@ module Structure = struct
     Print.newline ();
     define_to_concrete decl ~node_name ~tvars;
     List.iter envs ~f:(fun env ->
-      if not (Poly.env_is_empty env)
+      if not (Poly_env.env_is_empty env)
       then define_instances decl ~env)
 end
 
@@ -408,13 +408,13 @@ let print_versions_mli () =
   Print.newline ();
   let grammars = Astlib.History.versioned_grammars Astlib.history in
   Ml.declare_modules grammars ~f:(fun _ grammar ->
-    let env_table = Poly.env_table grammar in
+    let env_table = Poly_env.env_table grammar in
     Ml.declare_modules grammar ~recursive:true ~f:(fun node_name kind ->
       match (kind : Astlib.Grammar.kind) with
       | Mono decl ->
-        Signature.print decl ~tvars:[] ~envs:[Poly.empty_env]
+        Signature.print decl ~tvars:[] ~envs:[Poly_env.empty_env]
       | Poly (tvars, decl) ->
-        let envs = Poly.find env_table node_name in
+        let envs = Poly_env.find env_table node_name in
         Signature.print ~tvars ~envs decl))
 
 let print_versions_ml () =
@@ -424,10 +424,10 @@ let print_versions_ml () =
     Print.println "let version = %S" version;
     Print.println "let node name data = Node.of_node ~version { name; data }";
     Print.newline ();
-    let env_table = Poly.env_table grammar in
+    let env_table = Poly_env.env_table grammar in
     Ml.define_modules grammar ~f:(fun node_name kind ->
       match (kind : Astlib.Grammar.kind) with
-      | Mono decl -> Structure.print decl ~node_name ~tvars:[] ~envs:[Poly.empty_env]
+      | Mono decl -> Structure.print decl ~node_name ~tvars:[] ~envs:[Poly_env.empty_env]
       | Poly (tvars, decl) ->
-        let envs = Poly.find env_table node_name in
+        let envs = Poly_env.find env_table node_name in
         Structure.print decl ~node_name ~tvars ~envs))
