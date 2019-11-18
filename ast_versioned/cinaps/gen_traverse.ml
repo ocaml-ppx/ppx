@@ -62,6 +62,10 @@ type recurse_kind =
 type traversal =
   { class_name : string
   ; extra_methods : (unit -> unit) option
+  ; complete : bool
+  (** [complete] determines whether all methods are defined in [Virtual_traverse]
+      and [Traverse_builtins] or if it needs to be declared as [virtual] in
+      [Traverse]. *)
   ; params : string list option
   ; signature : string -> string
   ; args : string -> string list
@@ -205,6 +209,7 @@ module Map = struct
   let traversal =
     { class_name = "map"
     ; extra_methods = None
+    ; complete = true
     ; params = None
     ; signature
     ; args
@@ -230,6 +235,7 @@ module Iter = struct
   let traversal =
     { class_name = "iter"
     ; extra_methods = None
+    ; complete = true
     ; params = None
     ; signature
     ; args
@@ -257,6 +263,7 @@ module Fold = struct
   let traversal =
     { class_name = "fold"
     ; extra_methods = None
+    ; complete = true
     ; params = Some [acc_type]
     ; signature
     ; args
@@ -297,6 +304,7 @@ module Fold_map = struct
   let traversal =
     { class_name = "fold_map"
     ; extra_methods = None
+    ; complete = true
     ; params = Some [acc_type]
     ; signature
     ; args
@@ -334,6 +342,7 @@ module Map_with_context = struct
   let traversal =
     { class_name = "map_with_context"
     ; extra_methods = None
+    ; complete = true
     ; params = Some [ctx_type]
     ; signature
     ; args
@@ -383,6 +392,7 @@ module Lift = struct
   let traversal =
     { class_name = "lift"
     ; extra_methods = Some extra_methods
+    ; complete = false
     ; params = Some [res_type]
     ; signature
     ; args
@@ -500,8 +510,8 @@ let inherits ~params ~class_name ~version =
     Print.println "inherit %sVirtual_traverse.%s.%s"
       params (Ml.module_name version) class_name)
 
-let traversal_class ~impl ~traversal:{params; class_name; _} ~version =
-  let virtual_ = String.equal class_name "lift" in
+let traversal_class ~impl ~traversal:{params; class_name; complete; _} ~version =
+  let virtual_ = not complete in
   let params = Option.value ~default:[] params in
   let object_ () = inherits ~params ~class_name ~version in
   if impl then
