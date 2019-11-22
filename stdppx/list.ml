@@ -190,3 +190,10 @@ let rec rev_zip_exn xs ys ~acc =
   | _ :: _, [] -> failwith "List.zip_exn: mismatch lengths"
 
 let zip_exn xs ys = rev_zip_exn xs ys ~acc:[]
+
+let split_while xs ~f =
+  let rec loop acc = function
+    | hd :: tl when f hd -> loop (hd :: acc) tl
+    | t -> rev acc, t
+  in
+  loop [] xs
