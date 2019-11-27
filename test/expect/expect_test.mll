@@ -109,7 +109,7 @@ let main () =
     Clflags.real_paths := false;
     Toploop.initialize_toplevel_env ();
     List.iter
-      [ "ast/.ppx_ast.objs"
+      [ "ast_deprecated/.ppx_ast_deprecated.objs"
       ; "src/.ppx.objs"
       ; "metaquot_lifters/.ppx_metaquot_lifters.objs"
       ; "traverse/.ppx_traverse.objs"
