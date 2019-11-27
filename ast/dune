@@ -1,6 +1,6 @@
 (library
- (name        ppx_ast)
- (public_name ppx.ast)
+ (name        ppx_ast_deprecated)
+ (public_name ppx.ast_deprecated)
  (libraries
   ocaml-compiler-libs.shadow
   ocaml-compiler-libs.common
@@ -17,7 +17,7 @@
   parse
   parser
   pprintast
-  ppx_ast
+  ppx_ast_deprecated
   syntaxerr
   warn)
  (lint (pps ppx_traverse -deriving-keep-w32=impl)))
