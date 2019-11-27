@@ -22,9 +22,9 @@ include struct
           )
 end (** @inline *)
 
-(** Includes the overrides from Ppx_ast, as well as all the Ast definitions since we
+(** Includes the overrides from Ppx_ast_deprecated, as well as all the Ast definitions since we
     need them in every single ppx *)
-include Ppx_ast
+include Ppx_ast_deprecated
 include Ast
 
 module Ast_builder         = Ast_builder
