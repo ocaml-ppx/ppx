@@ -1,6 +1,6 @@
-open Ppx_ast_versioned
+open Ppx_ast
 
-(*$ Ppx_ast_versioned_tests_cinaps.print_deriving_mli () *)
+(*$ Ppx_ast_tests_cinaps.print_deriving_mli () *)
 module Longident : sig
   type t = Compiler_types.longident
   [@@deriving equal, quickcheck, sexp_of]

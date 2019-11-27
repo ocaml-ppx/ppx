@@ -1,12 +1,12 @@
 (library
- (name ppx_ast_versioned_tests)
+ (name ppx_ast_tests)
  (libraries
   expect_test_helpers_kernel
-  ppx_ast_versioned)
+  ppx_ast)
  (preprocess (pps ppx_jane))
  (flags (:standard -safe-string))
  (inline_tests))
 
 (cinaps
  (files *.mli *.ml)
- (libraries ppx_ast_versioned_tests_cinaps))
+ (libraries ppx_ast_tests_cinaps))

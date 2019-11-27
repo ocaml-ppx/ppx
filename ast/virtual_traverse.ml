@@ -1,4 +1,4 @@
-(*$ Ppx_ast_versioned_cinaps.print_virtual_traverse_ml () *)
+(*$ Ppx_ast_cinaps.print_virtual_traverse_ml () *)
 module V4_07 = struct
   open Versions.V4_07
 

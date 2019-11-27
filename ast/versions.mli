@@ -1,4 +1,4 @@
-(*$ Ppx_ast_versioned_cinaps.print_versions_mli () *)
+(*$ Ppx_ast_cinaps.print_versions_mli () *)
 module V4_07 : sig
   module rec Longident : sig
     type t

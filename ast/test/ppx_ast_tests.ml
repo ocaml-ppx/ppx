@@ -1,8 +1,8 @@
 open Base_quickcheck
-open Ppx_ast_versioned
+open Ppx_ast
 open Expect_test_helpers_kernel
 
-(*$ Ppx_ast_versioned_tests_cinaps.print_test_ml () *)
+(*$ Ppx_ast_tests_cinaps.print_test_ml () *)
 let%expect_test "signature" =
   Test.run_exn
     (module Deriving.Signature)

@@ -1,6 +1,6 @@
 open Base
 open Base_quickcheck
-open Ppx_ast_versioned
+open Ppx_ast
 
 type position = Lexing.position =
   { pos_fname : string
@@ -41,7 +41,7 @@ let quickcheck_generator_tuple4 gen1 gen2 gen3 gen4 =
     let x4 = Base_quickcheck.Generator.generate gen4 ~size ~random in
     (x1, x2, x3, x4))
 
-(*$ Ppx_ast_versioned_tests_cinaps.print_deriving_ml () *)
+(*$ Ppx_ast_tests_cinaps.print_deriving_ml () *)
 type longident =
   Compiler_types.longident =
   | Lident of string

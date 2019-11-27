@@ -1,5 +1,5 @@
 open StdLabels
-open Ppx_ast_versioned_cinaps
+open Ppx_ast_cinaps
 
 let version = Astlib.current_version
 

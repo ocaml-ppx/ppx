@@ -1,4 +1,4 @@
-(*$ Ppx_ast_versioned_cinaps.print_traverse_mli () *)
+(*$ Ppx_ast_cinaps.print_traverse_mli () *)
 module V4_07 : sig
   class map :
     object

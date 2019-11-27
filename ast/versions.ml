@@ -6,7 +6,7 @@ module Helpers = struct
   end
 end
 
-(*$ Ppx_ast_versioned_cinaps.print_versions_ml () *)
+(*$ Ppx_ast_cinaps.print_versions_ml () *)
 module V4_07 = struct
   let version = "v4.07"
   let node name data = Node.of_node ~version { name; data }

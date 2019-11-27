@@ -1,4 +1,4 @@
-(*$ Ppx_ast_versioned_cinaps.print_conversion_mli () *)
+(*$ Ppx_ast_cinaps.print_conversion_mli () *)
 val ast_of_longident :
   Compiler_types.longident
   -> Versions.V4_07.Longident.t
