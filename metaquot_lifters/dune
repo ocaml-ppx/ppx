@@ -2,4 +2,4 @@
  (name        ppx_metaquot_lifters)
  (public_name ppx.metaquot_lifters)
  (flags (:standard -safe-string))
- (libraries   ppx ppx.traverse_builtins))
+ (libraries   stdppx ppx.ast))
