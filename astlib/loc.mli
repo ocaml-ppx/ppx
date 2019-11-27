@@ -9,7 +9,10 @@
 (** {1 Type} *)
 
 (** The type equivalence with [Ocaml_common.Location.loc] is expected to stay stable. *)
-type 'a t = private 'a Ocaml_common.Location.loc
+type 'a t = 'a Ocaml_common.Location.loc =
+  { txt : 'a
+  ; loc : Ocaml_common.Location.t
+  }
 
 (** {1 Conversions} It should always be possible to convert to/from
     [Ocaml_common.Location.loc]. *)

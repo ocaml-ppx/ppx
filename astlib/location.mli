@@ -9,7 +9,11 @@
 (** {1 Type} *)
 
 (** The type equivalence with [Ocaml_common.Location] is expected to stay stable. *)
-type t = private Ocaml_common.Location.t
+type t = Ocaml_common.Location.t =
+  { loc_start : Lexing.position
+  ; loc_end : Lexing.position
+  ; loc_ghost : bool
+  }
 
 (** {1 Conversions} It should always be possible to convert to/from
     [Ocaml_common.Location.t]. *)
