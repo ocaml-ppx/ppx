@@ -2,7 +2,7 @@
  (names gen_ast_pattern gen_ast_builder)
  (flags (:standard -safe-string))
  (libraries
-  ppx.ast
+  ppx.ast_deprecated
   compiler-libs.common
   compiler-libs.bytecomp
   ppx.traverse_builtins))
