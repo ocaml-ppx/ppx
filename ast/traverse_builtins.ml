@@ -29,7 +29,7 @@ class map =
       let bol = self#int (bol x) in
       let cnum = self#int (cnum x) in
       create ~fname ~lnum ~bol ~cnum ()
-      
+
     method location : Astlib.Location.t T.map = fun x ->
       let open Astlib.Location in
       let start = self#position (start x) in
@@ -58,14 +58,14 @@ class iter =
       | Some x -> f x
     method list : 'a. 'a T.iter -> 'a list T.iter = List.iter
     method array : 'a. 'a T.iter -> 'a array T.iter = Array.iter
- 
+
     method position : Astlib.Position.t T.iter = fun x ->
       let open Astlib.Position in
       self#string (fname x);
       self#int (lnum x);
       self#int (bol x);
       self#int (cnum x)
-      
+
     method location : Astlib.Location.t T.iter = fun x ->
       let open Astlib.Location in
       self#position (start x);
@@ -112,7 +112,7 @@ class ['acc] fold =
       let acc = self#int (lnum x) acc in
       let acc = self#int (bol x) acc in
       self#int (cnum x) acc
-      
+
     method location : (Astlib.Location.t, 'acc) T.fold = fun x acc ->
       let open Astlib.Location in
       let acc = self#position (start x) acc in
@@ -174,7 +174,7 @@ class ['acc] fold_map =
       let (bol, acc) = self#int (bol x) acc in
       let (cnum, acc) = self#int (cnum x) acc in
       (create ~fname ~lnum ~bol ~cnum (), acc)
-      
+
     method location : (Astlib.Location.t, 'acc) T.fold_map = fun x acc ->
       let open Astlib.Location in
       let (start, acc) = self#position (start x) acc in
@@ -188,7 +188,7 @@ class ['acc] fold_map =
       let open Astlib.Loc in
       let (txt, acc) = f (txt x) acc in
       let (loc, acc) = self#location (loc x) acc in
-      (create ~txt ~loc (), acc) 
+      (create ~txt ~loc (), acc)
   end
 
 class ['ctx] map_with_context =
@@ -221,7 +221,7 @@ class ['ctx] map_with_context =
       let bol = self#int ctx (bol x) in
       let cnum = self#int ctx (cnum x) in
       create ~fname ~lnum ~bol ~cnum ()
-      
+
     method location : ('ctx, Astlib.Location.t) T.map_with_context = fun ctx x ->
       let open Astlib.Location in
       let start = self#position ctx (start x) in
@@ -275,7 +275,7 @@ class virtual ['res] lift =
       let cnum = self#int (cnum x) in
       self#record
         [("fname", fname); ("lnum", lnum); ("bol", bol); ("cnum", cnum)]
-      
+
     method location : (Astlib.Location.t, 'res) T.lift = fun x ->
       let open Astlib.Location in
       let start = self#position (start x) in
