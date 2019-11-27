@@ -35,12 +35,12 @@ module Cookies = struct
   type t = Migrate_parsetree.Driver.cookies
 
   let get t name pattern =
-    Option.map (Migrate_parsetree.Driver.get_cookie t name (module Ppx_ast.Selected_ast))
+    Option.map (Migrate_parsetree.Driver.get_cookie t name (module Ppx_ast_deprecated.Selected_ast))
       ~f:(fun e ->
         Ast_pattern.parse pattern e.pexp_loc e Fn.id)
 
   let set t name expr =
-    Migrate_parsetree.Driver.set_cookie t name (module Ppx_ast.Selected_ast) expr
+    Migrate_parsetree.Driver.set_cookie t name (module Ppx_ast_deprecated.Selected_ast) expr
 
   let handlers = ref []
   let add_handler f = handlers := !handlers @ [f]
@@ -281,8 +281,8 @@ let register_code_transformation ~name ?(aliases=[]) ~impl ~intf =
 ;;
 
 let register_transformation_using_ocaml_current_ast ?impl ?intf ?aliases name =
-  let impl = Option.map impl ~f:(Ppx_ast.Selected_ast.of_ocaml_mapper Structure) in
-  let intf = Option.map intf ~f:(Ppx_ast.Selected_ast.of_ocaml_mapper Signature) in
+  let impl = Option.map impl ~f:(Ppx_ast_deprecated.Selected_ast.of_ocaml_mapper Structure) in
+  let intf = Option.map intf ~f:(Ppx_ast_deprecated.Selected_ast.of_ocaml_mapper Signature) in
   register_transformation ?impl ?intf ?aliases name
 
 let debug_dropped_attribute name ~old_dropped ~new_dropped =
@@ -497,7 +497,7 @@ let real_map_structure config cookies st =
 let map_structure_gen st ~config : Migrate_parsetree.Driver.some_structure =
   Migrate_parsetree.Driver.rewrite_structure
     config
-    (module Ppx_ast.Selected_ast)
+    (module Ppx_ast_deprecated.Selected_ast)
     st
 
 let map_structure st =
@@ -540,7 +540,7 @@ let real_map_signature config cookies sg =
 let map_signature_gen sg ~config : Migrate_parsetree.Driver.some_signature =
   Migrate_parsetree.Driver.rewrite_signature
     config
-    (module Ppx_ast.Selected_ast)
+    (module Ppx_ast_deprecated.Selected_ast)
     sg
 
 let map_signature sg =
@@ -553,7 +553,7 @@ let map_signature sg =
    +-----------------------------------------------------------------+ *)
 
 let mapper =
-  let module Js = Ppx_ast.Selected_ast in
+  let module Js = Ppx_ast_deprecated.Selected_ast in
   (*$*)
   let structure _ st =
     Js.of_ocaml Structure st
@@ -731,7 +731,7 @@ let extract_cookies_str st =
   match st with
   | { pstr_desc = Pstr_attribute({txt = "ocaml.ppx.context"; _}, _); _ } as prefix
     :: st ->
-    let prefix = Ppx_ast.Selected_ast.to_ocaml Structure [prefix] in
+    let prefix = Ppx_ast_deprecated.Selected_ast.to_ocaml Structure [prefix] in
     assert (List.is_empty
               (Ocaml_common.Ast_mapper.drop_ppx_context_str ~restore:true prefix));
     st
@@ -740,7 +740,7 @@ let extract_cookies_str st =
 let add_cookies_str st =
   let prefix =
     Ocaml_common.Ast_mapper.add_ppx_context_str ~tool_name:"ppx_driver" []
-    |> Ppx_ast.Selected_ast.of_ocaml Structure
+    |> Ppx_ast_deprecated.Selected_ast.of_ocaml Structure
   in
   prefix @ st
 
@@ -749,7 +749,7 @@ let extract_cookies_sig sg =
   match sg with
   | { psig_desc = Psig_attribute({txt = "ocaml.ppx.context"; _}, _); _ } as prefix
     :: sg ->
-    let prefix = Ppx_ast.Selected_ast.to_ocaml Signature [prefix] in
+    let prefix = Ppx_ast_deprecated.Selected_ast.to_ocaml Signature [prefix] in
     assert (List.is_empty
               (Ocaml_common.Ast_mapper.drop_ppx_context_sig ~restore:true prefix));
     sg
@@ -758,7 +758,7 @@ let extract_cookies_sig sg =
 let add_cookies_sig sg =
   let prefix =
     Ocaml_common.Ast_mapper.add_ppx_context_sig ~tool_name:"ppx_driver" []
-    |> Ppx_ast.Selected_ast.of_ocaml Signature
+    |> Ppx_ast_deprecated.Selected_ast.of_ocaml Signature
   in
   prefix @ sg
 
@@ -882,11 +882,11 @@ let process_file (kind : Kind.t) fn ~input_name ~relocate ~output_mode ~embed_er
       let ast = match kind with
         | Intf ->
            Some_intf_or_impl.Intf
-             (Sig ((module Ppx_ast.Selected_ast),
+             (Sig ((module Ppx_ast_deprecated.Selected_ast),
                    [ psig_extension ~loc ext [] ]))
         | Impl ->
            Some_intf_or_impl.Impl
-             (Str ((module Ppx_ast.Selected_ast),
+             (Str ((module Ppx_ast_deprecated.Selected_ast),
                    [ pstr_extension ~loc ext [] ]))
       in
       input_name, ast
@@ -1095,7 +1095,7 @@ let set_cookie s =
       };
     let expr = Parse.expression lexbuf in
     Migrate_parsetree.Driver.set_global_cookie name
-      (module Ppx_ast.Selected_ast) expr
+      (module Ppx_ast_deprecated.Selected_ast) expr
 
 let as_pp () =
   set_output_mode Dump_ast;
@@ -1283,9 +1283,9 @@ let () =
        them, since [--cookie] is a much better replacement for passing parameters to
        individual rewriters. *)
     ~args:shared_args
-    (module Ppx_ast.Selected_ast)
+    (module Ppx_ast_deprecated.Selected_ast)
     (fun config cookies ->
-       let module A = Ppx_ast.Selected_ast.Ast.Ast_mapper in
+       let module A = Ppx_ast_deprecated.Selected_ast.Ast.Ast_mapper in
        let structure _ st = real_map_structure config cookies st in
        let signature _ sg = real_map_signature config cookies sg in
        { A.default_mapper with structure; signature })

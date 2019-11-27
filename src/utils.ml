@@ -88,19 +88,19 @@ module Intf_or_impl = struct
     match ast with
     | Intf (Migrate_parsetree.Driver.Sig ((module Ver), sg)) ->
       Intf ((Migrate_parsetree.Versions.migrate (module Ver)
-               (module Ppx_ast.Selected_ast)).copy_signature sg)
+               (module Ppx_ast_deprecated.Selected_ast)).copy_signature sg)
     | Impl (Migrate_parsetree.Driver.Str ((module Ver), st)) ->
       Impl ((Migrate_parsetree.Versions.migrate (module Ver)
-               (module Ppx_ast.Selected_ast)).copy_structure st)
+               (module Ppx_ast_deprecated.Selected_ast)).copy_structure st)
 
   let of_ast_io ast : t =
     let open Migrate_parsetree in
     match ast with
     | Ast_io.Intf ((module Ver), sg) ->
-      let module C = Versions.Convert(Ver)(Ppx_ast.Selected_ast) in
+      let module C = Versions.Convert(Ver)(Ppx_ast_deprecated.Selected_ast) in
       Intf (C.copy_signature sg)
     | Ast_io.Impl ((module Ver), st) ->
-      let module C = Versions.Convert(Ver)(Ppx_ast.Selected_ast) in
+      let module C = Versions.Convert(Ver)(Ppx_ast_deprecated.Selected_ast) in
       Impl (C.copy_structure st)
 end
 (*

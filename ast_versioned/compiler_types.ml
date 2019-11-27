@@ -1,1 +1,1 @@
-include Ppx_ast.Ast
+include Ppx_ast_deprecated.Ast

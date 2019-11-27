@@ -1,4 +1,4 @@
-include Ppx_ast
+include Ppx_ast_deprecated
 include Ast
 open Ast_helper
 
