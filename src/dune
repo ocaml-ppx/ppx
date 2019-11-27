@@ -6,7 +6,7 @@
   compiler-libs.common
   ocaml-compiler-libs.shadow
   ocaml-migrate-parsetree
-  ppx.ast
+  ppx.ast_deprecated
   ppx.print_diff
   ppx_derivers
   ppx_traverse_builtins
@@ -26,12 +26,12 @@
 (rule
  (targets ast_pattern_generated.ml)
  (deps    gen/gen_ast_pattern.exe)
- (action  (run ./gen/gen_ast_pattern.exe %{lib:ppx.ast:ast.ml})))
+ (action  (run ./gen/gen_ast_pattern.exe %{lib:ppx.ast_deprecated:ast.ml})))
 
 (rule
  (targets ast_builder_generated.ml)
  (deps gen/gen_ast_builder.exe)
- (action  (run ./gen/gen_ast_builder.exe %{lib:ppx.ast:ast.ml})))
+ (action  (run ./gen/gen_ast_builder.exe %{lib:ppx.ast_deprecated:ast.ml})))
 
 (alias
  (name cinaps)
