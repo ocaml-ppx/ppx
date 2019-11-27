@@ -1,6 +1,6 @@
 (library
- (name ppx_ast_versioned_tests_cinaps)
+ (name ppx_ast_tests_cinaps)
  (libraries
   astlib
-  ppx_ast_versioned_cinaps)
+  ppx_ast_cinaps)
  (flags (:standard -safe-string)))

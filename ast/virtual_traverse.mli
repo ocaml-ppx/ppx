@@ -1,4 +1,4 @@
-(*$ Ppx_ast_versioned_cinaps.print_virtual_traverse_mli () *)
+(*$ Ppx_ast_cinaps.print_virtual_traverse_mli () *)
 module V4_07 : sig
   open Versions.V4_07
 

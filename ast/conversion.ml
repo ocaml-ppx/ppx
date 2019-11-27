@@ -26,7 +26,7 @@ module Helpers = struct
   end
 end
 
-(*$ Ppx_ast_versioned_cinaps.print_conversion_ml () *)
+(*$ Ppx_ast_cinaps.print_conversion_ml () *)
 let rec ast_of_longident x =
   Versions.V4_07.Longident.of_concrete (concrete_of_longident x)
 
