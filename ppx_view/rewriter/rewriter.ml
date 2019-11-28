@@ -28,6 +28,10 @@ let ppx_error_unsupported_pattern loc kind =
 let rec extract_view_attribute_fields = function
   | ({ Location.txt = "view"; loc; }, payload) :: _ ->
     begin match payload with
+    (* Shouldn't the paylaod be a pattern? so that one could write
+     [[@view? {pexp_attributes = []; _}]] for instance? Even
+     if we don't allow further deconstruction, I still feel like
+     a pattern would be better suited. *)
     | Parsetree.PStr [{ pstr_desc = Pstr_eval ({ pexp_desc = Pexp_record (fields,
                                                                           None);
                                                  _ }, _); _ }] ->
@@ -144,6 +148,8 @@ let transl_constant : Location.t -> Parsetree.constant -> Parsetree.expression =
         | Some 'l' -> "int32"
         | Some 'L' -> "int64"
         | Some 'n' -> "nativeint"
+        (* Shouldn't this be interpreted by other ppxs somehow or reported by the compiler
+          as is? *)
         | Some _   -> ppx_error loc "invalid integer suffix"
       in
       make_constant name (Ast_helper.Const.integer ?suffix value)
@@ -224,6 +230,7 @@ and transl_pattern_desc loc desc =
       mk_apply [expr_hd; expr_tl],
       vars_hd @ vars_tl
     | Some ({ ppat_desc = Ppat_tuple l; _ }) ->
+      (* why is this needed? *)
       let exprs, vars = transl_tuple l in
       mk_apply [exprs],
       vars
@@ -238,6 +245,7 @@ and transl_pattern_desc loc desc =
     let expr_first,  vars_first  = transl_pattern first  in
     let expr_second, vars_second = transl_pattern second in
     let same_variables =
+      (* Isn't there an ordering issue? *)
       List.for_all2
         (fun var_first var_second ->
            match  var_first.Parsetree.ppat_desc,
@@ -279,6 +287,8 @@ and transl_pattern_desc loc desc =
                [expr],
              vars
            | { loc; _ } ->
+             (* Couldn't that be seen as an open and the field
+                translated to [Some_module.x'match]? *)
              ppx_error loc "invalid field (should be unqualified)")
         fields
     in
@@ -332,12 +342,14 @@ and transl_array = function
   | hd :: tl ->
     let expr_hd, vars_hd = transl_pattern hd in
     let expr_tl, vars_tl = transl_array   tl in
+    (* This should be larray_cons and larray_nil *)
     make_exp_apply
       no_loc
       (make_ident ~modname:Module.view ~name:"array_cons" ())
       [expr_hd; expr_tl],
     vars_hd @ vars_tl
   | [] ->
+    (* larray_nil is a value not a constructor *)
     make_exp_construct
       no_loc
       (make_ident ~modname:Module.view ~name:"array_nil" ())
