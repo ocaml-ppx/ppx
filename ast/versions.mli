@@ -1,7 +1,80 @@
 (*$ Ppx_ast_cinaps.print_versions_mli () *)
+type arg_label
+type attribute
+type attributes
+type case
+type class_declaration
+type class_description
+type class_expr
+type class_expr_desc
+type class_field
+type class_field_desc
+type class_field_kind
+type 'a class_infos
+type class_signature
+type class_structure
+type class_type
+type class_type_declaration
+type class_type_desc
+type class_type_field
+type class_type_field_desc
+type closed_flag
+type constant
+type constructor_arguments
+type constructor_declaration
+type core_type
+type core_type_desc
+type direction_flag
+type directive_argument
+type expression
+type expression_desc
+type extension
+type extension_constructor
+type extension_constructor_kind
+type include_declaration
+type include_description
+type 'a include_infos
+type label
+type label_declaration
+type longident
+type longident_loc
+type module_binding
+type module_declaration
+type module_expr
+type module_expr_desc
+type module_type
+type module_type_declaration
+type module_type_desc
+type mutable_flag
+type object_field
+type open_description
+type override_flag
+type package_type
+type pattern
+type pattern_desc
+type payload
+type private_flag
+type rec_flag
+type row_field
+type signature
+type signature_item
+type signature_item_desc
+type structure
+type structure_item
+type structure_item_desc
+type toplevel_phrase
+type type_declaration
+type type_extension
+type type_kind
+type value_binding
+type value_description
+type variance
+type virtual_flag
+type with_constraint
+
 module V4_07 : sig
   module rec Longident : sig
-    type t
+    type t = longident
 
     type concrete =
       | Lident of string
@@ -25,7 +98,7 @@ module V4_07 : sig
   end
 
   and Longident_loc : sig
-    type t
+    type t = longident_loc
 
     type concrete = Longident.t Astlib.Loc.t
 
@@ -36,7 +109,7 @@ module V4_07 : sig
   end
 
   and Rec_flag : sig
-    type t
+    type t = rec_flag
 
     type concrete =
       | Nonrecursive
@@ -50,7 +123,7 @@ module V4_07 : sig
   end
 
   and Direction_flag : sig
-    type t
+    type t = direction_flag
 
     type concrete =
       | Upto
@@ -64,7 +137,7 @@ module V4_07 : sig
   end
 
   and Private_flag : sig
-    type t
+    type t = private_flag
 
     type concrete =
       | Private
@@ -78,7 +151,7 @@ module V4_07 : sig
   end
 
   and Mutable_flag : sig
-    type t
+    type t = mutable_flag
 
     type concrete =
       | Immutable
@@ -92,7 +165,7 @@ module V4_07 : sig
   end
 
   and Virtual_flag : sig
-    type t
+    type t = virtual_flag
 
     type concrete =
       | Virtual
@@ -106,7 +179,7 @@ module V4_07 : sig
   end
 
   and Override_flag : sig
-    type t
+    type t = override_flag
 
     type concrete =
       | Override
@@ -120,7 +193,7 @@ module V4_07 : sig
   end
 
   and Closed_flag : sig
-    type t
+    type t = closed_flag
 
     type concrete =
       | Closed
@@ -134,7 +207,7 @@ module V4_07 : sig
   end
 
   and Label : sig
-    type t
+    type t = label
 
     type concrete = string
 
@@ -145,7 +218,7 @@ module V4_07 : sig
   end
 
   and Arg_label : sig
-    type t
+    type t = arg_label
 
     type concrete =
       | Nolabel
@@ -165,7 +238,7 @@ module V4_07 : sig
   end
 
   and Variance : sig
-    type t
+    type t = variance
 
     type concrete =
       | Covariant
@@ -181,7 +254,7 @@ module V4_07 : sig
   end
 
   and Constant : sig
-    type t
+    type t = constant
 
     type concrete =
       | Pconst_integer of string * char option
@@ -210,7 +283,7 @@ module V4_07 : sig
   end
 
   and Attribute : sig
-    type t
+    type t = attribute
 
     type concrete = (string Astlib.Loc.t * Payload.t)
 
@@ -221,7 +294,7 @@ module V4_07 : sig
   end
 
   and Extension : sig
-    type t
+    type t = extension
 
     type concrete = (string Astlib.Loc.t * Payload.t)
 
@@ -232,7 +305,7 @@ module V4_07 : sig
   end
 
   and Attributes : sig
-    type t
+    type t = attributes
 
     type concrete = Attribute.t list
 
@@ -243,7 +316,7 @@ module V4_07 : sig
   end
 
   and Payload : sig
-    type t
+    type t = payload
 
     type concrete =
       | PStr of Structure.t
@@ -270,7 +343,7 @@ module V4_07 : sig
   end
 
   and Core_type : sig
-    type t
+    type t = core_type
 
     type concrete =
       { ptyp_desc : Core_type_desc.t
@@ -289,7 +362,7 @@ module V4_07 : sig
   end
 
   and Core_type_desc : sig
-    type t
+    type t = core_type_desc
 
     type concrete =
       | Ptyp_any
@@ -354,7 +427,7 @@ module V4_07 : sig
   end
 
   and Package_type : sig
-    type t
+    type t = package_type
 
     type concrete = (Longident_loc.t * (Longident_loc.t * Core_type.t) list)
 
@@ -365,7 +438,7 @@ module V4_07 : sig
   end
 
   and Row_field : sig
-    type t
+    type t = row_field
 
     type concrete =
       | Rtag of Label.t Astlib.Loc.t * Attributes.t * bool * Core_type.t list
@@ -386,7 +459,7 @@ module V4_07 : sig
   end
 
   and Object_field : sig
-    type t
+    type t = object_field
 
     type concrete =
       | Otag of Label.t Astlib.Loc.t * Attributes.t * Core_type.t
@@ -406,7 +479,7 @@ module V4_07 : sig
   end
 
   and Pattern : sig
-    type t
+    type t = pattern
 
     type concrete =
       { ppat_desc : Pattern_desc.t
@@ -425,7 +498,7 @@ module V4_07 : sig
   end
 
   and Pattern_desc : sig
-    type t
+    type t = pattern_desc
 
     type concrete =
       | Ppat_any
@@ -513,7 +586,7 @@ module V4_07 : sig
   end
 
   and Expression : sig
-    type t
+    type t = expression
 
     type concrete =
       { pexp_desc : Expression_desc.t
@@ -532,7 +605,7 @@ module V4_07 : sig
   end
 
   and Expression_desc : sig
-    type t
+    type t = expression_desc
 
     type concrete =
       | Pexp_ident of Longident_loc.t
@@ -718,7 +791,7 @@ module V4_07 : sig
   end
 
   and Case : sig
-    type t
+    type t = case
 
     type concrete =
       { pc_lhs : Pattern.t
@@ -737,7 +810,7 @@ module V4_07 : sig
   end
 
   and Value_description : sig
-    type t
+    type t = value_description
 
     type concrete =
       { pval_name : string Astlib.Loc.t
@@ -760,7 +833,7 @@ module V4_07 : sig
   end
 
   and Type_declaration : sig
-    type t
+    type t = type_declaration
 
     type concrete =
       { ptype_name : string Astlib.Loc.t
@@ -789,7 +862,7 @@ module V4_07 : sig
   end
 
   and Type_kind : sig
-    type t
+    type t = type_kind
 
     type concrete =
       | Ptype_abstract
@@ -811,7 +884,7 @@ module V4_07 : sig
   end
 
   and Label_declaration : sig
-    type t
+    type t = label_declaration
 
     type concrete =
       { pld_name : string Astlib.Loc.t
@@ -834,7 +907,7 @@ module V4_07 : sig
   end
 
   and Constructor_declaration : sig
-    type t
+    type t = constructor_declaration
 
     type concrete =
       { pcd_name : string Astlib.Loc.t
@@ -857,7 +930,7 @@ module V4_07 : sig
   end
 
   and Constructor_arguments : sig
-    type t
+    type t = constructor_arguments
 
     type concrete =
       | Pcstr_tuple of Core_type.t list
@@ -875,7 +948,7 @@ module V4_07 : sig
   end
 
   and Type_extension : sig
-    type t
+    type t = type_extension
 
     type concrete =
       { ptyext_path : Longident_loc.t
@@ -898,7 +971,7 @@ module V4_07 : sig
   end
 
   and Extension_constructor : sig
-    type t
+    type t = extension_constructor
 
     type concrete =
       { pext_name : string Astlib.Loc.t
@@ -919,7 +992,7 @@ module V4_07 : sig
   end
 
   and Extension_constructor_kind : sig
-    type t
+    type t = extension_constructor_kind
 
     type concrete =
       | Pext_decl of Constructor_arguments.t * Core_type.t option
@@ -938,7 +1011,7 @@ module V4_07 : sig
   end
 
   and Class_type : sig
-    type t
+    type t = class_type
 
     type concrete =
       { pcty_desc : Class_type_desc.t
@@ -957,7 +1030,7 @@ module V4_07 : sig
   end
 
   and Class_type_desc : sig
-    type t
+    type t = class_type_desc
 
     type concrete =
       | Pcty_constr of Longident_loc.t * Core_type.t list
@@ -992,7 +1065,7 @@ module V4_07 : sig
   end
 
   and Class_signature : sig
-    type t
+    type t = class_signature
 
     type concrete =
       { pcsig_self : Core_type.t
@@ -1009,7 +1082,7 @@ module V4_07 : sig
   end
 
   and Class_type_field : sig
-    type t
+    type t = class_type_field
 
     type concrete =
       { pctf_desc : Class_type_field_desc.t
@@ -1028,7 +1101,7 @@ module V4_07 : sig
   end
 
   and Class_type_field_desc : sig
-    type t
+    type t = class_type_field_desc
 
     type concrete =
       | Pctf_inherit of Class_type.t
@@ -1062,7 +1135,7 @@ module V4_07 : sig
   end
 
   and Class_infos : sig
-    type 'a t
+    type 'a t = 'a class_infos
 
     type 'a concrete =
       { pci_virt : Virtual_flag.t
@@ -1099,7 +1172,7 @@ module V4_07 : sig
   end
 
   and Class_description : sig
-    type t
+    type t = class_description
 
     type concrete = Class_type.t Class_infos.t
 
@@ -1110,7 +1183,7 @@ module V4_07 : sig
   end
 
   and Class_type_declaration : sig
-    type t
+    type t = class_type_declaration
 
     type concrete = Class_type.t Class_infos.t
 
@@ -1121,7 +1194,7 @@ module V4_07 : sig
   end
 
   and Class_expr : sig
-    type t
+    type t = class_expr
 
     type concrete =
       { pcl_desc : Class_expr_desc.t
@@ -1140,7 +1213,7 @@ module V4_07 : sig
   end
 
   and Class_expr_desc : sig
-    type t
+    type t = class_expr_desc
 
     type concrete =
       | Pcl_constr of Longident_loc.t * Core_type.t list
@@ -1192,7 +1265,7 @@ module V4_07 : sig
   end
 
   and Class_structure : sig
-    type t
+    type t = class_structure
 
     type concrete =
       { pcstr_self : Pattern.t
@@ -1209,7 +1282,7 @@ module V4_07 : sig
   end
 
   and Class_field : sig
-    type t
+    type t = class_field
 
     type concrete =
       { pcf_desc : Class_field_desc.t
@@ -1228,7 +1301,7 @@ module V4_07 : sig
   end
 
   and Class_field_desc : sig
-    type t
+    type t = class_field_desc
 
     type concrete =
       | Pcf_inherit of Override_flag.t * Class_expr.t * string Astlib.Loc.t option
@@ -1268,7 +1341,7 @@ module V4_07 : sig
   end
 
   and Class_field_kind : sig
-    type t
+    type t = class_field_kind
 
     type concrete =
       | Cfk_virtual of Core_type.t
@@ -1287,7 +1360,7 @@ module V4_07 : sig
   end
 
   and Class_declaration : sig
-    type t
+    type t = class_declaration
 
     type concrete = Class_expr.t Class_infos.t
 
@@ -1298,7 +1371,7 @@ module V4_07 : sig
   end
 
   and Module_type : sig
-    type t
+    type t = module_type
 
     type concrete =
       { pmty_desc : Module_type_desc.t
@@ -1317,7 +1390,7 @@ module V4_07 : sig
   end
 
   and Module_type_desc : sig
-    type t
+    type t = module_type_desc
 
     type concrete =
       | Pmty_ident of Longident_loc.t
@@ -1358,7 +1431,7 @@ module V4_07 : sig
   end
 
   and Signature : sig
-    type t
+    type t = signature
 
     type concrete = Signature_item.t list
 
@@ -1369,7 +1442,7 @@ module V4_07 : sig
   end
 
   and Signature_item : sig
-    type t
+    type t = signature_item
 
     type concrete =
       { psig_desc : Signature_item_desc.t
@@ -1386,7 +1459,7 @@ module V4_07 : sig
   end
 
   and Signature_item_desc : sig
-    type t
+    type t = signature_item_desc
 
     type concrete =
       | Psig_value of Value_description.t
@@ -1450,7 +1523,7 @@ module V4_07 : sig
   end
 
   and Module_declaration : sig
-    type t
+    type t = module_declaration
 
     type concrete =
       { pmd_name : string Astlib.Loc.t
@@ -1471,7 +1544,7 @@ module V4_07 : sig
   end
 
   and Module_type_declaration : sig
-    type t
+    type t = module_type_declaration
 
     type concrete =
       { pmtd_name : string Astlib.Loc.t
@@ -1492,7 +1565,7 @@ module V4_07 : sig
   end
 
   and Open_description : sig
-    type t
+    type t = open_description
 
     type concrete =
       { popen_lid : Longident_loc.t
@@ -1513,7 +1586,7 @@ module V4_07 : sig
   end
 
   and Include_infos : sig
-    type 'a t
+    type 'a t = 'a include_infos
 
     type 'a concrete =
       { pincl_mod : 'a
@@ -1541,7 +1614,7 @@ module V4_07 : sig
   end
 
   and Include_description : sig
-    type t
+    type t = include_description
 
     type concrete = Module_type.t Include_infos.t
 
@@ -1552,7 +1625,7 @@ module V4_07 : sig
   end
 
   and Include_declaration : sig
-    type t
+    type t = include_declaration
 
     type concrete = Module_expr.t Include_infos.t
 
@@ -1563,7 +1636,7 @@ module V4_07 : sig
   end
 
   and With_constraint : sig
-    type t
+    type t = with_constraint
 
     type concrete =
       | Pwith_type of Longident_loc.t * Type_declaration.t
@@ -1593,7 +1666,7 @@ module V4_07 : sig
   end
 
   and Module_expr : sig
-    type t
+    type t = module_expr
 
     type concrete =
       { pmod_desc : Module_expr_desc.t
@@ -1612,7 +1685,7 @@ module V4_07 : sig
   end
 
   and Module_expr_desc : sig
-    type t
+    type t = module_expr_desc
 
     type concrete =
       | Pmod_ident of Longident_loc.t
@@ -1654,7 +1727,7 @@ module V4_07 : sig
   end
 
   and Structure : sig
-    type t
+    type t = structure
 
     type concrete = Structure_item.t list
 
@@ -1665,7 +1738,7 @@ module V4_07 : sig
   end
 
   and Structure_item : sig
-    type t
+    type t = structure_item
 
     type concrete =
       { pstr_desc : Structure_item_desc.t
@@ -1682,7 +1755,7 @@ module V4_07 : sig
   end
 
   and Structure_item_desc : sig
-    type t
+    type t = structure_item_desc
 
     type concrete =
       | Pstr_eval of Expression.t * Attributes.t
@@ -1756,7 +1829,7 @@ module V4_07 : sig
   end
 
   and Value_binding : sig
-    type t
+    type t = value_binding
 
     type concrete =
       { pvb_pat : Pattern.t
@@ -1777,7 +1850,7 @@ module V4_07 : sig
   end
 
   and Module_binding : sig
-    type t
+    type t = module_binding
 
     type concrete =
       { pmb_name : string Astlib.Loc.t
@@ -1798,7 +1871,7 @@ module V4_07 : sig
   end
 
   and Toplevel_phrase : sig
-    type t
+    type t = toplevel_phrase
 
     type concrete =
       | Ptop_def of Structure.t
@@ -1817,7 +1890,7 @@ module V4_07 : sig
   end
 
   and Directive_argument : sig
-    type t
+    type t = directive_argument
 
     type concrete =
       | Pdir_none
@@ -1848,7 +1921,7 @@ end
 
 module V4_06 : sig
   module rec Longident : sig
-    type t
+    type t = longident
 
     type concrete =
       | Lident of string
@@ -1872,7 +1945,7 @@ module V4_06 : sig
   end
 
   and Longident_loc : sig
-    type t
+    type t = longident_loc
 
     type concrete = Longident.t Astlib.Loc.t
 
@@ -1883,7 +1956,7 @@ module V4_06 : sig
   end
 
   and Rec_flag : sig
-    type t
+    type t = rec_flag
 
     type concrete =
       | Nonrecursive
@@ -1897,7 +1970,7 @@ module V4_06 : sig
   end
 
   and Direction_flag : sig
-    type t
+    type t = direction_flag
 
     type concrete =
       | Upto
@@ -1911,7 +1984,7 @@ module V4_06 : sig
   end
 
   and Private_flag : sig
-    type t
+    type t = private_flag
 
     type concrete =
       | Private
@@ -1925,7 +1998,7 @@ module V4_06 : sig
   end
 
   and Mutable_flag : sig
-    type t
+    type t = mutable_flag
 
     type concrete =
       | Immutable
@@ -1939,7 +2012,7 @@ module V4_06 : sig
   end
 
   and Virtual_flag : sig
-    type t
+    type t = virtual_flag
 
     type concrete =
       | Virtual
@@ -1953,7 +2026,7 @@ module V4_06 : sig
   end
 
   and Override_flag : sig
-    type t
+    type t = override_flag
 
     type concrete =
       | Override
@@ -1967,7 +2040,7 @@ module V4_06 : sig
   end
 
   and Closed_flag : sig
-    type t
+    type t = closed_flag
 
     type concrete =
       | Closed
@@ -1981,7 +2054,7 @@ module V4_06 : sig
   end
 
   and Label : sig
-    type t
+    type t = label
 
     type concrete = string
 
@@ -1992,7 +2065,7 @@ module V4_06 : sig
   end
 
   and Arg_label : sig
-    type t
+    type t = arg_label
 
     type concrete =
       | Nolabel
@@ -2012,7 +2085,7 @@ module V4_06 : sig
   end
 
   and Variance : sig
-    type t
+    type t = variance
 
     type concrete =
       | Covariant
@@ -2028,7 +2101,7 @@ module V4_06 : sig
   end
 
   and Constant : sig
-    type t
+    type t = constant
 
     type concrete =
       | Pconst_integer of string * char option
@@ -2057,7 +2130,7 @@ module V4_06 : sig
   end
 
   and Attribute : sig
-    type t
+    type t = attribute
 
     type concrete = (string Astlib.Loc.t * Payload.t)
 
@@ -2068,7 +2141,7 @@ module V4_06 : sig
   end
 
   and Extension : sig
-    type t
+    type t = extension
 
     type concrete = (string Astlib.Loc.t * Payload.t)
 
@@ -2079,7 +2152,7 @@ module V4_06 : sig
   end
 
   and Attributes : sig
-    type t
+    type t = attributes
 
     type concrete = Attribute.t list
 
@@ -2090,7 +2163,7 @@ module V4_06 : sig
   end
 
   and Payload : sig
-    type t
+    type t = payload
 
     type concrete =
       | PStr of Structure.t
@@ -2117,7 +2190,7 @@ module V4_06 : sig
   end
 
   and Core_type : sig
-    type t
+    type t = core_type
 
     type concrete =
       { ptyp_desc : Core_type_desc.t
@@ -2136,7 +2209,7 @@ module V4_06 : sig
   end
 
   and Core_type_desc : sig
-    type t
+    type t = core_type_desc
 
     type concrete =
       | Ptyp_any
@@ -2201,7 +2274,7 @@ module V4_06 : sig
   end
 
   and Package_type : sig
-    type t
+    type t = package_type
 
     type concrete = (Longident_loc.t * (Longident_loc.t * Core_type.t) list)
 
@@ -2212,7 +2285,7 @@ module V4_06 : sig
   end
 
   and Row_field : sig
-    type t
+    type t = row_field
 
     type concrete =
       | Rtag of Label.t Astlib.Loc.t * Attributes.t * bool * Core_type.t list
@@ -2233,7 +2306,7 @@ module V4_06 : sig
   end
 
   and Object_field : sig
-    type t
+    type t = object_field
 
     type concrete =
       | Otag of Label.t Astlib.Loc.t * Attributes.t * Core_type.t
@@ -2253,7 +2326,7 @@ module V4_06 : sig
   end
 
   and Pattern : sig
-    type t
+    type t = pattern
 
     type concrete =
       { ppat_desc : Pattern_desc.t
@@ -2272,7 +2345,7 @@ module V4_06 : sig
   end
 
   and Pattern_desc : sig
-    type t
+    type t = pattern_desc
 
     type concrete =
       | Ppat_any
@@ -2360,7 +2433,7 @@ module V4_06 : sig
   end
 
   and Expression : sig
-    type t
+    type t = expression
 
     type concrete =
       { pexp_desc : Expression_desc.t
@@ -2379,7 +2452,7 @@ module V4_06 : sig
   end
 
   and Expression_desc : sig
-    type t
+    type t = expression_desc
 
     type concrete =
       | Pexp_ident of Longident_loc.t
@@ -2565,7 +2638,7 @@ module V4_06 : sig
   end
 
   and Case : sig
-    type t
+    type t = case
 
     type concrete =
       { pc_lhs : Pattern.t
@@ -2584,7 +2657,7 @@ module V4_06 : sig
   end
 
   and Value_description : sig
-    type t
+    type t = value_description
 
     type concrete =
       { pval_name : string Astlib.Loc.t
@@ -2607,7 +2680,7 @@ module V4_06 : sig
   end
 
   and Type_declaration : sig
-    type t
+    type t = type_declaration
 
     type concrete =
       { ptype_name : string Astlib.Loc.t
@@ -2636,7 +2709,7 @@ module V4_06 : sig
   end
 
   and Type_kind : sig
-    type t
+    type t = type_kind
 
     type concrete =
       | Ptype_abstract
@@ -2658,7 +2731,7 @@ module V4_06 : sig
   end
 
   and Label_declaration : sig
-    type t
+    type t = label_declaration
 
     type concrete =
       { pld_name : string Astlib.Loc.t
@@ -2681,7 +2754,7 @@ module V4_06 : sig
   end
 
   and Constructor_declaration : sig
-    type t
+    type t = constructor_declaration
 
     type concrete =
       { pcd_name : string Astlib.Loc.t
@@ -2704,7 +2777,7 @@ module V4_06 : sig
   end
 
   and Constructor_arguments : sig
-    type t
+    type t = constructor_arguments
 
     type concrete =
       | Pcstr_tuple of Core_type.t list
@@ -2722,7 +2795,7 @@ module V4_06 : sig
   end
 
   and Type_extension : sig
-    type t
+    type t = type_extension
 
     type concrete =
       { ptyext_path : Longident_loc.t
@@ -2745,7 +2818,7 @@ module V4_06 : sig
   end
 
   and Extension_constructor : sig
-    type t
+    type t = extension_constructor
 
     type concrete =
       { pext_name : string Astlib.Loc.t
@@ -2766,7 +2839,7 @@ module V4_06 : sig
   end
 
   and Extension_constructor_kind : sig
-    type t
+    type t = extension_constructor_kind
 
     type concrete =
       | Pext_decl of Constructor_arguments.t * Core_type.t option
@@ -2785,7 +2858,7 @@ module V4_06 : sig
   end
 
   and Class_type : sig
-    type t
+    type t = class_type
 
     type concrete =
       { pcty_desc : Class_type_desc.t
@@ -2804,7 +2877,7 @@ module V4_06 : sig
   end
 
   and Class_type_desc : sig
-    type t
+    type t = class_type_desc
 
     type concrete =
       | Pcty_constr of Longident_loc.t * Core_type.t list
@@ -2839,7 +2912,7 @@ module V4_06 : sig
   end
 
   and Class_signature : sig
-    type t
+    type t = class_signature
 
     type concrete =
       { pcsig_self : Core_type.t
@@ -2856,7 +2929,7 @@ module V4_06 : sig
   end
 
   and Class_type_field : sig
-    type t
+    type t = class_type_field
 
     type concrete =
       { pctf_desc : Class_type_field_desc.t
@@ -2875,7 +2948,7 @@ module V4_06 : sig
   end
 
   and Class_type_field_desc : sig
-    type t
+    type t = class_type_field_desc
 
     type concrete =
       | Pctf_inherit of Class_type.t
@@ -2909,7 +2982,7 @@ module V4_06 : sig
   end
 
   and Class_infos : sig
-    type 'a t
+    type 'a t = 'a class_infos
 
     type 'a concrete =
       { pci_virt : Virtual_flag.t
@@ -2946,7 +3019,7 @@ module V4_06 : sig
   end
 
   and Class_description : sig
-    type t
+    type t = class_description
 
     type concrete = Class_type.t Class_infos.t
 
@@ -2957,7 +3030,7 @@ module V4_06 : sig
   end
 
   and Class_type_declaration : sig
-    type t
+    type t = class_type_declaration
 
     type concrete = Class_type.t Class_infos.t
 
@@ -2968,7 +3041,7 @@ module V4_06 : sig
   end
 
   and Class_expr : sig
-    type t
+    type t = class_expr
 
     type concrete =
       { pcl_desc : Class_expr_desc.t
@@ -2987,7 +3060,7 @@ module V4_06 : sig
   end
 
   and Class_expr_desc : sig
-    type t
+    type t = class_expr_desc
 
     type concrete =
       | Pcl_constr of Longident_loc.t * Core_type.t list
@@ -3039,7 +3112,7 @@ module V4_06 : sig
   end
 
   and Class_structure : sig
-    type t
+    type t = class_structure
 
     type concrete =
       { pcstr_self : Pattern.t
@@ -3056,7 +3129,7 @@ module V4_06 : sig
   end
 
   and Class_field : sig
-    type t
+    type t = class_field
 
     type concrete =
       { pcf_desc : Class_field_desc.t
@@ -3075,7 +3148,7 @@ module V4_06 : sig
   end
 
   and Class_field_desc : sig
-    type t
+    type t = class_field_desc
 
     type concrete =
       | Pcf_inherit of Override_flag.t * Class_expr.t * string Astlib.Loc.t option
@@ -3115,7 +3188,7 @@ module V4_06 : sig
   end
 
   and Class_field_kind : sig
-    type t
+    type t = class_field_kind
 
     type concrete =
       | Cfk_virtual of Core_type.t
@@ -3134,7 +3207,7 @@ module V4_06 : sig
   end
 
   and Class_declaration : sig
-    type t
+    type t = class_declaration
 
     type concrete = Class_expr.t Class_infos.t
 
@@ -3145,7 +3218,7 @@ module V4_06 : sig
   end
 
   and Module_type : sig
-    type t
+    type t = module_type
 
     type concrete =
       { pmty_desc : Module_type_desc.t
@@ -3164,7 +3237,7 @@ module V4_06 : sig
   end
 
   and Module_type_desc : sig
-    type t
+    type t = module_type_desc
 
     type concrete =
       | Pmty_ident of Longident_loc.t
@@ -3205,7 +3278,7 @@ module V4_06 : sig
   end
 
   and Signature : sig
-    type t
+    type t = signature
 
     type concrete = Signature_item.t list
 
@@ -3216,7 +3289,7 @@ module V4_06 : sig
   end
 
   and Signature_item : sig
-    type t
+    type t = signature_item
 
     type concrete =
       { psig_desc : Signature_item_desc.t
@@ -3233,7 +3306,7 @@ module V4_06 : sig
   end
 
   and Signature_item_desc : sig
-    type t
+    type t = signature_item_desc
 
     type concrete =
       | Psig_value of Value_description.t
@@ -3297,7 +3370,7 @@ module V4_06 : sig
   end
 
   and Module_declaration : sig
-    type t
+    type t = module_declaration
 
     type concrete =
       { pmd_name : string Astlib.Loc.t
@@ -3318,7 +3391,7 @@ module V4_06 : sig
   end
 
   and Module_type_declaration : sig
-    type t
+    type t = module_type_declaration
 
     type concrete =
       { pmtd_name : string Astlib.Loc.t
@@ -3339,7 +3412,7 @@ module V4_06 : sig
   end
 
   and Open_description : sig
-    type t
+    type t = open_description
 
     type concrete =
       { popen_lid : Longident_loc.t
@@ -3360,7 +3433,7 @@ module V4_06 : sig
   end
 
   and Include_infos : sig
-    type 'a t
+    type 'a t = 'a include_infos
 
     type 'a concrete =
       { pincl_mod : 'a
@@ -3388,7 +3461,7 @@ module V4_06 : sig
   end
 
   and Include_description : sig
-    type t
+    type t = include_description
 
     type concrete = Module_type.t Include_infos.t
 
@@ -3399,7 +3472,7 @@ module V4_06 : sig
   end
 
   and Include_declaration : sig
-    type t
+    type t = include_declaration
 
     type concrete = Module_expr.t Include_infos.t
 
@@ -3410,7 +3483,7 @@ module V4_06 : sig
   end
 
   and With_constraint : sig
-    type t
+    type t = with_constraint
 
     type concrete =
       | Pwith_type of Longident_loc.t * Type_declaration.t
@@ -3440,7 +3513,7 @@ module V4_06 : sig
   end
 
   and Module_expr : sig
-    type t
+    type t = module_expr
 
     type concrete =
       { pmod_desc : Module_expr_desc.t
@@ -3459,7 +3532,7 @@ module V4_06 : sig
   end
 
   and Module_expr_desc : sig
-    type t
+    type t = module_expr_desc
 
     type concrete =
       | Pmod_ident of Longident_loc.t
@@ -3501,7 +3574,7 @@ module V4_06 : sig
   end
 
   and Structure : sig
-    type t
+    type t = structure
 
     type concrete = Structure_item.t list
 
@@ -3512,7 +3585,7 @@ module V4_06 : sig
   end
 
   and Structure_item : sig
-    type t
+    type t = structure_item
 
     type concrete =
       { pstr_desc : Structure_item_desc.t
@@ -3529,7 +3602,7 @@ module V4_06 : sig
   end
 
   and Structure_item_desc : sig
-    type t
+    type t = structure_item_desc
 
     type concrete =
       | Pstr_eval of Expression.t * Attributes.t
@@ -3603,7 +3676,7 @@ module V4_06 : sig
   end
 
   and Value_binding : sig
-    type t
+    type t = value_binding
 
     type concrete =
       { pvb_pat : Pattern.t
@@ -3624,7 +3697,7 @@ module V4_06 : sig
   end
 
   and Module_binding : sig
-    type t
+    type t = module_binding
 
     type concrete =
       { pmb_name : string Astlib.Loc.t
@@ -3645,7 +3718,7 @@ module V4_06 : sig
   end
 
   and Toplevel_phrase : sig
-    type t
+    type t = toplevel_phrase
 
     type concrete =
       | Ptop_def of Structure.t
@@ -3664,7 +3737,7 @@ module V4_06 : sig
   end
 
   and Directive_argument : sig
-    type t
+    type t = directive_argument
 
     type concrete =
       | Pdir_none
