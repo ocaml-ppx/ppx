@@ -55,8 +55,8 @@ module Signature = struct
              Block (fun () ->
                Ml.print_labelled_arrow record ~f:string_of_ty (inst "t" ~env))))
 
-  let print decl ~tvars ~envs =
-    Ml.declare_type "t" ~tvars Empty;
+  let print decl ~name ~tvars ~envs =
+    Ml.declare_type "t" ~tvars (Line (Ml.poly_type name ~tvars));
     Print.newline ();
     Ml.declare_type "concrete" ~tvars (Render.decl_type_element decl);
     List.iter envs ~f:(fun env ->
@@ -386,22 +386,51 @@ module Structure = struct
       then define_instances decl ~env)
 end
 
+module Unversioned = struct
+  let types_of_grammar grammar =
+    List.map grammar ~f:(fun (type_name, kind) ->
+      let tvars =
+        match (kind : Astlib.Grammar.kind) with
+        | Mono _ -> []
+        | Poly (tvars, _) -> tvars
+      in
+      type_name, tvars)
+
+  let all_types grammars =
+    grammars
+    |> List.map ~f:(fun (_, grammar) -> types_of_grammar grammar)
+    |> List.concat
+    |> List.sort_uniq ~cmp:(fun (a, avars) (b, bvars) ->
+      (* If two declarations have the same name and arity, we can consider them the same.
+         If two have the same name and different arity, we might as well keep both and
+         cause a type error. *)
+      match String.compare a b with
+      | 0 -> compare (List.length avars) (List.length bvars)
+      | n -> n)
+end
+
 let print_versions_mli () =
   Print.newline ();
   let grammars = Astlib.History.versioned_grammars Astlib.history in
+  List.iter (Unversioned.all_types grammars) ~f:(fun (type_name, tvars) ->
+    Ml.declare_type type_name ~tvars Empty);
+  Print.newline ();
   Ml.declare_modules grammars ~f:(fun _ grammar ->
     let env_table = Poly_env.env_table grammar in
     Ml.declare_modules grammar ~recursive:true ~f:(fun node_name kind ->
       match (kind : Astlib.Grammar.kind) with
       | Mono decl ->
-        Signature.print decl ~tvars:[] ~envs:[Poly_env.empty_env]
+        Signature.print decl ~name:node_name ~tvars:[] ~envs:[Poly_env.empty_env]
       | Poly (tvars, decl) ->
         let envs = Poly_env.find env_table node_name in
-        Signature.print ~tvars ~envs decl))
+        Signature.print decl ~name:node_name ~tvars ~envs))
 
 let print_versions_ml () =
   Print.newline ();
   let grammars = Astlib.History.versioned_grammars Astlib.history in
+  List.iter (Unversioned.all_types grammars) ~f:(fun (type_name, tvars) ->
+    Ml.declare_type type_name ~tvars (Line "Node.t"));
+  Print.newline ();
   Ml.define_modules grammars ~f:(fun version grammar ->
     Print.println "let version = %S" version;
     Print.println "let node name data = Node.of_node ~version { name; data }";
