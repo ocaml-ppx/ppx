@@ -309,4 +309,7 @@ class type ['res] std_lifters =
     method unit      : (unit,      'res) T.lift
     method option    : 'a. ('a,    'res) T.lift -> ('a option, 'res) T.lift
     method list      : 'a. ('a,    'res) T.lift -> ('a list, 'res) T.lift
+    method position : (Astlib.Position.t, 'res) T.lift
+    method location : (Astlib.Location.t, 'res) T.lift
+    method loc : 'a. ('a, 'res) T.lift -> ('a Astlib.Loc.t, 'res) T.lift
   end
