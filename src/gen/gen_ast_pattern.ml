@@ -1,3 +1,4 @@
+open Stdppx
 open Import
 open Ast_helper
 open Printf
@@ -250,11 +251,12 @@ let generate filename =
       match wrapped with
       | None -> (path, td, None)
       | Some (prefix, has_attrs, p) ->
-        (path, td, Some (prefix, has_attrs, p, List.assoc p types)))
+        (path, td, Some (prefix, has_attrs, p
+                         , Option.value_exn (List.assoc types p))))
   in
   (*  let all_types = List.map fst types in*)
   let types =
-    List.sort types ~cmp:(fun (a, _, _) (b, _, _) ->
+    List.sort types ~compare:(fun (a, _, _) (b, _, _) ->
       compare a b)
   in
   let items =

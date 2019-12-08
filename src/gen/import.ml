@@ -1,3 +1,4 @@
+open Stdppx
 include Ppx_ast_deprecated
 include Ast
 open Ast_helper
@@ -14,27 +15,6 @@ module Loc = struct
   let lident x = mk (Longident.parse x)
 end
 
-module List = struct
-  include ListLabels
-
-  let rec filter_map l ~f =
-    match l with
-    | [] -> []
-    | x :: l ->
-      match f x with
-      | None -> filter_map l ~f
-      | Some x -> x :: filter_map l ~f
-end
-
-module String = struct
-  include StringLabels
-
-  (* in OCaml 4.04, StringLabels doesn't define lowercase_ascii, so we
-     need to explicitly redefine it here as long as we support 4.04. *)
-  let lowercase_ascii = String.lowercase_ascii
-end
-module Array  = ArrayLabels
-
 let evar v = Exp.ident (Loc.lident v)
 let pvar v = Pat.var (Loc.mk v)
 
@@ -43,7 +23,9 @@ let common_prefix l =
   | [] -> ""
   | x :: l ->
     match String.index x '_' with
-    | i ->
+    | None -> ""
+    | exception _ -> ""
+    | Some i ->
       let plen = i + 1 in
       let prefix = String.sub x ~pos:0 ~len:plen in
       let has_prefix s =
@@ -53,7 +35,6 @@ let common_prefix l =
         prefix
       else
         ""
-    | exception _ -> ""
 ;;
 
 let map_keyword = function
