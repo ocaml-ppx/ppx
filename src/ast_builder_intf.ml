@@ -104,14 +104,12 @@ module type Additional_helpers = sig
 end
 
 module type Located = sig
-  type 'a t = 'a Loc.t
+  val loc : _ Loc.t -> Location.t
 
-  val loc : _ t -> Location.t
+  val mk : loc:Location.t -> 'a -> 'a Loc.t
 
-  val mk : loc:Location.t -> 'a -> 'a t
+  val map        : ('a -> 'b) -> 'a Loc.t -> 'b Loc.t
+  val map_lident : string Loc.t -> Longident.t Loc.t
 
-  val map        : ('a -> 'b) -> 'a t -> 'b t
-  val map_lident : string t -> Longident.t t
-
-  val lident : loc:Location.t -> string -> Longident.t t
+  val lident : loc:Location.t -> string -> Longident.t Loc.t
 end

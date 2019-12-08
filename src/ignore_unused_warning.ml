@@ -6,7 +6,7 @@ let underscore_binding exp =
   value_binding ~loc ~pat:(ppat_any ~loc) ~expr:exp
 
 let vars_of = object
-  inherit [Longident.t Located.t list] Ast_traverse.fold as super
+  inherit [Longident.t Loc.t list] Ast_traverse.fold as super
   method! pattern patt acc =
     match patt.ppat_desc with
     | Ppat_var v -> Located.map (fun var -> Longident.Lident var) v :: acc

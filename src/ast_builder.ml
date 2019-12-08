@@ -3,9 +3,7 @@ open! Import
 module Default = struct
   module Located = struct
 
-    type 'a t = 'a Loc.t
-
-    let loc (x : _ t) = x.loc
+    let loc x = x.loc
 
     let mk ~loc x = { loc; txt = x }
 
