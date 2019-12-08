@@ -5,9 +5,7 @@ open Printf
 let prefix_of_record lds =
   common_prefix (List.map lds ~f:(fun ld -> ld.pld_name.txt))
 
-module Gen(Fixed_loc : sig val fixed_loc : bool end) = struct
-  open Fixed_loc
-
+module Gen = struct
   let gen_combinator_for_constructor ~wrapper:(wpath, wprefix, has_attrs) path ~prefix cd =
     match cd.pcd_args with
     | Pcstr_record _ ->
@@ -58,12 +56,7 @@ module Gen(Fixed_loc : sig val fixed_loc : bool end) = struct
         else
           [%expr fun ?(attrs=[]) -> [%e body]]
       in*)
-      let body =
-        if fixed_loc then
-          body
-        else
-          M.expr "fun ~loc -> %a" A.expr body
-      in
+      let body = M.expr "fun ~loc -> %a" A.expr body in
       M.stri "let %a = %a"
         A.patt (pvar (function_name_of_id ~prefix cd.pcd_name.txt))
         A.expr body
@@ -97,7 +90,7 @@ module Gen(Fixed_loc : sig val fixed_loc : bool end) = struct
         body
     in*)
     let body =
-      if List.mem "loc" ~set:funcs && not fixed_loc then
+      if List.mem "loc" ~set:funcs && not false then
         M.expr "fun ~loc -> %a" A.expr body
       else
         body
@@ -186,29 +179,21 @@ let generate filename =
     List.sort types ~cmp:(fun (a, _, _) (b, _, _) ->
       compare a b)
   in
-  let items fixed_loc =
-    let module G = Gen(struct let fixed_loc = fixed_loc end) in
+  let items =
     List.map types ~f:(fun (path, td, wrapped) ->
       if is_abstract td then
         []
       else
         match wrapped with
-        | None -> G.gen_td path td
+        | None -> Gen.gen_td path td
         | Some (prefix, has_attrs, path', td') ->
-          G.gen_td ~wrapper:(path, prefix, has_attrs) path' td'
+          Gen.gen_td ~wrapper:(path, prefix, has_attrs) path' td'
     )
     |> List.flatten
   in
   let st =
     [ Str.open_ (Opn.mk (Loc.lident "Import"))
-    ; Str.module_ (Mb.mk (Loc.mk "M") (Mod.structure (items false)))
-    ; Str.module_ (Mb.mk (Loc.mk "Make")
-                     (Mod.functor_ (Loc.mk "Loc") (Some (Mty.signature [
-                        Sig.value (Val.mk (Loc.mk "loc") (M.ctyp "Location.t"))
-                      ]))
-                        (Mod.structure
-                           (M.stri "let loc = Loc.loc"
-                            :: items true))))
+    ; Str.module_ (Mb.mk (Loc.mk "M") (Mod.structure items))
     ]
   in
   dump "ast_builder_generated" Pprintast.structure st ~ext:".ml"
