@@ -86,12 +86,3 @@ module Default : sig
   include Ast_builder_intf.Additional_helpers
     with type 'a with_loc := 'a Ast_builder_intf.with_location
 end
-
-module type Loc = Ast_builder_intf.Loc
-module type S   = Ast_builder_intf.S
-
-(** Build Ast helpers with the location argument factorized. *)
-module Make(Loc : Loc) : S
-
-(** Functional version of [Make]. *)
-val make : Location.t -> (module S)

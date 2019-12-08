@@ -1,9 +1,5 @@
 open! Import
 
-module type Loc = sig
-  val loc : Location.t
-end
-
 module type Additional_helpers = sig
   type 'a with_loc
 
@@ -122,15 +118,4 @@ module type Located = sig
   val lident : (string -> Longident.t t) with_loc
 end
 
-type 'a without_location = 'a
 type 'a with_location    = loc:Location.t -> 'a
-
-module type S = sig
-  module Located : Located
-    with type 'a with_loc := 'a without_location
-
-  include module type of Ast_builder_generated.Make(struct let loc = Location.none end)
-
-  include Additional_helpers
-    with type 'a with_loc := 'a without_location
-end
