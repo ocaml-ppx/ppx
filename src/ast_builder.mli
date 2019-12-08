@@ -79,10 +79,8 @@ open! Import
 (** Helpers taking a [~loc] argument. This module is meant to be opened or aliased. *)
 module Default : sig
   module Located : Ast_builder_intf.Located
-    with type 'a with_loc := 'a Ast_builder_intf.with_location
 
   include module type of Ast_builder_generated.M
 
   include Ast_builder_intf.Additional_helpers
-    with type 'a with_loc := 'a Ast_builder_intf.with_location
 end
