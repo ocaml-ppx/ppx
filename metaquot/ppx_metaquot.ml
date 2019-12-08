@@ -1,5 +1,5 @@
 open Ppx
-open Ast_builder.Default
+open Ast_builder
 
 module E = Extension
 module A = Ast_pattern

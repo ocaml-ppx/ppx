@@ -111,7 +111,7 @@ Consider the following example:
 .. code:: ocaml
 
           let with_suffix_expr ~loc s =
-            let dynamic_node = Ast_builder.Default.estring ~loc s in
+            let dynamic_node = Ast_builder.estring ~loc s in
             [%expr [%e dynamic_node] ^ "some_fixed_suffix"]
 
 The ``with_suffix_expr`` function will create an ``expression`` which is the concatenation of the

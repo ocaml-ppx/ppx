@@ -1,5 +1,5 @@
 open Import
-open Ast_builder.Default
+open Ast_builder
 
 let underscore_binding exp =
   let loc = exp.pexp_loc in

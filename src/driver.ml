@@ -480,7 +480,7 @@ let real_map_structure config cookies st =
     | [] -> st
     | _  ->
       List.map lint_errors ~f:(fun (({ loc; _ }, _) as attr) ->
-        Ast_builder.Default.pstr_attribute ~loc attr)
+        Ast_builder.pstr_attribute ~loc attr)
       @ st
   in
   Cookies.call_post_handlers cookies;
@@ -523,7 +523,7 @@ let real_map_signature config cookies sg =
     | [] -> sg
     | _  ->
       List.map lint_errors ~f:(fun (({ loc; _ }, _) as attr) ->
-        Ast_builder.Default.psig_attribute ~loc attr)
+        Ast_builder.psig_attribute ~loc attr)
       @ sg
   in
   Cookies.call_post_handlers cookies;
@@ -878,7 +878,7 @@ let process_file (kind : Kind.t) fn ~input_name ~relocate ~output_mode ~embed_er
     | Some error ->
       let loc = Location.none in
       let ext = Location.Error.to_extension error in
-      let open Ast_builder.Default in
+      let open Ast_builder in
       let ast = match kind with
         | Intf ->
            Some_intf_or_impl.Intf

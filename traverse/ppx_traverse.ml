@@ -1,6 +1,6 @@
 open Ppx
 open Stdppx
-open Ast_builder.Default
+open Ast_builder
 
 let alphabet =
   Array.init (Char.code 'z' - Char.code 'a' + 1)

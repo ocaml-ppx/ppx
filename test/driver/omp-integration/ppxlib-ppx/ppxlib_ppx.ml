@@ -8,7 +8,7 @@ let () =
            Expression
            Ast_pattern.(pstr nil)
            (fun ~loc ~path:_ ~arg ->
-              let open Ast_builder.Default in
+              let open Ast_builder in
               match arg with
               | None -> estring ~loc "-"
               | Some { loc; txt } -> estring ~loc (Longident.name txt)))]
