@@ -6,6 +6,7 @@ services:
 env:
   global:
   - DISTRO="debian-stable"
-  - PACKAGE="ppx"
+  - PINS="astlib.dev:. ppx:."
   matrix:
-  - OCAML_VERSION="4.07"
+  - PACKAGE="ppx" OCAML_VERSION="4.07"
+  - PACKAGE="astlib" OCAML_VERSION="4.07"
