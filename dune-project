@@ -23,9 +23,8 @@ A comprehensive toolbox for ppx development. It features:
 - a generator of open recursion classes from type definitions.")
  (depends
   (ocaml (and (>= 4.07) (< 4.08)))
-  dune
+  astlib
   (ppx_expect :with-test)
-  (ocaml (and (>= 4.04.1) (< 4.08.0)))
   (base (and (>= v0.11.0) :with-test))
   (stdio (and (>= v0.11.0) :with-test))
   dune

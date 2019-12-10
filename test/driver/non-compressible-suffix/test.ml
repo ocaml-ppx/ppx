@@ -3,7 +3,7 @@
 #require "stdio";;
 
 open Ppx;;
-open Ast_builder.Default;;
+open Ast_builder;;
 
 Driver.register_transformation "blah"
   ~rules:[ Context_free.Rule.extension

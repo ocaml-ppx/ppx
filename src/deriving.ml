@@ -1,5 +1,5 @@
 open Import
-open Ast_builder.Default
+open Ast_builder
 
 (* [do_insert_unused_warning_attribute] -- If true, generated code
    contains compiler attribute to disable unused warnings, instead of

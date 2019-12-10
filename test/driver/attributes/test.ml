@@ -63,7 +63,7 @@ let faulty_transformation = object
   method! expression e =
     match e.pexp_desc with
     | Pexp_constant c ->
-      Ast_builder.Default.pexp_constant ~loc:e.pexp_loc c
+      Ast_builder.pexp_constant ~loc:e.pexp_loc c
     | _ -> super#expression e
 end
 [%%expect{|

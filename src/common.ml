@@ -1,5 +1,5 @@
 open! Import
-open Ast_builder.Default
+open Ast_builder
 
 let lident x = Longident.Lident x
 

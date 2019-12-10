@@ -1,6 +1,6 @@
 open Ppx
 open Stdppx
-open Ast_builder.Default
+open Ast_builder
 
 class expression_lifters loc = object
   inherit [expression] Ppx_traverse_builtins.lift
