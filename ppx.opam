@@ -18,7 +18,7 @@ homepage: "https://github.com/ocaml-ppx/ppx"
 bug-reports: "https://github.com/ocaml-ppx/ppx/issues"
 depends: [
   "ocaml" {>= "4.07" & < "4.08"}
-  "dune"
+  "astlib"
   "ppx_expect" {with-test}
   "ocaml" {>= "4.04.1" & < "4.08.0"}
   "base" {>= "v0.11.0" & with-test}
