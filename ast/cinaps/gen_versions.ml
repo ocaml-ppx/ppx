@@ -411,7 +411,10 @@ end
 
 let print_versions_mli () =
   Print.newline ();
-  let grammars = Astlib.History.versioned_grammars Astlib.history in
+  let grammars =
+    Astlib.History.versioned_grammars Astlib.history
+    |> List.map ~f:(fun (v, grammar) -> (Astlib.Version.to_string v, grammar))
+  in
   List.iter (Unversioned.all_types grammars) ~f:(fun (type_name, tvars) ->
     Ml.declare_type type_name ~tvars Empty);
   Print.newline ();
@@ -427,12 +430,15 @@ let print_versions_mli () =
 
 let print_versions_ml () =
   Print.newline ();
-  let grammars = Astlib.History.versioned_grammars Astlib.history in
+  let grammars =
+    Astlib.History.versioned_grammars Astlib.history
+    |> List.map ~f:(fun (v, grammar) -> (Astlib.Version.to_string v, grammar))
+  in
   List.iter (Unversioned.all_types grammars) ~f:(fun (type_name, tvars) ->
     Ml.declare_type type_name ~tvars (Line "Node.t"));
   Print.newline ();
   Ml.define_modules grammars ~f:(fun version grammar ->
-    Print.println "let version = %S" version;
+    Print.println "let version = Astlib.Version.of_string %S" version;
     Print.println "let node name data = Node.of_node ~version { name; data }";
     Print.newline ();
     let env_table = Poly_env.env_table grammar in

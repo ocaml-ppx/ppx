@@ -1,3 +1,4 @@
+module Version = Version
 module Ast = Ast
 module Grammar = Grammar
 module History = History

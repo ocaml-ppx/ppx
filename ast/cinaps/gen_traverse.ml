@@ -487,14 +487,21 @@ let define_virtual_traversal_classes grammar =
 
 let print_virtual_traverse_ml () =
   Print.newline ();
-  let grammars = Astlib.History.versioned_grammars Astlib.history in
+  let grammars =
+    Astlib.History.versioned_grammars Astlib.history
+    |> List.map ~f:(fun (v, grammar) -> (Astlib.Version.to_string v, grammar))
+  in
   Ml.define_modules grammars ~f:(fun version grammar ->
-    Print.println "open Versions.%s" (Ml.module_name version);
+    Print.println "open Versions.%s"
+      (Ml.module_name version);
     define_virtual_traversal_classes grammar)
 
 let print_virtual_traverse_mli () =
   Print.newline ();
-  let grammars = Astlib.History.versioned_grammars Astlib.history in
+  let grammars =
+    Astlib.History.versioned_grammars Astlib.history
+    |> List.map ~f:(fun (v, grammar) -> (Astlib.Version.to_string v, grammar))
+  in
   Ml.declare_modules grammars ~f:(fun version grammar ->
     Print.println "open Versions.%s" (Ml.module_name version);
     declare_virtual_traversal_classes grammar)
@@ -521,7 +528,10 @@ let traversal_class ~impl ~traversal:{params; class_name; complete; _} ~version 
 
 let print_traverse_ml () =
   Print.newline ();
-  let grammars = Astlib.History.versioned_grammars Astlib.history in
+  let grammars =
+    Astlib.History.versioned_grammars Astlib.history
+    |> List.map ~f:(fun (v, grammar) -> (Astlib.Version.to_string v, grammar))
+  in
   Ml.define_modules grammars ~f:(fun version _ ->
     let version = Ml.module_name version in
     List.iteri traversal_classes ~f:(fun i traversal ->
@@ -530,7 +540,10 @@ let print_traverse_ml () =
 
 let print_traverse_mli () =
   Print.newline ();
-  let grammars = Astlib.History.versioned_grammars Astlib.history in
+  let grammars =
+    Astlib.History.versioned_grammars Astlib.history
+    |> List.map ~f:(fun (v, grammar) -> (Astlib.Version.to_string v, grammar))
+  in
   Ml.declare_modules grammars ~f:(fun version _ ->
     let version = Ml.module_name version in
     List.iteri traversal_classes ~f:(fun i traversal ->

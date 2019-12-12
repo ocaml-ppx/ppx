@@ -81,7 +81,7 @@ type virtual_flag = Node.t
 type with_constraint = Node.t
 
 module V4_07 = struct
-  let version = "v4.07"
+  let version = Astlib.Version.of_string "v4.07"
   let node name data = Node.of_node ~version { name; data }
 
   module Longident = struct
@@ -4745,7 +4745,7 @@ module V4_07 = struct
 end
 
 module V4_06 = struct
-  let version = "v4.06"
+  let version = Astlib.Version.of_string "v4.06"
   let node name data = Node.of_node ~version { name; data }
 
   module Longident = struct

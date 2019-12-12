@@ -1,4 +1,4 @@
-let version = "v4.06"
+let version = Version.of_string "v4.06"
 
 module Next = Version_4_07
 
