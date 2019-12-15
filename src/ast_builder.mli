@@ -187,4 +187,4 @@ module Located : sig
   val lident : loc:Location.t -> string -> Longident.t Loc.t
 end
 
-include module type of Ast_builder_generated.M
+include module type of Ast_builder_generated
