@@ -40,3 +40,24 @@ val update
   -> ?ghost : bool
   -> t
   -> t
+
+type location = t
+
+module Error : sig
+  (** The type for located errors *)
+  type t
+
+  (** [make ~loc pp_msg] returns the error located at [loc] with the message
+      formatted by [pp_msg] *)
+  val make :
+    loc: location ->
+    (Format.formatter -> unit) ->
+    t
+
+  (** Report the error on the given formatter *)
+  val report : Format.formatter -> t -> unit
+
+  (** Convert the given error to a [[%ocaml.error ...]] extension point so that
+      it can later be reported by the compiler just as [report] would. *)
+  val to_extension : t -> Parsetree.extension
+end
