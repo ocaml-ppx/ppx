@@ -291,3 +291,22 @@ let rindex_opt s c =
 
 let index_from_opt s i c =
   try Some (index_from s i c) with Not_found -> None
+
+let common_prefix l =
+  match l with
+  | [] -> ""
+  | x :: l ->
+    match index x '_' with
+    | None -> ""
+    | exception _ -> ""
+    | Some i ->
+      let plen = i + 1 in
+      let prefix = sub x ~pos:0 ~len:plen in
+      let has_prefix s =
+        length s >= plen && sub s ~pos:0 ~len:plen = prefix
+      in
+      if List.for_all l ~f:has_prefix then
+        prefix
+      else
+        ""
+;;
