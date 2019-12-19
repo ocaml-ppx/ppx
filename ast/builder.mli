@@ -314,49 +314,47 @@ module V4_07 : sig
     loc:Astlib.Location.t
     -> Expression.t
   val case :
-    loc:Astlib.Location.t
+    guard:Expression.t option
     -> lhs:Pattern.t
-    -> guard:Expression.t option
     -> rhs:Expression.t
     -> Case.t
   val value_description :
     loc:Astlib.Location.t
     -> name:string Astlib.Loc.t
-    -> type_:Core_type.t
     -> prim:string list
+    -> type_:Core_type.t
     -> Value_description.t
   val type_declaration :
     loc:Astlib.Location.t
-    -> name:string Astlib.Loc.t
-    -> params:(Core_type.t * Variance.t) list
     -> cstrs:(Core_type.t * Core_type.t * Astlib.Location.t) list
     -> kind:Type_kind.t
-    -> private_:Private_flag.t
     -> manifest:Core_type.t option
+    -> name:string Astlib.Loc.t
+    -> params:(Core_type.t * Variance.t) list
+    -> private_:Private_flag.t
     -> Type_declaration.t
   val label_declaration :
     loc:Astlib.Location.t
-    -> name:string Astlib.Loc.t
     -> mutable_:Mutable_flag.t
+    -> name:string Astlib.Loc.t
     -> type_:Core_type.t
     -> Label_declaration.t
   val constructor_declaration :
     loc:Astlib.Location.t
-    -> name:string Astlib.Loc.t
     -> args:Constructor_arguments.t
+    -> name:string Astlib.Loc.t
     -> res:Core_type.t option
     -> Constructor_declaration.t
   val type_extension :
-    loc:Astlib.Location.t
-    -> path:Longident_loc.t
+    constructors:Extension_constructor.t list
     -> params:(Core_type.t * Variance.t) list
-    -> constructors:Extension_constructor.t list
+    -> path:Longident_loc.t
     -> private_:Private_flag.t
     -> Type_extension.t
   val extension_constructor :
     loc:Astlib.Location.t
-    -> name:string Astlib.Loc.t
     -> kind:Extension_constructor_kind.t
+    -> name:string Astlib.Loc.t
     -> Extension_constructor.t
   val pcty_constr :
     loc:Astlib.Location.t
@@ -384,9 +382,8 @@ module V4_07 : sig
     -> Class_type.t
     -> Class_type.t
   val class_signature :
-    loc:Astlib.Location.t
+    fields:Class_type_field.t list
     -> self:Core_type.t
-    -> fields:Class_type_field.t list
     -> Class_signature.t
   val pctf_inherit :
     loc:Astlib.Location.t
@@ -455,9 +452,8 @@ module V4_07 : sig
     -> Class_expr.t
     -> Class_expr.t
   val class_structure :
-    loc:Astlib.Location.t
+    fields:Class_field.t list
     -> self:Pattern.t
-    -> fields:Class_field.t list
     -> Class_structure.t
   val pcf_inherit :
     loc:Astlib.Location.t
@@ -687,13 +683,13 @@ module V4_07 : sig
     -> Structure_item.t
   val value_binding :
     loc:Astlib.Location.t
-    -> pat:Pattern.t
     -> expr:Expression.t
+    -> pat:Pattern.t
     -> Value_binding.t
   val module_binding :
     loc:Astlib.Location.t
-    -> name:string Astlib.Loc.t
     -> expr:Module_expr.t
+    -> name:string Astlib.Loc.t
     -> Module_binding.t
 end
 
@@ -1012,49 +1008,47 @@ module V4_06 : sig
     loc:Astlib.Location.t
     -> Expression.t
   val case :
-    loc:Astlib.Location.t
+    guard:Expression.t option
     -> lhs:Pattern.t
-    -> guard:Expression.t option
     -> rhs:Expression.t
     -> Case.t
   val value_description :
     loc:Astlib.Location.t
     -> name:string Astlib.Loc.t
-    -> type_:Core_type.t
     -> prim:string list
+    -> type_:Core_type.t
     -> Value_description.t
   val type_declaration :
     loc:Astlib.Location.t
-    -> name:string Astlib.Loc.t
-    -> params:(Core_type.t * Variance.t) list
     -> cstrs:(Core_type.t * Core_type.t * Astlib.Location.t) list
     -> kind:Type_kind.t
-    -> private_:Private_flag.t
     -> manifest:Core_type.t option
+    -> name:string Astlib.Loc.t
+    -> params:(Core_type.t * Variance.t) list
+    -> private_:Private_flag.t
     -> Type_declaration.t
   val label_declaration :
     loc:Astlib.Location.t
-    -> name:string Astlib.Loc.t
     -> mutable_:Mutable_flag.t
+    -> name:string Astlib.Loc.t
     -> type_:Core_type.t
     -> Label_declaration.t
   val constructor_declaration :
     loc:Astlib.Location.t
-    -> name:string Astlib.Loc.t
     -> args:Constructor_arguments.t
+    -> name:string Astlib.Loc.t
     -> res:Core_type.t option
     -> Constructor_declaration.t
   val type_extension :
-    loc:Astlib.Location.t
-    -> path:Longident_loc.t
+    constructors:Extension_constructor.t list
     -> params:(Core_type.t * Variance.t) list
-    -> constructors:Extension_constructor.t list
+    -> path:Longident_loc.t
     -> private_:Private_flag.t
     -> Type_extension.t
   val extension_constructor :
     loc:Astlib.Location.t
-    -> name:string Astlib.Loc.t
     -> kind:Extension_constructor_kind.t
+    -> name:string Astlib.Loc.t
     -> Extension_constructor.t
   val pcty_constr :
     loc:Astlib.Location.t
@@ -1082,9 +1076,8 @@ module V4_06 : sig
     -> Class_type.t
     -> Class_type.t
   val class_signature :
-    loc:Astlib.Location.t
+    fields:Class_type_field.t list
     -> self:Core_type.t
-    -> fields:Class_type_field.t list
     -> Class_signature.t
   val pctf_inherit :
     loc:Astlib.Location.t
@@ -1153,9 +1146,8 @@ module V4_06 : sig
     -> Class_expr.t
     -> Class_expr.t
   val class_structure :
-    loc:Astlib.Location.t
+    fields:Class_field.t list
     -> self:Pattern.t
-    -> fields:Class_field.t list
     -> Class_structure.t
   val pcf_inherit :
     loc:Astlib.Location.t
@@ -1385,13 +1377,13 @@ module V4_06 : sig
     -> Structure_item.t
   val value_binding :
     loc:Astlib.Location.t
-    -> pat:Pattern.t
     -> expr:Expression.t
+    -> pat:Pattern.t
     -> Value_binding.t
   val module_binding :
     loc:Astlib.Location.t
-    -> name:string Astlib.Loc.t
     -> expr:Module_expr.t
+    -> name:string Astlib.Loc.t
     -> Module_binding.t
 end
 (*$*)
