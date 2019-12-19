@@ -140,8 +140,13 @@ module Expr = struct
           Printf.printf " ~%s:(" label;
           print e;
           Printf.printf ")"
+        | None, Ident id ->
+          Printf.printf " %s" id
+        | None, Const Nil ->
+          print_string " ";
+          print (Const Nil)
         | None, e ->
-          print_string "(";
+          print_string " (";
           print e;
           print_string ")")
 end
