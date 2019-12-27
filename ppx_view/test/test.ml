@@ -236,6 +236,35 @@ let%expect_test "match with object" =
     match_custom (make 3);
   end;[%expect {|()3|}]
 
+module M = struct
+  type t =
+    | Pair of int * int
+    | Record of {fst : int; snd : int}
+
+  let pair view value =
+    match value with
+    | Pair (x, y) -> view (x, y)
+    | Record _ -> Viewlib.View.error
+
+  let record view value =
+    match value with
+    | Pair _ -> Viewlib.View.error
+    | Record {fst; snd} -> view (fst, snd)
+
+  let fst'match view value =
+    view (fst value)
+
+  let snd'match view value =
+    view (snd value)
+end
+
+let%expect_test "or-pattern variables order doesn't matter" =
+  let open M in
+  (match%view (Record {fst=1; snd=2}) with
+   | Pair (x, y)
+   | Record {fst=y; snd=x} -> print_int (x + y));
+  [%expect {|3|}]
+
 let%expect_test "match with array" =
   let open Viewlib in
   let x = View.larray [|1; 2|] in
