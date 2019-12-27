@@ -235,3 +235,11 @@ let%expect_test "match with object" =
     match_custom (make 1);
     match_custom (make 3);
   end;[%expect {|()3|}]
+
+let%expect_test "match with array" =
+  let open Viewlib in
+  let x = View.larray [|1; 2|] in
+  (match%view x with
+   | [|x; y|] -> print_int (x + y)
+   | _ -> assert false);
+  [%expect {|3|}]
