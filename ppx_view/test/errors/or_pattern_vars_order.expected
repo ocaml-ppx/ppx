@@ -1,0 +1,2 @@
+File "or_pattern_vars_order.ml", line 3, characters 4-45:
+Error: ppx: branches of an or-pattern should define the same variables

@@ -258,11 +258,11 @@ module M = struct
     view (snd value)
 end
 
-let%expect_test "or-pattern variables order doesn't matter" =
+let%expect_test "or-pattern" =
   let open M in
   (match%view (Record {fst=1; snd=2}) with
    | Pair (x, y)
-   | Record {fst=y; snd=x} -> print_int (x + y));
+   | Record {fst=x; snd=y} -> print_int (x + y));
   [%expect {|3|}]
 
 let%expect_test "match with array" =

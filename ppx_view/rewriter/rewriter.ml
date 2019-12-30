@@ -245,7 +245,6 @@ and transl_pattern_desc loc desc =
     let expr_first,  vars_first  = transl_pattern first  in
     let expr_second, vars_second = transl_pattern second in
     let same_variables =
-      (* Isn't there an ordering issue? *)
       List.for_all2
         (fun var_first var_second ->
            match  var_first.Parsetree.ppat_desc,

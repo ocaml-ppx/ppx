@@ -1,0 +1,21 @@
+(executable
+ (name pp)
+ (modules pp)
+ (libraries ppx ppx.ppx_view))
+
+(executable
+ (name gen_dune_rules)
+ (modules gen_dune_rules))
+
+(rule
+ (target dune.inc.gen)
+ (deps (source_tree .))
+ (action
+  (with-stdout-to %{target}
+   (run ./gen_dune_rules.exe))))
+
+(alias
+ (name runtest)
+ (action (diff dune.inc dune.inc.gen)))
+
+(include dune.inc)

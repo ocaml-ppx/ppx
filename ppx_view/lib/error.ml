@@ -19,7 +19,9 @@ let unsupported_pattern ~loc pattern =
   errorf ~loc "ppx_view doesn't support pattern matching over %s" pattern
 
 let or_pattern_variables_differ ~loc =
-  errorf ~loc "Branches of an or-pattern should define the same variables"
+  errorf ~loc
+    "Branches of an or-pattern should define the same variables \
+     in the same order"
 
 let invalid_record_field ~loc =
   errorf ~loc "Invalid record field, should be unqualified"

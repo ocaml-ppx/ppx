@@ -86,7 +86,6 @@ let translate_constant ~loc constant =
   | Some (Pconst_integer (_, Some suffix)) -> Error.unsupported_int_const ~loc suffix
 
 let same_variables ~err_loc vl vl' =
-  (* Isn't there an ordering issue? *)
   List.for_all2 vl vl'
     ~f:(fun v v' ->
       let (_, desc) = Deconstructor.pattern ~loc:err_loc v in
