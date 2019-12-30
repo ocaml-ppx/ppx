@@ -7,6 +7,7 @@
   ocaml-compiler-libs.shadow
   ocaml-compiler-libs.common
   ocaml-migrate-parsetree
-  ppx.ppx_view.common)
+  ppx_view_lib
+  ppx_view_common)
  (flags :standard -open Ocaml_shadow)
  (ppx_runtime_libraries viewlib))
