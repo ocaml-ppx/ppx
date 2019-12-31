@@ -16,10 +16,10 @@ depends: [
   "ocaml-compiler-libs" {>= "v0.11.0"}
   "ocaml-migrate-parsetree" {>= "1.0.9"}
   "ppx_derivers" {>= "1.0"}
-  "cinaps" {with-test}
-  "ppx_jane"
-  "base_quickcheck"
-  "expect_test_helpers_kernel"
+  "cinaps" {>= "v0.13.0" & with-test}
+  "ppx_jane" {with-test}
+  "base_quickcheck" {with-test}
+  "expect_test_helpers_kernel" {with-test}
   "stdio" {>= "v0.11.0"}
 ]
 build: [

@@ -18,6 +18,7 @@ homepage: "https://github.com/ocaml-ppx/ppx"
 bug-reports: "https://github.com/ocaml-ppx/ppx/issues"
 depends: [
   "ocaml" {>= "4.07" & < "4.08"}
+  "ocaml-syntax-shims"
   "astlib"
   "ppx_expect" {with-test}
   "base" {>= "v0.11.0" & with-test}

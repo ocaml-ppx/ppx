@@ -9,4 +9,3 @@ env:
   - PINS="astlib.dev:. ppx:."
   matrix:
   - PACKAGE="ppx" OCAML_VERSION="4.07"
-  - PACKAGE="astlib" OCAML_VERSION="4.07"

@@ -23,6 +23,7 @@ A comprehensive toolbox for ppx development. It features:
 - a generator of open recursion classes from type definitions.")
  (depends
   (ocaml (and (>= 4.07) (< 4.08)))
+  ocaml-syntax-shims
   astlib
   (ppx_expect :with-test)
   (base (and (>= v0.11.0) :with-test))
@@ -47,8 +48,8 @@ be easily migrated to new versions of the compiler.")
   (ocaml-compiler-libs (>= v0.11.0))
   (ocaml-migrate-parsetree (>= 1.0.9))
   (ppx_derivers (>= 1.0))
-  (cinaps :with-test)
-  ppx_jane
-  base_quickcheck
-  expect_test_helpers_kernel
+  (cinaps (and (>= v0.13.0) :with-test))
+  (ppx_jane :with-test)
+  (base_quickcheck :with-test)
+  (expect_test_helpers_kernel :with-test)
   (stdio (>= v0.11.0))))
