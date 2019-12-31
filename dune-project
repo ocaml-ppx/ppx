@@ -25,6 +25,7 @@ A comprehensive toolbox for ppx development. It features:
   (ocaml (and (>= 4.07) (< 4.08)))
   ocaml-syntax-shims
   astlib
+  (expect_test_helpers_kernel :with-test)
   (ppx_expect :with-test)
   (base (and (>= v0.11.0) :with-test))
   (stdio (and (>= v0.11.0) :with-test))
