@@ -78,12 +78,11 @@ let translate_constant ~loc constant =
   | Some (Pconst_integer (_, Some 'L')) -> make "nativeint"
   | Some (Pconst_char _) -> make "char"
   | Some (Pconst_string _) -> make "string"
-  | Some (Pconst_float _) -> make "float"
-  (* Shouldn't the following case be interpreted by other ppxs somehow or
-     reported by the compiler as is?
-     Meaning we should just try [Viewlib__View.int 12j] and let this be either
-     rewritten or reported by the compiler? *)
-  | Some (Pconst_integer (_, Some suffix)) -> Error.unsupported_int_const ~loc suffix
+  | Some (Pconst_float (_, None)) -> make "float"
+  | Some (Pconst_integer (_, Some suffix)) ->
+    Error.unsupported_num_const ~loc ~kind:"int" ~suffix
+  | Some (Pconst_float (_, Some suffix)) ->
+    Error.unsupported_num_const ~loc ~kind:"float" ~suffix
 
 let same_variables ~err_loc vl vl' =
   List.for_all2 vl vl'

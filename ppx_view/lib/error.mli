@@ -23,5 +23,9 @@ val or_pattern_variables_differ : loc: Astlib.Location.t -> 'a
 (** Reports that a record pattern contains a qualified field name. *)
 val invalid_record_field : loc: Astlib.Location.t -> 'a
 
-(** Reports a constant integer pattern with an unknown suffix. *)
-val unsupported_int_const : loc: Astlib.Location.t -> char -> 'a
+(** Reports a constant numeric pattern with an unknown suffix. *)
+val unsupported_num_const :
+  loc: Astlib.Location.t ->
+  kind: string ->
+  suffix: char ->
+  'a

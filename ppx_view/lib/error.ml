@@ -26,5 +26,5 @@ let or_pattern_variables_differ ~loc =
 let invalid_record_field ~loc =
   errorf ~loc "Invalid record field, should be unqualified"
 
-let unsupported_int_const ~loc suffix =
-  errorf ~loc "Unsupported int litteral suffix %C" suffix
+let unsupported_num_const ~loc ~kind ~suffix =
+  errorf ~loc "Unsupported %s litteral suffix %C" kind suffix

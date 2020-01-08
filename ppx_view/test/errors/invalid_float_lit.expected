@@ -1,0 +1,2 @@
+File "invalid_float_lit.ml", line 3, characters 4-8:
+Error: ppx_view: Unsupported float litteral suffix 'z'
