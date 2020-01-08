@@ -172,12 +172,12 @@ let pattern_payload_of ext =
 
 let loc_of_extension attr =
   match Extension.to_concrete attr with
-  | Some (x, _) -> Some (Astlib.Loc.loc x)
+  | Some (x, _) -> Some (Astlib.Location.to_location (Astlib.Loc.loc x))
   | None -> None
 
 let loc_of_expression attr =
   match Expression.to_concrete attr with
-  | Some e -> Some e.pexp_loc
+  | Some e -> Some (Astlib.Location.to_location e.pexp_loc)
   | None -> None
 
 let ppat_any ~loc =
@@ -189,6 +189,7 @@ let ppat_any ~loc =
 module Expr = Make(struct
     type result = Expression.t
     let location loc =
+      let loc = Astlib.Location.of_location loc in
       Expression.create
         ~pexp_loc:loc
         ~pexp_attributes:(Attributes.create [])
@@ -209,8 +210,8 @@ module Expr = Make(struct
 
 module Patt = Make(struct
     type result = Pattern.t
-    let location loc = ppat_any ~loc
-    let attributes = Some (fun loc -> ppat_any ~loc)
+    let location loc = ppat_any ~loc:(Astlib.Location.of_location loc)
+    let attributes = Some (fun loc -> ppat_any ~loc:(Astlib.Location.of_location loc))
     class std_lifters = Ppx_metaquot_lifters.pattern_lifters
     let cast ext =
       match pattern_payload_of ext with

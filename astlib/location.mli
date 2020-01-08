@@ -2,18 +2,12 @@
 
     Astlib locations use the same representation as locations in the compiler; however, we
     allow for the possibility that new fields will be added to the type over time. We
-    expose the type as [private] to discourage explicit construction, and provide a
-    [create] function that can be extended with optional arguments in a
-    backward-compatible way. *)
+    provide a [create] function that can be extended with optional arguments in a
+    backward-compatible way, and we may add new accessors as well. *)
 
 (** {1 Type} *)
 
-(** The type equivalence with [Ocaml_common.Location] is expected to stay stable. *)
-type t = Ocaml_common.Location.t =
-  { loc_start : Lexing.position
-  ; loc_end : Lexing.position
-  ; loc_ghost : bool
-  }
+type t
 
 (** {1 Conversions} It should always be possible to convert to/from
     [Ocaml_common.Location.t]. *)
