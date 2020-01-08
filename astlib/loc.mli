@@ -2,17 +2,12 @@
 
     Astlib location annotations use the same representation as location annotations in the
     compiler; however, we allow for the possibility that new fields will be added to the
-    type over time. We expose the type as [private] to discourage explicit construction,
-    and provide a [create] function that can be extended with optional arguments in a
-    backward-compatible way. *)
+    type over time. We provide a [create] function that can be extended with optional
+    arguments in a backward-compatible way, and we may add new accessors as well. *)
 
 (** {1 Type} *)
 
-(** The type equivalence with [Ocaml_common.Location.loc] is expected to stay stable. *)
-type 'a t = 'a Ocaml_common.Location.loc =
-  { txt : 'a
-  ; loc : Ocaml_common.Location.t
-  }
+type 'a t
 
 (** {1 Conversions} It should always be possible to convert to/from
     [Ocaml_common.Location.loc]. *)
