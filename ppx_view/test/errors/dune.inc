@@ -6,7 +6,7 @@
 
 (rule
  (target invalid_float_lit.actual)
- (deps (:pp pp.exe) (:input invalid_float_lit.ml))
+ (deps (:pp bin/pp.exe) (:input invalid_float_lit.ml))
  (action
   (setenv "OCAML_ERROR_STYLE" "short"
    (setenv "OCAML_COLOR" "never"
@@ -24,7 +24,7 @@
 
 (rule
  (target invalid_int_lit.actual)
- (deps (:pp pp.exe) (:input invalid_int_lit.ml))
+ (deps (:pp bin/pp.exe) (:input invalid_int_lit.ml))
  (action
   (setenv "OCAML_ERROR_STYLE" "short"
    (setenv "OCAML_COLOR" "never"
@@ -42,7 +42,7 @@
 
 (rule
  (target or_pattern_vars_order.actual)
- (deps (:pp pp.exe) (:input or_pattern_vars_order.ml))
+ (deps (:pp bin/pp.exe) (:input or_pattern_vars_order.ml))
  (action
   (setenv "OCAML_ERROR_STYLE" "short"
    (setenv "OCAML_COLOR" "never"

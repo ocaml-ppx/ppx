@@ -9,7 +9,7 @@ let output_stanzas filename =
 
 (rule
  (target %s.actual)
- (deps (:pp pp.exe) (:input %s.ml))
+ (deps (:pp bin/pp.exe) (:input %s.ml))
  (action
   (setenv "OCAML_ERROR_STYLE" "short"
    (setenv "OCAML_COLOR" "never"
@@ -27,10 +27,8 @@ let output_stanzas filename =
     base
     base
 
-let is_error_test = function
-  | "pp.ml" -> false
-  | "gen_dune_rules.ml" -> false
-  | filename -> Filename.check_suffix filename ".ml"
+let is_error_test filename =
+  Filename.check_suffix filename ".ml"
 
 let () =
   Sys.readdir "."
