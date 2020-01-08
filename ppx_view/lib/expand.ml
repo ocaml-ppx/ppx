@@ -241,8 +241,6 @@ and translate_record_field ~loc (label, patt) =
     ( Builder.Exp.apply_lident ~loc:label_loc f [expr]
     , vars )
   | _ ->
-    (* Couldn't that be seen as an open and the field
-       translated to [Some_module.x'match]? *)
     Error.invalid_record_field ~loc:label_loc
 
 and translate_array ~loc patts =
