@@ -26,7 +26,8 @@ let pconst ~loc const = pattern ~loc (Pat.ppat_constant const)
 let einteger ~loc string copt = econst ~loc (Constant.pconst_integer string copt)
 let pinteger ~loc string copt = pconst ~loc (Constant.pconst_integer string copt)
 
-let lid ~loc name = Longident_loc.create { loc; txt = Longident.lident name }
+let lid ~loc name =
+  Longident_loc.create (Astlib.Loc.create ~loc ~txt:(Longident.lident name) ())
 
 let bool_lid ~loc b = lid ~loc (Bool.to_string b)
 let unit_lid ~loc = lid ~loc "()"
@@ -49,12 +50,13 @@ class expression_lifters loc = object
     expr ~loc
       (Expr.pexp_record
          (List.map flds ~f:(fun (lab, e) ->
-            (Longident_loc.create { loc; txt = Longident.lident lab }, e)))
+            (Longident_loc.create
+               (Astlib.Loc.create ~loc ~txt:(Longident.lident lab) ()), e)))
          None)
   method constr id args =
     expr ~loc
       (Expr.pexp_construct
-         (Longident_loc.create { loc; txt = Longident.lident id })
+         (Longident_loc.create (Astlib.Loc.create ~loc ~txt:(Longident.lident id) ()))
          (match args with
           | [] -> None
           | l  -> Some (etuple ~loc l)))
@@ -80,12 +82,13 @@ class pattern_lifters loc = object
     pattern ~loc
       (Pat.ppat_record
          (List.map flds ~f:(fun (lab, e) ->
-            (Longident_loc.create { loc; txt = Longident.lident lab }, e)))
+            (Longident_loc.create
+               (Astlib.Loc.create ~loc ~txt:(Longident.lident lab) ()), e)))
          Closed_flag.closed)
   method constr id args =
     pattern ~loc
       (Pat.ppat_construct
-         (Longident_loc.create { loc; txt = Longident.lident id })
+         (Longident_loc.create (Astlib.Loc.create ~loc ~txt:(Longident.lident id) ()))
          (match args with
           | [] -> None
           | l  -> Some (ptuple ~loc l)))

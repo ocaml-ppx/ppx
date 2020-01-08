@@ -33,7 +33,7 @@ module Make(M : sig
           (match Expression_desc.to_concrete e.pexp_desc with
            | Some (Pexp_extension ext) ->
              (match Extension.to_concrete ext with
-              | Some ({ txt = "e"; _}, _) -> Some ext
+              | Some (loc, _) when String.equal "e" (Astlib.Loc.txt loc) -> Some ext
               | Some _ | None -> None)
            | Some _ | None -> None)
         | None -> None
@@ -49,7 +49,7 @@ module Make(M : sig
           (match Pattern_desc.to_concrete p.ppat_desc with
            | Some (Ppat_extension ext) ->
              (match Extension.to_concrete ext with
-              | Some ({ txt = "p"; _}, _) -> Some ext
+              | Some (loc, _) when String.equal "p" (Astlib.Loc.txt loc) -> Some ext
               | Some _ | None -> None)
            | Some _ | None -> None)
         | None -> None
@@ -65,7 +65,7 @@ module Make(M : sig
           (match Core_type_desc.to_concrete t.ptyp_desc with
            | Some (Ptyp_extension ext) ->
              (match Extension.to_concrete ext with
-              | Some ({ txt = "t"; _}, _) -> Some ext
+              | Some (loc, _) when String.equal "t" (Astlib.Loc.txt loc) -> Some ext
               | Some _ | None -> None)
            | Some _ | None -> None)
         | None -> None
@@ -81,7 +81,7 @@ module Make(M : sig
           (match Module_expr_desc.to_concrete m.pmod_desc with
            | Some (Pmod_extension ext) ->
              (match Extension.to_concrete ext with
-              | Some ({ txt = "m"; _}, _) -> Some ext
+              | Some (loc, _) when String.equal "m" (Astlib.Loc.txt loc) -> Some ext
               | Some _ | None -> None)
            | Some _ | None -> None)
         | None -> None
@@ -97,7 +97,7 @@ module Make(M : sig
           (match Module_type_desc.to_concrete m.pmty_desc with
            | Some (Pmty_extension ext) ->
              (match Extension.to_concrete ext with
-              | Some ({ txt = "m"; _}, _) -> Some ext
+              | Some (loc, _) when String.equal "m" (Astlib.Loc.txt loc) -> Some ext
               | Some _ | None -> None)
            | Some _ | None -> None)
         | None -> None
@@ -113,7 +113,8 @@ module Make(M : sig
           (match Structure_item_desc.to_concrete i.pstr_desc with
            | Some (Pstr_extension (ext, attrs)) ->
              (match Extension.to_concrete ext with
-              | Some ({ txt = "i"; _}, _) -> Some (ext, attrs)
+              | Some (loc, _) when String.equal "i" (Astlib.Loc.txt loc) ->
+                Some (ext, attrs)
               | Some _ | None -> None)
            | Some _ | None -> None)
         | None -> None
@@ -131,7 +132,8 @@ module Make(M : sig
           (match Signature_item_desc.to_concrete i.psig_desc with
            | Some (Psig_extension (ext, attrs)) ->
              (match Extension.to_concrete ext with
-              | Some ({ txt = "i"; _}, _) -> Some (ext, attrs)
+              | Some (loc, _) when String.equal "i" (Astlib.Loc.txt loc) ->
+                Some (ext, attrs)
               | Some _ | None -> None)
            | Some _ | None -> None)
         | None -> None
@@ -170,7 +172,7 @@ let pattern_payload_of ext =
 
 let loc_of_extension attr =
   match Extension.to_concrete attr with
-  | Some (x, _) -> Some x.loc
+  | Some (x, _) -> Some (Astlib.Loc.loc x)
   | None -> None
 
 let loc_of_expression attr =
@@ -191,7 +193,8 @@ module Expr = Make(struct
         ~pexp_loc:loc
         ~pexp_attributes:(Attributes.create [])
         ~pexp_desc:(Expression_desc.pexp_ident
-                      (Longident_loc.create {loc; txt = Longident.lident "loc"}))
+                      (Longident_loc.create
+                         (Astlib.Loc.create ~loc ~txt:(Longident.lident "loc") ())))
     let attributes = None
     class std_lifters = Ppx_metaquot_lifters.expression_lifters
     let cast ext =
