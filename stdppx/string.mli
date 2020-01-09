@@ -72,6 +72,8 @@ val rindex_opt : string -> char -> int option
 
 val index_from_opt : string -> int -> char -> int option
 
+val common_prefix : string list -> string
+
 module Set : sig
   include Set.S with type elt = t
 

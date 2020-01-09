@@ -194,9 +194,8 @@ let generate filename =
     |> List.flatten
   in
   let st =
-    [ Str.open_ (Opn.mk (Loc.lident "Import"))
-    ; Str.module_ (Mb.mk (Loc.mk "M") (Mod.structure items))
-    ]
+    Str.open_ (Opn.mk (Loc.lident "Import"))
+    :: items
   in
   dump "ast_builder_generated" Pprintast.structure st ~ext:".ml"
 

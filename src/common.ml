@@ -116,7 +116,7 @@ let loc_of_attribute ((name, _) as attr) =
 ;;
 
 let curry_applications expr =
-  let open Ast_builder_generated.M in
+  let open Ast_builder_generated in
   match expr.pexp_desc with
   | Pexp_apply (f,orig_forward_args) ->
     let loc = expr.pexp_loc in

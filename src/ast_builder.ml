@@ -12,7 +12,7 @@ module Located = struct
   let lident ~loc x = mk ~loc (Longident.parse x)
 end
 
-include Ast_builder_generated.M
+include Ast_builder_generated
 
 let pstr_value_list ~loc rec_flag = function
   | [] -> []
