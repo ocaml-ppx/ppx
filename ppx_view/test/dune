@@ -12,4 +12,4 @@
   ppx_expect.common)
  (flags :standard -open Ocaml_shadow)
  (inline_tests)
- (preprocess (pps ppx_expect ppx_view_rewriter)))
+ (preprocess (pps ppx_expect ppx_view_test_rewriter)))

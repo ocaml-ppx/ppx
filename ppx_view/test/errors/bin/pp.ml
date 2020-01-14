@@ -1,0 +1,1 @@
+Ppx.Driver.standalone ();

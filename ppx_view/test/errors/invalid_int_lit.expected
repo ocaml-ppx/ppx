@@ -1,0 +1,2 @@
+File "invalid_int_lit.ml", line 3, characters 4-6:
+Error: ppx_view: Unsupported int litteral suffix 'z'
