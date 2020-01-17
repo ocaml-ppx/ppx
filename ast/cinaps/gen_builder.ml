@@ -175,19 +175,18 @@ module Builder = struct
     Expr.print (Lazy.force impl);
     Print.newline ()
 
-  let of_variant name (v : Astlib.Grammar.variant) desc_for =
-    match String.drop_suffix name ~suffix:"_desc" with
+  let of_variant type_name (v : Astlib.Grammar.variant) desc_for =
+    match desc_for type_name with
     | None -> []
-    | Some type_name ->
-      let type_ = Astlib.Grammar.Name type_name in
-      List.map v ~f:(fun (name, (constr : Astlib.Grammar.clause)) ->
+    | Some (described_type_name, described_type)  ->
+      let type_ = Astlib.Grammar.Name described_type_name in
+      List.map v ~f:(fun (cname, (constr : Astlib.Grammar.clause)) ->
         let arr =
           match constr with
           | Empty -> Arrow.const type_
           | Tuple tuple -> Arrow.of_tuple tuple type_
           | Record record -> Arrow.of_record record type_
         in
-        let described_type = desc_for type_name in
         let label_prefix =
           described_type
           |> List.map ~f:fst
@@ -203,19 +202,21 @@ module Builder = struct
         in
         let impl = lazy (
           let desc =
-            Expr.App (
-              sprintf "%s_desc.%s" (String.capitalize type_name)
-                (String.uncapitalize_ascii name),
-              (Arrow.to_pattern_expr arr
-               |> List.filter_map ~f:(fun (l, a) ->
-                 if l = Some "loc" then
-                   None
-                 else
-                   Some (l, Expr.Ident a)))
-            )
+            let fun_name =
+              sprintf "%s.%s" (Ml.module_name type_name) (Ml.id cname)
+            in
+            let args =
+              Arrow.to_pattern_expr arr
+              |> List.filter_map ~f:(fun (l, a) ->
+                if l = Some "loc" then
+                  None
+                else
+                  Some (l, Expr.Ident a))
+            in
+            Expr.App (fun_name, args)
           in
           let constructor_function =
-            Printf.sprintf "%s.create" (String.capitalize type_name)
+            Printf.sprintf "%s.create" (Ml.module_name described_type_name)
           in
           let args =
             List.map described_type ~f:(fun (field, _) ->
@@ -230,11 +231,10 @@ module Builder = struct
           in
           Expr.App (constructor_function, args)
         ) in
-        make ~name ~arr ~impl)
+        make ~name:cname ~arr ~impl)
 
   let of_record name (fields : Astlib.Grammar.record) =
-    if List.exists fields ~f:(fun (name, _) ->
-      String.is_suffix name ~suffix:"_desc") then
+    if Shortcuts.has_desc_field fields then
       (* This case will be covered when we generate the _desc type *)
       None
     else
@@ -290,21 +290,6 @@ let builders name (grammar : Astlib.Grammar.kind) desc_for =
       end
     | Variant v -> Builder.of_variant name v desc_for
 
-let desc_map =
-  List.fold_left ~init:String.Map.empty ~f:(fun acc (name, kind) ->
-    match (kind : Astlib.Grammar.kind) with
-    | Poly (_, _) -> acc
-    | Mono decl ->
-      match decl with
-      | Alias _
-      | Variant _ -> acc
-      | Record fields ->
-        if List.exists fields ~f:(fun (name, _) ->
-          String.is_suffix name ~suffix:"_desc") then
-          String.Map.add acc name fields
-        else
-          acc)
-
 let print_builder_ml () =
   Print.newline ();
   let grammars = Astlib.History.versioned_grammars Astlib.history in
@@ -312,12 +297,8 @@ let print_builder_ml () =
     let version = Ml.module_name version in
     Print.println "open Versions.%s" version;
     let desc_for =
-      let m = lazy (desc_map grammar) in
-      fun name ->
-        (* Format.eprintf "name: %s@.%!" name;
-         * Format.eprintf "keys: %s@.%!"
-         *   (m |> Lazy.force |> String.Map.keys |> String.concat ~sep:" "); *)
-        String.Map.find_exn (Lazy.force m) name
+      let m = lazy (Shortcuts.from_grammar grammar) in
+      fun name -> Shortcuts.shortcut (Lazy.force m) name
     in
     List.iter grammar ~f:(fun (node_name, (kind : Astlib.Grammar.kind)) ->
       let builders = builders node_name kind desc_for in
@@ -329,8 +310,8 @@ let print_builder_mli () =
   Ml.declare_modules grammars ~f:(fun version grammar ->
     let version = Ml.module_name version in
     let desc_for =
-      let m = lazy (desc_map grammar) in
-      fun name -> String.Map.find_exn (Lazy.force m) name
+      let m = lazy (Shortcuts.from_grammar grammar) in
+      fun name -> Shortcuts.shortcut (Lazy.force m) name
     in
     Print.println "open Versions.%s" version;
     List.iter grammar ~f:(fun (node_name, (kind : Astlib.Grammar.kind)) ->
