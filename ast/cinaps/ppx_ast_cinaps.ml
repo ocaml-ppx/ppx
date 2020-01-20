@@ -5,3 +5,4 @@ include Gen_versions
 include Gen_conversion
 include Gen_traverse
 include Gen_builder
+include Gen_viewer

@@ -1,7 +1,7 @@
 (library
  (name ppx_ast)
  (public_name ppx.ast)
- (libraries astlib stdppx)
+ (libraries astlib stdppx viewlib)
  (flags (:standard -safe-string)))
 
 (cinaps
