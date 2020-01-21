@@ -1,5 +1,20 @@
 open StdLabels
 
+let map_keyword = function
+  | "open"
+  | "private"
+  | "downto"
+  | "to"
+  | "mutable"
+  | "rec"
+  | "nonrec"
+  | "virtual"
+  | "type"
+  | "mod"
+  | "begin"
+  | "end" as s -> s ^ "_"
+  | s -> s
+
 let is_id_char = function
   | 'A' .. 'Z' -> true
   | 'a' .. 'z' -> true
@@ -14,7 +29,7 @@ let to_id_char char =
 
 let raw_id string = String.map string ~f:to_id_char
 
-let id string = String.lowercase_ascii (raw_id string)
+let id string = map_keyword (String.lowercase_ascii (raw_id string))
 let tvar string = "'" ^ id string
 let module_name string = String.capitalize_ascii (raw_id string)
 let tag string = String.capitalize_ascii (raw_id string)

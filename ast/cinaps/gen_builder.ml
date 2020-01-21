@@ -1,20 +1,5 @@
 open Stdppx
 
-let map_keyword = function
-  | "open"
-  | "private"
-  | "downto"
-  | "to"
-  | "mutable"
-  | "rec"
-  | "nonrec"
-  | "virtual"
-  | "type"
-  | "mod"
-  | "begin"
-  | "end" as s -> s ^ "_"
-  | s -> s
-
 module Arrow = struct
   module Arg = struct
     type t =
@@ -24,7 +9,7 @@ module Arrow = struct
 
     let anon typ = { label = None; typ }
 
-    let named name typ = { label = Some (map_keyword name); typ }
+    let named name typ = { label = Some (Ml.id name); typ }
 
     let loc = { label = Some "loc"; typ = Astlib.Grammar.Location }
   end
@@ -268,7 +253,7 @@ module Builder = struct
           if pat = "attributes" then
             (Some name, empty_attributes)
           else
-            (Some name, Expr.Ident (map_keyword pat))
+            (Some name, Expr.Ident (Ml.id pat))
         ) in
         let constructor = Printf.sprintf "%s.create"
                             (String.capitalize_ascii name) in

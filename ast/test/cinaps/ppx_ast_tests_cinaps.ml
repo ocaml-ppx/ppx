@@ -133,15 +133,16 @@ let print_quickcheck_generator decl ~index ~name ~tvars =
            (List.map tvars ~f:(fun tvar ->
               Ml.id ("quickcheck_generator_" ^ tvar))))));
   Print.indented (fun () ->
+    let gen_id name = Ml.id ("gen_" ^ name) in
     match (decl : Astlib.Grammar.decl) with
     | Alias ty ->
       Print.println "let gen = %s in" (generator_string ty);
       Print.println "Generator.generate gen ~size ~random"
     | Record record ->
       List.iteri record ~f:(fun index (field, ty) ->
-        Print.println "%s gen_%s = %s"
+        Print.println "%s %s = %s"
           (if index = 0 then "let" else "and")
-          (Ml.id field)
+          (gen_id field)
           (generator_string ty));
       Print.println "in";
       List.iteri record ~f:(fun index (field, _) ->
@@ -152,7 +153,7 @@ let print_quickcheck_generator decl ~index ~name ~tvars =
       Print.println "}"
     | Variant variant ->
       List.iteri variant ~f:(fun index (tag, clause) ->
-        Print.println "%s gen_%s =" (if index = 0 then "let" else "and") (Ml.id tag);
+        Print.println "%s %s =" (if index = 0 then "let" else "and") (gen_id tag);
         Print.indented (fun () ->
           match (clause : Astlib.Grammar.clause) with
           | Empty ->
@@ -178,19 +179,19 @@ let print_quickcheck_generator decl ~index ~name ~tvars =
             Print.println "Generator.create (fun ~size ~random ->";
             Print.indented (fun () ->
               List.iteri record ~f:(fun index (field, ty) ->
-                Print.println "%s gen_%s = %s"
+                Print.println "%s %s = %s"
                   (if index = 0 then "let" else "and")
-                  (Ml.id field)
+                  (gen_id field)
                   (generator_string ty));
               Print.println "in";
               Print.println "%s" (Ml.tag tag);
               Print.indented (fun () ->
                 List.iteri record ~f:(fun index (field, _) ->
                   Print.println
-                    "%s %s = Generator.generate gen_%s ~size ~random"
+                    "%s %s = Generator.generate %s ~size ~random"
                     (if index = 0 then "{" else ";")
                     (Ml.id field)
-                    (Ml.id field));
+                    (gen_id field));
                 Print.println "})"))));
       Print.println "in";
       match
@@ -205,7 +206,7 @@ let print_quickcheck_generator decl ~index ~name ~tvars =
             Print.println "[%s])"
               (String.concat ~sep:"; "
                  (List.map variant ~f:(fun (tag, _) ->
-                    Ml.id ("gen_" ^ tag))))))
+                    gen_id tag)))))
       | ((_ :: _) as recursive), ((_ :: _) as nonrecursive) ->
         Print.println "if size = 0";
         Print.println "then";
@@ -217,7 +218,7 @@ let print_quickcheck_generator decl ~index ~name ~tvars =
               Print.println "[%s])"
                 (String.concat ~sep:"; "
                    (List.map nonrecursive ~f:(fun (tag, _) ->
-                      Ml.id ("gen_" ^ tag)))))));
+                      gen_id tag))))));
         Print.println "else";
         Print.indented (fun () ->
           Print.println "Generator.generate ~size:(size-1) ~random";
@@ -227,7 +228,7 @@ let print_quickcheck_generator decl ~index ~name ~tvars =
               Print.println "[%s])"
                 (String.concat ~sep:"; "
                    (List.map (nonrecursive @ recursive) ~f:(fun (tag, _) ->
-                      Ml.id ("gen_" ^ tag))))))))
+                      gen_id tag)))))))
 
 let print_deriving_quickcheck grammar =
   List.iteri grammar ~f:(fun index (name, kind) ->
