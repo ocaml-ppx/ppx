@@ -80,7 +80,7 @@ let node_type ~type_ ~args node_name =
   let args = List.map args ~f:string_of_ty in
   Ml.poly_inst node_type ~args
 
-let fun_arg type_name = Printf.sprintf "f%s" (Ml.id type_name)
+let fun_arg type_name = Ml.id (Printf.sprintf "f%s" type_name)
 
 let tuple_var i = Printf.sprintf "x%d" i
 
@@ -437,7 +437,7 @@ let declare_node_methods ~env_table ~signature (node_name, kind) =
       let name = Name.make [node_name] args in
       let signature = signature (node_type ~type_:T ~args node_name) in
       Ml.declare_method ~signature ~name ())
-      
+
 let define_node_methods ~env_table ~traversal (node_name, kind) =
   match (kind : Astlib.Grammar.kind) with
   | Mono decl ->
