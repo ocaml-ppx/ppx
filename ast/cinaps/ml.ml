@@ -1,19 +1,19 @@
-open StdLabels
+open Stdppx
 
-let map_keyword = function
-  | "open"
-  | "private"
-  | "downto"
-  | "to"
-  | "mutable"
-  | "rec"
-  | "nonrec"
-  | "virtual"
-  | "type"
-  | "mod"
-  | "begin"
-  | "end" as s -> s ^ "_"
-  | s -> s
+let keywords =
+  [ "and"; "as"; "assert"; "asr"; "begin"; "class"; "constraint"; "do"; "done"
+  ; "downto"; "else"; "end"; "exception"; "external"; "false"; "for"; "fun"
+  ; "function"; "functor"; "if"; "in"; "include"; "inherit"; "initializer"
+  ; "land"; "lazy"; "let"; "lor"; "lsl"; "lsr"; "lxor"; "match"; "method"
+  ; "mod"; "module"; "mutable"; "new"; "nonrec"; "object"; "of"; "open"; "or"
+  ; "private"; "rec"; "sig"; "struct"; "then"; "to"; "true"; "try"; "type"
+  ; "val"; "virtual"; "when"; "while"; "with" ]
+
+let map_keyword s =
+  if List.mem_sorted ~compare:String.compare s keywords then
+    s ^ "_"
+  else
+    s
 
 let is_id_char = function
   | 'A' .. 'Z' -> true

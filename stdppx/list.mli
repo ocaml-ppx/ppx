@@ -45,6 +45,8 @@ val   sort_uniq : 'a t -> compare:('a -> 'a -> Ordering.t) -> 'a t
 
 val find_a_dup : compare:('a -> 'a -> Ordering.t) -> 'a t -> 'a option
 
+val mem_sorted : compare:('a -> 'a -> Ordering.t) -> 'a -> 'a t -> bool
+
 val compare : 'a t -> 'a t -> compare:('a -> 'a -> Ordering.t) -> Ordering.t
 
 val assoc : ('a * 'b) t -> 'a -> 'b option
