@@ -4,11 +4,49 @@ open Viewlib
 module V4_07 : sig
   open Versions.V4_07
 
+  val nonrecursive : (Rec_flag.t, 'a, 'a) View.t
+
+  val recursive : (Rec_flag.t, 'a, 'a) View.t
+
+  val upto : (Direction_flag.t, 'a, 'a) View.t
+
+  val downto_ : (Direction_flag.t, 'a, 'a) View.t
+
+  val private_ : (Private_flag.t, 'a, 'a) View.t
+
+  val public : (Private_flag.t, 'a, 'a) View.t
+
+  val immutable : (Mutable_flag.t, 'a, 'a) View.t
+
+  val mutable_ : (Mutable_flag.t, 'a, 'a) View.t
+
+  val virtual_ : (Virtual_flag.t, 'a, 'a) View.t
+
+  val concrete : (Virtual_flag.t, 'a, 'a) View.t
+
+  val override : (Override_flag.t, 'a, 'a) View.t
+
+  val fresh : (Override_flag.t, 'a, 'a) View.t
+
+  val closed : (Closed_flag.t, 'a, 'a) View.t
+
+  val open_ : (Closed_flag.t, 'a, 'a) View.t
+
+  val nolabel : (Arg_label.t, 'a, 'a) View.t
+
+  val covariant : (Variance.t, 'a, 'a) View.t
+
+  val contravariant : (Variance.t, 'a, 'a) View.t
+
+  val invariant : (Variance.t, 'a, 'a) View.t
+
   val ptyp_desc'match : (Core_type_desc.t, 'i, 'o) View.t -> (Core_type.t, 'i, 'o) View.t
 
   val ptyp_loc'match : (Astlib.Location.t, 'i, 'o) View.t -> (Core_type.t, 'i, 'o) View.t
 
   val ptyp_attributes'match : (Attributes.t, 'i, 'o) View.t -> (Core_type.t, 'i, 'o) View.t
+
+  val ptyp_any : (Core_type_desc.t, 'a, 'a) View.t
 
   val ppat_desc'match : (Pattern_desc.t, 'i, 'o) View.t -> (Pattern.t, 'i, 'o) View.t
 
@@ -16,11 +54,15 @@ module V4_07 : sig
 
   val ppat_attributes'match : (Attributes.t, 'i, 'o) View.t -> (Pattern.t, 'i, 'o) View.t
 
+  val ppat_any : (Pattern_desc.t, 'a, 'a) View.t
+
   val pexp_desc'match : (Expression_desc.t, 'i, 'o) View.t -> (Expression.t, 'i, 'o) View.t
 
   val pexp_loc'match : (Astlib.Location.t, 'i, 'o) View.t -> (Expression.t, 'i, 'o) View.t
 
   val pexp_attributes'match : (Attributes.t, 'i, 'o) View.t -> (Expression.t, 'i, 'o) View.t
+
+  val pexp_unreachable : (Expression_desc.t, 'a, 'a) View.t
 
   val pc_lhs'match : (Pattern.t, 'i, 'o) View.t -> (Case.t, 'i, 'o) View.t
 
@@ -53,6 +95,10 @@ module V4_07 : sig
   val ptype_attributes'match : (Attributes.t, 'i, 'o) View.t -> (Type_declaration.t, 'i, 'o) View.t
 
   val ptype_loc'match : (Astlib.Location.t, 'i, 'o) View.t -> (Type_declaration.t, 'i, 'o) View.t
+
+  val ptype_abstract : (Type_kind.t, 'a, 'a) View.t
+
+  val ptype_open : (Type_kind.t, 'a, 'a) View.t
 
   val pld_name'match : (string Astlib.Loc.t, 'i, 'o) View.t -> (Label_declaration.t, 'i, 'o) View.t
 
@@ -183,16 +229,56 @@ module V4_07 : sig
   val pmb_attributes'match : (Attributes.t, 'i, 'o) View.t -> (Module_binding.t, 'i, 'o) View.t
 
   val pmb_loc'match : (Astlib.Location.t, 'i, 'o) View.t -> (Module_binding.t, 'i, 'o) View.t
+
+  val pdir_none : (Directive_argument.t, 'a, 'a) View.t
 end
 
 module V4_06 : sig
   open Versions.V4_06
 
+  val nonrecursive : (Rec_flag.t, 'a, 'a) View.t
+
+  val recursive : (Rec_flag.t, 'a, 'a) View.t
+
+  val upto : (Direction_flag.t, 'a, 'a) View.t
+
+  val downto_ : (Direction_flag.t, 'a, 'a) View.t
+
+  val private_ : (Private_flag.t, 'a, 'a) View.t
+
+  val public : (Private_flag.t, 'a, 'a) View.t
+
+  val immutable : (Mutable_flag.t, 'a, 'a) View.t
+
+  val mutable_ : (Mutable_flag.t, 'a, 'a) View.t
+
+  val virtual_ : (Virtual_flag.t, 'a, 'a) View.t
+
+  val concrete : (Virtual_flag.t, 'a, 'a) View.t
+
+  val override : (Override_flag.t, 'a, 'a) View.t
+
+  val fresh : (Override_flag.t, 'a, 'a) View.t
+
+  val closed : (Closed_flag.t, 'a, 'a) View.t
+
+  val open_ : (Closed_flag.t, 'a, 'a) View.t
+
+  val nolabel : (Arg_label.t, 'a, 'a) View.t
+
+  val covariant : (Variance.t, 'a, 'a) View.t
+
+  val contravariant : (Variance.t, 'a, 'a) View.t
+
+  val invariant : (Variance.t, 'a, 'a) View.t
+
   val ptyp_desc'match : (Core_type_desc.t, 'i, 'o) View.t -> (Core_type.t, 'i, 'o) View.t
 
   val ptyp_loc'match : (Astlib.Location.t, 'i, 'o) View.t -> (Core_type.t, 'i, 'o) View.t
 
   val ptyp_attributes'match : (Attributes.t, 'i, 'o) View.t -> (Core_type.t, 'i, 'o) View.t
+
+  val ptyp_any : (Core_type_desc.t, 'a, 'a) View.t
 
   val ppat_desc'match : (Pattern_desc.t, 'i, 'o) View.t -> (Pattern.t, 'i, 'o) View.t
 
@@ -200,11 +286,15 @@ module V4_06 : sig
 
   val ppat_attributes'match : (Attributes.t, 'i, 'o) View.t -> (Pattern.t, 'i, 'o) View.t
 
+  val ppat_any : (Pattern_desc.t, 'a, 'a) View.t
+
   val pexp_desc'match : (Expression_desc.t, 'i, 'o) View.t -> (Expression.t, 'i, 'o) View.t
 
   val pexp_loc'match : (Astlib.Location.t, 'i, 'o) View.t -> (Expression.t, 'i, 'o) View.t
 
   val pexp_attributes'match : (Attributes.t, 'i, 'o) View.t -> (Expression.t, 'i, 'o) View.t
+
+  val pexp_unreachable : (Expression_desc.t, 'a, 'a) View.t
 
   val pc_lhs'match : (Pattern.t, 'i, 'o) View.t -> (Case.t, 'i, 'o) View.t
 
@@ -237,6 +327,10 @@ module V4_06 : sig
   val ptype_attributes'match : (Attributes.t, 'i, 'o) View.t -> (Type_declaration.t, 'i, 'o) View.t
 
   val ptype_loc'match : (Astlib.Location.t, 'i, 'o) View.t -> (Type_declaration.t, 'i, 'o) View.t
+
+  val ptype_abstract : (Type_kind.t, 'a, 'a) View.t
+
+  val ptype_open : (Type_kind.t, 'a, 'a) View.t
 
   val pld_name'match : (string Astlib.Loc.t, 'i, 'o) View.t -> (Label_declaration.t, 'i, 'o) View.t
 
@@ -367,5 +461,7 @@ module V4_06 : sig
   val pmb_attributes'match : (Attributes.t, 'i, 'o) View.t -> (Module_binding.t, 'i, 'o) View.t
 
   val pmb_loc'match : (Astlib.Location.t, 'i, 'o) View.t -> (Module_binding.t, 'i, 'o) View.t
+
+  val pdir_none : (Directive_argument.t, 'a, 'a) View.t
 end
 (*$*)

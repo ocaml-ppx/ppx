@@ -13,6 +13,19 @@ module Structure = struct
       print_to_concrete name "value";
       Print.println "view concrete.%s.%s" (Ml.module_name name) (Ml.id fname))
 
+  let print_variant_viewer ~name (cname, clause) =
+    match (clause : Astlib.Grammar.clause) with
+    | Empty ->
+      Print.newline ();
+      Print.println "let %s value =" (Ml.id cname);
+      Print.indented (fun () ->
+        print_to_concrete name "value";
+        Print.println "match concrete with";
+        Print.println "| %s.%s -> View.ok" (Ml.module_name name) (Ml.tag cname);
+        Print.println "| _ -> View.error")
+    | Tuple _tyl -> ()
+    | Record _fields -> ()
+
   let print_viewer ~shortcuts:_ (name, kind) =
     match (kind : Astlib.Grammar.kind) with
     | Poly (_, _decl) ->
@@ -22,7 +35,8 @@ module Structure = struct
       ()
     | Mono decl ->
       (match decl with
-       | Variant _variants -> ()
+       | Variant variants ->
+         List.iter variants ~f:(print_variant_viewer ~name)
        | Record fields ->
          List.iter fields ~f:(print_field_viewer ~name)
        | Alias _ ->
@@ -41,6 +55,16 @@ module Signature = struct
       (view_t ty ~in_ ~out)
       (view_t (Name name) ~in_ ~out)
 
+  let print_variant_viewer ~name (cname, clause) =
+    match (clause : Astlib.Grammar.clause) with
+    | Empty ->
+      Print.newline ();
+      let in_ = "'a" in
+      let out = in_ in
+      Print.println "val %s : %s" (Ml.id cname) (view_t (Name name) ~in_ ~out)
+    | Tuple _tyl -> ()
+    | Record _fields -> ()
+
   let print_viewer ~shortcuts:_ (name, kind) =
     match (kind : Astlib.Grammar.kind) with
     | Poly (_, _decl) ->
@@ -50,7 +74,8 @@ module Signature = struct
       ()
     | Mono decl ->
       (match decl with
-       | Variant _variants -> ()
+       | Variant variants ->
+         List.iter variants ~f:(print_variant_viewer ~name)
        | Record fields ->
          List.iter fields ~f:(print_field_viewer ~name)
        | Alias _ ->

@@ -5,6 +5,186 @@ module V4_07 = struct
 
   let conversion_failed name = Raise.conversion_failed ~version:"V4_07" name
 
+  let nonrecursive value =
+    let concrete =
+      match Rec_flag.to_concrete value with
+      | None -> conversion_failed "rec_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Rec_flag.Nonrecursive -> View.ok
+    | _ -> View.error
+
+  let recursive value =
+    let concrete =
+      match Rec_flag.to_concrete value with
+      | None -> conversion_failed "rec_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Rec_flag.Recursive -> View.ok
+    | _ -> View.error
+
+  let upto value =
+    let concrete =
+      match Direction_flag.to_concrete value with
+      | None -> conversion_failed "direction_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Direction_flag.Upto -> View.ok
+    | _ -> View.error
+
+  let downto_ value =
+    let concrete =
+      match Direction_flag.to_concrete value with
+      | None -> conversion_failed "direction_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Direction_flag.Downto -> View.ok
+    | _ -> View.error
+
+  let private_ value =
+    let concrete =
+      match Private_flag.to_concrete value with
+      | None -> conversion_failed "private_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Private_flag.Private -> View.ok
+    | _ -> View.error
+
+  let public value =
+    let concrete =
+      match Private_flag.to_concrete value with
+      | None -> conversion_failed "private_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Private_flag.Public -> View.ok
+    | _ -> View.error
+
+  let immutable value =
+    let concrete =
+      match Mutable_flag.to_concrete value with
+      | None -> conversion_failed "mutable_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Mutable_flag.Immutable -> View.ok
+    | _ -> View.error
+
+  let mutable_ value =
+    let concrete =
+      match Mutable_flag.to_concrete value with
+      | None -> conversion_failed "mutable_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Mutable_flag.Mutable -> View.ok
+    | _ -> View.error
+
+  let virtual_ value =
+    let concrete =
+      match Virtual_flag.to_concrete value with
+      | None -> conversion_failed "virtual_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Virtual_flag.Virtual -> View.ok
+    | _ -> View.error
+
+  let concrete value =
+    let concrete =
+      match Virtual_flag.to_concrete value with
+      | None -> conversion_failed "virtual_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Virtual_flag.Concrete -> View.ok
+    | _ -> View.error
+
+  let override value =
+    let concrete =
+      match Override_flag.to_concrete value with
+      | None -> conversion_failed "override_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Override_flag.Override -> View.ok
+    | _ -> View.error
+
+  let fresh value =
+    let concrete =
+      match Override_flag.to_concrete value with
+      | None -> conversion_failed "override_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Override_flag.Fresh -> View.ok
+    | _ -> View.error
+
+  let closed value =
+    let concrete =
+      match Closed_flag.to_concrete value with
+      | None -> conversion_failed "closed_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Closed_flag.Closed -> View.ok
+    | _ -> View.error
+
+  let open_ value =
+    let concrete =
+      match Closed_flag.to_concrete value with
+      | None -> conversion_failed "closed_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Closed_flag.Open -> View.ok
+    | _ -> View.error
+
+  let nolabel value =
+    let concrete =
+      match Arg_label.to_concrete value with
+      | None -> conversion_failed "arg_label"
+      | Some n -> n
+    in
+    match concrete with
+    | Arg_label.Nolabel -> View.ok
+    | _ -> View.error
+
+  let covariant value =
+    let concrete =
+      match Variance.to_concrete value with
+      | None -> conversion_failed "variance"
+      | Some n -> n
+    in
+    match concrete with
+    | Variance.Covariant -> View.ok
+    | _ -> View.error
+
+  let contravariant value =
+    let concrete =
+      match Variance.to_concrete value with
+      | None -> conversion_failed "variance"
+      | Some n -> n
+    in
+    match concrete with
+    | Variance.Contravariant -> View.ok
+    | _ -> View.error
+
+  let invariant value =
+    let concrete =
+      match Variance.to_concrete value with
+      | None -> conversion_failed "variance"
+      | Some n -> n
+    in
+    match concrete with
+    | Variance.Invariant -> View.ok
+    | _ -> View.error
+
   let ptyp_desc'match view value =
     let concrete =
       match Core_type.to_concrete value with
@@ -28,6 +208,16 @@ module V4_07 = struct
       | Some n -> n
     in
     view concrete.Core_type.ptyp_attributes
+
+  let ptyp_any value =
+    let concrete =
+      match Core_type_desc.to_concrete value with
+      | None -> conversion_failed "core_type_desc"
+      | Some n -> n
+    in
+    match concrete with
+    | Core_type_desc.Ptyp_any -> View.ok
+    | _ -> View.error
 
   let ppat_desc'match view value =
     let concrete =
@@ -53,6 +243,16 @@ module V4_07 = struct
     in
     view concrete.Pattern.ppat_attributes
 
+  let ppat_any value =
+    let concrete =
+      match Pattern_desc.to_concrete value with
+      | None -> conversion_failed "pattern_desc"
+      | Some n -> n
+    in
+    match concrete with
+    | Pattern_desc.Ppat_any -> View.ok
+    | _ -> View.error
+
   let pexp_desc'match view value =
     let concrete =
       match Expression.to_concrete value with
@@ -76,6 +276,16 @@ module V4_07 = struct
       | Some n -> n
     in
     view concrete.Expression.pexp_attributes
+
+  let pexp_unreachable value =
+    let concrete =
+      match Expression_desc.to_concrete value with
+      | None -> conversion_failed "expression_desc"
+      | Some n -> n
+    in
+    match concrete with
+    | Expression_desc.Pexp_unreachable -> View.ok
+    | _ -> View.error
 
   let pc_lhs'match view value =
     let concrete =
@@ -204,6 +414,26 @@ module V4_07 = struct
       | Some n -> n
     in
     view concrete.Type_declaration.ptype_loc
+
+  let ptype_abstract value =
+    let concrete =
+      match Type_kind.to_concrete value with
+      | None -> conversion_failed "type_kind"
+      | Some n -> n
+    in
+    match concrete with
+    | Type_kind.Ptype_abstract -> View.ok
+    | _ -> View.error
+
+  let ptype_open value =
+    let concrete =
+      match Type_kind.to_concrete value with
+      | None -> conversion_failed "type_kind"
+      | Some n -> n
+    in
+    match concrete with
+    | Type_kind.Ptype_open -> View.ok
+    | _ -> View.error
 
   let pld_name'match view value =
     let concrete =
@@ -724,6 +954,16 @@ module V4_07 = struct
       | Some n -> n
     in
     view concrete.Module_binding.pmb_loc
+
+  let pdir_none value =
+    let concrete =
+      match Directive_argument.to_concrete value with
+      | None -> conversion_failed "directive_argument"
+      | Some n -> n
+    in
+    match concrete with
+    | Directive_argument.Pdir_none -> View.ok
+    | _ -> View.error
 end
 
 module V4_06 = struct
@@ -731,6 +971,186 @@ module V4_06 = struct
 
   let conversion_failed name = Raise.conversion_failed ~version:"V4_06" name
 
+  let nonrecursive value =
+    let concrete =
+      match Rec_flag.to_concrete value with
+      | None -> conversion_failed "rec_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Rec_flag.Nonrecursive -> View.ok
+    | _ -> View.error
+
+  let recursive value =
+    let concrete =
+      match Rec_flag.to_concrete value with
+      | None -> conversion_failed "rec_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Rec_flag.Recursive -> View.ok
+    | _ -> View.error
+
+  let upto value =
+    let concrete =
+      match Direction_flag.to_concrete value with
+      | None -> conversion_failed "direction_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Direction_flag.Upto -> View.ok
+    | _ -> View.error
+
+  let downto_ value =
+    let concrete =
+      match Direction_flag.to_concrete value with
+      | None -> conversion_failed "direction_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Direction_flag.Downto -> View.ok
+    | _ -> View.error
+
+  let private_ value =
+    let concrete =
+      match Private_flag.to_concrete value with
+      | None -> conversion_failed "private_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Private_flag.Private -> View.ok
+    | _ -> View.error
+
+  let public value =
+    let concrete =
+      match Private_flag.to_concrete value with
+      | None -> conversion_failed "private_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Private_flag.Public -> View.ok
+    | _ -> View.error
+
+  let immutable value =
+    let concrete =
+      match Mutable_flag.to_concrete value with
+      | None -> conversion_failed "mutable_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Mutable_flag.Immutable -> View.ok
+    | _ -> View.error
+
+  let mutable_ value =
+    let concrete =
+      match Mutable_flag.to_concrete value with
+      | None -> conversion_failed "mutable_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Mutable_flag.Mutable -> View.ok
+    | _ -> View.error
+
+  let virtual_ value =
+    let concrete =
+      match Virtual_flag.to_concrete value with
+      | None -> conversion_failed "virtual_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Virtual_flag.Virtual -> View.ok
+    | _ -> View.error
+
+  let concrete value =
+    let concrete =
+      match Virtual_flag.to_concrete value with
+      | None -> conversion_failed "virtual_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Virtual_flag.Concrete -> View.ok
+    | _ -> View.error
+
+  let override value =
+    let concrete =
+      match Override_flag.to_concrete value with
+      | None -> conversion_failed "override_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Override_flag.Override -> View.ok
+    | _ -> View.error
+
+  let fresh value =
+    let concrete =
+      match Override_flag.to_concrete value with
+      | None -> conversion_failed "override_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Override_flag.Fresh -> View.ok
+    | _ -> View.error
+
+  let closed value =
+    let concrete =
+      match Closed_flag.to_concrete value with
+      | None -> conversion_failed "closed_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Closed_flag.Closed -> View.ok
+    | _ -> View.error
+
+  let open_ value =
+    let concrete =
+      match Closed_flag.to_concrete value with
+      | None -> conversion_failed "closed_flag"
+      | Some n -> n
+    in
+    match concrete with
+    | Closed_flag.Open -> View.ok
+    | _ -> View.error
+
+  let nolabel value =
+    let concrete =
+      match Arg_label.to_concrete value with
+      | None -> conversion_failed "arg_label"
+      | Some n -> n
+    in
+    match concrete with
+    | Arg_label.Nolabel -> View.ok
+    | _ -> View.error
+
+  let covariant value =
+    let concrete =
+      match Variance.to_concrete value with
+      | None -> conversion_failed "variance"
+      | Some n -> n
+    in
+    match concrete with
+    | Variance.Covariant -> View.ok
+    | _ -> View.error
+
+  let contravariant value =
+    let concrete =
+      match Variance.to_concrete value with
+      | None -> conversion_failed "variance"
+      | Some n -> n
+    in
+    match concrete with
+    | Variance.Contravariant -> View.ok
+    | _ -> View.error
+
+  let invariant value =
+    let concrete =
+      match Variance.to_concrete value with
+      | None -> conversion_failed "variance"
+      | Some n -> n
+    in
+    match concrete with
+    | Variance.Invariant -> View.ok
+    | _ -> View.error
+
   let ptyp_desc'match view value =
     let concrete =
       match Core_type.to_concrete value with
@@ -754,6 +1174,16 @@ module V4_06 = struct
       | Some n -> n
     in
     view concrete.Core_type.ptyp_attributes
+
+  let ptyp_any value =
+    let concrete =
+      match Core_type_desc.to_concrete value with
+      | None -> conversion_failed "core_type_desc"
+      | Some n -> n
+    in
+    match concrete with
+    | Core_type_desc.Ptyp_any -> View.ok
+    | _ -> View.error
 
   let ppat_desc'match view value =
     let concrete =
@@ -779,6 +1209,16 @@ module V4_06 = struct
     in
     view concrete.Pattern.ppat_attributes
 
+  let ppat_any value =
+    let concrete =
+      match Pattern_desc.to_concrete value with
+      | None -> conversion_failed "pattern_desc"
+      | Some n -> n
+    in
+    match concrete with
+    | Pattern_desc.Ppat_any -> View.ok
+    | _ -> View.error
+
   let pexp_desc'match view value =
     let concrete =
       match Expression.to_concrete value with
@@ -802,6 +1242,16 @@ module V4_06 = struct
       | Some n -> n
     in
     view concrete.Expression.pexp_attributes
+
+  let pexp_unreachable value =
+    let concrete =
+      match Expression_desc.to_concrete value with
+      | None -> conversion_failed "expression_desc"
+      | Some n -> n
+    in
+    match concrete with
+    | Expression_desc.Pexp_unreachable -> View.ok
+    | _ -> View.error
 
   let pc_lhs'match view value =
     let concrete =
@@ -930,6 +1380,26 @@ module V4_06 = struct
       | Some n -> n
     in
     view concrete.Type_declaration.ptype_loc
+
+  let ptype_abstract value =
+    let concrete =
+      match Type_kind.to_concrete value with
+      | None -> conversion_failed "type_kind"
+      | Some n -> n
+    in
+    match concrete with
+    | Type_kind.Ptype_abstract -> View.ok
+    | _ -> View.error
+
+  let ptype_open value =
+    let concrete =
+      match Type_kind.to_concrete value with
+      | None -> conversion_failed "type_kind"
+      | Some n -> n
+    in
+    match concrete with
+    | Type_kind.Ptype_open -> View.ok
+    | _ -> View.error
 
   let pld_name'match view value =
     let concrete =
@@ -1450,5 +1920,15 @@ module V4_06 = struct
       | Some n -> n
     in
     view concrete.Module_binding.pmb_loc
+
+  let pdir_none value =
+    let concrete =
+      match Directive_argument.to_concrete value with
+      | None -> conversion_failed "directive_argument"
+      | Some n -> n
+    in
+    match concrete with
+    | Directive_argument.Pdir_none -> View.ok
+    | _ -> View.error
 end
 (*$*)
