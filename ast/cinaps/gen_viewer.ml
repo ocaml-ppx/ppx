@@ -15,7 +15,11 @@ module Structure = struct
 
   let print_viewer ~shortcuts:_ (name, kind) =
     match (kind : Astlib.Grammar.kind) with
-    | Poly (_, _decl) -> ()
+    | Poly (_, _decl) ->
+      (* We skip polymorphic types because [Versions] only provide specialized
+         [to_concrete_xxx] functions which mean we would have to generate
+         [xxx'match] function for each instance of the type. *)
+      ()
     | Mono decl ->
       (match decl with
        | Variant _variants -> ()
@@ -39,7 +43,11 @@ module Signature = struct
 
   let print_viewer ~shortcuts:_ (name, kind) =
     match (kind : Astlib.Grammar.kind) with
-    | Poly (_, _decl) -> ()
+    | Poly (_, _decl) ->
+      (* We skip polymorphic types because [Versions] only provide specialized
+         [to_concrete_xxx] functions which mean we would have to generate
+         [xxx'match] function for each instance of the type. *)
+      ()
     | Mono decl ->
       (match decl with
        | Variant _variants -> ()
