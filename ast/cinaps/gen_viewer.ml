@@ -2,7 +2,19 @@ open Stdppx
 
 let string_of_ty ty = Grammar.string_of_ty ~internal:false ty
 
-module Structure = struct
+module type VIEWER_PRINTER = sig
+  val print_field_viewer :
+    name: string ->
+    (string * Astlib.Grammar.ty) ->
+    unit
+
+  val print_variant_viewer :
+    name: string ->
+    (string * Astlib.Grammar.clause) ->
+    unit
+end
+
+module Structure : VIEWER_PRINTER = struct
   let print_to_concrete node_name expr =
     To_concrete.print_to_concrete_exn ~node_name expr
 
@@ -26,24 +38,9 @@ module Structure = struct
     | Tuple _tyl -> ()
     | Record _fields -> ()
 
-  let print_viewer ~shortcuts:_ (name, kind) =
-    match (kind : Astlib.Grammar.kind) with
-    | Poly (_, _decl) ->
-      (* We skip polymorphic types because [Versions] only provide specialized
-         [to_concrete_xxx] functions which mean we would have to generate
-         [xxx'match] function for each instance of the type. *)
-      ()
-    | Mono decl ->
-      (match decl with
-       | Variant variants ->
-         List.iter variants ~f:(print_variant_viewer ~name)
-       | Record fields ->
-         List.iter fields ~f:(print_field_viewer ~name)
-       | Alias _ ->
-         ())
 end
 
-module Signature = struct
+module Signature : VIEWER_PRINTER = struct
   let view_t ty ~in_ ~out =
     Printf.sprintf "(%s, %s, %s) View.t" (string_of_ty ty) in_ out
 
@@ -64,23 +61,28 @@ module Signature = struct
       Print.println "val %s : %s" (Ml.id cname) (view_t (Name name) ~in_ ~out)
     | Tuple _tyl -> ()
     | Record _fields -> ()
-
-  let print_viewer ~shortcuts:_ (name, kind) =
-    match (kind : Astlib.Grammar.kind) with
-    | Poly (_, _decl) ->
-      (* We skip polymorphic types because [Versions] only provide specialized
-         [to_concrete_xxx] functions which mean we would have to generate
-         [xxx'match] function for each instance of the type. *)
-      ()
-    | Mono decl ->
-      (match decl with
-       | Variant variants ->
-         List.iter variants ~f:(print_variant_viewer ~name)
-       | Record fields ->
-         List.iter fields ~f:(print_field_viewer ~name)
-       | Alias _ ->
-         ())
 end
+
+let print_viewer ~what ~shortcuts:_ (name, kind) =
+  let (module M : VIEWER_PRINTER) =
+    match what with
+    | `Intf -> (module Signature)
+    | `Impl -> (module Structure)
+  in
+  match (kind : Astlib.Grammar.kind) with
+  | Poly (_, _decl) ->
+    (* We skip polymorphic types because [Versions] only provide specialized
+       [to_concrete_xxx] functions which mean we would have to generate
+       [xxx'match] function for each instance of the type. *)
+    ()
+  | Mono decl ->
+    (match decl with
+     | Variant variants ->
+       List.iter variants ~f:(M.print_variant_viewer ~name)
+     | Record fields ->
+       List.iter fields ~f:(M.print_field_viewer ~name)
+     | Alias _ ->
+       ())
 
 let print_viewer_ml () =
   Print.newline ();
@@ -90,7 +92,7 @@ let print_viewer_ml () =
     let version = Ml.module_name version in
     Print.println "open Versions.%s" version;
     To_concrete.define_conversion_failed ~version;
-    List.iter grammar ~f:(Structure.print_viewer ~shortcuts))
+    List.iter grammar ~f:(print_viewer ~what:`Impl ~shortcuts))
 
 let print_viewer_mli () =
   Print.newline ();
@@ -98,4 +100,4 @@ let print_viewer_mli () =
   Ml.declare_modules grammars ~f:(fun version grammar ->
     let shortcuts = Shortcut.Map.from_grammar grammar in
     Print.println "open Versions.%s" (Ml.module_name version);
-    List.iter grammar ~f:(Signature.print_viewer ~shortcuts))
+    List.iter grammar ~f:(print_viewer ~what:`Intf ~shortcuts))
