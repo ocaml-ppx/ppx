@@ -20,5 +20,5 @@ let rec string_of_ty ~internal ty =
 and string_of_tuple_type ~internal ?(parens = true) tuple =
   Printf.sprintf "%s%s%s"
     (if parens then "(" else "")
-    (String.concat ~sep:" * " (List.map tuple ~f:(string_of_ty ~internal)))
+    (Ml.tuple_type (List.map tuple ~f:(string_of_ty ~internal)))
     (if parens then ")" else "")
