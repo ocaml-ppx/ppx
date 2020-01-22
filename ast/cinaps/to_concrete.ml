@@ -1,11 +1,8 @@
 let define_conversion_failed ~version =
   Print.newline ();
-  Print.println "let conversion_failed name =";
-  Print.indented (fun () ->
-    Print.println
-      {|let msg = Printf.sprintf "Ppx_ast: Could not convert %%s to %s" name in|}
-      version;
-    Print.println "failwith msg")
+  Print.println
+    "let conversion_failed name = Raise.conversion_failed ~version:%S name"
+    version
 
 let print_to_concrete_exn ?(var_name="concrete") ~targs ~node_name expr =
   Print.println "let %s =" var_name;

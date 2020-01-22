@@ -2,9 +2,7 @@
 module V4_07 = struct
   open Versions.V4_07
 
-  let conversion_failed name =
-    let msg = Printf.sprintf "Ppx_ast: Could not convert %s to V4_07" name in
-    failwith msg
+  let conversion_failed name = Raise.conversion_failed ~version:"V4_07" name
 
   class virtual map =
     object (self)
@@ -8241,9 +8239,7 @@ end
 module V4_06 = struct
   open Versions.V4_06
 
-  let conversion_failed name =
-    let msg = Printf.sprintf "Ppx_ast: Could not convert %s to V4_06" name in
-    failwith msg
+  let conversion_failed name = Raise.conversion_failed ~version:"V4_06" name
 
   class virtual map =
     object (self)
