@@ -18,6 +18,13 @@ module Structure : VIEWER_PRINTER = struct
   let print_to_concrete node_name expr =
     To_concrete.print_to_concrete_exn ~node_name expr
 
+  let tuple tyl =
+    match tyl with
+    | [_] -> "arg"
+    | _ ->
+      let vars = List.mapi tyl ~f:(fun i _ -> Printf.sprintf "arg%d" i) in
+      Ml.tuple vars
+
   let print_field_viewer ~name (fname, _ty) =
     Print.newline ();
     Print.println "let %s'match view value =" (Ml.id fname);
@@ -35,9 +42,17 @@ module Structure : VIEWER_PRINTER = struct
         Print.println "match concrete with";
         Print.println "| %s.%s -> View.ok" (Ml.module_name name) (Ml.tag cname);
         Print.println "| _ -> View.error")
-    | Tuple _tyl -> ()
+    | Tuple tyl ->
+      Print.newline ();
+      Print.println "let %s view value =" (Ml.id cname);
+      Print.indented (fun () ->
+        let args = tuple tyl in
+        print_to_concrete name "value";
+        Print.println "match concrete with";
+        Print.println "| %s.%s %s -> view %s"
+          (Ml.module_name name) (Ml.tag cname) args args;
+        Print.println "| _ -> View.error")
     | Record _fields -> ()
-
 end
 
 module Signature : VIEWER_PRINTER = struct
@@ -56,10 +71,19 @@ module Signature : VIEWER_PRINTER = struct
     match (clause : Astlib.Grammar.clause) with
     | Empty ->
       Print.newline ();
-      let in_ = "'a" in
-      let out = in_ in
+      let in_, out = "'a", "'a" in
       Print.println "val %s : %s" (Ml.id cname) (view_t (Name name) ~in_ ~out)
-    | Tuple _tyl -> ()
+    | Tuple tyl ->
+      let in_, out = "'i", "'o" in
+      let arg_type : Astlib.Grammar.ty =
+        match tyl with
+        | [ty] -> ty
+        | _ -> Tuple tyl
+      in
+      Print.println "val %s : %s -> %s"
+        (Ml.id cname)
+        (view_t arg_type ~in_ ~out)
+        (view_t (Name name) ~in_ ~out)
     | Record _fields -> ()
 end
 
