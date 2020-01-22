@@ -7,8 +7,8 @@ let define_conversion_failed ~version =
       version;
     Print.println "failwith msg")
 
-let print_to_concrete_exn ~targs ~node_name expr =
-  Print.println "let concrete =";
+let print_to_concrete_exn ?(var_name="concrete") ~targs ~node_name expr =
+  Print.println "let %s =" var_name;
   Print.indented (fun () ->
     let to_concrete = Name.make ["to_concrete"] targs in
     Print.println "match %s.%s %s with"
