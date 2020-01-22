@@ -160,11 +160,17 @@ module Builder = struct
     Expr.print (Lazy.force impl);
     Print.newline ()
 
-  let of_variant type_name (v : Astlib.Grammar.variant) desc_for =
-    match desc_for type_name with
+  let of_variant type_name (v : Astlib.Grammar.variant) shortcut =
+    match (shortcut type_name : Shortcut.t option) with
     | None -> []
-    | Some (described_type_name, described_type)  ->
-      let type_ = Astlib.Grammar.Name described_type_name in
+    | Some {other_fields = _::_; _} ->
+      (* There currently is only attr, loc and descr in records for which we
+         have shortcuts and the code here relies on it, if new fields or added
+         we'll need do deal with them.
+         Note that a [xxx_loc_stack] has been added in recent OCaml versions. *)
+      assert false
+    | Some {outter_record; desc_field; loc_field; attr_field; other_fields = []; _} ->
+      let type_ = Astlib.Grammar.Name outter_record in
       List.map v ~f:(fun (cname, (constr : Astlib.Grammar.clause)) ->
         let arr =
           match constr with
@@ -172,18 +178,10 @@ module Builder = struct
           | Tuple tuple -> Arrow.of_tuple tuple type_
           | Record record -> Arrow.of_record record type_
         in
-        let label_prefix =
-          described_type
-          |> List.map ~f:fst
-          |> String.common_prefix
-        in
         let arr =
-          if List.exists described_type ~f:(fun (f, _) ->
-            String.drop_prefix f ~prefix:label_prefix = Some "loc"
-          ) then
-            Arrow.add_loc arr
-          else
-            arr
+          match loc_field with
+          | Some _ -> Arrow.add_loc arr
+          | None -> arr
         in
         let impl = lazy (
           let desc =
@@ -201,28 +199,26 @@ module Builder = struct
             Expr.App (fun_name, args)
           in
           let constructor_function =
-            Printf.sprintf "%s.create" (Ml.module_name described_type_name)
+            Printf.sprintf "%s.create" (Ml.module_name outter_record)
           in
           let args =
-            List.map described_type ~f:(fun (field, _) ->
-              let expr =
-                match String.drop_prefix field ~prefix:label_prefix with
-                | Some "loc" -> Expr.Ident "loc"
-                | Some "attributes" -> empty_attributes
-                | Some "desc" -> desc
-                | _ -> assert false
-              in
-              (Some field, expr))
+            let open Option.O in
+            [ Some (Some desc_field, desc)
+            ; (loc_field >>| fun fname -> (Some fname, Expr.Ident "loc"))
+            ; (attr_field >>| fun fname -> (Some fname, empty_attributes))
+            ]
+            |> List.filter_opt
           in
           Expr.App (constructor_function, args)
         ) in
         make ~name:cname ~arr ~impl)
 
-  let of_record name (fields : Astlib.Grammar.record) =
-    if Shortcuts.has_desc_field fields then
+  let of_record name (fields : Astlib.Grammar.record) shortcut =
+    match shortcut name with
+    | Some _ ->
       (* This case will be covered when we generate the _desc type *)
       None
-    else
+    | None ->
       let ret = Astlib.Grammar.Name name in
       let common_prefix =
         String.common_prefix (List.map ~f:fst fields) in
@@ -262,18 +258,18 @@ module Builder = struct
       Some (make ~name ~arr ~impl)
 end
 
-let builders name (grammar : Astlib.Grammar.kind) desc_for =
+let builders name (grammar : Astlib.Grammar.kind) shortcut =
   match grammar with
   | Poly (_, _) -> []
   | Mono decl ->
     match decl with
     | Alias _ -> []
     | Record r ->
-      begin match Builder.of_record name r with
+      begin match Builder.of_record name r shortcut with
       | None -> []
       | Some r -> [r]
       end
-    | Variant v -> Builder.of_variant name v desc_for
+    | Variant v -> Builder.of_variant name v shortcut
 
 let print_builder_ml () =
   Print.newline ();
@@ -281,12 +277,12 @@ let print_builder_ml () =
   Ml.define_modules grammars ~f:(fun version grammar ->
     let version = Ml.module_name version in
     Print.println "open Versions.%s" version;
-    let desc_for =
-      let m = lazy (Shortcuts.from_grammar grammar) in
-      fun name -> Shortcuts.shortcut (Lazy.force m) name
+    let shortcut =
+      let m = lazy (Shortcut.Map.from_grammar grammar) in
+      fun name -> Shortcut.Map.find (Lazy.force m) name
     in
     List.iter grammar ~f:(fun (node_name, (kind : Astlib.Grammar.kind)) ->
-      let builders = builders node_name kind desc_for in
+      let builders = builders node_name kind shortcut in
       List.iter ~f:Builder.print_impl builders))
 
 let print_builder_mli () =
@@ -294,11 +290,11 @@ let print_builder_mli () =
   let grammars = Astlib.History.versioned_grammars Astlib.history in
   Ml.declare_modules grammars ~f:(fun version grammar ->
     let version = Ml.module_name version in
-    let desc_for =
-      let m = lazy (Shortcuts.from_grammar grammar) in
-      fun name -> Shortcuts.shortcut (Lazy.force m) name
+    let shortcut =
+      let m = lazy (Shortcut.Map.from_grammar grammar) in
+      fun name -> Shortcut.Map.find (Lazy.force m) name
     in
     Print.println "open Versions.%s" version;
     List.iter grammar ~f:(fun (node_name, (kind : Astlib.Grammar.kind)) ->
-      let builders = builders node_name kind desc_for in
+      let builders = builders node_name kind shortcut in
       List.iter ~f:Builder.print_sig builders))
