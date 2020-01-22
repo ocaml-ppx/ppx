@@ -1,0 +1,9 @@
+(library
+ (name        ppx_metaquot_expander)
+ (public_name ppx.metaquot_expander)
+ (flags (:standard -safe-string))
+ (libraries
+  stdppx
+  ppx
+  ppx.ast
+  ppx.metaquot_lifters))
