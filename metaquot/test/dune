@@ -1,0 +1,5 @@
+(library
+ (name ppx_metaquot_test)
+ (public_name ppx.metaquot_test)
+ (libraries ppx)
+ (preprocess (pps ppx.metaquot ppx.runner)))
