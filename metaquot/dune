@@ -4,9 +4,7 @@
  (kind ppx_rewriter)
  (flags (:standard -safe-string))
  (libraries
-  stdppx
-  ppx
-  ppx.ast
-  ppx.metaquot_lifters)
+  ppx.metaquot_expander)
  (ppx_runtime_libraries
-  ppx.ast))
+  ppx.ast
+  ppx.metaquot_expander))
