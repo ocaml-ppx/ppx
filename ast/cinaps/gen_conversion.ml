@@ -230,7 +230,7 @@ let print_conversion_impl decl ~node_name ~env ~is_initial =
     Print.println "Versions.%s.%s.%s (%s x)"
       (Ml.module_name version)
       (Ml.module_name node_name)
-      (Name.make ["of_concrete"] (Poly_env.args env))
+      "of_concrete"
       (Name.make ["concrete_of"; node_name] (Poly_env.args env)));
   Print.newline ();
   define_conversion decl ~node_name ~env ~conv:`concrete_of;
@@ -240,7 +240,7 @@ let print_conversion_impl decl ~node_name ~env ~is_initial =
     Print.println "let option = Versions.%s.%s.%s x in"
       (Ml.module_name version)
       (Ml.module_name node_name)
-      (Name.make ["to_concrete"] (Poly_env.args env));
+      "to_concrete";
     Print.println "let concrete =";
     Print.indented (fun () ->
       Print.println "Helpers.Option.value_exn option";

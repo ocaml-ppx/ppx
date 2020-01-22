@@ -827,7 +827,7 @@ module V4_07 = struct
       method class_infos_class_expr : Class_expr.t Class_infos.t -> Class_expr.t Class_infos.t  =
         fun class_infos ->
           let concrete =
-            match Class_infos.to_concrete_class_expr class_infos with
+            match Class_infos.to_concrete class_infos with
             | None -> conversion_failed "class_infos"
             | Some n -> n
           in
@@ -838,11 +838,11 @@ module V4_07 = struct
           let pci_expr = self#class_expr pci_expr in
           let pci_loc = self#location pci_loc in
           let pci_attributes = self#attributes pci_attributes in
-          Class_infos.of_concrete_class_expr { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }
+          Class_infos.of_concrete { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }
       method class_infos_class_type : Class_type.t Class_infos.t -> Class_type.t Class_infos.t  =
         fun class_infos ->
           let concrete =
-            match Class_infos.to_concrete_class_type class_infos with
+            match Class_infos.to_concrete class_infos with
             | None -> conversion_failed "class_infos"
             | Some n -> n
           in
@@ -853,7 +853,7 @@ module V4_07 = struct
           let pci_expr = self#class_type pci_expr in
           let pci_loc = self#location pci_loc in
           let pci_attributes = self#attributes pci_attributes in
-          Class_infos.of_concrete_class_type { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }
+          Class_infos.of_concrete { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }
       method class_description : Class_description.t -> Class_description.t  =
         fun class_description ->
           let concrete =
@@ -1159,7 +1159,7 @@ module V4_07 = struct
       method include_infos_module_expr : Module_expr.t Include_infos.t -> Module_expr.t Include_infos.t  =
         fun include_infos ->
           let concrete =
-            match Include_infos.to_concrete_module_expr include_infos with
+            match Include_infos.to_concrete include_infos with
             | None -> conversion_failed "include_infos"
             | Some n -> n
           in
@@ -1167,11 +1167,11 @@ module V4_07 = struct
           let pincl_mod = self#module_expr pincl_mod in
           let pincl_loc = self#location pincl_loc in
           let pincl_attributes = self#attributes pincl_attributes in
-          Include_infos.of_concrete_module_expr { pincl_mod; pincl_loc; pincl_attributes }
+          Include_infos.of_concrete { pincl_mod; pincl_loc; pincl_attributes }
       method include_infos_module_type : Module_type.t Include_infos.t -> Module_type.t Include_infos.t  =
         fun include_infos ->
           let concrete =
-            match Include_infos.to_concrete_module_type include_infos with
+            match Include_infos.to_concrete include_infos with
             | None -> conversion_failed "include_infos"
             | Some n -> n
           in
@@ -1179,7 +1179,7 @@ module V4_07 = struct
           let pincl_mod = self#module_type pincl_mod in
           let pincl_loc = self#location pincl_loc in
           let pincl_attributes = self#attributes pincl_attributes in
-          Include_infos.of_concrete_module_type { pincl_mod; pincl_loc; pincl_attributes }
+          Include_infos.of_concrete { pincl_mod; pincl_loc; pincl_attributes }
       method include_description : Include_description.t -> Include_description.t  =
         fun include_description ->
           let concrete =
@@ -2117,7 +2117,7 @@ module V4_07 = struct
       method class_infos_class_expr : Class_expr.t Class_infos.t -> unit  =
         fun class_infos ->
           let concrete =
-            match Class_infos.to_concrete_class_expr class_infos with
+            match Class_infos.to_concrete class_infos with
             | None -> conversion_failed "class_infos"
             | Some n -> n
           in
@@ -2131,7 +2131,7 @@ module V4_07 = struct
       method class_infos_class_type : Class_type.t Class_infos.t -> unit  =
         fun class_infos ->
           let concrete =
-            match Class_infos.to_concrete_class_type class_infos with
+            match Class_infos.to_concrete class_infos with
             | None -> conversion_failed "class_infos"
             | Some n -> n
           in
@@ -2398,7 +2398,7 @@ module V4_07 = struct
       method include_infos_module_expr : Module_expr.t Include_infos.t -> unit  =
         fun include_infos ->
           let concrete =
-            match Include_infos.to_concrete_module_expr include_infos with
+            match Include_infos.to_concrete include_infos with
             | None -> conversion_failed "include_infos"
             | Some n -> n
           in
@@ -2409,7 +2409,7 @@ module V4_07 = struct
       method include_infos_module_type : Module_type.t Include_infos.t -> unit  =
         fun include_infos ->
           let concrete =
-            match Include_infos.to_concrete_module_type include_infos with
+            match Include_infos.to_concrete include_infos with
             | None -> conversion_failed "include_infos"
             | Some n -> n
           in
@@ -3431,7 +3431,7 @@ module V4_07 = struct
       method class_infos_class_expr : Class_expr.t Class_infos.t -> 'acc -> 'acc  =
         fun class_infos acc ->
           let concrete =
-            match Class_infos.to_concrete_class_expr class_infos with
+            match Class_infos.to_concrete class_infos with
             | None -> conversion_failed "class_infos"
             | Some n -> n
           in
@@ -3446,7 +3446,7 @@ module V4_07 = struct
       method class_infos_class_type : Class_type.t Class_infos.t -> 'acc -> 'acc  =
         fun class_infos acc ->
           let concrete =
-            match Class_infos.to_concrete_class_type class_infos with
+            match Class_infos.to_concrete class_infos with
             | None -> conversion_failed "class_infos"
             | Some n -> n
           in
@@ -3763,7 +3763,7 @@ module V4_07 = struct
       method include_infos_module_expr : Module_expr.t Include_infos.t -> 'acc -> 'acc  =
         fun include_infos acc ->
           let concrete =
-            match Include_infos.to_concrete_module_expr include_infos with
+            match Include_infos.to_concrete include_infos with
             | None -> conversion_failed "include_infos"
             | Some n -> n
           in
@@ -3775,7 +3775,7 @@ module V4_07 = struct
       method include_infos_module_type : Module_type.t Include_infos.t -> 'acc -> 'acc  =
         fun include_infos acc ->
           let concrete =
-            match Include_infos.to_concrete_module_type include_infos with
+            match Include_infos.to_concrete include_infos with
             | None -> conversion_failed "include_infos"
             | Some n -> n
           in
@@ -4837,7 +4837,7 @@ module V4_07 = struct
       method class_infos_class_expr : Class_expr.t Class_infos.t -> 'acc -> (Class_expr.t Class_infos.t * 'acc)  =
         fun class_infos acc ->
           let concrete =
-            match Class_infos.to_concrete_class_expr class_infos with
+            match Class_infos.to_concrete class_infos with
             | None -> conversion_failed "class_infos"
             | Some n -> n
           in
@@ -4848,11 +4848,11 @@ module V4_07 = struct
           let (pci_expr, acc) = self#class_expr pci_expr acc in
           let (pci_loc, acc) = self#location pci_loc acc in
           let (pci_attributes, acc) = self#attributes pci_attributes acc in
-          (Class_infos.of_concrete_class_expr { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }, acc)
+          (Class_infos.of_concrete { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }, acc)
       method class_infos_class_type : Class_type.t Class_infos.t -> 'acc -> (Class_type.t Class_infos.t * 'acc)  =
         fun class_infos acc ->
           let concrete =
-            match Class_infos.to_concrete_class_type class_infos with
+            match Class_infos.to_concrete class_infos with
             | None -> conversion_failed "class_infos"
             | Some n -> n
           in
@@ -4863,7 +4863,7 @@ module V4_07 = struct
           let (pci_expr, acc) = self#class_type pci_expr acc in
           let (pci_loc, acc) = self#location pci_loc acc in
           let (pci_attributes, acc) = self#attributes pci_attributes acc in
-          (Class_infos.of_concrete_class_type { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }, acc)
+          (Class_infos.of_concrete { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }, acc)
       method class_description : Class_description.t -> 'acc -> (Class_description.t * 'acc)  =
         fun class_description acc ->
           let concrete =
@@ -5169,7 +5169,7 @@ module V4_07 = struct
       method include_infos_module_expr : Module_expr.t Include_infos.t -> 'acc -> (Module_expr.t Include_infos.t * 'acc)  =
         fun include_infos acc ->
           let concrete =
-            match Include_infos.to_concrete_module_expr include_infos with
+            match Include_infos.to_concrete include_infos with
             | None -> conversion_failed "include_infos"
             | Some n -> n
           in
@@ -5177,11 +5177,11 @@ module V4_07 = struct
           let (pincl_mod, acc) = self#module_expr pincl_mod acc in
           let (pincl_loc, acc) = self#location pincl_loc acc in
           let (pincl_attributes, acc) = self#attributes pincl_attributes acc in
-          (Include_infos.of_concrete_module_expr { pincl_mod; pincl_loc; pincl_attributes }, acc)
+          (Include_infos.of_concrete { pincl_mod; pincl_loc; pincl_attributes }, acc)
       method include_infos_module_type : Module_type.t Include_infos.t -> 'acc -> (Module_type.t Include_infos.t * 'acc)  =
         fun include_infos acc ->
           let concrete =
-            match Include_infos.to_concrete_module_type include_infos with
+            match Include_infos.to_concrete include_infos with
             | None -> conversion_failed "include_infos"
             | Some n -> n
           in
@@ -5189,7 +5189,7 @@ module V4_07 = struct
           let (pincl_mod, acc) = self#module_type pincl_mod acc in
           let (pincl_loc, acc) = self#location pincl_loc acc in
           let (pincl_attributes, acc) = self#attributes pincl_attributes acc in
-          (Include_infos.of_concrete_module_type { pincl_mod; pincl_loc; pincl_attributes }, acc)
+          (Include_infos.of_concrete { pincl_mod; pincl_loc; pincl_attributes }, acc)
       method include_description : Include_description.t -> 'acc -> (Include_description.t * 'acc)  =
         fun include_description acc ->
           let concrete =
@@ -6243,7 +6243,7 @@ module V4_07 = struct
       method class_infos_class_expr : 'ctx -> Class_expr.t Class_infos.t -> Class_expr.t Class_infos.t  =
         fun _ctx class_infos ->
           let concrete =
-            match Class_infos.to_concrete_class_expr class_infos with
+            match Class_infos.to_concrete class_infos with
             | None -> conversion_failed "class_infos"
             | Some n -> n
           in
@@ -6254,11 +6254,11 @@ module V4_07 = struct
           let pci_expr = self#class_expr _ctx pci_expr in
           let pci_loc = self#location _ctx pci_loc in
           let pci_attributes = self#attributes _ctx pci_attributes in
-          Class_infos.of_concrete_class_expr { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }
+          Class_infos.of_concrete { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }
       method class_infos_class_type : 'ctx -> Class_type.t Class_infos.t -> Class_type.t Class_infos.t  =
         fun _ctx class_infos ->
           let concrete =
-            match Class_infos.to_concrete_class_type class_infos with
+            match Class_infos.to_concrete class_infos with
             | None -> conversion_failed "class_infos"
             | Some n -> n
           in
@@ -6269,7 +6269,7 @@ module V4_07 = struct
           let pci_expr = self#class_type _ctx pci_expr in
           let pci_loc = self#location _ctx pci_loc in
           let pci_attributes = self#attributes _ctx pci_attributes in
-          Class_infos.of_concrete_class_type { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }
+          Class_infos.of_concrete { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }
       method class_description : 'ctx -> Class_description.t -> Class_description.t  =
         fun _ctx class_description ->
           let concrete =
@@ -6575,7 +6575,7 @@ module V4_07 = struct
       method include_infos_module_expr : 'ctx -> Module_expr.t Include_infos.t -> Module_expr.t Include_infos.t  =
         fun _ctx include_infos ->
           let concrete =
-            match Include_infos.to_concrete_module_expr include_infos with
+            match Include_infos.to_concrete include_infos with
             | None -> conversion_failed "include_infos"
             | Some n -> n
           in
@@ -6583,11 +6583,11 @@ module V4_07 = struct
           let pincl_mod = self#module_expr _ctx pincl_mod in
           let pincl_loc = self#location _ctx pincl_loc in
           let pincl_attributes = self#attributes _ctx pincl_attributes in
-          Include_infos.of_concrete_module_expr { pincl_mod; pincl_loc; pincl_attributes }
+          Include_infos.of_concrete { pincl_mod; pincl_loc; pincl_attributes }
       method include_infos_module_type : 'ctx -> Module_type.t Include_infos.t -> Module_type.t Include_infos.t  =
         fun _ctx include_infos ->
           let concrete =
-            match Include_infos.to_concrete_module_type include_infos with
+            match Include_infos.to_concrete include_infos with
             | None -> conversion_failed "include_infos"
             | Some n -> n
           in
@@ -6595,7 +6595,7 @@ module V4_07 = struct
           let pincl_mod = self#module_type _ctx pincl_mod in
           let pincl_loc = self#location _ctx pincl_loc in
           let pincl_attributes = self#attributes _ctx pincl_attributes in
-          Include_infos.of_concrete_module_type { pincl_mod; pincl_loc; pincl_attributes }
+          Include_infos.of_concrete { pincl_mod; pincl_loc; pincl_attributes }
       method include_description : 'ctx -> Include_description.t -> Include_description.t  =
         fun _ctx include_description ->
           let concrete =
@@ -7652,7 +7652,7 @@ module V4_07 = struct
       method class_infos_class_expr : Class_expr.t Class_infos.t -> 'res  =
         fun class_infos ->
           let concrete =
-            match Class_infos.to_concrete_class_expr class_infos with
+            match Class_infos.to_concrete class_infos with
             | None -> conversion_failed "class_infos"
             | Some n -> n
           in
@@ -7667,7 +7667,7 @@ module V4_07 = struct
       method class_infos_class_type : Class_type.t Class_infos.t -> 'res  =
         fun class_infos ->
           let concrete =
-            match Class_infos.to_concrete_class_type class_infos with
+            match Class_infos.to_concrete class_infos with
             | None -> conversion_failed "class_infos"
             | Some n -> n
           in
@@ -7984,7 +7984,7 @@ module V4_07 = struct
       method include_infos_module_expr : Module_expr.t Include_infos.t -> 'res  =
         fun include_infos ->
           let concrete =
-            match Include_infos.to_concrete_module_expr include_infos with
+            match Include_infos.to_concrete include_infos with
             | None -> conversion_failed "include_infos"
             | Some n -> n
           in
@@ -7996,7 +7996,7 @@ module V4_07 = struct
       method include_infos_module_type : Module_type.t Include_infos.t -> 'res  =
         fun include_infos ->
           let concrete =
-            match Include_infos.to_concrete_module_type include_infos with
+            match Include_infos.to_concrete include_infos with
             | None -> conversion_failed "include_infos"
             | Some n -> n
           in
@@ -9064,7 +9064,7 @@ module V4_06 = struct
       method class_infos_class_expr : Class_expr.t Class_infos.t -> Class_expr.t Class_infos.t  =
         fun class_infos ->
           let concrete =
-            match Class_infos.to_concrete_class_expr class_infos with
+            match Class_infos.to_concrete class_infos with
             | None -> conversion_failed "class_infos"
             | Some n -> n
           in
@@ -9075,11 +9075,11 @@ module V4_06 = struct
           let pci_expr = self#class_expr pci_expr in
           let pci_loc = self#location pci_loc in
           let pci_attributes = self#attributes pci_attributes in
-          Class_infos.of_concrete_class_expr { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }
+          Class_infos.of_concrete { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }
       method class_infos_class_type : Class_type.t Class_infos.t -> Class_type.t Class_infos.t  =
         fun class_infos ->
           let concrete =
-            match Class_infos.to_concrete_class_type class_infos with
+            match Class_infos.to_concrete class_infos with
             | None -> conversion_failed "class_infos"
             | Some n -> n
           in
@@ -9090,7 +9090,7 @@ module V4_06 = struct
           let pci_expr = self#class_type pci_expr in
           let pci_loc = self#location pci_loc in
           let pci_attributes = self#attributes pci_attributes in
-          Class_infos.of_concrete_class_type { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }
+          Class_infos.of_concrete { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }
       method class_description : Class_description.t -> Class_description.t  =
         fun class_description ->
           let concrete =
@@ -9396,7 +9396,7 @@ module V4_06 = struct
       method include_infos_module_expr : Module_expr.t Include_infos.t -> Module_expr.t Include_infos.t  =
         fun include_infos ->
           let concrete =
-            match Include_infos.to_concrete_module_expr include_infos with
+            match Include_infos.to_concrete include_infos with
             | None -> conversion_failed "include_infos"
             | Some n -> n
           in
@@ -9404,11 +9404,11 @@ module V4_06 = struct
           let pincl_mod = self#module_expr pincl_mod in
           let pincl_loc = self#location pincl_loc in
           let pincl_attributes = self#attributes pincl_attributes in
-          Include_infos.of_concrete_module_expr { pincl_mod; pincl_loc; pincl_attributes }
+          Include_infos.of_concrete { pincl_mod; pincl_loc; pincl_attributes }
       method include_infos_module_type : Module_type.t Include_infos.t -> Module_type.t Include_infos.t  =
         fun include_infos ->
           let concrete =
-            match Include_infos.to_concrete_module_type include_infos with
+            match Include_infos.to_concrete include_infos with
             | None -> conversion_failed "include_infos"
             | Some n -> n
           in
@@ -9416,7 +9416,7 @@ module V4_06 = struct
           let pincl_mod = self#module_type pincl_mod in
           let pincl_loc = self#location pincl_loc in
           let pincl_attributes = self#attributes pincl_attributes in
-          Include_infos.of_concrete_module_type { pincl_mod; pincl_loc; pincl_attributes }
+          Include_infos.of_concrete { pincl_mod; pincl_loc; pincl_attributes }
       method include_description : Include_description.t -> Include_description.t  =
         fun include_description ->
           let concrete =
@@ -10354,7 +10354,7 @@ module V4_06 = struct
       method class_infos_class_expr : Class_expr.t Class_infos.t -> unit  =
         fun class_infos ->
           let concrete =
-            match Class_infos.to_concrete_class_expr class_infos with
+            match Class_infos.to_concrete class_infos with
             | None -> conversion_failed "class_infos"
             | Some n -> n
           in
@@ -10368,7 +10368,7 @@ module V4_06 = struct
       method class_infos_class_type : Class_type.t Class_infos.t -> unit  =
         fun class_infos ->
           let concrete =
-            match Class_infos.to_concrete_class_type class_infos with
+            match Class_infos.to_concrete class_infos with
             | None -> conversion_failed "class_infos"
             | Some n -> n
           in
@@ -10635,7 +10635,7 @@ module V4_06 = struct
       method include_infos_module_expr : Module_expr.t Include_infos.t -> unit  =
         fun include_infos ->
           let concrete =
-            match Include_infos.to_concrete_module_expr include_infos with
+            match Include_infos.to_concrete include_infos with
             | None -> conversion_failed "include_infos"
             | Some n -> n
           in
@@ -10646,7 +10646,7 @@ module V4_06 = struct
       method include_infos_module_type : Module_type.t Include_infos.t -> unit  =
         fun include_infos ->
           let concrete =
-            match Include_infos.to_concrete_module_type include_infos with
+            match Include_infos.to_concrete include_infos with
             | None -> conversion_failed "include_infos"
             | Some n -> n
           in
@@ -11668,7 +11668,7 @@ module V4_06 = struct
       method class_infos_class_expr : Class_expr.t Class_infos.t -> 'acc -> 'acc  =
         fun class_infos acc ->
           let concrete =
-            match Class_infos.to_concrete_class_expr class_infos with
+            match Class_infos.to_concrete class_infos with
             | None -> conversion_failed "class_infos"
             | Some n -> n
           in
@@ -11683,7 +11683,7 @@ module V4_06 = struct
       method class_infos_class_type : Class_type.t Class_infos.t -> 'acc -> 'acc  =
         fun class_infos acc ->
           let concrete =
-            match Class_infos.to_concrete_class_type class_infos with
+            match Class_infos.to_concrete class_infos with
             | None -> conversion_failed "class_infos"
             | Some n -> n
           in
@@ -12000,7 +12000,7 @@ module V4_06 = struct
       method include_infos_module_expr : Module_expr.t Include_infos.t -> 'acc -> 'acc  =
         fun include_infos acc ->
           let concrete =
-            match Include_infos.to_concrete_module_expr include_infos with
+            match Include_infos.to_concrete include_infos with
             | None -> conversion_failed "include_infos"
             | Some n -> n
           in
@@ -12012,7 +12012,7 @@ module V4_06 = struct
       method include_infos_module_type : Module_type.t Include_infos.t -> 'acc -> 'acc  =
         fun include_infos acc ->
           let concrete =
-            match Include_infos.to_concrete_module_type include_infos with
+            match Include_infos.to_concrete include_infos with
             | None -> conversion_failed "include_infos"
             | Some n -> n
           in
@@ -13074,7 +13074,7 @@ module V4_06 = struct
       method class_infos_class_expr : Class_expr.t Class_infos.t -> 'acc -> (Class_expr.t Class_infos.t * 'acc)  =
         fun class_infos acc ->
           let concrete =
-            match Class_infos.to_concrete_class_expr class_infos with
+            match Class_infos.to_concrete class_infos with
             | None -> conversion_failed "class_infos"
             | Some n -> n
           in
@@ -13085,11 +13085,11 @@ module V4_06 = struct
           let (pci_expr, acc) = self#class_expr pci_expr acc in
           let (pci_loc, acc) = self#location pci_loc acc in
           let (pci_attributes, acc) = self#attributes pci_attributes acc in
-          (Class_infos.of_concrete_class_expr { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }, acc)
+          (Class_infos.of_concrete { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }, acc)
       method class_infos_class_type : Class_type.t Class_infos.t -> 'acc -> (Class_type.t Class_infos.t * 'acc)  =
         fun class_infos acc ->
           let concrete =
-            match Class_infos.to_concrete_class_type class_infos with
+            match Class_infos.to_concrete class_infos with
             | None -> conversion_failed "class_infos"
             | Some n -> n
           in
@@ -13100,7 +13100,7 @@ module V4_06 = struct
           let (pci_expr, acc) = self#class_type pci_expr acc in
           let (pci_loc, acc) = self#location pci_loc acc in
           let (pci_attributes, acc) = self#attributes pci_attributes acc in
-          (Class_infos.of_concrete_class_type { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }, acc)
+          (Class_infos.of_concrete { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }, acc)
       method class_description : Class_description.t -> 'acc -> (Class_description.t * 'acc)  =
         fun class_description acc ->
           let concrete =
@@ -13406,7 +13406,7 @@ module V4_06 = struct
       method include_infos_module_expr : Module_expr.t Include_infos.t -> 'acc -> (Module_expr.t Include_infos.t * 'acc)  =
         fun include_infos acc ->
           let concrete =
-            match Include_infos.to_concrete_module_expr include_infos with
+            match Include_infos.to_concrete include_infos with
             | None -> conversion_failed "include_infos"
             | Some n -> n
           in
@@ -13414,11 +13414,11 @@ module V4_06 = struct
           let (pincl_mod, acc) = self#module_expr pincl_mod acc in
           let (pincl_loc, acc) = self#location pincl_loc acc in
           let (pincl_attributes, acc) = self#attributes pincl_attributes acc in
-          (Include_infos.of_concrete_module_expr { pincl_mod; pincl_loc; pincl_attributes }, acc)
+          (Include_infos.of_concrete { pincl_mod; pincl_loc; pincl_attributes }, acc)
       method include_infos_module_type : Module_type.t Include_infos.t -> 'acc -> (Module_type.t Include_infos.t * 'acc)  =
         fun include_infos acc ->
           let concrete =
-            match Include_infos.to_concrete_module_type include_infos with
+            match Include_infos.to_concrete include_infos with
             | None -> conversion_failed "include_infos"
             | Some n -> n
           in
@@ -13426,7 +13426,7 @@ module V4_06 = struct
           let (pincl_mod, acc) = self#module_type pincl_mod acc in
           let (pincl_loc, acc) = self#location pincl_loc acc in
           let (pincl_attributes, acc) = self#attributes pincl_attributes acc in
-          (Include_infos.of_concrete_module_type { pincl_mod; pincl_loc; pincl_attributes }, acc)
+          (Include_infos.of_concrete { pincl_mod; pincl_loc; pincl_attributes }, acc)
       method include_description : Include_description.t -> 'acc -> (Include_description.t * 'acc)  =
         fun include_description acc ->
           let concrete =
@@ -14480,7 +14480,7 @@ module V4_06 = struct
       method class_infos_class_expr : 'ctx -> Class_expr.t Class_infos.t -> Class_expr.t Class_infos.t  =
         fun _ctx class_infos ->
           let concrete =
-            match Class_infos.to_concrete_class_expr class_infos with
+            match Class_infos.to_concrete class_infos with
             | None -> conversion_failed "class_infos"
             | Some n -> n
           in
@@ -14491,11 +14491,11 @@ module V4_06 = struct
           let pci_expr = self#class_expr _ctx pci_expr in
           let pci_loc = self#location _ctx pci_loc in
           let pci_attributes = self#attributes _ctx pci_attributes in
-          Class_infos.of_concrete_class_expr { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }
+          Class_infos.of_concrete { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }
       method class_infos_class_type : 'ctx -> Class_type.t Class_infos.t -> Class_type.t Class_infos.t  =
         fun _ctx class_infos ->
           let concrete =
-            match Class_infos.to_concrete_class_type class_infos with
+            match Class_infos.to_concrete class_infos with
             | None -> conversion_failed "class_infos"
             | Some n -> n
           in
@@ -14506,7 +14506,7 @@ module V4_06 = struct
           let pci_expr = self#class_type _ctx pci_expr in
           let pci_loc = self#location _ctx pci_loc in
           let pci_attributes = self#attributes _ctx pci_attributes in
-          Class_infos.of_concrete_class_type { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }
+          Class_infos.of_concrete { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }
       method class_description : 'ctx -> Class_description.t -> Class_description.t  =
         fun _ctx class_description ->
           let concrete =
@@ -14812,7 +14812,7 @@ module V4_06 = struct
       method include_infos_module_expr : 'ctx -> Module_expr.t Include_infos.t -> Module_expr.t Include_infos.t  =
         fun _ctx include_infos ->
           let concrete =
-            match Include_infos.to_concrete_module_expr include_infos with
+            match Include_infos.to_concrete include_infos with
             | None -> conversion_failed "include_infos"
             | Some n -> n
           in
@@ -14820,11 +14820,11 @@ module V4_06 = struct
           let pincl_mod = self#module_expr _ctx pincl_mod in
           let pincl_loc = self#location _ctx pincl_loc in
           let pincl_attributes = self#attributes _ctx pincl_attributes in
-          Include_infos.of_concrete_module_expr { pincl_mod; pincl_loc; pincl_attributes }
+          Include_infos.of_concrete { pincl_mod; pincl_loc; pincl_attributes }
       method include_infos_module_type : 'ctx -> Module_type.t Include_infos.t -> Module_type.t Include_infos.t  =
         fun _ctx include_infos ->
           let concrete =
-            match Include_infos.to_concrete_module_type include_infos with
+            match Include_infos.to_concrete include_infos with
             | None -> conversion_failed "include_infos"
             | Some n -> n
           in
@@ -14832,7 +14832,7 @@ module V4_06 = struct
           let pincl_mod = self#module_type _ctx pincl_mod in
           let pincl_loc = self#location _ctx pincl_loc in
           let pincl_attributes = self#attributes _ctx pincl_attributes in
-          Include_infos.of_concrete_module_type { pincl_mod; pincl_loc; pincl_attributes }
+          Include_infos.of_concrete { pincl_mod; pincl_loc; pincl_attributes }
       method include_description : 'ctx -> Include_description.t -> Include_description.t  =
         fun _ctx include_description ->
           let concrete =
@@ -15889,7 +15889,7 @@ module V4_06 = struct
       method class_infos_class_expr : Class_expr.t Class_infos.t -> 'res  =
         fun class_infos ->
           let concrete =
-            match Class_infos.to_concrete_class_expr class_infos with
+            match Class_infos.to_concrete class_infos with
             | None -> conversion_failed "class_infos"
             | Some n -> n
           in
@@ -15904,7 +15904,7 @@ module V4_06 = struct
       method class_infos_class_type : Class_type.t Class_infos.t -> 'res  =
         fun class_infos ->
           let concrete =
-            match Class_infos.to_concrete_class_type class_infos with
+            match Class_infos.to_concrete class_infos with
             | None -> conversion_failed "class_infos"
             | Some n -> n
           in
@@ -16221,7 +16221,7 @@ module V4_06 = struct
       method include_infos_module_expr : Module_expr.t Include_infos.t -> 'res  =
         fun include_infos ->
           let concrete =
-            match Include_infos.to_concrete_module_expr include_infos with
+            match Include_infos.to_concrete include_infos with
             | None -> conversion_failed "include_infos"
             | Some n -> n
           in
@@ -16233,7 +16233,7 @@ module V4_06 = struct
       method include_infos_module_type : Module_type.t Include_infos.t -> 'res  =
         fun include_infos ->
           let concrete =
-            match Include_infos.to_concrete_module_type include_infos with
+            match Include_infos.to_concrete include_infos with
             | None -> conversion_failed "include_infos"
             | Some n -> n
           in

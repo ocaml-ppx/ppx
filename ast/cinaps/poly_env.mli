@@ -9,5 +9,8 @@ val env_is_empty : env -> bool
 
 val args : env -> Astlib.Grammar.ty list
 
+(** Substitute ['a] for ['a node] *)
+val nodify_targs : string list -> env
+
 val subst_ty : Astlib.Grammar.ty -> env:env -> Astlib.Grammar.ty
 val subst_decl : Astlib.Grammar.decl -> env:env -> Astlib.Grammar.decl

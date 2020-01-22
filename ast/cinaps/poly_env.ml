@@ -47,6 +47,10 @@ let env_is_empty = function
   | [] -> true
   | _ :: _ -> false
 
+let nodify_targs targs =
+  List.map targs ~f:(fun tvar ->
+    (tvar, (Astlib.Grammar.Instance ("node", [Var tvar]))))
+
 let rec subst_ty ty ~env : Astlib.Grammar.ty =
   match (ty : Astlib.Grammar.ty) with
   | Var string -> List.assoc string env

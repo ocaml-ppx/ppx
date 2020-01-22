@@ -1615,7 +1615,7 @@ and concrete_to_class_type_field_desc x : Compiler_types.class_type_field_desc =
     Pctf_extension (x1)
 
 and ast_of_class_infos_class_expr x =
-  Versions.V4_07.Class_infos.of_concrete_class_expr (concrete_of_class_infos_class_expr x)
+  Versions.V4_07.Class_infos.of_concrete (concrete_of_class_infos_class_expr x)
 
 and concrete_of_class_infos_class_expr
   ({ pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Compiler_types.class_expr Compiler_types.class_infos)
@@ -1629,7 +1629,7 @@ and concrete_of_class_infos_class_expr
   ({ pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Versions.V4_07.Class_expr.t Versions.V4_07.Class_infos.concrete)
 
 and ast_to_class_infos_class_expr x =
-  let option = Versions.V4_07.Class_infos.to_concrete_class_expr x in
+  let option = Versions.V4_07.Class_infos.to_concrete x in
   let concrete =
     Helpers.Option.value_exn option
       ~message:"concrete_to_class_infos_class_expr: conversion failed"
@@ -1648,7 +1648,7 @@ and concrete_to_class_infos_class_expr
   ({ pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Compiler_types.class_expr Compiler_types.class_infos)
 
 and ast_of_class_infos_class_type x =
-  Versions.V4_07.Class_infos.of_concrete_class_type (concrete_of_class_infos_class_type x)
+  Versions.V4_07.Class_infos.of_concrete (concrete_of_class_infos_class_type x)
 
 and concrete_of_class_infos_class_type
   ({ pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Compiler_types.class_type Compiler_types.class_infos)
@@ -1662,7 +1662,7 @@ and concrete_of_class_infos_class_type
   ({ pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Versions.V4_07.Class_type.t Versions.V4_07.Class_infos.concrete)
 
 and ast_to_class_infos_class_type x =
-  let option = Versions.V4_07.Class_infos.to_concrete_class_type x in
+  let option = Versions.V4_07.Class_infos.to_concrete x in
   let concrete =
     Helpers.Option.value_exn option
       ~message:"concrete_to_class_infos_class_type: conversion failed"
@@ -2310,7 +2310,7 @@ and concrete_to_open_description
   ({ popen_lid; popen_override; popen_loc; popen_attributes } : Compiler_types.open_description)
 
 and ast_of_include_infos_module_expr x =
-  Versions.V4_07.Include_infos.of_concrete_module_expr (concrete_of_include_infos_module_expr x)
+  Versions.V4_07.Include_infos.of_concrete (concrete_of_include_infos_module_expr x)
 
 and concrete_of_include_infos_module_expr
   ({ pincl_mod; pincl_loc; pincl_attributes } : Compiler_types.module_expr Compiler_types.include_infos)
@@ -2321,7 +2321,7 @@ and concrete_of_include_infos_module_expr
   ({ pincl_mod; pincl_loc; pincl_attributes } : Versions.V4_07.Module_expr.t Versions.V4_07.Include_infos.concrete)
 
 and ast_to_include_infos_module_expr x =
-  let option = Versions.V4_07.Include_infos.to_concrete_module_expr x in
+  let option = Versions.V4_07.Include_infos.to_concrete x in
   let concrete =
     Helpers.Option.value_exn option
       ~message:"concrete_to_include_infos_module_expr: conversion failed"
@@ -2337,7 +2337,7 @@ and concrete_to_include_infos_module_expr
   ({ pincl_mod; pincl_loc; pincl_attributes } : Compiler_types.module_expr Compiler_types.include_infos)
 
 and ast_of_include_infos_module_type x =
-  Versions.V4_07.Include_infos.of_concrete_module_type (concrete_of_include_infos_module_type x)
+  Versions.V4_07.Include_infos.of_concrete (concrete_of_include_infos_module_type x)
 
 and concrete_of_include_infos_module_type
   ({ pincl_mod; pincl_loc; pincl_attributes } : Compiler_types.module_type Compiler_types.include_infos)
@@ -2348,7 +2348,7 @@ and concrete_of_include_infos_module_type
   ({ pincl_mod; pincl_loc; pincl_attributes } : Versions.V4_07.Module_type.t Versions.V4_07.Include_infos.concrete)
 
 and ast_to_include_infos_module_type x =
-  let option = Versions.V4_07.Include_infos.to_concrete_module_type x in
+  let option = Versions.V4_07.Include_infos.to_concrete x in
   let concrete =
     Helpers.Option.value_exn option
       ~message:"concrete_to_include_infos_module_type: conversion failed"

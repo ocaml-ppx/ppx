@@ -198,10 +198,10 @@ module Map = struct
     let return =
       match recurse_kind with
       | In_recursive_call -> pattern
-      | Toplevel {node_name; targs} ->
+      | Toplevel {node_name; targs=_} ->
         Printf.sprintf "%s.%s %s"
           (Ml.module_name node_name)
-          (Name.make ["of_concrete"] targs)
+          "of_concrete"
           (parenthesized_pattern deconstructed)
     in
     recurse @ [return]
@@ -290,11 +290,11 @@ module Fold_map = struct
     let return =
       match recurse_kind with
       | In_recursive_call -> Ml.tuple [pattern; acc_var]
-      | Toplevel {node_name; targs} ->
+      | Toplevel {node_name; targs=_} ->
         let mapped =
           Printf.sprintf "%s.%s %s"
             (Ml.module_name node_name)
-            (Name.make ["of_concrete"] targs)
+            "of_concrete"
             (parenthesized_pattern deconstructed)
         in
         Ml.tuple [mapped; acc_var]
@@ -331,10 +331,10 @@ module Map_with_context = struct
     let return =
       match recurse_kind with
       | In_recursive_call -> pattern
-      | Toplevel {node_name; targs} ->
+      | Toplevel {node_name; targs=_} ->
         Printf.sprintf "%s.%s %s"
           (Ml.module_name node_name)
-          (Name.make ["of_concrete"] targs)
+          "of_concrete"
           (parenthesized_pattern deconstructed)
     in
     recurse @ [return]
@@ -409,13 +409,13 @@ let traversal_classes =
   ; Lift.traversal
   ]
 
-let print_to_concrete ~targs node_name =
-  To_concrete.print_to_concrete_exn ~targs ~node_name (Ml.id node_name)
+let print_to_concrete node_name =
+  To_concrete.print_to_concrete_exn ~node_name (Ml.id node_name)
 
 let print_method_value ~traversal ~targs ~node_name decl =
   let args = traversal.args (Ml.id node_name) in
   Ml.define_anon_fun ~args (fun () ->
-    print_to_concrete ~targs node_name;
+    print_to_concrete node_name;
     print_method_body ~traversal ~targs ~node_name decl)
 
 let declare_node_methods ~env_table ~signature (node_name, kind) =
