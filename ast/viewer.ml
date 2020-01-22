@@ -340,8 +340,14 @@ module V4_07 = struct
     view concrete.Core_type.ptyp_attributes
 
   let ptyp_any value =
+    let parent_concrete =
+      match Core_type.to_concrete value with
+      | None -> conversion_failed "core_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Core_type.ptyp_desc in
     let concrete =
-      match Core_type_desc.to_concrete value with
+      match Core_type_desc.to_concrete desc with
       | None -> conversion_failed "core_type_desc"
       | Some n -> n
     in
@@ -350,8 +356,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ptyp_var view value =
+    let parent_concrete =
+      match Core_type.to_concrete value with
+      | None -> conversion_failed "core_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Core_type.ptyp_desc in
     let concrete =
-      match Core_type_desc.to_concrete value with
+      match Core_type_desc.to_concrete desc with
       | None -> conversion_failed "core_type_desc"
       | Some n -> n
     in
@@ -360,8 +372,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ptyp_arrow view value =
+    let parent_concrete =
+      match Core_type.to_concrete value with
+      | None -> conversion_failed "core_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Core_type.ptyp_desc in
     let concrete =
-      match Core_type_desc.to_concrete value with
+      match Core_type_desc.to_concrete desc with
       | None -> conversion_failed "core_type_desc"
       | Some n -> n
     in
@@ -370,8 +388,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ptyp_tuple view value =
+    let parent_concrete =
+      match Core_type.to_concrete value with
+      | None -> conversion_failed "core_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Core_type.ptyp_desc in
     let concrete =
-      match Core_type_desc.to_concrete value with
+      match Core_type_desc.to_concrete desc with
       | None -> conversion_failed "core_type_desc"
       | Some n -> n
     in
@@ -380,8 +404,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ptyp_constr view value =
+    let parent_concrete =
+      match Core_type.to_concrete value with
+      | None -> conversion_failed "core_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Core_type.ptyp_desc in
     let concrete =
-      match Core_type_desc.to_concrete value with
+      match Core_type_desc.to_concrete desc with
       | None -> conversion_failed "core_type_desc"
       | Some n -> n
     in
@@ -390,8 +420,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ptyp_object view value =
+    let parent_concrete =
+      match Core_type.to_concrete value with
+      | None -> conversion_failed "core_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Core_type.ptyp_desc in
     let concrete =
-      match Core_type_desc.to_concrete value with
+      match Core_type_desc.to_concrete desc with
       | None -> conversion_failed "core_type_desc"
       | Some n -> n
     in
@@ -400,8 +436,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ptyp_class view value =
+    let parent_concrete =
+      match Core_type.to_concrete value with
+      | None -> conversion_failed "core_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Core_type.ptyp_desc in
     let concrete =
-      match Core_type_desc.to_concrete value with
+      match Core_type_desc.to_concrete desc with
       | None -> conversion_failed "core_type_desc"
       | Some n -> n
     in
@@ -410,8 +452,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ptyp_alias view value =
+    let parent_concrete =
+      match Core_type.to_concrete value with
+      | None -> conversion_failed "core_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Core_type.ptyp_desc in
     let concrete =
-      match Core_type_desc.to_concrete value with
+      match Core_type_desc.to_concrete desc with
       | None -> conversion_failed "core_type_desc"
       | Some n -> n
     in
@@ -420,8 +468,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ptyp_variant view value =
+    let parent_concrete =
+      match Core_type.to_concrete value with
+      | None -> conversion_failed "core_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Core_type.ptyp_desc in
     let concrete =
-      match Core_type_desc.to_concrete value with
+      match Core_type_desc.to_concrete desc with
       | None -> conversion_failed "core_type_desc"
       | Some n -> n
     in
@@ -430,8 +484,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ptyp_poly view value =
+    let parent_concrete =
+      match Core_type.to_concrete value with
+      | None -> conversion_failed "core_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Core_type.ptyp_desc in
     let concrete =
-      match Core_type_desc.to_concrete value with
+      match Core_type_desc.to_concrete desc with
       | None -> conversion_failed "core_type_desc"
       | Some n -> n
     in
@@ -440,8 +500,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ptyp_package view value =
+    let parent_concrete =
+      match Core_type.to_concrete value with
+      | None -> conversion_failed "core_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Core_type.ptyp_desc in
     let concrete =
-      match Core_type_desc.to_concrete value with
+      match Core_type_desc.to_concrete desc with
       | None -> conversion_failed "core_type_desc"
       | Some n -> n
     in
@@ -450,8 +516,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ptyp_extension view value =
+    let parent_concrete =
+      match Core_type.to_concrete value with
+      | None -> conversion_failed "core_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Core_type.ptyp_desc in
     let concrete =
-      match Core_type_desc.to_concrete value with
+      match Core_type_desc.to_concrete desc with
       | None -> conversion_failed "core_type_desc"
       | Some n -> n
     in
@@ -524,8 +596,14 @@ module V4_07 = struct
     view concrete.Pattern.ppat_attributes
 
   let ppat_any value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -534,8 +612,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ppat_var view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -544,8 +628,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ppat_alias view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -554,8 +644,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ppat_constant view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -564,8 +660,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ppat_interval view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -574,8 +676,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ppat_tuple view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -584,8 +692,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ppat_construct view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -594,8 +708,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ppat_variant view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -604,8 +724,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ppat_record view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -614,8 +740,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ppat_array view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -624,8 +756,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ppat_or view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -634,8 +772,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ppat_constraint view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -644,8 +788,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ppat_type view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -654,8 +804,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ppat_lazy view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -664,8 +820,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ppat_unpack view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -674,8 +836,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ppat_exception view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -684,8 +852,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ppat_extension view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -694,8 +868,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let ppat_open view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -728,8 +908,14 @@ module V4_07 = struct
     view concrete.Expression.pexp_attributes
 
   let pexp_ident view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -738,8 +924,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_constant view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -748,8 +940,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_let view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -758,8 +956,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_function view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -768,8 +972,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_fun view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -778,8 +988,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_apply view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -788,8 +1004,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_match view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -798,8 +1020,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_try view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -808,8 +1036,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_tuple view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -818,8 +1052,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_construct view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -828,8 +1068,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_variant view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -838,8 +1084,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_record view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -848,8 +1100,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_field view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -858,8 +1116,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_setfield view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -868,8 +1132,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_array view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -878,8 +1148,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_ifthenelse view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -888,8 +1164,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_sequence view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -898,8 +1180,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_while view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -908,8 +1196,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_for view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -918,8 +1212,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_constraint view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -928,8 +1228,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_coerce view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -938,8 +1244,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_send view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -948,8 +1260,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_new view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -958,8 +1276,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_setinstvar view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -968,8 +1292,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_override view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -978,8 +1308,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_letmodule view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -988,8 +1324,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_letexception view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -998,8 +1340,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_assert view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -1008,8 +1356,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_lazy view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -1018,8 +1372,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_poly view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -1028,8 +1388,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_object view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -1038,8 +1404,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_newtype view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -1048,8 +1420,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_pack view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -1058,8 +1436,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_open view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -1068,8 +1452,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_extension view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -1078,8 +1468,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pexp_unreachable value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -1472,8 +1868,14 @@ module V4_07 = struct
     view concrete.Class_type.pcty_attributes
 
   let pcty_constr view value =
+    let parent_concrete =
+      match Class_type.to_concrete value with
+      | None -> conversion_failed "class_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_type.pcty_desc in
     let concrete =
-      match Class_type_desc.to_concrete value with
+      match Class_type_desc.to_concrete desc with
       | None -> conversion_failed "class_type_desc"
       | Some n -> n
     in
@@ -1482,8 +1884,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pcty_signature view value =
+    let parent_concrete =
+      match Class_type.to_concrete value with
+      | None -> conversion_failed "class_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_type.pcty_desc in
     let concrete =
-      match Class_type_desc.to_concrete value with
+      match Class_type_desc.to_concrete desc with
       | None -> conversion_failed "class_type_desc"
       | Some n -> n
     in
@@ -1492,8 +1900,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pcty_arrow view value =
+    let parent_concrete =
+      match Class_type.to_concrete value with
+      | None -> conversion_failed "class_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_type.pcty_desc in
     let concrete =
-      match Class_type_desc.to_concrete value with
+      match Class_type_desc.to_concrete desc with
       | None -> conversion_failed "class_type_desc"
       | Some n -> n
     in
@@ -1502,8 +1916,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pcty_extension view value =
+    let parent_concrete =
+      match Class_type.to_concrete value with
+      | None -> conversion_failed "class_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_type.pcty_desc in
     let concrete =
-      match Class_type_desc.to_concrete value with
+      match Class_type_desc.to_concrete desc with
       | None -> conversion_failed "class_type_desc"
       | Some n -> n
     in
@@ -1512,8 +1932,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pcty_open view value =
+    let parent_concrete =
+      match Class_type.to_concrete value with
+      | None -> conversion_failed "class_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_type.pcty_desc in
     let concrete =
-      match Class_type_desc.to_concrete value with
+      match Class_type_desc.to_concrete desc with
       | None -> conversion_failed "class_type_desc"
       | Some n -> n
     in
@@ -1562,8 +1988,14 @@ module V4_07 = struct
     view concrete.Class_type_field.pctf_attributes
 
   let pctf_inherit view value =
+    let parent_concrete =
+      match Class_type_field.to_concrete value with
+      | None -> conversion_failed "class_type_field"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_type_field.pctf_desc in
     let concrete =
-      match Class_type_field_desc.to_concrete value with
+      match Class_type_field_desc.to_concrete desc with
       | None -> conversion_failed "class_type_field_desc"
       | Some n -> n
     in
@@ -1572,8 +2004,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pctf_val view value =
+    let parent_concrete =
+      match Class_type_field.to_concrete value with
+      | None -> conversion_failed "class_type_field"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_type_field.pctf_desc in
     let concrete =
-      match Class_type_field_desc.to_concrete value with
+      match Class_type_field_desc.to_concrete desc with
       | None -> conversion_failed "class_type_field_desc"
       | Some n -> n
     in
@@ -1582,8 +2020,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pctf_method view value =
+    let parent_concrete =
+      match Class_type_field.to_concrete value with
+      | None -> conversion_failed "class_type_field"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_type_field.pctf_desc in
     let concrete =
-      match Class_type_field_desc.to_concrete value with
+      match Class_type_field_desc.to_concrete desc with
       | None -> conversion_failed "class_type_field_desc"
       | Some n -> n
     in
@@ -1592,8 +2036,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pctf_constraint view value =
+    let parent_concrete =
+      match Class_type_field.to_concrete value with
+      | None -> conversion_failed "class_type_field"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_type_field.pctf_desc in
     let concrete =
-      match Class_type_field_desc.to_concrete value with
+      match Class_type_field_desc.to_concrete desc with
       | None -> conversion_failed "class_type_field_desc"
       | Some n -> n
     in
@@ -1602,8 +2052,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pctf_attribute view value =
+    let parent_concrete =
+      match Class_type_field.to_concrete value with
+      | None -> conversion_failed "class_type_field"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_type_field.pctf_desc in
     let concrete =
-      match Class_type_field_desc.to_concrete value with
+      match Class_type_field_desc.to_concrete desc with
       | None -> conversion_failed "class_type_field_desc"
       | Some n -> n
     in
@@ -1612,8 +2068,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pctf_extension view value =
+    let parent_concrete =
+      match Class_type_field.to_concrete value with
+      | None -> conversion_failed "class_type_field"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_type_field.pctf_desc in
     let concrete =
-      match Class_type_field_desc.to_concrete value with
+      match Class_type_field_desc.to_concrete desc with
       | None -> conversion_failed "class_type_field_desc"
       | Some n -> n
     in
@@ -1646,8 +2108,14 @@ module V4_07 = struct
     view concrete.Class_expr.pcl_attributes
 
   let pcl_constr view value =
+    let parent_concrete =
+      match Class_expr.to_concrete value with
+      | None -> conversion_failed "class_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_expr.pcl_desc in
     let concrete =
-      match Class_expr_desc.to_concrete value with
+      match Class_expr_desc.to_concrete desc with
       | None -> conversion_failed "class_expr_desc"
       | Some n -> n
     in
@@ -1656,8 +2124,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pcl_structure view value =
+    let parent_concrete =
+      match Class_expr.to_concrete value with
+      | None -> conversion_failed "class_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_expr.pcl_desc in
     let concrete =
-      match Class_expr_desc.to_concrete value with
+      match Class_expr_desc.to_concrete desc with
       | None -> conversion_failed "class_expr_desc"
       | Some n -> n
     in
@@ -1666,8 +2140,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pcl_fun view value =
+    let parent_concrete =
+      match Class_expr.to_concrete value with
+      | None -> conversion_failed "class_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_expr.pcl_desc in
     let concrete =
-      match Class_expr_desc.to_concrete value with
+      match Class_expr_desc.to_concrete desc with
       | None -> conversion_failed "class_expr_desc"
       | Some n -> n
     in
@@ -1676,8 +2156,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pcl_apply view value =
+    let parent_concrete =
+      match Class_expr.to_concrete value with
+      | None -> conversion_failed "class_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_expr.pcl_desc in
     let concrete =
-      match Class_expr_desc.to_concrete value with
+      match Class_expr_desc.to_concrete desc with
       | None -> conversion_failed "class_expr_desc"
       | Some n -> n
     in
@@ -1686,8 +2172,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pcl_let view value =
+    let parent_concrete =
+      match Class_expr.to_concrete value with
+      | None -> conversion_failed "class_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_expr.pcl_desc in
     let concrete =
-      match Class_expr_desc.to_concrete value with
+      match Class_expr_desc.to_concrete desc with
       | None -> conversion_failed "class_expr_desc"
       | Some n -> n
     in
@@ -1696,8 +2188,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pcl_constraint view value =
+    let parent_concrete =
+      match Class_expr.to_concrete value with
+      | None -> conversion_failed "class_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_expr.pcl_desc in
     let concrete =
-      match Class_expr_desc.to_concrete value with
+      match Class_expr_desc.to_concrete desc with
       | None -> conversion_failed "class_expr_desc"
       | Some n -> n
     in
@@ -1706,8 +2204,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pcl_extension view value =
+    let parent_concrete =
+      match Class_expr.to_concrete value with
+      | None -> conversion_failed "class_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_expr.pcl_desc in
     let concrete =
-      match Class_expr_desc.to_concrete value with
+      match Class_expr_desc.to_concrete desc with
       | None -> conversion_failed "class_expr_desc"
       | Some n -> n
     in
@@ -1716,8 +2220,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pcl_open view value =
+    let parent_concrete =
+      match Class_expr.to_concrete value with
+      | None -> conversion_failed "class_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_expr.pcl_desc in
     let concrete =
-      match Class_expr_desc.to_concrete value with
+      match Class_expr_desc.to_concrete desc with
       | None -> conversion_failed "class_expr_desc"
       | Some n -> n
     in
@@ -1766,8 +2276,14 @@ module V4_07 = struct
     view concrete.Class_field.pcf_attributes
 
   let pcf_inherit view value =
+    let parent_concrete =
+      match Class_field.to_concrete value with
+      | None -> conversion_failed "class_field"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_field.pcf_desc in
     let concrete =
-      match Class_field_desc.to_concrete value with
+      match Class_field_desc.to_concrete desc with
       | None -> conversion_failed "class_field_desc"
       | Some n -> n
     in
@@ -1776,8 +2292,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pcf_val view value =
+    let parent_concrete =
+      match Class_field.to_concrete value with
+      | None -> conversion_failed "class_field"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_field.pcf_desc in
     let concrete =
-      match Class_field_desc.to_concrete value with
+      match Class_field_desc.to_concrete desc with
       | None -> conversion_failed "class_field_desc"
       | Some n -> n
     in
@@ -1786,8 +2308,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pcf_method view value =
+    let parent_concrete =
+      match Class_field.to_concrete value with
+      | None -> conversion_failed "class_field"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_field.pcf_desc in
     let concrete =
-      match Class_field_desc.to_concrete value with
+      match Class_field_desc.to_concrete desc with
       | None -> conversion_failed "class_field_desc"
       | Some n -> n
     in
@@ -1796,8 +2324,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pcf_constraint view value =
+    let parent_concrete =
+      match Class_field.to_concrete value with
+      | None -> conversion_failed "class_field"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_field.pcf_desc in
     let concrete =
-      match Class_field_desc.to_concrete value with
+      match Class_field_desc.to_concrete desc with
       | None -> conversion_failed "class_field_desc"
       | Some n -> n
     in
@@ -1806,8 +2340,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pcf_initializer view value =
+    let parent_concrete =
+      match Class_field.to_concrete value with
+      | None -> conversion_failed "class_field"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_field.pcf_desc in
     let concrete =
-      match Class_field_desc.to_concrete value with
+      match Class_field_desc.to_concrete desc with
       | None -> conversion_failed "class_field_desc"
       | Some n -> n
     in
@@ -1816,8 +2356,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pcf_attribute view value =
+    let parent_concrete =
+      match Class_field.to_concrete value with
+      | None -> conversion_failed "class_field"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_field.pcf_desc in
     let concrete =
-      match Class_field_desc.to_concrete value with
+      match Class_field_desc.to_concrete desc with
       | None -> conversion_failed "class_field_desc"
       | Some n -> n
     in
@@ -1826,8 +2372,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pcf_extension view value =
+    let parent_concrete =
+      match Class_field.to_concrete value with
+      | None -> conversion_failed "class_field"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_field.pcf_desc in
     let concrete =
-      match Class_field_desc.to_concrete value with
+      match Class_field_desc.to_concrete desc with
       | None -> conversion_failed "class_field_desc"
       | Some n -> n
     in
@@ -1880,8 +2432,14 @@ module V4_07 = struct
     view concrete.Module_type.pmty_attributes
 
   let pmty_ident view value =
+    let parent_concrete =
+      match Module_type.to_concrete value with
+      | None -> conversion_failed "module_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_type.pmty_desc in
     let concrete =
-      match Module_type_desc.to_concrete value with
+      match Module_type_desc.to_concrete desc with
       | None -> conversion_failed "module_type_desc"
       | Some n -> n
     in
@@ -1890,8 +2448,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pmty_signature view value =
+    let parent_concrete =
+      match Module_type.to_concrete value with
+      | None -> conversion_failed "module_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_type.pmty_desc in
     let concrete =
-      match Module_type_desc.to_concrete value with
+      match Module_type_desc.to_concrete desc with
       | None -> conversion_failed "module_type_desc"
       | Some n -> n
     in
@@ -1900,8 +2464,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pmty_functor view value =
+    let parent_concrete =
+      match Module_type.to_concrete value with
+      | None -> conversion_failed "module_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_type.pmty_desc in
     let concrete =
-      match Module_type_desc.to_concrete value with
+      match Module_type_desc.to_concrete desc with
       | None -> conversion_failed "module_type_desc"
       | Some n -> n
     in
@@ -1910,8 +2480,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pmty_with view value =
+    let parent_concrete =
+      match Module_type.to_concrete value with
+      | None -> conversion_failed "module_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_type.pmty_desc in
     let concrete =
-      match Module_type_desc.to_concrete value with
+      match Module_type_desc.to_concrete desc with
       | None -> conversion_failed "module_type_desc"
       | Some n -> n
     in
@@ -1920,8 +2496,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pmty_typeof view value =
+    let parent_concrete =
+      match Module_type.to_concrete value with
+      | None -> conversion_failed "module_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_type.pmty_desc in
     let concrete =
-      match Module_type_desc.to_concrete value with
+      match Module_type_desc.to_concrete desc with
       | None -> conversion_failed "module_type_desc"
       | Some n -> n
     in
@@ -1930,8 +2512,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pmty_extension view value =
+    let parent_concrete =
+      match Module_type.to_concrete value with
+      | None -> conversion_failed "module_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_type.pmty_desc in
     let concrete =
-      match Module_type_desc.to_concrete value with
+      match Module_type_desc.to_concrete desc with
       | None -> conversion_failed "module_type_desc"
       | Some n -> n
     in
@@ -1940,8 +2528,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pmty_alias view value =
+    let parent_concrete =
+      match Module_type.to_concrete value with
+      | None -> conversion_failed "module_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_type.pmty_desc in
     let concrete =
-      match Module_type_desc.to_concrete value with
+      match Module_type_desc.to_concrete desc with
       | None -> conversion_failed "module_type_desc"
       | Some n -> n
     in
@@ -1966,8 +2560,14 @@ module V4_07 = struct
     view concrete.Signature_item.psig_loc
 
   let psig_value view value =
+    let parent_concrete =
+      match Signature_item.to_concrete value with
+      | None -> conversion_failed "signature_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Signature_item.psig_desc in
     let concrete =
-      match Signature_item_desc.to_concrete value with
+      match Signature_item_desc.to_concrete desc with
       | None -> conversion_failed "signature_item_desc"
       | Some n -> n
     in
@@ -1976,8 +2576,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let psig_type view value =
+    let parent_concrete =
+      match Signature_item.to_concrete value with
+      | None -> conversion_failed "signature_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Signature_item.psig_desc in
     let concrete =
-      match Signature_item_desc.to_concrete value with
+      match Signature_item_desc.to_concrete desc with
       | None -> conversion_failed "signature_item_desc"
       | Some n -> n
     in
@@ -1986,8 +2592,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let psig_typext view value =
+    let parent_concrete =
+      match Signature_item.to_concrete value with
+      | None -> conversion_failed "signature_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Signature_item.psig_desc in
     let concrete =
-      match Signature_item_desc.to_concrete value with
+      match Signature_item_desc.to_concrete desc with
       | None -> conversion_failed "signature_item_desc"
       | Some n -> n
     in
@@ -1996,8 +2608,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let psig_exception view value =
+    let parent_concrete =
+      match Signature_item.to_concrete value with
+      | None -> conversion_failed "signature_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Signature_item.psig_desc in
     let concrete =
-      match Signature_item_desc.to_concrete value with
+      match Signature_item_desc.to_concrete desc with
       | None -> conversion_failed "signature_item_desc"
       | Some n -> n
     in
@@ -2006,8 +2624,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let psig_module view value =
+    let parent_concrete =
+      match Signature_item.to_concrete value with
+      | None -> conversion_failed "signature_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Signature_item.psig_desc in
     let concrete =
-      match Signature_item_desc.to_concrete value with
+      match Signature_item_desc.to_concrete desc with
       | None -> conversion_failed "signature_item_desc"
       | Some n -> n
     in
@@ -2016,8 +2640,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let psig_recmodule view value =
+    let parent_concrete =
+      match Signature_item.to_concrete value with
+      | None -> conversion_failed "signature_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Signature_item.psig_desc in
     let concrete =
-      match Signature_item_desc.to_concrete value with
+      match Signature_item_desc.to_concrete desc with
       | None -> conversion_failed "signature_item_desc"
       | Some n -> n
     in
@@ -2026,8 +2656,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let psig_modtype view value =
+    let parent_concrete =
+      match Signature_item.to_concrete value with
+      | None -> conversion_failed "signature_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Signature_item.psig_desc in
     let concrete =
-      match Signature_item_desc.to_concrete value with
+      match Signature_item_desc.to_concrete desc with
       | None -> conversion_failed "signature_item_desc"
       | Some n -> n
     in
@@ -2036,8 +2672,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let psig_open view value =
+    let parent_concrete =
+      match Signature_item.to_concrete value with
+      | None -> conversion_failed "signature_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Signature_item.psig_desc in
     let concrete =
-      match Signature_item_desc.to_concrete value with
+      match Signature_item_desc.to_concrete desc with
       | None -> conversion_failed "signature_item_desc"
       | Some n -> n
     in
@@ -2046,8 +2688,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let psig_include view value =
+    let parent_concrete =
+      match Signature_item.to_concrete value with
+      | None -> conversion_failed "signature_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Signature_item.psig_desc in
     let concrete =
-      match Signature_item_desc.to_concrete value with
+      match Signature_item_desc.to_concrete desc with
       | None -> conversion_failed "signature_item_desc"
       | Some n -> n
     in
@@ -2056,8 +2704,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let psig_class view value =
+    let parent_concrete =
+      match Signature_item.to_concrete value with
+      | None -> conversion_failed "signature_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Signature_item.psig_desc in
     let concrete =
-      match Signature_item_desc.to_concrete value with
+      match Signature_item_desc.to_concrete desc with
       | None -> conversion_failed "signature_item_desc"
       | Some n -> n
     in
@@ -2066,8 +2720,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let psig_class_type view value =
+    let parent_concrete =
+      match Signature_item.to_concrete value with
+      | None -> conversion_failed "signature_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Signature_item.psig_desc in
     let concrete =
-      match Signature_item_desc.to_concrete value with
+      match Signature_item_desc.to_concrete desc with
       | None -> conversion_failed "signature_item_desc"
       | Some n -> n
     in
@@ -2076,8 +2736,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let psig_attribute view value =
+    let parent_concrete =
+      match Signature_item.to_concrete value with
+      | None -> conversion_failed "signature_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Signature_item.psig_desc in
     let concrete =
-      match Signature_item_desc.to_concrete value with
+      match Signature_item_desc.to_concrete desc with
       | None -> conversion_failed "signature_item_desc"
       | Some n -> n
     in
@@ -2086,8 +2752,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let psig_extension view value =
+    let parent_concrete =
+      match Signature_item.to_concrete value with
+      | None -> conversion_failed "signature_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Signature_item.psig_desc in
     let concrete =
-      match Signature_item_desc.to_concrete value with
+      match Signature_item_desc.to_concrete desc with
       | None -> conversion_failed "signature_item_desc"
       | Some n -> n
     in
@@ -2256,8 +2928,14 @@ module V4_07 = struct
     view concrete.Module_expr.pmod_attributes
 
   let pmod_ident view value =
+    let parent_concrete =
+      match Module_expr.to_concrete value with
+      | None -> conversion_failed "module_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_expr.pmod_desc in
     let concrete =
-      match Module_expr_desc.to_concrete value with
+      match Module_expr_desc.to_concrete desc with
       | None -> conversion_failed "module_expr_desc"
       | Some n -> n
     in
@@ -2266,8 +2944,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pmod_structure view value =
+    let parent_concrete =
+      match Module_expr.to_concrete value with
+      | None -> conversion_failed "module_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_expr.pmod_desc in
     let concrete =
-      match Module_expr_desc.to_concrete value with
+      match Module_expr_desc.to_concrete desc with
       | None -> conversion_failed "module_expr_desc"
       | Some n -> n
     in
@@ -2276,8 +2960,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pmod_functor view value =
+    let parent_concrete =
+      match Module_expr.to_concrete value with
+      | None -> conversion_failed "module_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_expr.pmod_desc in
     let concrete =
-      match Module_expr_desc.to_concrete value with
+      match Module_expr_desc.to_concrete desc with
       | None -> conversion_failed "module_expr_desc"
       | Some n -> n
     in
@@ -2286,8 +2976,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pmod_apply view value =
+    let parent_concrete =
+      match Module_expr.to_concrete value with
+      | None -> conversion_failed "module_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_expr.pmod_desc in
     let concrete =
-      match Module_expr_desc.to_concrete value with
+      match Module_expr_desc.to_concrete desc with
       | None -> conversion_failed "module_expr_desc"
       | Some n -> n
     in
@@ -2296,8 +2992,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pmod_constraint view value =
+    let parent_concrete =
+      match Module_expr.to_concrete value with
+      | None -> conversion_failed "module_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_expr.pmod_desc in
     let concrete =
-      match Module_expr_desc.to_concrete value with
+      match Module_expr_desc.to_concrete desc with
       | None -> conversion_failed "module_expr_desc"
       | Some n -> n
     in
@@ -2306,8 +3008,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pmod_unpack view value =
+    let parent_concrete =
+      match Module_expr.to_concrete value with
+      | None -> conversion_failed "module_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_expr.pmod_desc in
     let concrete =
-      match Module_expr_desc.to_concrete value with
+      match Module_expr_desc.to_concrete desc with
       | None -> conversion_failed "module_expr_desc"
       | Some n -> n
     in
@@ -2316,8 +3024,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pmod_extension view value =
+    let parent_concrete =
+      match Module_expr.to_concrete value with
+      | None -> conversion_failed "module_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_expr.pmod_desc in
     let concrete =
-      match Module_expr_desc.to_concrete value with
+      match Module_expr_desc.to_concrete desc with
       | None -> conversion_failed "module_expr_desc"
       | Some n -> n
     in
@@ -2342,8 +3056,14 @@ module V4_07 = struct
     view concrete.Structure_item.pstr_loc
 
   let pstr_eval view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -2352,8 +3072,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pstr_value view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -2362,8 +3088,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pstr_primitive view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -2372,8 +3104,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pstr_type view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -2382,8 +3120,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pstr_typext view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -2392,8 +3136,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pstr_exception view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -2402,8 +3152,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pstr_module view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -2412,8 +3168,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pstr_recmodule view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -2422,8 +3184,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pstr_modtype view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -2432,8 +3200,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pstr_open view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -2442,8 +3216,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pstr_class view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -2452,8 +3232,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pstr_class_type view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -2462,8 +3248,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pstr_include view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -2472,8 +3264,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pstr_attribute view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -2482,8 +3280,14 @@ module V4_07 = struct
     | _ -> View.error
 
   let pstr_extension view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -2966,8 +3770,14 @@ module V4_06 = struct
     view concrete.Core_type.ptyp_attributes
 
   let ptyp_any value =
+    let parent_concrete =
+      match Core_type.to_concrete value with
+      | None -> conversion_failed "core_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Core_type.ptyp_desc in
     let concrete =
-      match Core_type_desc.to_concrete value with
+      match Core_type_desc.to_concrete desc with
       | None -> conversion_failed "core_type_desc"
       | Some n -> n
     in
@@ -2976,8 +3786,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ptyp_var view value =
+    let parent_concrete =
+      match Core_type.to_concrete value with
+      | None -> conversion_failed "core_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Core_type.ptyp_desc in
     let concrete =
-      match Core_type_desc.to_concrete value with
+      match Core_type_desc.to_concrete desc with
       | None -> conversion_failed "core_type_desc"
       | Some n -> n
     in
@@ -2986,8 +3802,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ptyp_arrow view value =
+    let parent_concrete =
+      match Core_type.to_concrete value with
+      | None -> conversion_failed "core_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Core_type.ptyp_desc in
     let concrete =
-      match Core_type_desc.to_concrete value with
+      match Core_type_desc.to_concrete desc with
       | None -> conversion_failed "core_type_desc"
       | Some n -> n
     in
@@ -2996,8 +3818,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ptyp_tuple view value =
+    let parent_concrete =
+      match Core_type.to_concrete value with
+      | None -> conversion_failed "core_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Core_type.ptyp_desc in
     let concrete =
-      match Core_type_desc.to_concrete value with
+      match Core_type_desc.to_concrete desc with
       | None -> conversion_failed "core_type_desc"
       | Some n -> n
     in
@@ -3006,8 +3834,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ptyp_constr view value =
+    let parent_concrete =
+      match Core_type.to_concrete value with
+      | None -> conversion_failed "core_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Core_type.ptyp_desc in
     let concrete =
-      match Core_type_desc.to_concrete value with
+      match Core_type_desc.to_concrete desc with
       | None -> conversion_failed "core_type_desc"
       | Some n -> n
     in
@@ -3016,8 +3850,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ptyp_object view value =
+    let parent_concrete =
+      match Core_type.to_concrete value with
+      | None -> conversion_failed "core_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Core_type.ptyp_desc in
     let concrete =
-      match Core_type_desc.to_concrete value with
+      match Core_type_desc.to_concrete desc with
       | None -> conversion_failed "core_type_desc"
       | Some n -> n
     in
@@ -3026,8 +3866,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ptyp_class view value =
+    let parent_concrete =
+      match Core_type.to_concrete value with
+      | None -> conversion_failed "core_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Core_type.ptyp_desc in
     let concrete =
-      match Core_type_desc.to_concrete value with
+      match Core_type_desc.to_concrete desc with
       | None -> conversion_failed "core_type_desc"
       | Some n -> n
     in
@@ -3036,8 +3882,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ptyp_alias view value =
+    let parent_concrete =
+      match Core_type.to_concrete value with
+      | None -> conversion_failed "core_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Core_type.ptyp_desc in
     let concrete =
-      match Core_type_desc.to_concrete value with
+      match Core_type_desc.to_concrete desc with
       | None -> conversion_failed "core_type_desc"
       | Some n -> n
     in
@@ -3046,8 +3898,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ptyp_variant view value =
+    let parent_concrete =
+      match Core_type.to_concrete value with
+      | None -> conversion_failed "core_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Core_type.ptyp_desc in
     let concrete =
-      match Core_type_desc.to_concrete value with
+      match Core_type_desc.to_concrete desc with
       | None -> conversion_failed "core_type_desc"
       | Some n -> n
     in
@@ -3056,8 +3914,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ptyp_poly view value =
+    let parent_concrete =
+      match Core_type.to_concrete value with
+      | None -> conversion_failed "core_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Core_type.ptyp_desc in
     let concrete =
-      match Core_type_desc.to_concrete value with
+      match Core_type_desc.to_concrete desc with
       | None -> conversion_failed "core_type_desc"
       | Some n -> n
     in
@@ -3066,8 +3930,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ptyp_package view value =
+    let parent_concrete =
+      match Core_type.to_concrete value with
+      | None -> conversion_failed "core_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Core_type.ptyp_desc in
     let concrete =
-      match Core_type_desc.to_concrete value with
+      match Core_type_desc.to_concrete desc with
       | None -> conversion_failed "core_type_desc"
       | Some n -> n
     in
@@ -3076,8 +3946,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ptyp_extension view value =
+    let parent_concrete =
+      match Core_type.to_concrete value with
+      | None -> conversion_failed "core_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Core_type.ptyp_desc in
     let concrete =
-      match Core_type_desc.to_concrete value with
+      match Core_type_desc.to_concrete desc with
       | None -> conversion_failed "core_type_desc"
       | Some n -> n
     in
@@ -3150,8 +4026,14 @@ module V4_06 = struct
     view concrete.Pattern.ppat_attributes
 
   let ppat_any value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -3160,8 +4042,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ppat_var view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -3170,8 +4058,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ppat_alias view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -3180,8 +4074,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ppat_constant view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -3190,8 +4090,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ppat_interval view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -3200,8 +4106,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ppat_tuple view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -3210,8 +4122,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ppat_construct view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -3220,8 +4138,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ppat_variant view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -3230,8 +4154,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ppat_record view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -3240,8 +4170,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ppat_array view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -3250,8 +4186,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ppat_or view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -3260,8 +4202,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ppat_constraint view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -3270,8 +4218,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ppat_type view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -3280,8 +4234,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ppat_lazy view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -3290,8 +4250,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ppat_unpack view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -3300,8 +4266,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ppat_exception view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -3310,8 +4282,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ppat_extension view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -3320,8 +4298,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let ppat_open view value =
+    let parent_concrete =
+      match Pattern.to_concrete value with
+      | None -> conversion_failed "pattern"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Pattern.ppat_desc in
     let concrete =
-      match Pattern_desc.to_concrete value with
+      match Pattern_desc.to_concrete desc with
       | None -> conversion_failed "pattern_desc"
       | Some n -> n
     in
@@ -3354,8 +4338,14 @@ module V4_06 = struct
     view concrete.Expression.pexp_attributes
 
   let pexp_ident view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3364,8 +4354,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_constant view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3374,8 +4370,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_let view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3384,8 +4386,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_function view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3394,8 +4402,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_fun view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3404,8 +4418,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_apply view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3414,8 +4434,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_match view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3424,8 +4450,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_try view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3434,8 +4466,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_tuple view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3444,8 +4482,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_construct view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3454,8 +4498,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_variant view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3464,8 +4514,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_record view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3474,8 +4530,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_field view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3484,8 +4546,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_setfield view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3494,8 +4562,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_array view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3504,8 +4578,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_ifthenelse view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3514,8 +4594,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_sequence view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3524,8 +4610,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_while view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3534,8 +4626,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_for view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3544,8 +4642,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_constraint view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3554,8 +4658,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_coerce view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3564,8 +4674,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_send view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3574,8 +4690,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_new view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3584,8 +4706,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_setinstvar view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3594,8 +4722,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_override view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3604,8 +4738,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_letmodule view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3614,8 +4754,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_letexception view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3624,8 +4770,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_assert view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3634,8 +4786,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_lazy view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3644,8 +4802,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_poly view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3654,8 +4818,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_object view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3664,8 +4834,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_newtype view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3674,8 +4850,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_pack view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3684,8 +4866,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_open view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3694,8 +4882,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_extension view value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -3704,8 +4898,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pexp_unreachable value =
+    let parent_concrete =
+      match Expression.to_concrete value with
+      | None -> conversion_failed "expression"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Expression.pexp_desc in
     let concrete =
-      match Expression_desc.to_concrete value with
+      match Expression_desc.to_concrete desc with
       | None -> conversion_failed "expression_desc"
       | Some n -> n
     in
@@ -4098,8 +5298,14 @@ module V4_06 = struct
     view concrete.Class_type.pcty_attributes
 
   let pcty_constr view value =
+    let parent_concrete =
+      match Class_type.to_concrete value with
+      | None -> conversion_failed "class_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_type.pcty_desc in
     let concrete =
-      match Class_type_desc.to_concrete value with
+      match Class_type_desc.to_concrete desc with
       | None -> conversion_failed "class_type_desc"
       | Some n -> n
     in
@@ -4108,8 +5314,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pcty_signature view value =
+    let parent_concrete =
+      match Class_type.to_concrete value with
+      | None -> conversion_failed "class_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_type.pcty_desc in
     let concrete =
-      match Class_type_desc.to_concrete value with
+      match Class_type_desc.to_concrete desc with
       | None -> conversion_failed "class_type_desc"
       | Some n -> n
     in
@@ -4118,8 +5330,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pcty_arrow view value =
+    let parent_concrete =
+      match Class_type.to_concrete value with
+      | None -> conversion_failed "class_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_type.pcty_desc in
     let concrete =
-      match Class_type_desc.to_concrete value with
+      match Class_type_desc.to_concrete desc with
       | None -> conversion_failed "class_type_desc"
       | Some n -> n
     in
@@ -4128,8 +5346,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pcty_extension view value =
+    let parent_concrete =
+      match Class_type.to_concrete value with
+      | None -> conversion_failed "class_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_type.pcty_desc in
     let concrete =
-      match Class_type_desc.to_concrete value with
+      match Class_type_desc.to_concrete desc with
       | None -> conversion_failed "class_type_desc"
       | Some n -> n
     in
@@ -4138,8 +5362,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pcty_open view value =
+    let parent_concrete =
+      match Class_type.to_concrete value with
+      | None -> conversion_failed "class_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_type.pcty_desc in
     let concrete =
-      match Class_type_desc.to_concrete value with
+      match Class_type_desc.to_concrete desc with
       | None -> conversion_failed "class_type_desc"
       | Some n -> n
     in
@@ -4188,8 +5418,14 @@ module V4_06 = struct
     view concrete.Class_type_field.pctf_attributes
 
   let pctf_inherit view value =
+    let parent_concrete =
+      match Class_type_field.to_concrete value with
+      | None -> conversion_failed "class_type_field"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_type_field.pctf_desc in
     let concrete =
-      match Class_type_field_desc.to_concrete value with
+      match Class_type_field_desc.to_concrete desc with
       | None -> conversion_failed "class_type_field_desc"
       | Some n -> n
     in
@@ -4198,8 +5434,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pctf_val view value =
+    let parent_concrete =
+      match Class_type_field.to_concrete value with
+      | None -> conversion_failed "class_type_field"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_type_field.pctf_desc in
     let concrete =
-      match Class_type_field_desc.to_concrete value with
+      match Class_type_field_desc.to_concrete desc with
       | None -> conversion_failed "class_type_field_desc"
       | Some n -> n
     in
@@ -4208,8 +5450,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pctf_method view value =
+    let parent_concrete =
+      match Class_type_field.to_concrete value with
+      | None -> conversion_failed "class_type_field"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_type_field.pctf_desc in
     let concrete =
-      match Class_type_field_desc.to_concrete value with
+      match Class_type_field_desc.to_concrete desc with
       | None -> conversion_failed "class_type_field_desc"
       | Some n -> n
     in
@@ -4218,8 +5466,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pctf_constraint view value =
+    let parent_concrete =
+      match Class_type_field.to_concrete value with
+      | None -> conversion_failed "class_type_field"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_type_field.pctf_desc in
     let concrete =
-      match Class_type_field_desc.to_concrete value with
+      match Class_type_field_desc.to_concrete desc with
       | None -> conversion_failed "class_type_field_desc"
       | Some n -> n
     in
@@ -4228,8 +5482,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pctf_attribute view value =
+    let parent_concrete =
+      match Class_type_field.to_concrete value with
+      | None -> conversion_failed "class_type_field"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_type_field.pctf_desc in
     let concrete =
-      match Class_type_field_desc.to_concrete value with
+      match Class_type_field_desc.to_concrete desc with
       | None -> conversion_failed "class_type_field_desc"
       | Some n -> n
     in
@@ -4238,8 +5498,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pctf_extension view value =
+    let parent_concrete =
+      match Class_type_field.to_concrete value with
+      | None -> conversion_failed "class_type_field"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_type_field.pctf_desc in
     let concrete =
-      match Class_type_field_desc.to_concrete value with
+      match Class_type_field_desc.to_concrete desc with
       | None -> conversion_failed "class_type_field_desc"
       | Some n -> n
     in
@@ -4272,8 +5538,14 @@ module V4_06 = struct
     view concrete.Class_expr.pcl_attributes
 
   let pcl_constr view value =
+    let parent_concrete =
+      match Class_expr.to_concrete value with
+      | None -> conversion_failed "class_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_expr.pcl_desc in
     let concrete =
-      match Class_expr_desc.to_concrete value with
+      match Class_expr_desc.to_concrete desc with
       | None -> conversion_failed "class_expr_desc"
       | Some n -> n
     in
@@ -4282,8 +5554,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pcl_structure view value =
+    let parent_concrete =
+      match Class_expr.to_concrete value with
+      | None -> conversion_failed "class_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_expr.pcl_desc in
     let concrete =
-      match Class_expr_desc.to_concrete value with
+      match Class_expr_desc.to_concrete desc with
       | None -> conversion_failed "class_expr_desc"
       | Some n -> n
     in
@@ -4292,8 +5570,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pcl_fun view value =
+    let parent_concrete =
+      match Class_expr.to_concrete value with
+      | None -> conversion_failed "class_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_expr.pcl_desc in
     let concrete =
-      match Class_expr_desc.to_concrete value with
+      match Class_expr_desc.to_concrete desc with
       | None -> conversion_failed "class_expr_desc"
       | Some n -> n
     in
@@ -4302,8 +5586,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pcl_apply view value =
+    let parent_concrete =
+      match Class_expr.to_concrete value with
+      | None -> conversion_failed "class_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_expr.pcl_desc in
     let concrete =
-      match Class_expr_desc.to_concrete value with
+      match Class_expr_desc.to_concrete desc with
       | None -> conversion_failed "class_expr_desc"
       | Some n -> n
     in
@@ -4312,8 +5602,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pcl_let view value =
+    let parent_concrete =
+      match Class_expr.to_concrete value with
+      | None -> conversion_failed "class_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_expr.pcl_desc in
     let concrete =
-      match Class_expr_desc.to_concrete value with
+      match Class_expr_desc.to_concrete desc with
       | None -> conversion_failed "class_expr_desc"
       | Some n -> n
     in
@@ -4322,8 +5618,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pcl_constraint view value =
+    let parent_concrete =
+      match Class_expr.to_concrete value with
+      | None -> conversion_failed "class_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_expr.pcl_desc in
     let concrete =
-      match Class_expr_desc.to_concrete value with
+      match Class_expr_desc.to_concrete desc with
       | None -> conversion_failed "class_expr_desc"
       | Some n -> n
     in
@@ -4332,8 +5634,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pcl_extension view value =
+    let parent_concrete =
+      match Class_expr.to_concrete value with
+      | None -> conversion_failed "class_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_expr.pcl_desc in
     let concrete =
-      match Class_expr_desc.to_concrete value with
+      match Class_expr_desc.to_concrete desc with
       | None -> conversion_failed "class_expr_desc"
       | Some n -> n
     in
@@ -4342,8 +5650,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pcl_open view value =
+    let parent_concrete =
+      match Class_expr.to_concrete value with
+      | None -> conversion_failed "class_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_expr.pcl_desc in
     let concrete =
-      match Class_expr_desc.to_concrete value with
+      match Class_expr_desc.to_concrete desc with
       | None -> conversion_failed "class_expr_desc"
       | Some n -> n
     in
@@ -4392,8 +5706,14 @@ module V4_06 = struct
     view concrete.Class_field.pcf_attributes
 
   let pcf_inherit view value =
+    let parent_concrete =
+      match Class_field.to_concrete value with
+      | None -> conversion_failed "class_field"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_field.pcf_desc in
     let concrete =
-      match Class_field_desc.to_concrete value with
+      match Class_field_desc.to_concrete desc with
       | None -> conversion_failed "class_field_desc"
       | Some n -> n
     in
@@ -4402,8 +5722,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pcf_val view value =
+    let parent_concrete =
+      match Class_field.to_concrete value with
+      | None -> conversion_failed "class_field"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_field.pcf_desc in
     let concrete =
-      match Class_field_desc.to_concrete value with
+      match Class_field_desc.to_concrete desc with
       | None -> conversion_failed "class_field_desc"
       | Some n -> n
     in
@@ -4412,8 +5738,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pcf_method view value =
+    let parent_concrete =
+      match Class_field.to_concrete value with
+      | None -> conversion_failed "class_field"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_field.pcf_desc in
     let concrete =
-      match Class_field_desc.to_concrete value with
+      match Class_field_desc.to_concrete desc with
       | None -> conversion_failed "class_field_desc"
       | Some n -> n
     in
@@ -4422,8 +5754,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pcf_constraint view value =
+    let parent_concrete =
+      match Class_field.to_concrete value with
+      | None -> conversion_failed "class_field"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_field.pcf_desc in
     let concrete =
-      match Class_field_desc.to_concrete value with
+      match Class_field_desc.to_concrete desc with
       | None -> conversion_failed "class_field_desc"
       | Some n -> n
     in
@@ -4432,8 +5770,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pcf_initializer view value =
+    let parent_concrete =
+      match Class_field.to_concrete value with
+      | None -> conversion_failed "class_field"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_field.pcf_desc in
     let concrete =
-      match Class_field_desc.to_concrete value with
+      match Class_field_desc.to_concrete desc with
       | None -> conversion_failed "class_field_desc"
       | Some n -> n
     in
@@ -4442,8 +5786,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pcf_attribute view value =
+    let parent_concrete =
+      match Class_field.to_concrete value with
+      | None -> conversion_failed "class_field"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_field.pcf_desc in
     let concrete =
-      match Class_field_desc.to_concrete value with
+      match Class_field_desc.to_concrete desc with
       | None -> conversion_failed "class_field_desc"
       | Some n -> n
     in
@@ -4452,8 +5802,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pcf_extension view value =
+    let parent_concrete =
+      match Class_field.to_concrete value with
+      | None -> conversion_failed "class_field"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Class_field.pcf_desc in
     let concrete =
-      match Class_field_desc.to_concrete value with
+      match Class_field_desc.to_concrete desc with
       | None -> conversion_failed "class_field_desc"
       | Some n -> n
     in
@@ -4506,8 +5862,14 @@ module V4_06 = struct
     view concrete.Module_type.pmty_attributes
 
   let pmty_ident view value =
+    let parent_concrete =
+      match Module_type.to_concrete value with
+      | None -> conversion_failed "module_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_type.pmty_desc in
     let concrete =
-      match Module_type_desc.to_concrete value with
+      match Module_type_desc.to_concrete desc with
       | None -> conversion_failed "module_type_desc"
       | Some n -> n
     in
@@ -4516,8 +5878,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pmty_signature view value =
+    let parent_concrete =
+      match Module_type.to_concrete value with
+      | None -> conversion_failed "module_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_type.pmty_desc in
     let concrete =
-      match Module_type_desc.to_concrete value with
+      match Module_type_desc.to_concrete desc with
       | None -> conversion_failed "module_type_desc"
       | Some n -> n
     in
@@ -4526,8 +5894,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pmty_functor view value =
+    let parent_concrete =
+      match Module_type.to_concrete value with
+      | None -> conversion_failed "module_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_type.pmty_desc in
     let concrete =
-      match Module_type_desc.to_concrete value with
+      match Module_type_desc.to_concrete desc with
       | None -> conversion_failed "module_type_desc"
       | Some n -> n
     in
@@ -4536,8 +5910,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pmty_with view value =
+    let parent_concrete =
+      match Module_type.to_concrete value with
+      | None -> conversion_failed "module_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_type.pmty_desc in
     let concrete =
-      match Module_type_desc.to_concrete value with
+      match Module_type_desc.to_concrete desc with
       | None -> conversion_failed "module_type_desc"
       | Some n -> n
     in
@@ -4546,8 +5926,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pmty_typeof view value =
+    let parent_concrete =
+      match Module_type.to_concrete value with
+      | None -> conversion_failed "module_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_type.pmty_desc in
     let concrete =
-      match Module_type_desc.to_concrete value with
+      match Module_type_desc.to_concrete desc with
       | None -> conversion_failed "module_type_desc"
       | Some n -> n
     in
@@ -4556,8 +5942,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pmty_extension view value =
+    let parent_concrete =
+      match Module_type.to_concrete value with
+      | None -> conversion_failed "module_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_type.pmty_desc in
     let concrete =
-      match Module_type_desc.to_concrete value with
+      match Module_type_desc.to_concrete desc with
       | None -> conversion_failed "module_type_desc"
       | Some n -> n
     in
@@ -4566,8 +5958,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pmty_alias view value =
+    let parent_concrete =
+      match Module_type.to_concrete value with
+      | None -> conversion_failed "module_type"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_type.pmty_desc in
     let concrete =
-      match Module_type_desc.to_concrete value with
+      match Module_type_desc.to_concrete desc with
       | None -> conversion_failed "module_type_desc"
       | Some n -> n
     in
@@ -4592,8 +5990,14 @@ module V4_06 = struct
     view concrete.Signature_item.psig_loc
 
   let psig_value view value =
+    let parent_concrete =
+      match Signature_item.to_concrete value with
+      | None -> conversion_failed "signature_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Signature_item.psig_desc in
     let concrete =
-      match Signature_item_desc.to_concrete value with
+      match Signature_item_desc.to_concrete desc with
       | None -> conversion_failed "signature_item_desc"
       | Some n -> n
     in
@@ -4602,8 +6006,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let psig_type view value =
+    let parent_concrete =
+      match Signature_item.to_concrete value with
+      | None -> conversion_failed "signature_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Signature_item.psig_desc in
     let concrete =
-      match Signature_item_desc.to_concrete value with
+      match Signature_item_desc.to_concrete desc with
       | None -> conversion_failed "signature_item_desc"
       | Some n -> n
     in
@@ -4612,8 +6022,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let psig_typext view value =
+    let parent_concrete =
+      match Signature_item.to_concrete value with
+      | None -> conversion_failed "signature_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Signature_item.psig_desc in
     let concrete =
-      match Signature_item_desc.to_concrete value with
+      match Signature_item_desc.to_concrete desc with
       | None -> conversion_failed "signature_item_desc"
       | Some n -> n
     in
@@ -4622,8 +6038,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let psig_exception view value =
+    let parent_concrete =
+      match Signature_item.to_concrete value with
+      | None -> conversion_failed "signature_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Signature_item.psig_desc in
     let concrete =
-      match Signature_item_desc.to_concrete value with
+      match Signature_item_desc.to_concrete desc with
       | None -> conversion_failed "signature_item_desc"
       | Some n -> n
     in
@@ -4632,8 +6054,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let psig_module view value =
+    let parent_concrete =
+      match Signature_item.to_concrete value with
+      | None -> conversion_failed "signature_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Signature_item.psig_desc in
     let concrete =
-      match Signature_item_desc.to_concrete value with
+      match Signature_item_desc.to_concrete desc with
       | None -> conversion_failed "signature_item_desc"
       | Some n -> n
     in
@@ -4642,8 +6070,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let psig_recmodule view value =
+    let parent_concrete =
+      match Signature_item.to_concrete value with
+      | None -> conversion_failed "signature_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Signature_item.psig_desc in
     let concrete =
-      match Signature_item_desc.to_concrete value with
+      match Signature_item_desc.to_concrete desc with
       | None -> conversion_failed "signature_item_desc"
       | Some n -> n
     in
@@ -4652,8 +6086,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let psig_modtype view value =
+    let parent_concrete =
+      match Signature_item.to_concrete value with
+      | None -> conversion_failed "signature_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Signature_item.psig_desc in
     let concrete =
-      match Signature_item_desc.to_concrete value with
+      match Signature_item_desc.to_concrete desc with
       | None -> conversion_failed "signature_item_desc"
       | Some n -> n
     in
@@ -4662,8 +6102,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let psig_open view value =
+    let parent_concrete =
+      match Signature_item.to_concrete value with
+      | None -> conversion_failed "signature_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Signature_item.psig_desc in
     let concrete =
-      match Signature_item_desc.to_concrete value with
+      match Signature_item_desc.to_concrete desc with
       | None -> conversion_failed "signature_item_desc"
       | Some n -> n
     in
@@ -4672,8 +6118,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let psig_include view value =
+    let parent_concrete =
+      match Signature_item.to_concrete value with
+      | None -> conversion_failed "signature_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Signature_item.psig_desc in
     let concrete =
-      match Signature_item_desc.to_concrete value with
+      match Signature_item_desc.to_concrete desc with
       | None -> conversion_failed "signature_item_desc"
       | Some n -> n
     in
@@ -4682,8 +6134,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let psig_class view value =
+    let parent_concrete =
+      match Signature_item.to_concrete value with
+      | None -> conversion_failed "signature_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Signature_item.psig_desc in
     let concrete =
-      match Signature_item_desc.to_concrete value with
+      match Signature_item_desc.to_concrete desc with
       | None -> conversion_failed "signature_item_desc"
       | Some n -> n
     in
@@ -4692,8 +6150,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let psig_class_type view value =
+    let parent_concrete =
+      match Signature_item.to_concrete value with
+      | None -> conversion_failed "signature_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Signature_item.psig_desc in
     let concrete =
-      match Signature_item_desc.to_concrete value with
+      match Signature_item_desc.to_concrete desc with
       | None -> conversion_failed "signature_item_desc"
       | Some n -> n
     in
@@ -4702,8 +6166,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let psig_attribute view value =
+    let parent_concrete =
+      match Signature_item.to_concrete value with
+      | None -> conversion_failed "signature_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Signature_item.psig_desc in
     let concrete =
-      match Signature_item_desc.to_concrete value with
+      match Signature_item_desc.to_concrete desc with
       | None -> conversion_failed "signature_item_desc"
       | Some n -> n
     in
@@ -4712,8 +6182,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let psig_extension view value =
+    let parent_concrete =
+      match Signature_item.to_concrete value with
+      | None -> conversion_failed "signature_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Signature_item.psig_desc in
     let concrete =
-      match Signature_item_desc.to_concrete value with
+      match Signature_item_desc.to_concrete desc with
       | None -> conversion_failed "signature_item_desc"
       | Some n -> n
     in
@@ -4882,8 +6358,14 @@ module V4_06 = struct
     view concrete.Module_expr.pmod_attributes
 
   let pmod_ident view value =
+    let parent_concrete =
+      match Module_expr.to_concrete value with
+      | None -> conversion_failed "module_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_expr.pmod_desc in
     let concrete =
-      match Module_expr_desc.to_concrete value with
+      match Module_expr_desc.to_concrete desc with
       | None -> conversion_failed "module_expr_desc"
       | Some n -> n
     in
@@ -4892,8 +6374,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pmod_structure view value =
+    let parent_concrete =
+      match Module_expr.to_concrete value with
+      | None -> conversion_failed "module_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_expr.pmod_desc in
     let concrete =
-      match Module_expr_desc.to_concrete value with
+      match Module_expr_desc.to_concrete desc with
       | None -> conversion_failed "module_expr_desc"
       | Some n -> n
     in
@@ -4902,8 +6390,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pmod_functor view value =
+    let parent_concrete =
+      match Module_expr.to_concrete value with
+      | None -> conversion_failed "module_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_expr.pmod_desc in
     let concrete =
-      match Module_expr_desc.to_concrete value with
+      match Module_expr_desc.to_concrete desc with
       | None -> conversion_failed "module_expr_desc"
       | Some n -> n
     in
@@ -4912,8 +6406,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pmod_apply view value =
+    let parent_concrete =
+      match Module_expr.to_concrete value with
+      | None -> conversion_failed "module_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_expr.pmod_desc in
     let concrete =
-      match Module_expr_desc.to_concrete value with
+      match Module_expr_desc.to_concrete desc with
       | None -> conversion_failed "module_expr_desc"
       | Some n -> n
     in
@@ -4922,8 +6422,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pmod_constraint view value =
+    let parent_concrete =
+      match Module_expr.to_concrete value with
+      | None -> conversion_failed "module_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_expr.pmod_desc in
     let concrete =
-      match Module_expr_desc.to_concrete value with
+      match Module_expr_desc.to_concrete desc with
       | None -> conversion_failed "module_expr_desc"
       | Some n -> n
     in
@@ -4932,8 +6438,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pmod_unpack view value =
+    let parent_concrete =
+      match Module_expr.to_concrete value with
+      | None -> conversion_failed "module_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_expr.pmod_desc in
     let concrete =
-      match Module_expr_desc.to_concrete value with
+      match Module_expr_desc.to_concrete desc with
       | None -> conversion_failed "module_expr_desc"
       | Some n -> n
     in
@@ -4942,8 +6454,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pmod_extension view value =
+    let parent_concrete =
+      match Module_expr.to_concrete value with
+      | None -> conversion_failed "module_expr"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Module_expr.pmod_desc in
     let concrete =
-      match Module_expr_desc.to_concrete value with
+      match Module_expr_desc.to_concrete desc with
       | None -> conversion_failed "module_expr_desc"
       | Some n -> n
     in
@@ -4968,8 +6486,14 @@ module V4_06 = struct
     view concrete.Structure_item.pstr_loc
 
   let pstr_eval view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -4978,8 +6502,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pstr_value view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -4988,8 +6518,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pstr_primitive view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -4998,8 +6534,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pstr_type view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -5008,8 +6550,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pstr_typext view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -5018,8 +6566,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pstr_exception view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -5028,8 +6582,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pstr_module view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -5038,8 +6598,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pstr_recmodule view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -5048,8 +6614,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pstr_modtype view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -5058,8 +6630,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pstr_open view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -5068,8 +6646,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pstr_class view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -5078,8 +6662,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pstr_class_type view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -5088,8 +6678,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pstr_include view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -5098,8 +6694,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pstr_attribute view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in
@@ -5108,8 +6710,14 @@ module V4_06 = struct
     | _ -> View.error
 
   let pstr_extension view value =
+    let parent_concrete =
+      match Structure_item.to_concrete value with
+      | None -> conversion_failed "structure_item"
+      | Some n -> n
+    in
+    let desc = parent_concrete.Structure_item.pstr_desc in
     let concrete =
-      match Structure_item_desc.to_concrete value with
+      match Structure_item_desc.to_concrete desc with
       | None -> conversion_failed "structure_item_desc"
       | Some n -> n
     in

@@ -10,13 +10,22 @@ module type VIEWER_PRINTER = sig
 
   val print_variant_viewer :
     name: string ->
+    shortcut: Shortcut.t option ->
     (string * Astlib.Grammar.clause) ->
     unit
 end
 
 module Structure : VIEWER_PRINTER = struct
-  let print_to_concrete node_name expr =
-    To_concrete.print_to_concrete_exn ~node_name expr
+  let print_to_concrete ~shortcut node_name expr =
+    match (shortcut : Shortcut.t option) with
+    | None ->
+      To_concrete.print_to_concrete_exn ~node_name expr
+    | Some {outter_record; desc_field; _} ->
+      To_concrete.print_to_concrete_exn
+        ~var_name:"parent_concrete" ~node_name:outter_record expr;
+      Print.println "let desc = parent_concrete.%s.%s in"
+        (Ml.module_name outter_record) desc_field;
+      To_concrete.print_to_concrete_exn ~node_name "desc"
 
   let tuple tyl =
     match tyl with
@@ -29,16 +38,16 @@ module Structure : VIEWER_PRINTER = struct
     Print.newline ();
     Print.println "let %s'match view value =" (Ml.id fname);
     Print.indented (fun () ->
-      print_to_concrete name "value";
+      print_to_concrete ~shortcut:None name "value";
       Print.println "view concrete.%s.%s" (Ml.module_name name) (Ml.id fname))
 
-  let print_variant_viewer ~name (cname, clause) =
+  let print_variant_viewer ~name ~shortcut (cname, clause) =
     match (clause : Astlib.Grammar.clause) with
     | Empty ->
       Print.newline ();
       Print.println "let %s value =" (Ml.id cname);
       Print.indented (fun () ->
-        print_to_concrete name "value";
+        print_to_concrete ~shortcut name "value";
         Print.println "match concrete with";
         Print.println "| %s.%s -> View.ok" (Ml.module_name name) (Ml.tag cname);
         Print.println "| _ -> View.error")
@@ -47,7 +56,7 @@ module Structure : VIEWER_PRINTER = struct
       Print.println "let %s view value =" (Ml.id cname);
       Print.indented (fun () ->
         let args = tuple tyl in
-        print_to_concrete name "value";
+        print_to_concrete ~shortcut name "value";
         Print.println "match concrete with";
         Print.println "| %s.%s %s -> view %s"
           (Ml.module_name name) (Ml.tag cname) args args;
@@ -65,6 +74,11 @@ module Signature : VIEWER_PRINTER = struct
   let view_t ty ~in_ ~out =
     Printf.sprintf "(%s, %s, %s) View.t" (string_of_ty ty) in_ out
 
+  let value_type ~shortcut name : Astlib.Grammar.ty =
+    match (shortcut : Shortcut.t option) with
+    | None -> Name name
+    | Some {outter_record; _} -> Name outter_record
+
   let print_field_viewer ~name (fname, ty) =
     Print.newline ();
     let in_, out = "'i", "'o" in
@@ -73,12 +87,13 @@ module Signature : VIEWER_PRINTER = struct
       (view_t ty ~in_ ~out)
       (view_t (Name name) ~in_ ~out)
 
-  let print_variant_viewer ~name (cname, clause) =
+  let print_variant_viewer ~name ~shortcut (cname, clause) =
+    let value_type = value_type ~shortcut name in
     match (clause : Astlib.Grammar.clause) with
     | Empty ->
       Print.newline ();
       let in_, out = "'a", "'a" in
-      Print.println "val %s : %s" (Ml.id cname) (view_t (Name name) ~in_ ~out)
+      Print.println "val %s : %s" (Ml.id cname) (view_t value_type ~in_ ~out)
     | Tuple tyl ->
       let in_, out = "'i", "'o" in
       let arg_type : Astlib.Grammar.ty =
@@ -89,11 +104,11 @@ module Signature : VIEWER_PRINTER = struct
       Print.println "val %s : %s -> %s"
         (Ml.id cname)
         (view_t arg_type ~in_ ~out)
-        (view_t (Name name) ~in_ ~out)
+        (view_t value_type ~in_ ~out)
     | Record _fields -> ()
 end
 
-let print_viewer ~what ~shortcuts:_ (name, kind) =
+let print_viewer ~what ~shortcuts (name, kind) =
   let (module M : VIEWER_PRINTER) =
     match what with
     | `Intf -> (module Signature)
@@ -108,7 +123,8 @@ let print_viewer ~what ~shortcuts:_ (name, kind) =
   | Mono decl ->
     (match decl with
      | Variant variants ->
-       List.iter variants ~f:(M.print_variant_viewer ~name)
+       let shortcut = Shortcut.Map.find shortcuts name in
+       List.iter variants ~f:(M.print_variant_viewer ~name ~shortcut)
      | Record fields ->
        List.iter fields ~f:(M.print_field_viewer ~name)
      | Alias _ ->
