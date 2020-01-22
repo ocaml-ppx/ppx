@@ -52,7 +52,13 @@ module Structure : VIEWER_PRINTER = struct
         Print.println "| %s.%s %s -> view %s"
           (Ml.module_name name) (Ml.tag cname) args args;
         Print.println "| _ -> View.error")
-    | Record _fields -> ()
+    | Record _fields ->
+      (* There are no inline records atm in the AST so it's okay to skip this.
+         If some were added in the future, we'd need either:
+         1. no sharing of field names accross different variant types and within
+         a variant type, fields with the same name also have the same type.
+         2. some deeper changes to ppx_view *)
+      ()
 end
 
 module Signature : VIEWER_PRINTER = struct
