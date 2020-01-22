@@ -136,7 +136,7 @@ let grammar : Grammar.t =
          ; "Ppat_unpack", Tuple [Loc String]
          ; "Ppat_exception", Tuple [Name "pattern"]
          ; "Ppat_extension", Tuple [Name "extension"]
-         ; "Ppat_open", Tuple [Name "longident_loc"; Name "Pattern"]
+         ; "Ppat_open", Tuple [Name "longident_loc"; Name "pattern"]
          ])
   ; "expression",
     Mono
@@ -500,7 +500,7 @@ let grammar : Grammar.t =
   ; "signature_item",
     Mono
       (Record
-         [ "psig_desc", Name "Signature_item_desc"
+         [ "psig_desc", Name "signature_item_desc"
          ; "psig_loc", Location
          ])
   ; "signature_item_desc",
