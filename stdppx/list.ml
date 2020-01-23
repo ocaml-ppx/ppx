@@ -168,3 +168,12 @@ let find_a_dup ~compare l =
     | hd::(hd'::_ as tl) -> if compare hd hd' = Eq then Some hd else loop tl
   in
   loop sorted
+
+let rec mem_sorted ~compare elm l =
+  match l with
+  | [] -> false
+  | hd::tl ->
+    (match (compare hd elm : Ordering.t) with
+     | Lt -> mem_sorted ~compare elm tl
+     | Eq -> true
+     | Gt -> false)

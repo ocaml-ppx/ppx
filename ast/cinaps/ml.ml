@@ -1,4 +1,19 @@
-open StdLabels
+open Stdppx
+
+let keywords =
+  [ "and"; "as"; "assert"; "asr"; "begin"; "class"; "constraint"; "do"; "done"
+  ; "downto"; "else"; "end"; "exception"; "external"; "false"; "for"; "fun"
+  ; "function"; "functor"; "if"; "in"; "include"; "inherit"; "initializer"
+  ; "land"; "lazy"; "let"; "lor"; "lsl"; "lsr"; "lxor"; "match"; "method"
+  ; "mod"; "module"; "mutable"; "new"; "nonrec"; "object"; "of"; "open"; "or"
+  ; "private"; "rec"; "sig"; "struct"; "then"; "to"; "true"; "try"; "type"
+  ; "val"; "virtual"; "when"; "while"; "with" ]
+
+let map_keyword s =
+  if List.mem_sorted ~compare:String.compare s keywords then
+    s ^ "_"
+  else
+    s
 
 let is_id_char = function
   | 'A' .. 'Z' -> true
@@ -14,7 +29,7 @@ let to_id_char char =
 
 let raw_id string = String.map string ~f:to_id_char
 
-let id string = String.lowercase_ascii (raw_id string)
+let id string = map_keyword (String.lowercase_ascii (raw_id string))
 let tvar string = "'" ^ id string
 let module_name string = String.capitalize_ascii (raw_id string)
 let tag string = String.capitalize_ascii (raw_id string)
