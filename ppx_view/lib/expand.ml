@@ -90,11 +90,12 @@ let same_variables ~err_loc vl vl' =
         name = name'
       | _ -> false)
 
-let apply_attr_field_fun field expr =
+let apply_attr_field_fun ~loc field expr =
   let {View_attr.label; label_loc; var_loc; _} = field in
-  let f = Located.lident ~loc:label_loc (label ^ "'field") in
+  let f = Located.lident ~loc:label_loc (label ^ "'match") in
   let capture_arg = Builder.Exp.view_lib_capture ~loc:var_loc in
-  Builder.Exp.apply_lident ~loc:label_loc f [capture_arg; expr]
+  let field_match = Builder.Exp.apply_lident ~loc:label_loc f [capture_arg] in
+  Builder.Exp.view_lib_sequence ~loc [field_match; expr]
 
 let add_attr_field_var field vars =
   let {View_attr.var; var_loc; _} = field in
@@ -114,7 +115,7 @@ let rec translate_pattern ~err_loc pattern =
       List.fold_right fields
         ~init:(expr, vars)
         ~f:(fun field (acc_expr, acc_vars) ->
-          let acc_expr = apply_attr_field_fun field acc_expr in
+          let acc_expr = apply_attr_field_fun ~loc:ppat_loc field acc_expr in
           let acc_vars = add_attr_field_var field acc_vars in
           (acc_expr, acc_vars))
 

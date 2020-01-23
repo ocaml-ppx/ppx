@@ -299,18 +299,6 @@ module Shortcut = struct
   let b'match view value = view value.b
 
   let c'match view value = view value.c
-
-  let a'field field_view view value =
-    let open Viewlib.View in
-    (field_view value.a) >>+ view value
-
-  let b'field field_view view value =
-    let open Viewlib.View in
-    (field_view value.b) >>+ view value
-
-  let c'field field_view view value =
-    let open Viewlib.View in
-    (field_view value.c) >>+ view value
 end
 
 let %expect_test "shortcut fields" =
