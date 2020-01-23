@@ -13,7 +13,7 @@ let invalid_payload ~loc =
 
 let invalid_attribute_payload ~loc =
   errorf ~loc
-    "Invalid @view attribute payload, should be a single record expression"
+    "Invalid @view attribute payload, should be a record pattern"
 
 let unsupported_pattern ~loc pattern =
   errorf ~loc "ppx_view doesn't support pattern matching over %s" pattern

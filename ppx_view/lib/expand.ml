@@ -90,18 +90,6 @@ let same_variables ~err_loc vl vl' =
         name = name'
       | _ -> false)
 
-let apply_attr_field_fun ~loc field expr =
-  let {View_attr.label; label_loc; var_loc; _} = field in
-  let f = Located.lident ~loc:label_loc (label ^ "'match") in
-  let capture_arg = Builder.Exp.view_lib_capture ~loc:var_loc in
-  let field_match = Builder.Exp.apply_lident ~loc:label_loc f [capture_arg] in
-  Builder.Exp.view_lib_sequence ~loc [field_match; expr]
-
-let add_attr_field_var field vars =
-  let {View_attr.var; var_loc; _} = field in
-  let var_pat = pvar ~loc:var_loc var in
-  var_pat::vars
-
 let rec translate_pattern ~err_loc pattern =
   match Pattern.to_concrete pattern with
   | None -> Error.conversion_failed ~loc:err_loc "pattern"
@@ -110,14 +98,14 @@ let rec translate_pattern ~err_loc pattern =
     let fields = View_attr.extract_fields ~err_loc ppat_attributes in
     match fields with
     | None -> translate_pattern_desc ~loc ppat_desc
-    | Some fields ->
+    | Some (fields_loc, fields) ->
       let expr, vars = translate_pattern_desc ~loc ppat_desc in
-      List.fold_right fields
-        ~init:(expr, vars)
-        ~f:(fun field (acc_expr, acc_vars) ->
-          let acc_expr = apply_attr_field_fun ~loc:ppat_loc field acc_expr in
-          let acc_vars = add_attr_field_var field acc_vars in
-          (acc_expr, acc_vars))
+      let field_exprs_vars =
+        List.map fields ~f:(translate_record_field ~loc:fields_loc)
+      in
+      let field_exprs, field_vars = List.split field_exprs_vars in
+      ( Builder.Exp.view_lib_sequence ~loc (field_exprs @ [expr])
+      , List.flatten field_vars @ vars )
 
 and translate_pattern_desc ~loc desc =
   match Pattern_desc.to_concrete desc with

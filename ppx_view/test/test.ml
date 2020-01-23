@@ -301,12 +301,22 @@ module Shortcut = struct
   let c'match view value = view value.c
 end
 
-let %expect_test "shortcut fields" =
+let%expect_test "shortcut fields" =
   let open Shortcut in
   (match%view {a = An_int 1; b = 2; c = 3} with
-   | An_int a [@view {b; c}] ->
+   | An_int a [@view? {b; c}] ->
      print_int a;
      print_int b;
      print_int c
+   | _ -> assert false);
+  [%expect {|123|}]
+
+let%expect_test "shortcut fields pattern" =
+  let open Shortcut in
+  (match%view {a = An_int 1; b = 2; c = 3} with
+   | An_int a [@view? {b = (2 as x); c = (_ as y)}] ->
+     print_int a;
+     print_int x;
+     print_int y
    | _ -> assert false);
   [%expect {|123|}]
