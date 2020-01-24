@@ -137,6 +137,7 @@ let print_viewer_ml () =
     let shortcuts = Shortcut.Map.from_grammar grammar in
     let version = Ml.module_name version in
     Print.println "open Versions.%s" version;
+    Print.println "include Loc_types";
     To_concrete.define_conversion_failed ~version;
     List.iter grammar ~f:(print_viewer ~what:`Impl ~shortcuts))
 
@@ -146,4 +147,5 @@ let print_viewer_mli () =
   Ml.declare_modules grammars ~f:(fun version grammar ->
     let shortcuts = Shortcut.Map.from_grammar grammar in
     Print.println "open Versions.%s" (Ml.module_name version);
+    Print.println "include LOC_TYPES";
     List.iter grammar ~f:(print_viewer ~what:`Intf ~shortcuts))

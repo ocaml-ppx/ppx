@@ -1,7 +1,37 @@
 open Viewlib
+
+module type LOC_TYPES = sig
+  val txt'match : ('a, 'i, 'o) View.t -> ('a Astlib.Loc.t, 'i, 'o) View.t
+  val loc'match : (Astlib.Location.t, 'i, 'o) View.t -> ('a Astlib.Loc.t, 'i, 'o) View.t
+
+  val loc_start'match : (Astlib.Position.t, 'i, 'o) View.t -> (Astlib.Location.t, 'i, 'o) View.t
+  val loc_end'match : (Astlib.Position.t, 'i, 'o) View.t -> (Astlib.Location.t, 'i, 'o) View.t
+  val loc_ghost'match : (bool, 'i, 'o) View.t -> (Astlib.Location.t, 'i, 'o) View.t
+
+  val pos_fname'match : (string, 'i, 'o) View.t -> (Astlib.Position.t, 'i, 'o) View.t
+  val pos_lnum'match : (int, 'i, 'o) View.t -> (Astlib.Position.t, 'i, 'o) View.t
+  val pos_bol'match : (int, 'i, 'o) View.t -> (Astlib.Position.t, 'i, 'o) View.t
+  val pos_cnum'match : (int, 'i, 'o) View.t -> (Astlib.Position.t, 'i, 'o) View.t
+end
+
+module Loc_types : LOC_TYPES = struct
+  let txt'match view value = view (Astlib.Loc.txt value)
+  let loc'match view value = view (Astlib.Loc.loc value)
+
+  let loc_start'match view value = view (Astlib.Location.start value)
+  let loc_end'match view value = view (Astlib.Location.end_ value)
+  let loc_ghost'match view value = view (Astlib.Location.ghost value)
+
+  let pos_fname'match view value = view (Astlib.Position.fname value)
+  let pos_lnum'match view value = view (Astlib.Position.lnum value)
+  let pos_bol'match view value = view (Astlib.Position.bol value)
+  let pos_cnum'match view value = view (Astlib.Position.cnum value)
+end
+
 (*$ Ppx_ast_cinaps.print_viewer_ml () *)
 module V4_07 = struct
   open Versions.V4_07
+  include Loc_types
 
   let conversion_failed name = Raise.conversion_failed ~version:"V4_07" name
 
@@ -3432,6 +3462,7 @@ end
 
 module V4_06 = struct
   open Versions.V4_06
+  include Loc_types
 
   let conversion_failed name = Raise.conversion_failed ~version:"V4_06" name
 

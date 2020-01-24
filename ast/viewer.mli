@@ -1,8 +1,23 @@
 open Viewlib
 
+module type LOC_TYPES = sig
+  val txt'match : ('a, 'i, 'o) View.t -> ('a Astlib.Loc.t, 'i, 'o) View.t
+  val loc'match : (Astlib.Location.t, 'i, 'o) View.t -> ('a Astlib.Loc.t, 'i, 'o) View.t
+
+  val loc_start'match : (Astlib.Position.t, 'i, 'o) View.t -> (Astlib.Location.t, 'i, 'o) View.t
+  val loc_end'match : (Astlib.Position.t, 'i, 'o) View.t -> (Astlib.Location.t, 'i, 'o) View.t
+  val loc_ghost'match : (bool, 'i, 'o) View.t -> (Astlib.Location.t, 'i, 'o) View.t
+
+  val pos_fname'match : (string, 'i, 'o) View.t -> (Astlib.Position.t, 'i, 'o) View.t
+  val pos_lnum'match : (int, 'i, 'o) View.t -> (Astlib.Position.t, 'i, 'o) View.t
+  val pos_bol'match : (int, 'i, 'o) View.t -> (Astlib.Position.t, 'i, 'o) View.t
+  val pos_cnum'match : (int, 'i, 'o) View.t -> (Astlib.Position.t, 'i, 'o) View.t
+end
+
 (*$ Ppx_ast_cinaps.print_viewer_mli () *)
 module V4_07 : sig
   open Versions.V4_07
+  include LOC_TYPES
   val lident : (string, 'i, 'o) View.t -> (Longident.t, 'i, 'o) View.t
   val ldot : ((Longident.t * string), 'i, 'o) View.t -> (Longident.t, 'i, 'o) View.t
   val lapply : ((Longident.t * Longident.t), 'i, 'o) View.t -> (Longident.t, 'i, 'o) View.t
@@ -401,6 +416,7 @@ end
 
 module V4_06 : sig
   open Versions.V4_06
+  include LOC_TYPES
   val lident : (string, 'i, 'o) View.t -> (Longident.t, 'i, 'o) View.t
   val ldot : ((Longident.t * string), 'i, 'o) View.t -> (Longident.t, 'i, 'o) View.t
   val lapply : ((Longident.t * Longident.t), 'i, 'o) View.t -> (Longident.t, 'i, 'o) View.t
