@@ -1,3 +1,4 @@
+module Builder = Builder
 module Conversion = Conversion
 module Compiler_types = Compiler_types
 module Traverse = Traverse
