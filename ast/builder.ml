@@ -1,3 +1,5 @@
+open Stdppx
+
 (*$ Ppx_ast_cinaps.print_builder_ml () *)
 module V4_07 = struct
   open Versions.V4_07
@@ -599,3 +601,91 @@ Value_binding.create ~pvb_pat:pat ~pvb_expr:expr ~pvb_attributes:(Attributes.of_
 Module_binding.create ~pmb_name:name ~pmb_expr:expr ~pmb_attributes:(Attributes.of_concrete []) ~pmb_loc:loc
 end
 (*$*)
+
+module Common = struct
+  open V4_07
+  open Versions.V4_07
+
+  module Located = struct
+    let longident ~loc longident =
+      Longident_loc.create (Astlib.Loc.create ~loc ~txt:longident ())
+
+    let lident ~loc x = longident ~loc (Longident.lident x)
+  end
+
+  let echar ~loc x = pexp_constant ~loc (Constant.pconst_char x)
+
+  let estring ~loc x = pexp_constant ~loc (Constant.pconst_string x None)
+
+  let eint ~loc x =
+    pexp_constant ~loc (Constant.pconst_integer (Int.to_string x) None)
+
+  let eint32 ~loc x =
+    pexp_constant ~loc (Constant.pconst_integer (Int32.to_string x) (Some 'l'))
+
+  let eint64 ~loc x =
+    pexp_constant ~loc (Constant.pconst_integer (Int64.to_string x) (Some 'L'))
+
+  let enativeint ~loc x =
+    pexp_constant ~loc (Constant.pconst_integer (Nativeint.to_string x) (Some 'n'))
+
+  let efloat ~loc x =
+    pexp_constant ~loc (Constant.pconst_float (Float.to_string x) None)
+
+  let eunit ~loc =
+    pexp_construct ~loc (Located.lident ~loc "()") None
+
+  let ebool ~loc x = pexp_construct ~loc (Located.lident ~loc (Bool.to_string x)) None
+
+  let enil ~loc = pexp_construct ~loc (Located.lident ~loc "[]") None
+
+  let elist ~loc exprs =
+    let nil = enil ~loc in
+    let cons expr list_expr =
+      pexp_construct ~loc
+        (Located.lident ~loc "::")
+        (Some (pexp_tuple ~loc [expr; list_expr]))
+    in
+    List.fold_right exprs ~f:cons ~init:nil
+
+  let eapply ~loc fun_expr args =
+    pexp_apply ~loc
+      fun_expr
+      (List.map args ~f:(fun expr -> (Arg_label.nolabel, expr)))
+
+  let pchar ~loc x = ppat_constant ~loc (Constant.pconst_char x)
+
+  let pstring ~loc x = ppat_constant ~loc (Constant.pconst_string x None)
+
+  let pint ~loc x =
+    ppat_constant ~loc (Constant.pconst_integer (Int.to_string x) None)
+
+  let pint32 ~loc x =
+    ppat_constant ~loc (Constant.pconst_integer (Int32.to_string x) (Some 'l'))
+
+  let pint64 ~loc x =
+    ppat_constant ~loc (Constant.pconst_integer (Int64.to_string x) (Some 'L'))
+
+  let pnativeint ~loc x =
+    ppat_constant ~loc (Constant.pconst_integer (Nativeint.to_string x) (Some 'n'))
+
+  let pfloat ~loc x =
+    ppat_constant ~loc (Constant.pconst_float (Float.to_string x) None)
+
+  let punit ~loc = ppat_construct ~loc (Located.lident ~loc "()") None
+
+  let pbool ~loc x = ppat_construct ~loc (Located.lident ~loc (Bool.to_string x)) None
+
+  let pnil ~loc = ppat_construct ~loc (Located.lident ~loc "[]") None
+
+  let pvar ~loc x = ppat_var ~loc (Astlib.Loc.create ~loc ~txt:x ())
+
+  let plist ~loc exprs =
+    let nil = pnil ~loc in
+    let cons pat list_pat =
+      ppat_construct ~loc
+        (Located.lident ~loc "::")
+        (Some (ppat_tuple ~loc [pat; list_pat]))
+    in
+    List.fold_right exprs ~f:cons ~init:nil
+end
