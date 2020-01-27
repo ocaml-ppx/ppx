@@ -1,12 +1,17 @@
 open Stdppx
 open Ppx_ast.V4_07
 
+module Ast_builder = struct
+  include Ppx_ast.Builder
+  include Ppx_ast.Builder.V4_07
+end
+
 (** Generates functions akin to `View.tuple{2,3,4}` for arbitrary order *)
 let inline_tuple_function ~loc n =
   let view idx = Printf.sprintf "view%d" idx in
   let value idx = Printf.sprintf "value%d" idx in
   let component idx =
-    let view_idx = Builder.lident_loc ~loc (view idx) in
+    let view_idx = Ast_builder.Located.lident ~loc (view idx) in
     let value_idx = Builder.Exp.lident ~loc (value idx) in
     Builder.Exp.apply_lident ~loc (view_idx) [value_idx]
   in
@@ -21,25 +26,21 @@ let inline_tuple_function ~loc n =
     if idx <= 0 then
       acc
     else
-      values (Builder.Pat.var ~loc (value idx)::acc) (idx - 1)
+      values (Ast_builder.pvar ~loc (value idx)::acc) (idx - 1)
   in
-  let values_tuple =
-    Builder.pattern ~loc (Pattern_desc.ppat_tuple (values [] n))
-  in
+  let values_tuple = Ast_builder.ppat_tuple ~loc (values [] n) in
   let res =
-    Builder.expression ~loc
-      (Expression_desc.pexp_fun Arg_label.nolabel None values_tuple (body 1))
+    Ast_builder.pexp_fun ~loc Arg_label.nolabel None values_tuple (body 1)
   in
   let rec fun_ idx =
     if idx > n then
       res
     else
-      Builder.expression ~loc
-        (Expression_desc.pexp_fun
-           Arg_label.nolabel
-           None
-           (Builder.Pat.var ~loc (view idx))
-           (fun_ (idx + 1)))
+      Ast_builder.pexp_fun ~loc
+        Arg_label.nolabel
+        None
+        (Ast_builder.pvar ~loc (view idx))
+        (fun_ (idx + 1))
   in
   fun_ 1
 
@@ -59,17 +60,16 @@ let translate_ctor_ident ~loc (ident : Longident.concrete) =
   | Lident s ->
     (match predefined_ident ~loc s with
      | Some ident -> ident
-     | None -> Builder.lident_loc ~loc (String.uncapitalize_ascii s))
+     | None -> Ast_builder.Located.lident ~loc (String.uncapitalize_ascii s))
   | Ldot (li, s) ->
-    Builder.longident_loc ~loc (Longident.ldot li (String.uncapitalize_ascii s))
+    Ast_builder.Located.longident ~loc (Longident.ldot li (String.uncapitalize_ascii s))
   | (Lapply _) as li ->
-    Builder.longident_loc ~loc (Longident.of_concrete li)
+    Ast_builder.Located.longident ~loc (Longident.of_concrete li)
 
 let translate_constant ~loc constant =
   let make name =
     let f = Builder.view_lib_ident ~loc name in
-    Builder.Exp.apply_lident ~loc f
-      [Builder.expression ~loc (Expression_desc.pexp_constant constant)]
+    Builder.Exp.apply_lident ~loc f [Ast_builder.pexp_constant ~loc constant]
   in
   match Constant.to_concrete constant with
   | None -> Error.conversion_failed ~loc "constant"
@@ -98,13 +98,13 @@ let same_variables ~err_loc vl vl' =
 
 let apply_attr_field_fun field expr =
   let {View_attr.label; label_loc; var_loc; _} = field in
-  let f = Builder.lident_loc ~loc:label_loc (label ^ "'field") in
+  let f = Ast_builder.Located.lident ~loc:label_loc (label ^ "'field") in
   let capture_arg = Builder.Exp.view_lib_capture ~loc:var_loc in
   Builder.Exp.apply_lident ~loc:label_loc f [capture_arg; expr]
 
 let add_attr_field_var field vars =
   let {View_attr.var; var_loc; _} = field in
-  let var_pat = Builder.Pat.var ~loc:var_loc var in
+  let var_pat = Ast_builder.pvar ~loc:var_loc var in
   var_pat::vars
 
 let rec translate_pattern ~err_loc pattern =
