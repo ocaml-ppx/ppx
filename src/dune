@@ -7,6 +7,7 @@
   ocaml-compiler-libs.shadow
   ocaml-migrate-parsetree
   ppx.ast_deprecated
+  ppx.bootstrap
   ppx.print_diff
   ppx_derivers
   ppx_traverse_builtins

@@ -1,0 +1,5 @@
+(library
+ (name ppx_bootstrap)
+ (public_name ppx.bootstrap)
+ (libraries ocaml-compiler-libs.common stdppx ppx.ast)
+ (flags (:standard -safe-string)))

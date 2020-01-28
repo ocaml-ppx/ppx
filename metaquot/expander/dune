@@ -4,6 +4,6 @@
  (flags (:standard -safe-string))
  (libraries
   stdppx
-  ppx
   ppx.ast
+  ppx.bootstrap
   ppx.metaquot_lifters))
