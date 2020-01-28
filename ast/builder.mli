@@ -1387,3 +1387,40 @@ module V4_06 : sig
     -> Module_binding.t
 end
 (*$*)
+
+module Common : sig
+  module Located : sig
+    val longident : loc: Astlib.Location.t -> Versions.longident -> Versions.longident_loc
+    val lident : loc: Astlib.Location.t -> string -> Versions.longident_loc
+  end
+
+  val echar : loc: Astlib.Location.t -> char -> Versions.expression
+  val estring : loc: Astlib.Location.t -> string -> Versions.expression
+  val eint : loc: Astlib.Location.t -> int -> Versions.expression
+  val eint32 : loc: Astlib.Location.t -> int32 -> Versions.expression
+  val eint64 : loc: Astlib.Location.t -> int64 -> Versions.expression
+  val enativeint : loc: Astlib.Location.t -> nativeint -> Versions.expression
+  val efloat : loc: Astlib.Location.t -> float -> Versions.expression
+  val eunit : loc: Astlib.Location.t -> Versions.expression
+  val ebool : loc: Astlib.Location.t -> bool -> Versions.expression
+  val enil : loc: Astlib.Location.t -> Versions.expression
+  val elist : loc: Astlib.Location.t -> Versions.expression list -> Versions.expression
+  val eapply :
+    loc : Astlib.Location.t ->
+    Versions.expression ->
+    Versions.expression list ->
+    Versions.expression
+
+  val pchar : loc: Astlib.Location.t -> char -> Versions.pattern
+  val pstring : loc: Astlib.Location.t -> string -> Versions.pattern
+  val pint : loc: Astlib.Location.t -> int -> Versions.pattern
+  val pint32 : loc: Astlib.Location.t -> int32 -> Versions.pattern
+  val pint64 : loc: Astlib.Location.t -> int64 -> Versions.pattern
+  val pnativeint : loc: Astlib.Location.t -> nativeint -> Versions.pattern
+  val pfloat : loc: Astlib.Location.t -> float -> Versions.pattern
+  val pvar : loc: Astlib.Location.t -> string -> Versions.pattern
+  val punit : loc: Astlib.Location.t -> Versions.pattern
+  val pbool : loc: Astlib.Location.t -> bool -> Versions.pattern
+  val pnil : loc: Astlib.Location.t -> Versions.pattern
+  val plist : loc: Astlib.Location.t -> Versions.pattern list -> Versions.pattern
+end

@@ -1,12 +1,11 @@
-open Stdppx
-open Ppx_ast.V4_07
+open Import
 
 (** Generates functions akin to `View.tuple{2,3,4}` for arbitrary order *)
 let inline_tuple_function ~loc n =
   let view idx = Printf.sprintf "view%d" idx in
   let value idx = Printf.sprintf "value%d" idx in
   let component idx =
-    let view_idx = Builder.lident_loc ~loc (view idx) in
+    let view_idx = Located.lident ~loc (view idx) in
     let value_idx = Builder.Exp.lident ~loc (value idx) in
     Builder.Exp.apply_lident ~loc (view_idx) [value_idx]
   in
@@ -21,25 +20,21 @@ let inline_tuple_function ~loc n =
     if idx <= 0 then
       acc
     else
-      values (Builder.Pat.var ~loc (value idx)::acc) (idx - 1)
+      values (pvar ~loc (value idx)::acc) (idx - 1)
   in
-  let values_tuple =
-    Builder.pattern ~loc (Pattern_desc.ppat_tuple (values [] n))
-  in
+  let values_tuple = ppat_tuple ~loc (values [] n) in
   let res =
-    Builder.expression ~loc
-      (Expression_desc.pexp_fun Arg_label.nolabel None values_tuple (body 1))
+    pexp_fun ~loc Arg_label.nolabel None values_tuple (body 1)
   in
   let rec fun_ idx =
     if idx > n then
       res
     else
-      Builder.expression ~loc
-        (Expression_desc.pexp_fun
-           Arg_label.nolabel
-           None
-           (Builder.Pat.var ~loc (view idx))
-           (fun_ (idx + 1)))
+      pexp_fun ~loc
+        Arg_label.nolabel
+        None
+        (pvar ~loc (view idx))
+        (fun_ (idx + 1))
   in
   fun_ 1
 
@@ -59,17 +54,16 @@ let translate_ctor_ident ~loc (ident : Longident.concrete) =
   | Lident s ->
     (match predefined_ident ~loc s with
      | Some ident -> ident
-     | None -> Builder.lident_loc ~loc (String.uncapitalize_ascii s))
+     | None -> Located.lident ~loc (String.uncapitalize_ascii s))
   | Ldot (li, s) ->
-    Builder.longident_loc ~loc (Longident.ldot li (String.uncapitalize_ascii s))
+    Located.longident ~loc (Longident.ldot li (String.uncapitalize_ascii s))
   | (Lapply _) as li ->
-    Builder.longident_loc ~loc (Longident.of_concrete li)
+    Located.longident ~loc (Longident.of_concrete li)
 
 let translate_constant ~loc constant =
   let make name =
     let f = Builder.view_lib_ident ~loc name in
-    Builder.Exp.apply_lident ~loc f
-      [Builder.expression ~loc (Expression_desc.pexp_constant constant)]
+    Builder.Exp.apply_lident ~loc f [pexp_constant ~loc constant]
   in
   match Constant.to_concrete constant with
   | None -> Error.conversion_failed ~loc "constant"
@@ -98,13 +92,13 @@ let same_variables ~err_loc vl vl' =
 
 let apply_attr_field_fun field expr =
   let {View_attr.label; label_loc; var_loc; _} = field in
-  let f = Builder.lident_loc ~loc:label_loc (label ^ "'field") in
+  let f = Located.lident ~loc:label_loc (label ^ "'field") in
   let capture_arg = Builder.Exp.view_lib_capture ~loc:var_loc in
   Builder.Exp.apply_lident ~loc:label_loc f [capture_arg; expr]
 
 let add_attr_field_var field vars =
   let {View_attr.var; var_loc; _} = field in
-  let var_pat = Builder.Pat.var ~loc:var_loc var in
+  let var_pat = pvar ~loc:var_loc var in
   var_pat::vars
 
 let rec translate_pattern ~err_loc pattern =
@@ -131,12 +125,12 @@ and translate_pattern_desc ~loc desc =
   | Some Ppat_any ->
     ( Builder.Exp.view_lib_drop ~loc
     , [] )
-  | Some (Ppat_var _) ->
+  | Some (Ppat_var v) ->
     ( Builder.Exp.view_lib_capture ~loc
-    , [Builder.pattern ~loc desc] )
+    , [ppat_var ~loc v] )
   | Some (Ppat_alias (patt, alias)) ->
     let expr, vars = translate_pattern ~err_loc:loc patt in
-    let alias_var = Builder.pattern ~loc (Pattern_desc.ppat_var alias) in
+    let alias_var = ppat_var ~loc alias in
     ( Builder.Exp.view_lib_sequence ~loc
         [Builder.Exp.view_lib_capture ~loc; expr]
     , alias_var :: vars )
@@ -153,7 +147,7 @@ and translate_pattern_desc ~loc desc =
   | Some (Ppat_construct (ctor_ident, None)) ->
     let ctor_loc, ctor_ident = Deconstructor.longident_loc ~loc ctor_ident in
     let f = translate_ctor_ident ~loc:ctor_loc ctor_ident in
-    ( Builder.expression ~loc (Expression_desc.pexp_ident f)
+    ( pexp_ident ~loc f
     , [] )
   | Some (Ppat_construct (ctor_ident, Some patt)) ->
     let ctor_loc, ctor_ident = Deconstructor.longident_loc ~loc ctor_ident in
@@ -192,12 +186,11 @@ and translate_pattern_desc ~loc desc =
     translate_array ~loc patts
   | Some (Ppat_constraint (patt, ctyp)) ->
     let expr, vars = translate_pattern ~err_loc:loc patt in
-    ( Builder.expression ~loc (Expression_desc.pexp_constraint expr ctyp)
+    ( pexp_constraint ~loc expr ctyp
     , vars )
   | Some (Ppat_open (lid, patt)) ->
     let expr, vars = translate_pattern ~err_loc:loc patt in
-    ( Builder.expression ~loc
-        (Expression_desc.pexp_open Override_flag.override lid expr)
+    ( pexp_open ~loc Override_flag.override lid expr
     , vars )
   | Some (Ppat_variant _) ->
     Error.unsupported_pattern ~loc "polymorphic variants"
@@ -228,7 +221,7 @@ and translate_tuple ~loc patts =
   | len ->
     assert (len > 4);
     let f = inline_tuple_function ~loc len in
-    ( Builder.Exp.apply ~loc f exprs
+    ( eapply ~loc f exprs
     , vars )
 
 and translate_record_field ~loc (label, patt) =
@@ -236,7 +229,7 @@ and translate_record_field ~loc (label, patt) =
   match label with
   | Lident label ->
     let expr, vars = translate_pattern ~err_loc:label_loc patt in
-    let f = Builder.lident_loc ~loc:label_loc (label ^ "'match") in
+    let f = Located.lident ~loc:label_loc (label ^ "'match") in
     ( Builder.Exp.apply_lident ~loc:label_loc f [expr]
     , vars )
   | _ ->
@@ -266,18 +259,16 @@ let translate_case_body ~loc ~vars ~pc_guard ~pc_rhs =
       Case.create ~pc_lhs:vars_cons_pattern ~pc_guard ~pc_rhs
     in
     let guard_failed_case =
-      let pc_lhs = Builder.pattern ~loc Pattern_desc.ppat_any in
+      let pc_lhs = ppat_any ~loc in
       let pc_rhs =
         let f = Builder.view_lib_ident ~loc "guard_failed" in
-        Builder.Exp.(apply_lident ~loc f [unit ~loc])
+        Builder.Exp.(apply_lident ~loc f [eunit ~loc])
       in
       Case.create ~pc_lhs ~pc_guard:None ~pc_rhs
     in
-    Builder.expression ~loc
-      (Expression_desc.pexp_function [guarded_case; guard_failed_case])
+    pexp_function ~loc [guarded_case; guard_failed_case]
   | None ->
-    Builder.expression ~loc
-      (Expression_desc.pexp_fun Arg_label.nolabel None vars_cons_pattern pc_rhs)
+    pexp_fun ~loc Arg_label.nolabel None vars_cons_pattern pc_rhs
 
 let translate_case ~loc ~err_loc match_case =
   match Case.to_concrete match_case with
@@ -294,21 +285,12 @@ let pos_argument loc =
   let lnum = Astlib.Position.lnum start in
   let cnum = Astlib.Position.cnum start in
   let fname = Astlib.Position.fname start in
-  let string x =
-    Builder.expression ~loc
-      (Expression_desc.pexp_constant (Constant.pconst_string x None))
-  in
-  let int x =
-    Builder.expression ~loc
-      (Expression_desc.pexp_constant (Constant.pconst_integer (string_of_int x) None))
-  in
-  Builder.expression ~loc
-    (Expression_desc.pexp_tuple [string fname; int lnum; int (cnum - bol)])
+  pexp_tuple ~loc [estring ~loc fname; eint ~loc lnum; eint ~loc (cnum - bol)]
 
 let translate_match ~loc ~err_loc ?match_expr match_cases =
   let pos = pos_argument loc in
   let cases = List.map match_cases ~f:(translate_case ~err_loc ~loc) in
-  let cases_arg = Builder.Exp.list_lit ~loc cases in
+  let cases_arg = elist ~loc cases in
   let args =
     match match_expr with
     | Some expr -> [pos; cases_arg; expr]

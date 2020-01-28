@@ -2,17 +2,6 @@
 
 open Ppx_ast.V4_07
 
-(** Builds an expression w/o attributes. *)
-val expression : loc: Astlib.Location.t -> Expression_desc.t -> Expression.t
-
-(** Builds a pattern w/o attributes. *)
-val pattern : loc: Astlib.Location.t -> Pattern_desc.t -> Pattern.t
-
-val longident_loc: loc: Astlib.Location.t -> Longident.t -> Longident_loc.t
-
-(** [lident_loc ~loc s] builds a [Lident s] with loc [loc]. *)
-val lident_loc : loc: Astlib.Location.t -> string -> Longident_loc.t
-
 (** Builds an identifier prefixed by the ppx_view runtime library module
     path. *)
 val view_lib_ident : loc: Astlib.Location.t -> string -> Longident_loc.t
@@ -30,25 +19,11 @@ module Exp : sig
   (** Helpers for building expressions *)
 
   (** Builds a function application with unlabelled arguments. *)
-  val apply :
-    loc: Astlib.Location.t ->
-    Expression.t ->
-    Expression.t list ->
-    Expression.t
-
-  (** Same as [apply] but takes a function identifier instead of an arbitrary
-      expression. *)
   val apply_lident :
     loc: Astlib.Location.t ->
     Longident_loc.t ->
     Expression.t list ->
     Expression.t
-
-  (** Builds a list literal expression. *)
-  val list_lit : loc: Astlib.Location.t -> Expression.t list -> Expression.t
-
-  (** Builds [()] *)
-  val unit : loc: Astlib.Location.t -> Expression.t
 
   (** Same as [lident_loc] but wraps it into an expression. *)
   val lident : loc: Astlib.Location.t -> string -> Expression.t
@@ -73,9 +48,6 @@ end
 
 module Pat : sig
   (** Helpers for building patterns *)
-
-  (** Builds a variable pattern from the variable name. *)
-  val var : loc: Astlib.Location.t -> string -> Pattern.t
 
   (** Builds a pattern for runtime lib's [Var_nil] *)
   val view_lib_var_nil : loc: Astlib.Location.t -> Pattern.t
