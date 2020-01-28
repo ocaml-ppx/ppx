@@ -1,5 +1,8 @@
 (library
  (name ppx_metaquot_test)
- (public_name ppx.metaquot_test)
  (libraries ppx)
- (preprocess (pps ppx.metaquot ppx.runner)))
+ (preprocess (pps ppx.metaquot)))
+
+(alias
+ (name runtest)
+ (deps (alias check)))
