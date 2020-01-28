@@ -2,6 +2,8 @@
 module V4_07 = struct
   open Versions.V4_07
 
+  let conversion_failed name = Raise.conversion_failed ~version:"V4_07" name
+
   class virtual map =
     object (self)
       method virtual bool : bool -> bool
@@ -16,7 +18,7 @@ module V4_07 = struct
         fun longident ->
           let concrete =
             match Longident.to_concrete longident with
-            | None -> failwith "longident"
+            | None -> conversion_failed "longident"
             | Some n -> n
           in
           match (concrete : Longident.concrete) with
@@ -35,7 +37,7 @@ module V4_07 = struct
         fun longident_loc ->
           let concrete =
             match Longident_loc.to_concrete longident_loc with
-            | None -> failwith "longident_loc"
+            | None -> conversion_failed "longident_loc"
             | Some n -> n
           in
           let concrete = self#loc self#longident concrete in
@@ -44,7 +46,7 @@ module V4_07 = struct
         fun rec_flag ->
           let concrete =
             match Rec_flag.to_concrete rec_flag with
-            | None -> failwith "rec_flag"
+            | None -> conversion_failed "rec_flag"
             | Some n -> n
           in
           match (concrete : Rec_flag.concrete) with
@@ -56,7 +58,7 @@ module V4_07 = struct
         fun direction_flag ->
           let concrete =
             match Direction_flag.to_concrete direction_flag with
-            | None -> failwith "direction_flag"
+            | None -> conversion_failed "direction_flag"
             | Some n -> n
           in
           match (concrete : Direction_flag.concrete) with
@@ -68,7 +70,7 @@ module V4_07 = struct
         fun private_flag ->
           let concrete =
             match Private_flag.to_concrete private_flag with
-            | None -> failwith "private_flag"
+            | None -> conversion_failed "private_flag"
             | Some n -> n
           in
           match (concrete : Private_flag.concrete) with
@@ -80,7 +82,7 @@ module V4_07 = struct
         fun mutable_flag ->
           let concrete =
             match Mutable_flag.to_concrete mutable_flag with
-            | None -> failwith "mutable_flag"
+            | None -> conversion_failed "mutable_flag"
             | Some n -> n
           in
           match (concrete : Mutable_flag.concrete) with
@@ -92,7 +94,7 @@ module V4_07 = struct
         fun virtual_flag ->
           let concrete =
             match Virtual_flag.to_concrete virtual_flag with
-            | None -> failwith "virtual_flag"
+            | None -> conversion_failed "virtual_flag"
             | Some n -> n
           in
           match (concrete : Virtual_flag.concrete) with
@@ -104,7 +106,7 @@ module V4_07 = struct
         fun override_flag ->
           let concrete =
             match Override_flag.to_concrete override_flag with
-            | None -> failwith "override_flag"
+            | None -> conversion_failed "override_flag"
             | Some n -> n
           in
           match (concrete : Override_flag.concrete) with
@@ -116,7 +118,7 @@ module V4_07 = struct
         fun closed_flag ->
           let concrete =
             match Closed_flag.to_concrete closed_flag with
-            | None -> failwith "closed_flag"
+            | None -> conversion_failed "closed_flag"
             | Some n -> n
           in
           match (concrete : Closed_flag.concrete) with
@@ -128,7 +130,7 @@ module V4_07 = struct
         fun label ->
           let concrete =
             match Label.to_concrete label with
-            | None -> failwith "label"
+            | None -> conversion_failed "label"
             | Some n -> n
           in
           let concrete = self#string concrete in
@@ -137,7 +139,7 @@ module V4_07 = struct
         fun arg_label ->
           let concrete =
             match Arg_label.to_concrete arg_label with
-            | None -> failwith "arg_label"
+            | None -> conversion_failed "arg_label"
             | Some n -> n
           in
           match (concrete : Arg_label.concrete) with
@@ -153,7 +155,7 @@ module V4_07 = struct
         fun variance ->
           let concrete =
             match Variance.to_concrete variance with
-            | None -> failwith "variance"
+            | None -> conversion_failed "variance"
             | Some n -> n
           in
           match (concrete : Variance.concrete) with
@@ -167,7 +169,7 @@ module V4_07 = struct
         fun constant ->
           let concrete =
             match Constant.to_concrete constant with
-            | None -> failwith "constant"
+            | None -> conversion_failed "constant"
             | Some n -> n
           in
           match (concrete : Constant.concrete) with
@@ -190,7 +192,7 @@ module V4_07 = struct
         fun attribute ->
           let concrete =
             match Attribute.to_concrete attribute with
-            | None -> failwith "attribute"
+            | None -> conversion_failed "attribute"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -201,7 +203,7 @@ module V4_07 = struct
         fun extension ->
           let concrete =
             match Extension.to_concrete extension with
-            | None -> failwith "extension"
+            | None -> conversion_failed "extension"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -212,7 +214,7 @@ module V4_07 = struct
         fun attributes ->
           let concrete =
             match Attributes.to_concrete attributes with
-            | None -> failwith "attributes"
+            | None -> conversion_failed "attributes"
             | Some n -> n
           in
           let concrete = self#list self#attribute concrete in
@@ -221,7 +223,7 @@ module V4_07 = struct
         fun payload ->
           let concrete =
             match Payload.to_concrete payload with
-            | None -> failwith "payload"
+            | None -> conversion_failed "payload"
             | Some n -> n
           in
           match (concrete : Payload.concrete) with
@@ -242,7 +244,7 @@ module V4_07 = struct
         fun core_type ->
           let concrete =
             match Core_type.to_concrete core_type with
-            | None -> failwith "core_type"
+            | None -> conversion_failed "core_type"
             | Some n -> n
           in
           let { ptyp_desc; ptyp_loc; ptyp_attributes } : Core_type.concrete = concrete in
@@ -254,7 +256,7 @@ module V4_07 = struct
         fun core_type_desc ->
           let concrete =
             match Core_type_desc.to_concrete core_type_desc with
-            | None -> failwith "core_type_desc"
+            | None -> conversion_failed "core_type_desc"
             | Some n -> n
           in
           match (concrete : Core_type_desc.concrete) with
@@ -306,7 +308,7 @@ module V4_07 = struct
         fun package_type ->
           let concrete =
             match Package_type.to_concrete package_type with
-            | None -> failwith "package_type"
+            | None -> conversion_failed "package_type"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -317,7 +319,7 @@ module V4_07 = struct
         fun row_field ->
           let concrete =
             match Row_field.to_concrete row_field with
-            | None -> failwith "row_field"
+            | None -> conversion_failed "row_field"
             | Some n -> n
           in
           match (concrete : Row_field.concrete) with
@@ -334,7 +336,7 @@ module V4_07 = struct
         fun object_field ->
           let concrete =
             match Object_field.to_concrete object_field with
-            | None -> failwith "object_field"
+            | None -> conversion_failed "object_field"
             | Some n -> n
           in
           match (concrete : Object_field.concrete) with
@@ -350,7 +352,7 @@ module V4_07 = struct
         fun pattern ->
           let concrete =
             match Pattern.to_concrete pattern with
-            | None -> failwith "pattern"
+            | None -> conversion_failed "pattern"
             | Some n -> n
           in
           let { ppat_desc; ppat_loc; ppat_attributes } : Pattern.concrete = concrete in
@@ -362,7 +364,7 @@ module V4_07 = struct
         fun pattern_desc ->
           let concrete =
             match Pattern_desc.to_concrete pattern_desc with
-            | None -> failwith "pattern_desc"
+            | None -> conversion_failed "pattern_desc"
             | Some n -> n
           in
           match (concrete : Pattern_desc.concrete) with
@@ -431,7 +433,7 @@ module V4_07 = struct
         fun expression ->
           let concrete =
             match Expression.to_concrete expression with
-            | None -> failwith "expression"
+            | None -> conversion_failed "expression"
             | Some n -> n
           in
           let { pexp_desc; pexp_loc; pexp_attributes } : Expression.concrete = concrete in
@@ -443,7 +445,7 @@ module V4_07 = struct
         fun expression_desc ->
           let concrete =
             match Expression_desc.to_concrete expression_desc with
-            | None -> failwith "expression_desc"
+            | None -> conversion_failed "expression_desc"
             | Some n -> n
           in
           match (concrete : Expression_desc.concrete) with
@@ -592,7 +594,7 @@ module V4_07 = struct
         fun case ->
           let concrete =
             match Case.to_concrete case with
-            | None -> failwith "case"
+            | None -> conversion_failed "case"
             | Some n -> n
           in
           let { pc_lhs; pc_guard; pc_rhs } : Case.concrete = concrete in
@@ -604,7 +606,7 @@ module V4_07 = struct
         fun value_description ->
           let concrete =
             match Value_description.to_concrete value_description with
-            | None -> failwith "value_description"
+            | None -> conversion_failed "value_description"
             | Some n -> n
           in
           let { pval_name; pval_type; pval_prim; pval_attributes; pval_loc } : Value_description.concrete = concrete in
@@ -618,7 +620,7 @@ module V4_07 = struct
         fun type_declaration ->
           let concrete =
             match Type_declaration.to_concrete type_declaration with
-            | None -> failwith "type_declaration"
+            | None -> conversion_failed "type_declaration"
             | Some n -> n
           in
           let { ptype_name; ptype_params; ptype_cstrs; ptype_kind; ptype_private; ptype_manifest; ptype_attributes; ptype_loc } : Type_declaration.concrete = concrete in
@@ -635,7 +637,7 @@ module V4_07 = struct
         fun type_kind ->
           let concrete =
             match Type_kind.to_concrete type_kind with
-            | None -> failwith "type_kind"
+            | None -> conversion_failed "type_kind"
             | Some n -> n
           in
           match (concrete : Type_kind.concrete) with
@@ -653,7 +655,7 @@ module V4_07 = struct
         fun label_declaration ->
           let concrete =
             match Label_declaration.to_concrete label_declaration with
-            | None -> failwith "label_declaration"
+            | None -> conversion_failed "label_declaration"
             | Some n -> n
           in
           let { pld_name; pld_mutable; pld_type; pld_loc; pld_attributes } : Label_declaration.concrete = concrete in
@@ -667,7 +669,7 @@ module V4_07 = struct
         fun constructor_declaration ->
           let concrete =
             match Constructor_declaration.to_concrete constructor_declaration with
-            | None -> failwith "constructor_declaration"
+            | None -> conversion_failed "constructor_declaration"
             | Some n -> n
           in
           let { pcd_name; pcd_args; pcd_res; pcd_loc; pcd_attributes } : Constructor_declaration.concrete = concrete in
@@ -681,7 +683,7 @@ module V4_07 = struct
         fun constructor_arguments ->
           let concrete =
             match Constructor_arguments.to_concrete constructor_arguments with
-            | None -> failwith "constructor_arguments"
+            | None -> conversion_failed "constructor_arguments"
             | Some n -> n
           in
           match (concrete : Constructor_arguments.concrete) with
@@ -695,7 +697,7 @@ module V4_07 = struct
         fun type_extension ->
           let concrete =
             match Type_extension.to_concrete type_extension with
-            | None -> failwith "type_extension"
+            | None -> conversion_failed "type_extension"
             | Some n -> n
           in
           let { ptyext_path; ptyext_params; ptyext_constructors; ptyext_private; ptyext_attributes } : Type_extension.concrete = concrete in
@@ -709,7 +711,7 @@ module V4_07 = struct
         fun extension_constructor ->
           let concrete =
             match Extension_constructor.to_concrete extension_constructor with
-            | None -> failwith "extension_constructor"
+            | None -> conversion_failed "extension_constructor"
             | Some n -> n
           in
           let { pext_name; pext_kind; pext_loc; pext_attributes } : Extension_constructor.concrete = concrete in
@@ -722,7 +724,7 @@ module V4_07 = struct
         fun extension_constructor_kind ->
           let concrete =
             match Extension_constructor_kind.to_concrete extension_constructor_kind with
-            | None -> failwith "extension_constructor_kind"
+            | None -> conversion_failed "extension_constructor_kind"
             | Some n -> n
           in
           match (concrete : Extension_constructor_kind.concrete) with
@@ -737,7 +739,7 @@ module V4_07 = struct
         fun class_type ->
           let concrete =
             match Class_type.to_concrete class_type with
-            | None -> failwith "class_type"
+            | None -> conversion_failed "class_type"
             | Some n -> n
           in
           let { pcty_desc; pcty_loc; pcty_attributes } : Class_type.concrete = concrete in
@@ -749,7 +751,7 @@ module V4_07 = struct
         fun class_type_desc ->
           let concrete =
             match Class_type_desc.to_concrete class_type_desc with
-            | None -> failwith "class_type_desc"
+            | None -> conversion_failed "class_type_desc"
             | Some n -> n
           in
           match (concrete : Class_type_desc.concrete) with
@@ -777,7 +779,7 @@ module V4_07 = struct
         fun class_signature ->
           let concrete =
             match Class_signature.to_concrete class_signature with
-            | None -> failwith "class_signature"
+            | None -> conversion_failed "class_signature"
             | Some n -> n
           in
           let { pcsig_self; pcsig_fields } : Class_signature.concrete = concrete in
@@ -788,7 +790,7 @@ module V4_07 = struct
         fun class_type_field ->
           let concrete =
             match Class_type_field.to_concrete class_type_field with
-            | None -> failwith "class_type_field"
+            | None -> conversion_failed "class_type_field"
             | Some n -> n
           in
           let { pctf_desc; pctf_loc; pctf_attributes } : Class_type_field.concrete = concrete in
@@ -800,7 +802,7 @@ module V4_07 = struct
         fun class_type_field_desc ->
           let concrete =
             match Class_type_field_desc.to_concrete class_type_field_desc with
-            | None -> failwith "class_type_field_desc"
+            | None -> conversion_failed "class_type_field_desc"
             | Some n -> n
           in
           match (concrete : Class_type_field_desc.concrete) with
@@ -826,7 +828,7 @@ module V4_07 = struct
         fun class_infos ->
           let concrete =
             match Class_infos.to_concrete_class_expr class_infos with
-            | None -> failwith "class_infos"
+            | None -> conversion_failed "class_infos"
             | Some n -> n
           in
           let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_expr.t Class_infos.concrete = concrete in
@@ -841,7 +843,7 @@ module V4_07 = struct
         fun class_infos ->
           let concrete =
             match Class_infos.to_concrete_class_type class_infos with
-            | None -> failwith "class_infos"
+            | None -> conversion_failed "class_infos"
             | Some n -> n
           in
           let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_type.t Class_infos.concrete = concrete in
@@ -856,7 +858,7 @@ module V4_07 = struct
         fun class_description ->
           let concrete =
             match Class_description.to_concrete class_description with
-            | None -> failwith "class_description"
+            | None -> conversion_failed "class_description"
             | Some n -> n
           in
           let concrete = self#class_infos_class_type concrete in
@@ -865,7 +867,7 @@ module V4_07 = struct
         fun class_type_declaration ->
           let concrete =
             match Class_type_declaration.to_concrete class_type_declaration with
-            | None -> failwith "class_type_declaration"
+            | None -> conversion_failed "class_type_declaration"
             | Some n -> n
           in
           let concrete = self#class_infos_class_type concrete in
@@ -874,7 +876,7 @@ module V4_07 = struct
         fun class_expr ->
           let concrete =
             match Class_expr.to_concrete class_expr with
-            | None -> failwith "class_expr"
+            | None -> conversion_failed "class_expr"
             | Some n -> n
           in
           let { pcl_desc; pcl_loc; pcl_attributes } : Class_expr.concrete = concrete in
@@ -886,7 +888,7 @@ module V4_07 = struct
         fun class_expr_desc ->
           let concrete =
             match Class_expr_desc.to_concrete class_expr_desc with
-            | None -> failwith "class_expr_desc"
+            | None -> conversion_failed "class_expr_desc"
             | Some n -> n
           in
           match (concrete : Class_expr_desc.concrete) with
@@ -928,7 +930,7 @@ module V4_07 = struct
         fun class_structure ->
           let concrete =
             match Class_structure.to_concrete class_structure with
-            | None -> failwith "class_structure"
+            | None -> conversion_failed "class_structure"
             | Some n -> n
           in
           let { pcstr_self; pcstr_fields } : Class_structure.concrete = concrete in
@@ -939,7 +941,7 @@ module V4_07 = struct
         fun class_field ->
           let concrete =
             match Class_field.to_concrete class_field with
-            | None -> failwith "class_field"
+            | None -> conversion_failed "class_field"
             | Some n -> n
           in
           let { pcf_desc; pcf_loc; pcf_attributes } : Class_field.concrete = concrete in
@@ -951,7 +953,7 @@ module V4_07 = struct
         fun class_field_desc ->
           let concrete =
             match Class_field_desc.to_concrete class_field_desc with
-            | None -> failwith "class_field_desc"
+            | None -> conversion_failed "class_field_desc"
             | Some n -> n
           in
           match (concrete : Class_field_desc.concrete) with
@@ -982,7 +984,7 @@ module V4_07 = struct
         fun class_field_kind ->
           let concrete =
             match Class_field_kind.to_concrete class_field_kind with
-            | None -> failwith "class_field_kind"
+            | None -> conversion_failed "class_field_kind"
             | Some n -> n
           in
           match (concrete : Class_field_kind.concrete) with
@@ -997,7 +999,7 @@ module V4_07 = struct
         fun class_declaration ->
           let concrete =
             match Class_declaration.to_concrete class_declaration with
-            | None -> failwith "class_declaration"
+            | None -> conversion_failed "class_declaration"
             | Some n -> n
           in
           let concrete = self#class_infos_class_expr concrete in
@@ -1006,7 +1008,7 @@ module V4_07 = struct
         fun module_type ->
           let concrete =
             match Module_type.to_concrete module_type with
-            | None -> failwith "module_type"
+            | None -> conversion_failed "module_type"
             | Some n -> n
           in
           let { pmty_desc; pmty_loc; pmty_attributes } : Module_type.concrete = concrete in
@@ -1018,7 +1020,7 @@ module V4_07 = struct
         fun module_type_desc ->
           let concrete =
             match Module_type_desc.to_concrete module_type_desc with
-            | None -> failwith "module_type_desc"
+            | None -> conversion_failed "module_type_desc"
             | Some n -> n
           in
           match (concrete : Module_type_desc.concrete) with
@@ -1050,7 +1052,7 @@ module V4_07 = struct
         fun signature ->
           let concrete =
             match Signature.to_concrete signature with
-            | None -> failwith "signature"
+            | None -> conversion_failed "signature"
             | Some n -> n
           in
           let concrete = self#list self#signature_item concrete in
@@ -1059,7 +1061,7 @@ module V4_07 = struct
         fun signature_item ->
           let concrete =
             match Signature_item.to_concrete signature_item with
-            | None -> failwith "signature_item"
+            | None -> conversion_failed "signature_item"
             | Some n -> n
           in
           let { psig_desc; psig_loc } : Signature_item.concrete = concrete in
@@ -1070,7 +1072,7 @@ module V4_07 = struct
         fun signature_item_desc ->
           let concrete =
             match Signature_item_desc.to_concrete signature_item_desc with
-            | None -> failwith "signature_item_desc"
+            | None -> conversion_failed "signature_item_desc"
             | Some n -> n
           in
           match (concrete : Signature_item_desc.concrete) with
@@ -1119,7 +1121,7 @@ module V4_07 = struct
         fun module_declaration ->
           let concrete =
             match Module_declaration.to_concrete module_declaration with
-            | None -> failwith "module_declaration"
+            | None -> conversion_failed "module_declaration"
             | Some n -> n
           in
           let { pmd_name; pmd_type; pmd_attributes; pmd_loc } : Module_declaration.concrete = concrete in
@@ -1132,7 +1134,7 @@ module V4_07 = struct
         fun module_type_declaration ->
           let concrete =
             match Module_type_declaration.to_concrete module_type_declaration with
-            | None -> failwith "module_type_declaration"
+            | None -> conversion_failed "module_type_declaration"
             | Some n -> n
           in
           let { pmtd_name; pmtd_type; pmtd_attributes; pmtd_loc } : Module_type_declaration.concrete = concrete in
@@ -1145,7 +1147,7 @@ module V4_07 = struct
         fun open_description ->
           let concrete =
             match Open_description.to_concrete open_description with
-            | None -> failwith "open_description"
+            | None -> conversion_failed "open_description"
             | Some n -> n
           in
           let { popen_lid; popen_override; popen_loc; popen_attributes } : Open_description.concrete = concrete in
@@ -1158,7 +1160,7 @@ module V4_07 = struct
         fun include_infos ->
           let concrete =
             match Include_infos.to_concrete_module_expr include_infos with
-            | None -> failwith "include_infos"
+            | None -> conversion_failed "include_infos"
             | Some n -> n
           in
           let { pincl_mod; pincl_loc; pincl_attributes } : Module_expr.t Include_infos.concrete = concrete in
@@ -1170,7 +1172,7 @@ module V4_07 = struct
         fun include_infos ->
           let concrete =
             match Include_infos.to_concrete_module_type include_infos with
-            | None -> failwith "include_infos"
+            | None -> conversion_failed "include_infos"
             | Some n -> n
           in
           let { pincl_mod; pincl_loc; pincl_attributes } : Module_type.t Include_infos.concrete = concrete in
@@ -1182,7 +1184,7 @@ module V4_07 = struct
         fun include_description ->
           let concrete =
             match Include_description.to_concrete include_description with
-            | None -> failwith "include_description"
+            | None -> conversion_failed "include_description"
             | Some n -> n
           in
           let concrete = self#include_infos_module_type concrete in
@@ -1191,7 +1193,7 @@ module V4_07 = struct
         fun include_declaration ->
           let concrete =
             match Include_declaration.to_concrete include_declaration with
-            | None -> failwith "include_declaration"
+            | None -> conversion_failed "include_declaration"
             | Some n -> n
           in
           let concrete = self#include_infos_module_expr concrete in
@@ -1200,7 +1202,7 @@ module V4_07 = struct
         fun with_constraint ->
           let concrete =
             match With_constraint.to_concrete with_constraint with
-            | None -> failwith "with_constraint"
+            | None -> conversion_failed "with_constraint"
             | Some n -> n
           in
           match (concrete : With_constraint.concrete) with
@@ -1224,7 +1226,7 @@ module V4_07 = struct
         fun module_expr ->
           let concrete =
             match Module_expr.to_concrete module_expr with
-            | None -> failwith "module_expr"
+            | None -> conversion_failed "module_expr"
             | Some n -> n
           in
           let { pmod_desc; pmod_loc; pmod_attributes } : Module_expr.concrete = concrete in
@@ -1236,7 +1238,7 @@ module V4_07 = struct
         fun module_expr_desc ->
           let concrete =
             match Module_expr_desc.to_concrete module_expr_desc with
-            | None -> failwith "module_expr_desc"
+            | None -> conversion_failed "module_expr_desc"
             | Some n -> n
           in
           match (concrete : Module_expr_desc.concrete) with
@@ -1269,7 +1271,7 @@ module V4_07 = struct
         fun structure ->
           let concrete =
             match Structure.to_concrete structure with
-            | None -> failwith "structure"
+            | None -> conversion_failed "structure"
             | Some n -> n
           in
           let concrete = self#list self#structure_item concrete in
@@ -1278,7 +1280,7 @@ module V4_07 = struct
         fun structure_item ->
           let concrete =
             match Structure_item.to_concrete structure_item with
-            | None -> failwith "structure_item"
+            | None -> conversion_failed "structure_item"
             | Some n -> n
           in
           let { pstr_desc; pstr_loc } : Structure_item.concrete = concrete in
@@ -1289,7 +1291,7 @@ module V4_07 = struct
         fun structure_item_desc ->
           let concrete =
             match Structure_item_desc.to_concrete structure_item_desc with
-            | None -> failwith "structure_item_desc"
+            | None -> conversion_failed "structure_item_desc"
             | Some n -> n
           in
           match (concrete : Structure_item_desc.concrete) with
@@ -1346,7 +1348,7 @@ module V4_07 = struct
         fun value_binding ->
           let concrete =
             match Value_binding.to_concrete value_binding with
-            | None -> failwith "value_binding"
+            | None -> conversion_failed "value_binding"
             | Some n -> n
           in
           let { pvb_pat; pvb_expr; pvb_attributes; pvb_loc } : Value_binding.concrete = concrete in
@@ -1359,7 +1361,7 @@ module V4_07 = struct
         fun module_binding ->
           let concrete =
             match Module_binding.to_concrete module_binding with
-            | None -> failwith "module_binding"
+            | None -> conversion_failed "module_binding"
             | Some n -> n
           in
           let { pmb_name; pmb_expr; pmb_attributes; pmb_loc } : Module_binding.concrete = concrete in
@@ -1372,7 +1374,7 @@ module V4_07 = struct
         fun toplevel_phrase ->
           let concrete =
             match Toplevel_phrase.to_concrete toplevel_phrase with
-            | None -> failwith "toplevel_phrase"
+            | None -> conversion_failed "toplevel_phrase"
             | Some n -> n
           in
           match (concrete : Toplevel_phrase.concrete) with
@@ -1387,7 +1389,7 @@ module V4_07 = struct
         fun directive_argument ->
           let concrete =
             match Directive_argument.to_concrete directive_argument with
-            | None -> failwith "directive_argument"
+            | None -> conversion_failed "directive_argument"
             | Some n -> n
           in
           match (concrete : Directive_argument.concrete) with
@@ -1422,7 +1424,7 @@ module V4_07 = struct
         fun longident ->
           let concrete =
             match Longident.to_concrete longident with
-            | None -> failwith "longident"
+            | None -> conversion_failed "longident"
             | Some n -> n
           in
           match (concrete : Longident.concrete) with
@@ -1438,7 +1440,7 @@ module V4_07 = struct
         fun longident_loc ->
           let concrete =
             match Longident_loc.to_concrete longident_loc with
-            | None -> failwith "longident_loc"
+            | None -> conversion_failed "longident_loc"
             | Some n -> n
           in
           self#loc self#longident concrete
@@ -1446,7 +1448,7 @@ module V4_07 = struct
         fun rec_flag ->
           let concrete =
             match Rec_flag.to_concrete rec_flag with
-            | None -> failwith "rec_flag"
+            | None -> conversion_failed "rec_flag"
             | Some n -> n
           in
           match (concrete : Rec_flag.concrete) with
@@ -1458,7 +1460,7 @@ module V4_07 = struct
         fun direction_flag ->
           let concrete =
             match Direction_flag.to_concrete direction_flag with
-            | None -> failwith "direction_flag"
+            | None -> conversion_failed "direction_flag"
             | Some n -> n
           in
           match (concrete : Direction_flag.concrete) with
@@ -1470,7 +1472,7 @@ module V4_07 = struct
         fun private_flag ->
           let concrete =
             match Private_flag.to_concrete private_flag with
-            | None -> failwith "private_flag"
+            | None -> conversion_failed "private_flag"
             | Some n -> n
           in
           match (concrete : Private_flag.concrete) with
@@ -1482,7 +1484,7 @@ module V4_07 = struct
         fun mutable_flag ->
           let concrete =
             match Mutable_flag.to_concrete mutable_flag with
-            | None -> failwith "mutable_flag"
+            | None -> conversion_failed "mutable_flag"
             | Some n -> n
           in
           match (concrete : Mutable_flag.concrete) with
@@ -1494,7 +1496,7 @@ module V4_07 = struct
         fun virtual_flag ->
           let concrete =
             match Virtual_flag.to_concrete virtual_flag with
-            | None -> failwith "virtual_flag"
+            | None -> conversion_failed "virtual_flag"
             | Some n -> n
           in
           match (concrete : Virtual_flag.concrete) with
@@ -1506,7 +1508,7 @@ module V4_07 = struct
         fun override_flag ->
           let concrete =
             match Override_flag.to_concrete override_flag with
-            | None -> failwith "override_flag"
+            | None -> conversion_failed "override_flag"
             | Some n -> n
           in
           match (concrete : Override_flag.concrete) with
@@ -1518,7 +1520,7 @@ module V4_07 = struct
         fun closed_flag ->
           let concrete =
             match Closed_flag.to_concrete closed_flag with
-            | None -> failwith "closed_flag"
+            | None -> conversion_failed "closed_flag"
             | Some n -> n
           in
           match (concrete : Closed_flag.concrete) with
@@ -1530,7 +1532,7 @@ module V4_07 = struct
         fun label ->
           let concrete =
             match Label.to_concrete label with
-            | None -> failwith "label"
+            | None -> conversion_failed "label"
             | Some n -> n
           in
           self#string concrete
@@ -1538,7 +1540,7 @@ module V4_07 = struct
         fun arg_label ->
           let concrete =
             match Arg_label.to_concrete arg_label with
-            | None -> failwith "arg_label"
+            | None -> conversion_failed "arg_label"
             | Some n -> n
           in
           match (concrete : Arg_label.concrete) with
@@ -1552,7 +1554,7 @@ module V4_07 = struct
         fun variance ->
           let concrete =
             match Variance.to_concrete variance with
-            | None -> failwith "variance"
+            | None -> conversion_failed "variance"
             | Some n -> n
           in
           match (concrete : Variance.concrete) with
@@ -1566,7 +1568,7 @@ module V4_07 = struct
         fun constant ->
           let concrete =
             match Constant.to_concrete constant with
-            | None -> failwith "constant"
+            | None -> conversion_failed "constant"
             | Some n -> n
           in
           match (concrete : Constant.concrete) with
@@ -1585,7 +1587,7 @@ module V4_07 = struct
         fun attribute ->
           let concrete =
             match Attribute.to_concrete attribute with
-            | None -> failwith "attribute"
+            | None -> conversion_failed "attribute"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -1595,7 +1597,7 @@ module V4_07 = struct
         fun extension ->
           let concrete =
             match Extension.to_concrete extension with
-            | None -> failwith "extension"
+            | None -> conversion_failed "extension"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -1605,7 +1607,7 @@ module V4_07 = struct
         fun attributes ->
           let concrete =
             match Attributes.to_concrete attributes with
-            | None -> failwith "attributes"
+            | None -> conversion_failed "attributes"
             | Some n -> n
           in
           self#list self#attribute concrete
@@ -1613,7 +1615,7 @@ module V4_07 = struct
         fun payload ->
           let concrete =
             match Payload.to_concrete payload with
-            | None -> failwith "payload"
+            | None -> conversion_failed "payload"
             | Some n -> n
           in
           match (concrete : Payload.concrete) with
@@ -1630,7 +1632,7 @@ module V4_07 = struct
         fun core_type ->
           let concrete =
             match Core_type.to_concrete core_type with
-            | None -> failwith "core_type"
+            | None -> conversion_failed "core_type"
             | Some n -> n
           in
           let { ptyp_desc; ptyp_loc; ptyp_attributes } : Core_type.concrete = concrete in
@@ -1641,7 +1643,7 @@ module V4_07 = struct
         fun core_type_desc ->
           let concrete =
             match Core_type_desc.to_concrete core_type_desc with
-            | None -> failwith "core_type_desc"
+            | None -> conversion_failed "core_type_desc"
             | Some n -> n
           in
           match (concrete : Core_type_desc.concrete) with
@@ -1682,7 +1684,7 @@ module V4_07 = struct
         fun package_type ->
           let concrete =
             match Package_type.to_concrete package_type with
-            | None -> failwith "package_type"
+            | None -> conversion_failed "package_type"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -1692,7 +1694,7 @@ module V4_07 = struct
         fun row_field ->
           let concrete =
             match Row_field.to_concrete row_field with
-            | None -> failwith "row_field"
+            | None -> conversion_failed "row_field"
             | Some n -> n
           in
           match (concrete : Row_field.concrete) with
@@ -1707,7 +1709,7 @@ module V4_07 = struct
         fun object_field ->
           let concrete =
             match Object_field.to_concrete object_field with
-            | None -> failwith "object_field"
+            | None -> conversion_failed "object_field"
             | Some n -> n
           in
           match (concrete : Object_field.concrete) with
@@ -1721,7 +1723,7 @@ module V4_07 = struct
         fun pattern ->
           let concrete =
             match Pattern.to_concrete pattern with
-            | None -> failwith "pattern"
+            | None -> conversion_failed "pattern"
             | Some n -> n
           in
           let { ppat_desc; ppat_loc; ppat_attributes } : Pattern.concrete = concrete in
@@ -1732,7 +1734,7 @@ module V4_07 = struct
         fun pattern_desc ->
           let concrete =
             match Pattern_desc.to_concrete pattern_desc with
-            | None -> failwith "pattern_desc"
+            | None -> conversion_failed "pattern_desc"
             | Some n -> n
           in
           match (concrete : Pattern_desc.concrete) with
@@ -1784,7 +1786,7 @@ module V4_07 = struct
         fun expression ->
           let concrete =
             match Expression.to_concrete expression with
-            | None -> failwith "expression"
+            | None -> conversion_failed "expression"
             | Some n -> n
           in
           let { pexp_desc; pexp_loc; pexp_attributes } : Expression.concrete = concrete in
@@ -1795,7 +1797,7 @@ module V4_07 = struct
         fun expression_desc ->
           let concrete =
             match Expression_desc.to_concrete expression_desc with
-            | None -> failwith "expression_desc"
+            | None -> conversion_failed "expression_desc"
             | Some n -> n
           in
           match (concrete : Expression_desc.concrete) with
@@ -1909,7 +1911,7 @@ module V4_07 = struct
         fun case ->
           let concrete =
             match Case.to_concrete case with
-            | None -> failwith "case"
+            | None -> conversion_failed "case"
             | Some n -> n
           in
           let { pc_lhs; pc_guard; pc_rhs } : Case.concrete = concrete in
@@ -1920,7 +1922,7 @@ module V4_07 = struct
         fun value_description ->
           let concrete =
             match Value_description.to_concrete value_description with
-            | None -> failwith "value_description"
+            | None -> conversion_failed "value_description"
             | Some n -> n
           in
           let { pval_name; pval_type; pval_prim; pval_attributes; pval_loc } : Value_description.concrete = concrete in
@@ -1933,7 +1935,7 @@ module V4_07 = struct
         fun type_declaration ->
           let concrete =
             match Type_declaration.to_concrete type_declaration with
-            | None -> failwith "type_declaration"
+            | None -> conversion_failed "type_declaration"
             | Some n -> n
           in
           let { ptype_name; ptype_params; ptype_cstrs; ptype_kind; ptype_private; ptype_manifest; ptype_attributes; ptype_loc } : Type_declaration.concrete = concrete in
@@ -1949,7 +1951,7 @@ module V4_07 = struct
         fun type_kind ->
           let concrete =
             match Type_kind.to_concrete type_kind with
-            | None -> failwith "type_kind"
+            | None -> conversion_failed "type_kind"
             | Some n -> n
           in
           match (concrete : Type_kind.concrete) with
@@ -1965,7 +1967,7 @@ module V4_07 = struct
         fun label_declaration ->
           let concrete =
             match Label_declaration.to_concrete label_declaration with
-            | None -> failwith "label_declaration"
+            | None -> conversion_failed "label_declaration"
             | Some n -> n
           in
           let { pld_name; pld_mutable; pld_type; pld_loc; pld_attributes } : Label_declaration.concrete = concrete in
@@ -1978,7 +1980,7 @@ module V4_07 = struct
         fun constructor_declaration ->
           let concrete =
             match Constructor_declaration.to_concrete constructor_declaration with
-            | None -> failwith "constructor_declaration"
+            | None -> conversion_failed "constructor_declaration"
             | Some n -> n
           in
           let { pcd_name; pcd_args; pcd_res; pcd_loc; pcd_attributes } : Constructor_declaration.concrete = concrete in
@@ -1991,7 +1993,7 @@ module V4_07 = struct
         fun constructor_arguments ->
           let concrete =
             match Constructor_arguments.to_concrete constructor_arguments with
-            | None -> failwith "constructor_arguments"
+            | None -> conversion_failed "constructor_arguments"
             | Some n -> n
           in
           match (concrete : Constructor_arguments.concrete) with
@@ -2003,7 +2005,7 @@ module V4_07 = struct
         fun type_extension ->
           let concrete =
             match Type_extension.to_concrete type_extension with
-            | None -> failwith "type_extension"
+            | None -> conversion_failed "type_extension"
             | Some n -> n
           in
           let { ptyext_path; ptyext_params; ptyext_constructors; ptyext_private; ptyext_attributes } : Type_extension.concrete = concrete in
@@ -2016,7 +2018,7 @@ module V4_07 = struct
         fun extension_constructor ->
           let concrete =
             match Extension_constructor.to_concrete extension_constructor with
-            | None -> failwith "extension_constructor"
+            | None -> conversion_failed "extension_constructor"
             | Some n -> n
           in
           let { pext_name; pext_kind; pext_loc; pext_attributes } : Extension_constructor.concrete = concrete in
@@ -2028,7 +2030,7 @@ module V4_07 = struct
         fun extension_constructor_kind ->
           let concrete =
             match Extension_constructor_kind.to_concrete extension_constructor_kind with
-            | None -> failwith "extension_constructor_kind"
+            | None -> conversion_failed "extension_constructor_kind"
             | Some n -> n
           in
           match (concrete : Extension_constructor_kind.concrete) with
@@ -2041,7 +2043,7 @@ module V4_07 = struct
         fun class_type ->
           let concrete =
             match Class_type.to_concrete class_type with
-            | None -> failwith "class_type"
+            | None -> conversion_failed "class_type"
             | Some n -> n
           in
           let { pcty_desc; pcty_loc; pcty_attributes } : Class_type.concrete = concrete in
@@ -2052,7 +2054,7 @@ module V4_07 = struct
         fun class_type_desc ->
           let concrete =
             match Class_type_desc.to_concrete class_type_desc with
-            | None -> failwith "class_type_desc"
+            | None -> conversion_failed "class_type_desc"
             | Some n -> n
           in
           match (concrete : Class_type_desc.concrete) with
@@ -2075,7 +2077,7 @@ module V4_07 = struct
         fun class_signature ->
           let concrete =
             match Class_signature.to_concrete class_signature with
-            | None -> failwith "class_signature"
+            | None -> conversion_failed "class_signature"
             | Some n -> n
           in
           let { pcsig_self; pcsig_fields } : Class_signature.concrete = concrete in
@@ -2085,7 +2087,7 @@ module V4_07 = struct
         fun class_type_field ->
           let concrete =
             match Class_type_field.to_concrete class_type_field with
-            | None -> failwith "class_type_field"
+            | None -> conversion_failed "class_type_field"
             | Some n -> n
           in
           let { pctf_desc; pctf_loc; pctf_attributes } : Class_type_field.concrete = concrete in
@@ -2096,7 +2098,7 @@ module V4_07 = struct
         fun class_type_field_desc ->
           let concrete =
             match Class_type_field_desc.to_concrete class_type_field_desc with
-            | None -> failwith "class_type_field_desc"
+            | None -> conversion_failed "class_type_field_desc"
             | Some n -> n
           in
           match (concrete : Class_type_field_desc.concrete) with
@@ -2116,7 +2118,7 @@ module V4_07 = struct
         fun class_infos ->
           let concrete =
             match Class_infos.to_concrete_class_expr class_infos with
-            | None -> failwith "class_infos"
+            | None -> conversion_failed "class_infos"
             | Some n -> n
           in
           let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_expr.t Class_infos.concrete = concrete in
@@ -2130,7 +2132,7 @@ module V4_07 = struct
         fun class_infos ->
           let concrete =
             match Class_infos.to_concrete_class_type class_infos with
-            | None -> failwith "class_infos"
+            | None -> conversion_failed "class_infos"
             | Some n -> n
           in
           let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_type.t Class_infos.concrete = concrete in
@@ -2144,7 +2146,7 @@ module V4_07 = struct
         fun class_description ->
           let concrete =
             match Class_description.to_concrete class_description with
-            | None -> failwith "class_description"
+            | None -> conversion_failed "class_description"
             | Some n -> n
           in
           self#class_infos_class_type concrete
@@ -2152,7 +2154,7 @@ module V4_07 = struct
         fun class_type_declaration ->
           let concrete =
             match Class_type_declaration.to_concrete class_type_declaration with
-            | None -> failwith "class_type_declaration"
+            | None -> conversion_failed "class_type_declaration"
             | Some n -> n
           in
           self#class_infos_class_type concrete
@@ -2160,7 +2162,7 @@ module V4_07 = struct
         fun class_expr ->
           let concrete =
             match Class_expr.to_concrete class_expr with
-            | None -> failwith "class_expr"
+            | None -> conversion_failed "class_expr"
             | Some n -> n
           in
           let { pcl_desc; pcl_loc; pcl_attributes } : Class_expr.concrete = concrete in
@@ -2171,7 +2173,7 @@ module V4_07 = struct
         fun class_expr_desc ->
           let concrete =
             match Class_expr_desc.to_concrete class_expr_desc with
-            | None -> failwith "class_expr_desc"
+            | None -> conversion_failed "class_expr_desc"
             | Some n -> n
           in
           match (concrete : Class_expr_desc.concrete) with
@@ -2205,7 +2207,7 @@ module V4_07 = struct
         fun class_structure ->
           let concrete =
             match Class_structure.to_concrete class_structure with
-            | None -> failwith "class_structure"
+            | None -> conversion_failed "class_structure"
             | Some n -> n
           in
           let { pcstr_self; pcstr_fields } : Class_structure.concrete = concrete in
@@ -2215,7 +2217,7 @@ module V4_07 = struct
         fun class_field ->
           let concrete =
             match Class_field.to_concrete class_field with
-            | None -> failwith "class_field"
+            | None -> conversion_failed "class_field"
             | Some n -> n
           in
           let { pcf_desc; pcf_loc; pcf_attributes } : Class_field.concrete = concrete in
@@ -2226,7 +2228,7 @@ module V4_07 = struct
         fun class_field_desc ->
           let concrete =
             match Class_field_desc.to_concrete class_field_desc with
-            | None -> failwith "class_field_desc"
+            | None -> conversion_failed "class_field_desc"
             | Some n -> n
           in
           match (concrete : Class_field_desc.concrete) with
@@ -2250,7 +2252,7 @@ module V4_07 = struct
         fun class_field_kind ->
           let concrete =
             match Class_field_kind.to_concrete class_field_kind with
-            | None -> failwith "class_field_kind"
+            | None -> conversion_failed "class_field_kind"
             | Some n -> n
           in
           match (concrete : Class_field_kind.concrete) with
@@ -2263,7 +2265,7 @@ module V4_07 = struct
         fun class_declaration ->
           let concrete =
             match Class_declaration.to_concrete class_declaration with
-            | None -> failwith "class_declaration"
+            | None -> conversion_failed "class_declaration"
             | Some n -> n
           in
           self#class_infos_class_expr concrete
@@ -2271,7 +2273,7 @@ module V4_07 = struct
         fun module_type ->
           let concrete =
             match Module_type.to_concrete module_type with
-            | None -> failwith "module_type"
+            | None -> conversion_failed "module_type"
             | Some n -> n
           in
           let { pmty_desc; pmty_loc; pmty_attributes } : Module_type.concrete = concrete in
@@ -2282,7 +2284,7 @@ module V4_07 = struct
         fun module_type_desc ->
           let concrete =
             match Module_type_desc.to_concrete module_type_desc with
-            | None -> failwith "module_type_desc"
+            | None -> conversion_failed "module_type_desc"
             | Some n -> n
           in
           match (concrete : Module_type_desc.concrete) with
@@ -2307,7 +2309,7 @@ module V4_07 = struct
         fun signature ->
           let concrete =
             match Signature.to_concrete signature with
-            | None -> failwith "signature"
+            | None -> conversion_failed "signature"
             | Some n -> n
           in
           self#list self#signature_item concrete
@@ -2315,7 +2317,7 @@ module V4_07 = struct
         fun signature_item ->
           let concrete =
             match Signature_item.to_concrete signature_item with
-            | None -> failwith "signature_item"
+            | None -> conversion_failed "signature_item"
             | Some n -> n
           in
           let { psig_desc; psig_loc } : Signature_item.concrete = concrete in
@@ -2325,7 +2327,7 @@ module V4_07 = struct
         fun signature_item_desc ->
           let concrete =
             match Signature_item_desc.to_concrete signature_item_desc with
-            | None -> failwith "signature_item_desc"
+            | None -> conversion_failed "signature_item_desc"
             | Some n -> n
           in
           match (concrete : Signature_item_desc.concrete) with
@@ -2361,7 +2363,7 @@ module V4_07 = struct
         fun module_declaration ->
           let concrete =
             match Module_declaration.to_concrete module_declaration with
-            | None -> failwith "module_declaration"
+            | None -> conversion_failed "module_declaration"
             | Some n -> n
           in
           let { pmd_name; pmd_type; pmd_attributes; pmd_loc } : Module_declaration.concrete = concrete in
@@ -2373,7 +2375,7 @@ module V4_07 = struct
         fun module_type_declaration ->
           let concrete =
             match Module_type_declaration.to_concrete module_type_declaration with
-            | None -> failwith "module_type_declaration"
+            | None -> conversion_failed "module_type_declaration"
             | Some n -> n
           in
           let { pmtd_name; pmtd_type; pmtd_attributes; pmtd_loc } : Module_type_declaration.concrete = concrete in
@@ -2385,7 +2387,7 @@ module V4_07 = struct
         fun open_description ->
           let concrete =
             match Open_description.to_concrete open_description with
-            | None -> failwith "open_description"
+            | None -> conversion_failed "open_description"
             | Some n -> n
           in
           let { popen_lid; popen_override; popen_loc; popen_attributes } : Open_description.concrete = concrete in
@@ -2397,7 +2399,7 @@ module V4_07 = struct
         fun include_infos ->
           let concrete =
             match Include_infos.to_concrete_module_expr include_infos with
-            | None -> failwith "include_infos"
+            | None -> conversion_failed "include_infos"
             | Some n -> n
           in
           let { pincl_mod; pincl_loc; pincl_attributes } : Module_expr.t Include_infos.concrete = concrete in
@@ -2408,7 +2410,7 @@ module V4_07 = struct
         fun include_infos ->
           let concrete =
             match Include_infos.to_concrete_module_type include_infos with
-            | None -> failwith "include_infos"
+            | None -> conversion_failed "include_infos"
             | Some n -> n
           in
           let { pincl_mod; pincl_loc; pincl_attributes } : Module_type.t Include_infos.concrete = concrete in
@@ -2419,7 +2421,7 @@ module V4_07 = struct
         fun include_description ->
           let concrete =
             match Include_description.to_concrete include_description with
-            | None -> failwith "include_description"
+            | None -> conversion_failed "include_description"
             | Some n -> n
           in
           self#include_infos_module_type concrete
@@ -2427,7 +2429,7 @@ module V4_07 = struct
         fun include_declaration ->
           let concrete =
             match Include_declaration.to_concrete include_declaration with
-            | None -> failwith "include_declaration"
+            | None -> conversion_failed "include_declaration"
             | Some n -> n
           in
           self#include_infos_module_expr concrete
@@ -2435,7 +2437,7 @@ module V4_07 = struct
         fun with_constraint ->
           let concrete =
             match With_constraint.to_concrete with_constraint with
-            | None -> failwith "with_constraint"
+            | None -> conversion_failed "with_constraint"
             | Some n -> n
           in
           match (concrete : With_constraint.concrete) with
@@ -2455,7 +2457,7 @@ module V4_07 = struct
         fun module_expr ->
           let concrete =
             match Module_expr.to_concrete module_expr with
-            | None -> failwith "module_expr"
+            | None -> conversion_failed "module_expr"
             | Some n -> n
           in
           let { pmod_desc; pmod_loc; pmod_attributes } : Module_expr.concrete = concrete in
@@ -2466,7 +2468,7 @@ module V4_07 = struct
         fun module_expr_desc ->
           let concrete =
             match Module_expr_desc.to_concrete module_expr_desc with
-            | None -> failwith "module_expr_desc"
+            | None -> conversion_failed "module_expr_desc"
             | Some n -> n
           in
           match (concrete : Module_expr_desc.concrete) with
@@ -2492,7 +2494,7 @@ module V4_07 = struct
         fun structure ->
           let concrete =
             match Structure.to_concrete structure with
-            | None -> failwith "structure"
+            | None -> conversion_failed "structure"
             | Some n -> n
           in
           self#list self#structure_item concrete
@@ -2500,7 +2502,7 @@ module V4_07 = struct
         fun structure_item ->
           let concrete =
             match Structure_item.to_concrete structure_item with
-            | None -> failwith "structure_item"
+            | None -> conversion_failed "structure_item"
             | Some n -> n
           in
           let { pstr_desc; pstr_loc } : Structure_item.concrete = concrete in
@@ -2510,7 +2512,7 @@ module V4_07 = struct
         fun structure_item_desc ->
           let concrete =
             match Structure_item_desc.to_concrete structure_item_desc with
-            | None -> failwith "structure_item_desc"
+            | None -> conversion_failed "structure_item_desc"
             | Some n -> n
           in
           match (concrete : Structure_item_desc.concrete) with
@@ -2552,7 +2554,7 @@ module V4_07 = struct
         fun value_binding ->
           let concrete =
             match Value_binding.to_concrete value_binding with
-            | None -> failwith "value_binding"
+            | None -> conversion_failed "value_binding"
             | Some n -> n
           in
           let { pvb_pat; pvb_expr; pvb_attributes; pvb_loc } : Value_binding.concrete = concrete in
@@ -2564,7 +2566,7 @@ module V4_07 = struct
         fun module_binding ->
           let concrete =
             match Module_binding.to_concrete module_binding with
-            | None -> failwith "module_binding"
+            | None -> conversion_failed "module_binding"
             | Some n -> n
           in
           let { pmb_name; pmb_expr; pmb_attributes; pmb_loc } : Module_binding.concrete = concrete in
@@ -2576,7 +2578,7 @@ module V4_07 = struct
         fun toplevel_phrase ->
           let concrete =
             match Toplevel_phrase.to_concrete toplevel_phrase with
-            | None -> failwith "toplevel_phrase"
+            | None -> conversion_failed "toplevel_phrase"
             | Some n -> n
           in
           match (concrete : Toplevel_phrase.concrete) with
@@ -2589,7 +2591,7 @@ module V4_07 = struct
         fun directive_argument ->
           let concrete =
             match Directive_argument.to_concrete directive_argument with
-            | None -> failwith "directive_argument"
+            | None -> conversion_failed "directive_argument"
             | Some n -> n
           in
           match (concrete : Directive_argument.concrete) with
@@ -2620,7 +2622,7 @@ module V4_07 = struct
         fun longident acc ->
           let concrete =
             match Longident.to_concrete longident with
-            | None -> failwith "longident"
+            | None -> conversion_failed "longident"
             | Some n -> n
           in
           match (concrete : Longident.concrete) with
@@ -2639,7 +2641,7 @@ module V4_07 = struct
         fun longident_loc acc ->
           let concrete =
             match Longident_loc.to_concrete longident_loc with
-            | None -> failwith "longident_loc"
+            | None -> conversion_failed "longident_loc"
             | Some n -> n
           in
           let acc = self#loc self#longident concrete acc in
@@ -2648,7 +2650,7 @@ module V4_07 = struct
         fun rec_flag acc ->
           let concrete =
             match Rec_flag.to_concrete rec_flag with
-            | None -> failwith "rec_flag"
+            | None -> conversion_failed "rec_flag"
             | Some n -> n
           in
           match (concrete : Rec_flag.concrete) with
@@ -2660,7 +2662,7 @@ module V4_07 = struct
         fun direction_flag acc ->
           let concrete =
             match Direction_flag.to_concrete direction_flag with
-            | None -> failwith "direction_flag"
+            | None -> conversion_failed "direction_flag"
             | Some n -> n
           in
           match (concrete : Direction_flag.concrete) with
@@ -2672,7 +2674,7 @@ module V4_07 = struct
         fun private_flag acc ->
           let concrete =
             match Private_flag.to_concrete private_flag with
-            | None -> failwith "private_flag"
+            | None -> conversion_failed "private_flag"
             | Some n -> n
           in
           match (concrete : Private_flag.concrete) with
@@ -2684,7 +2686,7 @@ module V4_07 = struct
         fun mutable_flag acc ->
           let concrete =
             match Mutable_flag.to_concrete mutable_flag with
-            | None -> failwith "mutable_flag"
+            | None -> conversion_failed "mutable_flag"
             | Some n -> n
           in
           match (concrete : Mutable_flag.concrete) with
@@ -2696,7 +2698,7 @@ module V4_07 = struct
         fun virtual_flag acc ->
           let concrete =
             match Virtual_flag.to_concrete virtual_flag with
-            | None -> failwith "virtual_flag"
+            | None -> conversion_failed "virtual_flag"
             | Some n -> n
           in
           match (concrete : Virtual_flag.concrete) with
@@ -2708,7 +2710,7 @@ module V4_07 = struct
         fun override_flag acc ->
           let concrete =
             match Override_flag.to_concrete override_flag with
-            | None -> failwith "override_flag"
+            | None -> conversion_failed "override_flag"
             | Some n -> n
           in
           match (concrete : Override_flag.concrete) with
@@ -2720,7 +2722,7 @@ module V4_07 = struct
         fun closed_flag acc ->
           let concrete =
             match Closed_flag.to_concrete closed_flag with
-            | None -> failwith "closed_flag"
+            | None -> conversion_failed "closed_flag"
             | Some n -> n
           in
           match (concrete : Closed_flag.concrete) with
@@ -2732,7 +2734,7 @@ module V4_07 = struct
         fun label acc ->
           let concrete =
             match Label.to_concrete label with
-            | None -> failwith "label"
+            | None -> conversion_failed "label"
             | Some n -> n
           in
           let acc = self#string concrete acc in
@@ -2741,7 +2743,7 @@ module V4_07 = struct
         fun arg_label acc ->
           let concrete =
             match Arg_label.to_concrete arg_label with
-            | None -> failwith "arg_label"
+            | None -> conversion_failed "arg_label"
             | Some n -> n
           in
           match (concrete : Arg_label.concrete) with
@@ -2757,7 +2759,7 @@ module V4_07 = struct
         fun variance acc ->
           let concrete =
             match Variance.to_concrete variance with
-            | None -> failwith "variance"
+            | None -> conversion_failed "variance"
             | Some n -> n
           in
           match (concrete : Variance.concrete) with
@@ -2771,7 +2773,7 @@ module V4_07 = struct
         fun constant acc ->
           let concrete =
             match Constant.to_concrete constant with
-            | None -> failwith "constant"
+            | None -> conversion_failed "constant"
             | Some n -> n
           in
           match (concrete : Constant.concrete) with
@@ -2794,7 +2796,7 @@ module V4_07 = struct
         fun attribute acc ->
           let concrete =
             match Attribute.to_concrete attribute with
-            | None -> failwith "attribute"
+            | None -> conversion_failed "attribute"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -2805,7 +2807,7 @@ module V4_07 = struct
         fun extension acc ->
           let concrete =
             match Extension.to_concrete extension with
-            | None -> failwith "extension"
+            | None -> conversion_failed "extension"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -2816,7 +2818,7 @@ module V4_07 = struct
         fun attributes acc ->
           let concrete =
             match Attributes.to_concrete attributes with
-            | None -> failwith "attributes"
+            | None -> conversion_failed "attributes"
             | Some n -> n
           in
           let acc = self#list self#attribute concrete acc in
@@ -2825,7 +2827,7 @@ module V4_07 = struct
         fun payload acc ->
           let concrete =
             match Payload.to_concrete payload with
-            | None -> failwith "payload"
+            | None -> conversion_failed "payload"
             | Some n -> n
           in
           match (concrete : Payload.concrete) with
@@ -2846,7 +2848,7 @@ module V4_07 = struct
         fun core_type acc ->
           let concrete =
             match Core_type.to_concrete core_type with
-            | None -> failwith "core_type"
+            | None -> conversion_failed "core_type"
             | Some n -> n
           in
           let { ptyp_desc; ptyp_loc; ptyp_attributes } : Core_type.concrete = concrete in
@@ -2858,7 +2860,7 @@ module V4_07 = struct
         fun core_type_desc acc ->
           let concrete =
             match Core_type_desc.to_concrete core_type_desc with
-            | None -> failwith "core_type_desc"
+            | None -> conversion_failed "core_type_desc"
             | Some n -> n
           in
           match (concrete : Core_type_desc.concrete) with
@@ -2910,7 +2912,7 @@ module V4_07 = struct
         fun package_type acc ->
           let concrete =
             match Package_type.to_concrete package_type with
-            | None -> failwith "package_type"
+            | None -> conversion_failed "package_type"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -2921,7 +2923,7 @@ module V4_07 = struct
         fun row_field acc ->
           let concrete =
             match Row_field.to_concrete row_field with
-            | None -> failwith "row_field"
+            | None -> conversion_failed "row_field"
             | Some n -> n
           in
           match (concrete : Row_field.concrete) with
@@ -2938,7 +2940,7 @@ module V4_07 = struct
         fun object_field acc ->
           let concrete =
             match Object_field.to_concrete object_field with
-            | None -> failwith "object_field"
+            | None -> conversion_failed "object_field"
             | Some n -> n
           in
           match (concrete : Object_field.concrete) with
@@ -2954,7 +2956,7 @@ module V4_07 = struct
         fun pattern acc ->
           let concrete =
             match Pattern.to_concrete pattern with
-            | None -> failwith "pattern"
+            | None -> conversion_failed "pattern"
             | Some n -> n
           in
           let { ppat_desc; ppat_loc; ppat_attributes } : Pattern.concrete = concrete in
@@ -2966,7 +2968,7 @@ module V4_07 = struct
         fun pattern_desc acc ->
           let concrete =
             match Pattern_desc.to_concrete pattern_desc with
-            | None -> failwith "pattern_desc"
+            | None -> conversion_failed "pattern_desc"
             | Some n -> n
           in
           match (concrete : Pattern_desc.concrete) with
@@ -3035,7 +3037,7 @@ module V4_07 = struct
         fun expression acc ->
           let concrete =
             match Expression.to_concrete expression with
-            | None -> failwith "expression"
+            | None -> conversion_failed "expression"
             | Some n -> n
           in
           let { pexp_desc; pexp_loc; pexp_attributes } : Expression.concrete = concrete in
@@ -3047,7 +3049,7 @@ module V4_07 = struct
         fun expression_desc acc ->
           let concrete =
             match Expression_desc.to_concrete expression_desc with
-            | None -> failwith "expression_desc"
+            | None -> conversion_failed "expression_desc"
             | Some n -> n
           in
           match (concrete : Expression_desc.concrete) with
@@ -3196,7 +3198,7 @@ module V4_07 = struct
         fun case acc ->
           let concrete =
             match Case.to_concrete case with
-            | None -> failwith "case"
+            | None -> conversion_failed "case"
             | Some n -> n
           in
           let { pc_lhs; pc_guard; pc_rhs } : Case.concrete = concrete in
@@ -3208,7 +3210,7 @@ module V4_07 = struct
         fun value_description acc ->
           let concrete =
             match Value_description.to_concrete value_description with
-            | None -> failwith "value_description"
+            | None -> conversion_failed "value_description"
             | Some n -> n
           in
           let { pval_name; pval_type; pval_prim; pval_attributes; pval_loc } : Value_description.concrete = concrete in
@@ -3222,7 +3224,7 @@ module V4_07 = struct
         fun type_declaration acc ->
           let concrete =
             match Type_declaration.to_concrete type_declaration with
-            | None -> failwith "type_declaration"
+            | None -> conversion_failed "type_declaration"
             | Some n -> n
           in
           let { ptype_name; ptype_params; ptype_cstrs; ptype_kind; ptype_private; ptype_manifest; ptype_attributes; ptype_loc } : Type_declaration.concrete = concrete in
@@ -3239,7 +3241,7 @@ module V4_07 = struct
         fun type_kind acc ->
           let concrete =
             match Type_kind.to_concrete type_kind with
-            | None -> failwith "type_kind"
+            | None -> conversion_failed "type_kind"
             | Some n -> n
           in
           match (concrete : Type_kind.concrete) with
@@ -3257,7 +3259,7 @@ module V4_07 = struct
         fun label_declaration acc ->
           let concrete =
             match Label_declaration.to_concrete label_declaration with
-            | None -> failwith "label_declaration"
+            | None -> conversion_failed "label_declaration"
             | Some n -> n
           in
           let { pld_name; pld_mutable; pld_type; pld_loc; pld_attributes } : Label_declaration.concrete = concrete in
@@ -3271,7 +3273,7 @@ module V4_07 = struct
         fun constructor_declaration acc ->
           let concrete =
             match Constructor_declaration.to_concrete constructor_declaration with
-            | None -> failwith "constructor_declaration"
+            | None -> conversion_failed "constructor_declaration"
             | Some n -> n
           in
           let { pcd_name; pcd_args; pcd_res; pcd_loc; pcd_attributes } : Constructor_declaration.concrete = concrete in
@@ -3285,7 +3287,7 @@ module V4_07 = struct
         fun constructor_arguments acc ->
           let concrete =
             match Constructor_arguments.to_concrete constructor_arguments with
-            | None -> failwith "constructor_arguments"
+            | None -> conversion_failed "constructor_arguments"
             | Some n -> n
           in
           match (concrete : Constructor_arguments.concrete) with
@@ -3299,7 +3301,7 @@ module V4_07 = struct
         fun type_extension acc ->
           let concrete =
             match Type_extension.to_concrete type_extension with
-            | None -> failwith "type_extension"
+            | None -> conversion_failed "type_extension"
             | Some n -> n
           in
           let { ptyext_path; ptyext_params; ptyext_constructors; ptyext_private; ptyext_attributes } : Type_extension.concrete = concrete in
@@ -3313,7 +3315,7 @@ module V4_07 = struct
         fun extension_constructor acc ->
           let concrete =
             match Extension_constructor.to_concrete extension_constructor with
-            | None -> failwith "extension_constructor"
+            | None -> conversion_failed "extension_constructor"
             | Some n -> n
           in
           let { pext_name; pext_kind; pext_loc; pext_attributes } : Extension_constructor.concrete = concrete in
@@ -3326,7 +3328,7 @@ module V4_07 = struct
         fun extension_constructor_kind acc ->
           let concrete =
             match Extension_constructor_kind.to_concrete extension_constructor_kind with
-            | None -> failwith "extension_constructor_kind"
+            | None -> conversion_failed "extension_constructor_kind"
             | Some n -> n
           in
           match (concrete : Extension_constructor_kind.concrete) with
@@ -3341,7 +3343,7 @@ module V4_07 = struct
         fun class_type acc ->
           let concrete =
             match Class_type.to_concrete class_type with
-            | None -> failwith "class_type"
+            | None -> conversion_failed "class_type"
             | Some n -> n
           in
           let { pcty_desc; pcty_loc; pcty_attributes } : Class_type.concrete = concrete in
@@ -3353,7 +3355,7 @@ module V4_07 = struct
         fun class_type_desc acc ->
           let concrete =
             match Class_type_desc.to_concrete class_type_desc with
-            | None -> failwith "class_type_desc"
+            | None -> conversion_failed "class_type_desc"
             | Some n -> n
           in
           match (concrete : Class_type_desc.concrete) with
@@ -3381,7 +3383,7 @@ module V4_07 = struct
         fun class_signature acc ->
           let concrete =
             match Class_signature.to_concrete class_signature with
-            | None -> failwith "class_signature"
+            | None -> conversion_failed "class_signature"
             | Some n -> n
           in
           let { pcsig_self; pcsig_fields } : Class_signature.concrete = concrete in
@@ -3392,7 +3394,7 @@ module V4_07 = struct
         fun class_type_field acc ->
           let concrete =
             match Class_type_field.to_concrete class_type_field with
-            | None -> failwith "class_type_field"
+            | None -> conversion_failed "class_type_field"
             | Some n -> n
           in
           let { pctf_desc; pctf_loc; pctf_attributes } : Class_type_field.concrete = concrete in
@@ -3404,7 +3406,7 @@ module V4_07 = struct
         fun class_type_field_desc acc ->
           let concrete =
             match Class_type_field_desc.to_concrete class_type_field_desc with
-            | None -> failwith "class_type_field_desc"
+            | None -> conversion_failed "class_type_field_desc"
             | Some n -> n
           in
           match (concrete : Class_type_field_desc.concrete) with
@@ -3430,7 +3432,7 @@ module V4_07 = struct
         fun class_infos acc ->
           let concrete =
             match Class_infos.to_concrete_class_expr class_infos with
-            | None -> failwith "class_infos"
+            | None -> conversion_failed "class_infos"
             | Some n -> n
           in
           let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_expr.t Class_infos.concrete = concrete in
@@ -3445,7 +3447,7 @@ module V4_07 = struct
         fun class_infos acc ->
           let concrete =
             match Class_infos.to_concrete_class_type class_infos with
-            | None -> failwith "class_infos"
+            | None -> conversion_failed "class_infos"
             | Some n -> n
           in
           let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_type.t Class_infos.concrete = concrete in
@@ -3460,7 +3462,7 @@ module V4_07 = struct
         fun class_description acc ->
           let concrete =
             match Class_description.to_concrete class_description with
-            | None -> failwith "class_description"
+            | None -> conversion_failed "class_description"
             | Some n -> n
           in
           let acc = self#class_infos_class_type concrete acc in
@@ -3469,7 +3471,7 @@ module V4_07 = struct
         fun class_type_declaration acc ->
           let concrete =
             match Class_type_declaration.to_concrete class_type_declaration with
-            | None -> failwith "class_type_declaration"
+            | None -> conversion_failed "class_type_declaration"
             | Some n -> n
           in
           let acc = self#class_infos_class_type concrete acc in
@@ -3478,7 +3480,7 @@ module V4_07 = struct
         fun class_expr acc ->
           let concrete =
             match Class_expr.to_concrete class_expr with
-            | None -> failwith "class_expr"
+            | None -> conversion_failed "class_expr"
             | Some n -> n
           in
           let { pcl_desc; pcl_loc; pcl_attributes } : Class_expr.concrete = concrete in
@@ -3490,7 +3492,7 @@ module V4_07 = struct
         fun class_expr_desc acc ->
           let concrete =
             match Class_expr_desc.to_concrete class_expr_desc with
-            | None -> failwith "class_expr_desc"
+            | None -> conversion_failed "class_expr_desc"
             | Some n -> n
           in
           match (concrete : Class_expr_desc.concrete) with
@@ -3532,7 +3534,7 @@ module V4_07 = struct
         fun class_structure acc ->
           let concrete =
             match Class_structure.to_concrete class_structure with
-            | None -> failwith "class_structure"
+            | None -> conversion_failed "class_structure"
             | Some n -> n
           in
           let { pcstr_self; pcstr_fields } : Class_structure.concrete = concrete in
@@ -3543,7 +3545,7 @@ module V4_07 = struct
         fun class_field acc ->
           let concrete =
             match Class_field.to_concrete class_field with
-            | None -> failwith "class_field"
+            | None -> conversion_failed "class_field"
             | Some n -> n
           in
           let { pcf_desc; pcf_loc; pcf_attributes } : Class_field.concrete = concrete in
@@ -3555,7 +3557,7 @@ module V4_07 = struct
         fun class_field_desc acc ->
           let concrete =
             match Class_field_desc.to_concrete class_field_desc with
-            | None -> failwith "class_field_desc"
+            | None -> conversion_failed "class_field_desc"
             | Some n -> n
           in
           match (concrete : Class_field_desc.concrete) with
@@ -3586,7 +3588,7 @@ module V4_07 = struct
         fun class_field_kind acc ->
           let concrete =
             match Class_field_kind.to_concrete class_field_kind with
-            | None -> failwith "class_field_kind"
+            | None -> conversion_failed "class_field_kind"
             | Some n -> n
           in
           match (concrete : Class_field_kind.concrete) with
@@ -3601,7 +3603,7 @@ module V4_07 = struct
         fun class_declaration acc ->
           let concrete =
             match Class_declaration.to_concrete class_declaration with
-            | None -> failwith "class_declaration"
+            | None -> conversion_failed "class_declaration"
             | Some n -> n
           in
           let acc = self#class_infos_class_expr concrete acc in
@@ -3610,7 +3612,7 @@ module V4_07 = struct
         fun module_type acc ->
           let concrete =
             match Module_type.to_concrete module_type with
-            | None -> failwith "module_type"
+            | None -> conversion_failed "module_type"
             | Some n -> n
           in
           let { pmty_desc; pmty_loc; pmty_attributes } : Module_type.concrete = concrete in
@@ -3622,7 +3624,7 @@ module V4_07 = struct
         fun module_type_desc acc ->
           let concrete =
             match Module_type_desc.to_concrete module_type_desc with
-            | None -> failwith "module_type_desc"
+            | None -> conversion_failed "module_type_desc"
             | Some n -> n
           in
           match (concrete : Module_type_desc.concrete) with
@@ -3654,7 +3656,7 @@ module V4_07 = struct
         fun signature acc ->
           let concrete =
             match Signature.to_concrete signature with
-            | None -> failwith "signature"
+            | None -> conversion_failed "signature"
             | Some n -> n
           in
           let acc = self#list self#signature_item concrete acc in
@@ -3663,7 +3665,7 @@ module V4_07 = struct
         fun signature_item acc ->
           let concrete =
             match Signature_item.to_concrete signature_item with
-            | None -> failwith "signature_item"
+            | None -> conversion_failed "signature_item"
             | Some n -> n
           in
           let { psig_desc; psig_loc } : Signature_item.concrete = concrete in
@@ -3674,7 +3676,7 @@ module V4_07 = struct
         fun signature_item_desc acc ->
           let concrete =
             match Signature_item_desc.to_concrete signature_item_desc with
-            | None -> failwith "signature_item_desc"
+            | None -> conversion_failed "signature_item_desc"
             | Some n -> n
           in
           match (concrete : Signature_item_desc.concrete) with
@@ -3723,7 +3725,7 @@ module V4_07 = struct
         fun module_declaration acc ->
           let concrete =
             match Module_declaration.to_concrete module_declaration with
-            | None -> failwith "module_declaration"
+            | None -> conversion_failed "module_declaration"
             | Some n -> n
           in
           let { pmd_name; pmd_type; pmd_attributes; pmd_loc } : Module_declaration.concrete = concrete in
@@ -3736,7 +3738,7 @@ module V4_07 = struct
         fun module_type_declaration acc ->
           let concrete =
             match Module_type_declaration.to_concrete module_type_declaration with
-            | None -> failwith "module_type_declaration"
+            | None -> conversion_failed "module_type_declaration"
             | Some n -> n
           in
           let { pmtd_name; pmtd_type; pmtd_attributes; pmtd_loc } : Module_type_declaration.concrete = concrete in
@@ -3749,7 +3751,7 @@ module V4_07 = struct
         fun open_description acc ->
           let concrete =
             match Open_description.to_concrete open_description with
-            | None -> failwith "open_description"
+            | None -> conversion_failed "open_description"
             | Some n -> n
           in
           let { popen_lid; popen_override; popen_loc; popen_attributes } : Open_description.concrete = concrete in
@@ -3762,7 +3764,7 @@ module V4_07 = struct
         fun include_infos acc ->
           let concrete =
             match Include_infos.to_concrete_module_expr include_infos with
-            | None -> failwith "include_infos"
+            | None -> conversion_failed "include_infos"
             | Some n -> n
           in
           let { pincl_mod; pincl_loc; pincl_attributes } : Module_expr.t Include_infos.concrete = concrete in
@@ -3774,7 +3776,7 @@ module V4_07 = struct
         fun include_infos acc ->
           let concrete =
             match Include_infos.to_concrete_module_type include_infos with
-            | None -> failwith "include_infos"
+            | None -> conversion_failed "include_infos"
             | Some n -> n
           in
           let { pincl_mod; pincl_loc; pincl_attributes } : Module_type.t Include_infos.concrete = concrete in
@@ -3786,7 +3788,7 @@ module V4_07 = struct
         fun include_description acc ->
           let concrete =
             match Include_description.to_concrete include_description with
-            | None -> failwith "include_description"
+            | None -> conversion_failed "include_description"
             | Some n -> n
           in
           let acc = self#include_infos_module_type concrete acc in
@@ -3795,7 +3797,7 @@ module V4_07 = struct
         fun include_declaration acc ->
           let concrete =
             match Include_declaration.to_concrete include_declaration with
-            | None -> failwith "include_declaration"
+            | None -> conversion_failed "include_declaration"
             | Some n -> n
           in
           let acc = self#include_infos_module_expr concrete acc in
@@ -3804,7 +3806,7 @@ module V4_07 = struct
         fun with_constraint acc ->
           let concrete =
             match With_constraint.to_concrete with_constraint with
-            | None -> failwith "with_constraint"
+            | None -> conversion_failed "with_constraint"
             | Some n -> n
           in
           match (concrete : With_constraint.concrete) with
@@ -3828,7 +3830,7 @@ module V4_07 = struct
         fun module_expr acc ->
           let concrete =
             match Module_expr.to_concrete module_expr with
-            | None -> failwith "module_expr"
+            | None -> conversion_failed "module_expr"
             | Some n -> n
           in
           let { pmod_desc; pmod_loc; pmod_attributes } : Module_expr.concrete = concrete in
@@ -3840,7 +3842,7 @@ module V4_07 = struct
         fun module_expr_desc acc ->
           let concrete =
             match Module_expr_desc.to_concrete module_expr_desc with
-            | None -> failwith "module_expr_desc"
+            | None -> conversion_failed "module_expr_desc"
             | Some n -> n
           in
           match (concrete : Module_expr_desc.concrete) with
@@ -3873,7 +3875,7 @@ module V4_07 = struct
         fun structure acc ->
           let concrete =
             match Structure.to_concrete structure with
-            | None -> failwith "structure"
+            | None -> conversion_failed "structure"
             | Some n -> n
           in
           let acc = self#list self#structure_item concrete acc in
@@ -3882,7 +3884,7 @@ module V4_07 = struct
         fun structure_item acc ->
           let concrete =
             match Structure_item.to_concrete structure_item with
-            | None -> failwith "structure_item"
+            | None -> conversion_failed "structure_item"
             | Some n -> n
           in
           let { pstr_desc; pstr_loc } : Structure_item.concrete = concrete in
@@ -3893,7 +3895,7 @@ module V4_07 = struct
         fun structure_item_desc acc ->
           let concrete =
             match Structure_item_desc.to_concrete structure_item_desc with
-            | None -> failwith "structure_item_desc"
+            | None -> conversion_failed "structure_item_desc"
             | Some n -> n
           in
           match (concrete : Structure_item_desc.concrete) with
@@ -3950,7 +3952,7 @@ module V4_07 = struct
         fun value_binding acc ->
           let concrete =
             match Value_binding.to_concrete value_binding with
-            | None -> failwith "value_binding"
+            | None -> conversion_failed "value_binding"
             | Some n -> n
           in
           let { pvb_pat; pvb_expr; pvb_attributes; pvb_loc } : Value_binding.concrete = concrete in
@@ -3963,7 +3965,7 @@ module V4_07 = struct
         fun module_binding acc ->
           let concrete =
             match Module_binding.to_concrete module_binding with
-            | None -> failwith "module_binding"
+            | None -> conversion_failed "module_binding"
             | Some n -> n
           in
           let { pmb_name; pmb_expr; pmb_attributes; pmb_loc } : Module_binding.concrete = concrete in
@@ -3976,7 +3978,7 @@ module V4_07 = struct
         fun toplevel_phrase acc ->
           let concrete =
             match Toplevel_phrase.to_concrete toplevel_phrase with
-            | None -> failwith "toplevel_phrase"
+            | None -> conversion_failed "toplevel_phrase"
             | Some n -> n
           in
           match (concrete : Toplevel_phrase.concrete) with
@@ -3991,7 +3993,7 @@ module V4_07 = struct
         fun directive_argument acc ->
           let concrete =
             match Directive_argument.to_concrete directive_argument with
-            | None -> failwith "directive_argument"
+            | None -> conversion_failed "directive_argument"
             | Some n -> n
           in
           match (concrete : Directive_argument.concrete) with
@@ -4026,7 +4028,7 @@ module V4_07 = struct
         fun longident acc ->
           let concrete =
             match Longident.to_concrete longident with
-            | None -> failwith "longident"
+            | None -> conversion_failed "longident"
             | Some n -> n
           in
           match (concrete : Longident.concrete) with
@@ -4045,7 +4047,7 @@ module V4_07 = struct
         fun longident_loc acc ->
           let concrete =
             match Longident_loc.to_concrete longident_loc with
-            | None -> failwith "longident_loc"
+            | None -> conversion_failed "longident_loc"
             | Some n -> n
           in
           let (concrete, acc) = self#loc self#longident concrete acc in
@@ -4054,7 +4056,7 @@ module V4_07 = struct
         fun rec_flag acc ->
           let concrete =
             match Rec_flag.to_concrete rec_flag with
-            | None -> failwith "rec_flag"
+            | None -> conversion_failed "rec_flag"
             | Some n -> n
           in
           match (concrete : Rec_flag.concrete) with
@@ -4066,7 +4068,7 @@ module V4_07 = struct
         fun direction_flag acc ->
           let concrete =
             match Direction_flag.to_concrete direction_flag with
-            | None -> failwith "direction_flag"
+            | None -> conversion_failed "direction_flag"
             | Some n -> n
           in
           match (concrete : Direction_flag.concrete) with
@@ -4078,7 +4080,7 @@ module V4_07 = struct
         fun private_flag acc ->
           let concrete =
             match Private_flag.to_concrete private_flag with
-            | None -> failwith "private_flag"
+            | None -> conversion_failed "private_flag"
             | Some n -> n
           in
           match (concrete : Private_flag.concrete) with
@@ -4090,7 +4092,7 @@ module V4_07 = struct
         fun mutable_flag acc ->
           let concrete =
             match Mutable_flag.to_concrete mutable_flag with
-            | None -> failwith "mutable_flag"
+            | None -> conversion_failed "mutable_flag"
             | Some n -> n
           in
           match (concrete : Mutable_flag.concrete) with
@@ -4102,7 +4104,7 @@ module V4_07 = struct
         fun virtual_flag acc ->
           let concrete =
             match Virtual_flag.to_concrete virtual_flag with
-            | None -> failwith "virtual_flag"
+            | None -> conversion_failed "virtual_flag"
             | Some n -> n
           in
           match (concrete : Virtual_flag.concrete) with
@@ -4114,7 +4116,7 @@ module V4_07 = struct
         fun override_flag acc ->
           let concrete =
             match Override_flag.to_concrete override_flag with
-            | None -> failwith "override_flag"
+            | None -> conversion_failed "override_flag"
             | Some n -> n
           in
           match (concrete : Override_flag.concrete) with
@@ -4126,7 +4128,7 @@ module V4_07 = struct
         fun closed_flag acc ->
           let concrete =
             match Closed_flag.to_concrete closed_flag with
-            | None -> failwith "closed_flag"
+            | None -> conversion_failed "closed_flag"
             | Some n -> n
           in
           match (concrete : Closed_flag.concrete) with
@@ -4138,7 +4140,7 @@ module V4_07 = struct
         fun label acc ->
           let concrete =
             match Label.to_concrete label with
-            | None -> failwith "label"
+            | None -> conversion_failed "label"
             | Some n -> n
           in
           let (concrete, acc) = self#string concrete acc in
@@ -4147,7 +4149,7 @@ module V4_07 = struct
         fun arg_label acc ->
           let concrete =
             match Arg_label.to_concrete arg_label with
-            | None -> failwith "arg_label"
+            | None -> conversion_failed "arg_label"
             | Some n -> n
           in
           match (concrete : Arg_label.concrete) with
@@ -4163,7 +4165,7 @@ module V4_07 = struct
         fun variance acc ->
           let concrete =
             match Variance.to_concrete variance with
-            | None -> failwith "variance"
+            | None -> conversion_failed "variance"
             | Some n -> n
           in
           match (concrete : Variance.concrete) with
@@ -4177,7 +4179,7 @@ module V4_07 = struct
         fun constant acc ->
           let concrete =
             match Constant.to_concrete constant with
-            | None -> failwith "constant"
+            | None -> conversion_failed "constant"
             | Some n -> n
           in
           match (concrete : Constant.concrete) with
@@ -4200,7 +4202,7 @@ module V4_07 = struct
         fun attribute acc ->
           let concrete =
             match Attribute.to_concrete attribute with
-            | None -> failwith "attribute"
+            | None -> conversion_failed "attribute"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -4211,7 +4213,7 @@ module V4_07 = struct
         fun extension acc ->
           let concrete =
             match Extension.to_concrete extension with
-            | None -> failwith "extension"
+            | None -> conversion_failed "extension"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -4222,7 +4224,7 @@ module V4_07 = struct
         fun attributes acc ->
           let concrete =
             match Attributes.to_concrete attributes with
-            | None -> failwith "attributes"
+            | None -> conversion_failed "attributes"
             | Some n -> n
           in
           let (concrete, acc) = self#list self#attribute concrete acc in
@@ -4231,7 +4233,7 @@ module V4_07 = struct
         fun payload acc ->
           let concrete =
             match Payload.to_concrete payload with
-            | None -> failwith "payload"
+            | None -> conversion_failed "payload"
             | Some n -> n
           in
           match (concrete : Payload.concrete) with
@@ -4252,7 +4254,7 @@ module V4_07 = struct
         fun core_type acc ->
           let concrete =
             match Core_type.to_concrete core_type with
-            | None -> failwith "core_type"
+            | None -> conversion_failed "core_type"
             | Some n -> n
           in
           let { ptyp_desc; ptyp_loc; ptyp_attributes } : Core_type.concrete = concrete in
@@ -4264,7 +4266,7 @@ module V4_07 = struct
         fun core_type_desc acc ->
           let concrete =
             match Core_type_desc.to_concrete core_type_desc with
-            | None -> failwith "core_type_desc"
+            | None -> conversion_failed "core_type_desc"
             | Some n -> n
           in
           match (concrete : Core_type_desc.concrete) with
@@ -4316,7 +4318,7 @@ module V4_07 = struct
         fun package_type acc ->
           let concrete =
             match Package_type.to_concrete package_type with
-            | None -> failwith "package_type"
+            | None -> conversion_failed "package_type"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -4327,7 +4329,7 @@ module V4_07 = struct
         fun row_field acc ->
           let concrete =
             match Row_field.to_concrete row_field with
-            | None -> failwith "row_field"
+            | None -> conversion_failed "row_field"
             | Some n -> n
           in
           match (concrete : Row_field.concrete) with
@@ -4344,7 +4346,7 @@ module V4_07 = struct
         fun object_field acc ->
           let concrete =
             match Object_field.to_concrete object_field with
-            | None -> failwith "object_field"
+            | None -> conversion_failed "object_field"
             | Some n -> n
           in
           match (concrete : Object_field.concrete) with
@@ -4360,7 +4362,7 @@ module V4_07 = struct
         fun pattern acc ->
           let concrete =
             match Pattern.to_concrete pattern with
-            | None -> failwith "pattern"
+            | None -> conversion_failed "pattern"
             | Some n -> n
           in
           let { ppat_desc; ppat_loc; ppat_attributes } : Pattern.concrete = concrete in
@@ -4372,7 +4374,7 @@ module V4_07 = struct
         fun pattern_desc acc ->
           let concrete =
             match Pattern_desc.to_concrete pattern_desc with
-            | None -> failwith "pattern_desc"
+            | None -> conversion_failed "pattern_desc"
             | Some n -> n
           in
           match (concrete : Pattern_desc.concrete) with
@@ -4441,7 +4443,7 @@ module V4_07 = struct
         fun expression acc ->
           let concrete =
             match Expression.to_concrete expression with
-            | None -> failwith "expression"
+            | None -> conversion_failed "expression"
             | Some n -> n
           in
           let { pexp_desc; pexp_loc; pexp_attributes } : Expression.concrete = concrete in
@@ -4453,7 +4455,7 @@ module V4_07 = struct
         fun expression_desc acc ->
           let concrete =
             match Expression_desc.to_concrete expression_desc with
-            | None -> failwith "expression_desc"
+            | None -> conversion_failed "expression_desc"
             | Some n -> n
           in
           match (concrete : Expression_desc.concrete) with
@@ -4602,7 +4604,7 @@ module V4_07 = struct
         fun case acc ->
           let concrete =
             match Case.to_concrete case with
-            | None -> failwith "case"
+            | None -> conversion_failed "case"
             | Some n -> n
           in
           let { pc_lhs; pc_guard; pc_rhs } : Case.concrete = concrete in
@@ -4614,7 +4616,7 @@ module V4_07 = struct
         fun value_description acc ->
           let concrete =
             match Value_description.to_concrete value_description with
-            | None -> failwith "value_description"
+            | None -> conversion_failed "value_description"
             | Some n -> n
           in
           let { pval_name; pval_type; pval_prim; pval_attributes; pval_loc } : Value_description.concrete = concrete in
@@ -4628,7 +4630,7 @@ module V4_07 = struct
         fun type_declaration acc ->
           let concrete =
             match Type_declaration.to_concrete type_declaration with
-            | None -> failwith "type_declaration"
+            | None -> conversion_failed "type_declaration"
             | Some n -> n
           in
           let { ptype_name; ptype_params; ptype_cstrs; ptype_kind; ptype_private; ptype_manifest; ptype_attributes; ptype_loc } : Type_declaration.concrete = concrete in
@@ -4645,7 +4647,7 @@ module V4_07 = struct
         fun type_kind acc ->
           let concrete =
             match Type_kind.to_concrete type_kind with
-            | None -> failwith "type_kind"
+            | None -> conversion_failed "type_kind"
             | Some n -> n
           in
           match (concrete : Type_kind.concrete) with
@@ -4663,7 +4665,7 @@ module V4_07 = struct
         fun label_declaration acc ->
           let concrete =
             match Label_declaration.to_concrete label_declaration with
-            | None -> failwith "label_declaration"
+            | None -> conversion_failed "label_declaration"
             | Some n -> n
           in
           let { pld_name; pld_mutable; pld_type; pld_loc; pld_attributes } : Label_declaration.concrete = concrete in
@@ -4677,7 +4679,7 @@ module V4_07 = struct
         fun constructor_declaration acc ->
           let concrete =
             match Constructor_declaration.to_concrete constructor_declaration with
-            | None -> failwith "constructor_declaration"
+            | None -> conversion_failed "constructor_declaration"
             | Some n -> n
           in
           let { pcd_name; pcd_args; pcd_res; pcd_loc; pcd_attributes } : Constructor_declaration.concrete = concrete in
@@ -4691,7 +4693,7 @@ module V4_07 = struct
         fun constructor_arguments acc ->
           let concrete =
             match Constructor_arguments.to_concrete constructor_arguments with
-            | None -> failwith "constructor_arguments"
+            | None -> conversion_failed "constructor_arguments"
             | Some n -> n
           in
           match (concrete : Constructor_arguments.concrete) with
@@ -4705,7 +4707,7 @@ module V4_07 = struct
         fun type_extension acc ->
           let concrete =
             match Type_extension.to_concrete type_extension with
-            | None -> failwith "type_extension"
+            | None -> conversion_failed "type_extension"
             | Some n -> n
           in
           let { ptyext_path; ptyext_params; ptyext_constructors; ptyext_private; ptyext_attributes } : Type_extension.concrete = concrete in
@@ -4719,7 +4721,7 @@ module V4_07 = struct
         fun extension_constructor acc ->
           let concrete =
             match Extension_constructor.to_concrete extension_constructor with
-            | None -> failwith "extension_constructor"
+            | None -> conversion_failed "extension_constructor"
             | Some n -> n
           in
           let { pext_name; pext_kind; pext_loc; pext_attributes } : Extension_constructor.concrete = concrete in
@@ -4732,7 +4734,7 @@ module V4_07 = struct
         fun extension_constructor_kind acc ->
           let concrete =
             match Extension_constructor_kind.to_concrete extension_constructor_kind with
-            | None -> failwith "extension_constructor_kind"
+            | None -> conversion_failed "extension_constructor_kind"
             | Some n -> n
           in
           match (concrete : Extension_constructor_kind.concrete) with
@@ -4747,7 +4749,7 @@ module V4_07 = struct
         fun class_type acc ->
           let concrete =
             match Class_type.to_concrete class_type with
-            | None -> failwith "class_type"
+            | None -> conversion_failed "class_type"
             | Some n -> n
           in
           let { pcty_desc; pcty_loc; pcty_attributes } : Class_type.concrete = concrete in
@@ -4759,7 +4761,7 @@ module V4_07 = struct
         fun class_type_desc acc ->
           let concrete =
             match Class_type_desc.to_concrete class_type_desc with
-            | None -> failwith "class_type_desc"
+            | None -> conversion_failed "class_type_desc"
             | Some n -> n
           in
           match (concrete : Class_type_desc.concrete) with
@@ -4787,7 +4789,7 @@ module V4_07 = struct
         fun class_signature acc ->
           let concrete =
             match Class_signature.to_concrete class_signature with
-            | None -> failwith "class_signature"
+            | None -> conversion_failed "class_signature"
             | Some n -> n
           in
           let { pcsig_self; pcsig_fields } : Class_signature.concrete = concrete in
@@ -4798,7 +4800,7 @@ module V4_07 = struct
         fun class_type_field acc ->
           let concrete =
             match Class_type_field.to_concrete class_type_field with
-            | None -> failwith "class_type_field"
+            | None -> conversion_failed "class_type_field"
             | Some n -> n
           in
           let { pctf_desc; pctf_loc; pctf_attributes } : Class_type_field.concrete = concrete in
@@ -4810,7 +4812,7 @@ module V4_07 = struct
         fun class_type_field_desc acc ->
           let concrete =
             match Class_type_field_desc.to_concrete class_type_field_desc with
-            | None -> failwith "class_type_field_desc"
+            | None -> conversion_failed "class_type_field_desc"
             | Some n -> n
           in
           match (concrete : Class_type_field_desc.concrete) with
@@ -4836,7 +4838,7 @@ module V4_07 = struct
         fun class_infos acc ->
           let concrete =
             match Class_infos.to_concrete_class_expr class_infos with
-            | None -> failwith "class_infos"
+            | None -> conversion_failed "class_infos"
             | Some n -> n
           in
           let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_expr.t Class_infos.concrete = concrete in
@@ -4851,7 +4853,7 @@ module V4_07 = struct
         fun class_infos acc ->
           let concrete =
             match Class_infos.to_concrete_class_type class_infos with
-            | None -> failwith "class_infos"
+            | None -> conversion_failed "class_infos"
             | Some n -> n
           in
           let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_type.t Class_infos.concrete = concrete in
@@ -4866,7 +4868,7 @@ module V4_07 = struct
         fun class_description acc ->
           let concrete =
             match Class_description.to_concrete class_description with
-            | None -> failwith "class_description"
+            | None -> conversion_failed "class_description"
             | Some n -> n
           in
           let (concrete, acc) = self#class_infos_class_type concrete acc in
@@ -4875,7 +4877,7 @@ module V4_07 = struct
         fun class_type_declaration acc ->
           let concrete =
             match Class_type_declaration.to_concrete class_type_declaration with
-            | None -> failwith "class_type_declaration"
+            | None -> conversion_failed "class_type_declaration"
             | Some n -> n
           in
           let (concrete, acc) = self#class_infos_class_type concrete acc in
@@ -4884,7 +4886,7 @@ module V4_07 = struct
         fun class_expr acc ->
           let concrete =
             match Class_expr.to_concrete class_expr with
-            | None -> failwith "class_expr"
+            | None -> conversion_failed "class_expr"
             | Some n -> n
           in
           let { pcl_desc; pcl_loc; pcl_attributes } : Class_expr.concrete = concrete in
@@ -4896,7 +4898,7 @@ module V4_07 = struct
         fun class_expr_desc acc ->
           let concrete =
             match Class_expr_desc.to_concrete class_expr_desc with
-            | None -> failwith "class_expr_desc"
+            | None -> conversion_failed "class_expr_desc"
             | Some n -> n
           in
           match (concrete : Class_expr_desc.concrete) with
@@ -4938,7 +4940,7 @@ module V4_07 = struct
         fun class_structure acc ->
           let concrete =
             match Class_structure.to_concrete class_structure with
-            | None -> failwith "class_structure"
+            | None -> conversion_failed "class_structure"
             | Some n -> n
           in
           let { pcstr_self; pcstr_fields } : Class_structure.concrete = concrete in
@@ -4949,7 +4951,7 @@ module V4_07 = struct
         fun class_field acc ->
           let concrete =
             match Class_field.to_concrete class_field with
-            | None -> failwith "class_field"
+            | None -> conversion_failed "class_field"
             | Some n -> n
           in
           let { pcf_desc; pcf_loc; pcf_attributes } : Class_field.concrete = concrete in
@@ -4961,7 +4963,7 @@ module V4_07 = struct
         fun class_field_desc acc ->
           let concrete =
             match Class_field_desc.to_concrete class_field_desc with
-            | None -> failwith "class_field_desc"
+            | None -> conversion_failed "class_field_desc"
             | Some n -> n
           in
           match (concrete : Class_field_desc.concrete) with
@@ -4992,7 +4994,7 @@ module V4_07 = struct
         fun class_field_kind acc ->
           let concrete =
             match Class_field_kind.to_concrete class_field_kind with
-            | None -> failwith "class_field_kind"
+            | None -> conversion_failed "class_field_kind"
             | Some n -> n
           in
           match (concrete : Class_field_kind.concrete) with
@@ -5007,7 +5009,7 @@ module V4_07 = struct
         fun class_declaration acc ->
           let concrete =
             match Class_declaration.to_concrete class_declaration with
-            | None -> failwith "class_declaration"
+            | None -> conversion_failed "class_declaration"
             | Some n -> n
           in
           let (concrete, acc) = self#class_infos_class_expr concrete acc in
@@ -5016,7 +5018,7 @@ module V4_07 = struct
         fun module_type acc ->
           let concrete =
             match Module_type.to_concrete module_type with
-            | None -> failwith "module_type"
+            | None -> conversion_failed "module_type"
             | Some n -> n
           in
           let { pmty_desc; pmty_loc; pmty_attributes } : Module_type.concrete = concrete in
@@ -5028,7 +5030,7 @@ module V4_07 = struct
         fun module_type_desc acc ->
           let concrete =
             match Module_type_desc.to_concrete module_type_desc with
-            | None -> failwith "module_type_desc"
+            | None -> conversion_failed "module_type_desc"
             | Some n -> n
           in
           match (concrete : Module_type_desc.concrete) with
@@ -5060,7 +5062,7 @@ module V4_07 = struct
         fun signature acc ->
           let concrete =
             match Signature.to_concrete signature with
-            | None -> failwith "signature"
+            | None -> conversion_failed "signature"
             | Some n -> n
           in
           let (concrete, acc) = self#list self#signature_item concrete acc in
@@ -5069,7 +5071,7 @@ module V4_07 = struct
         fun signature_item acc ->
           let concrete =
             match Signature_item.to_concrete signature_item with
-            | None -> failwith "signature_item"
+            | None -> conversion_failed "signature_item"
             | Some n -> n
           in
           let { psig_desc; psig_loc } : Signature_item.concrete = concrete in
@@ -5080,7 +5082,7 @@ module V4_07 = struct
         fun signature_item_desc acc ->
           let concrete =
             match Signature_item_desc.to_concrete signature_item_desc with
-            | None -> failwith "signature_item_desc"
+            | None -> conversion_failed "signature_item_desc"
             | Some n -> n
           in
           match (concrete : Signature_item_desc.concrete) with
@@ -5129,7 +5131,7 @@ module V4_07 = struct
         fun module_declaration acc ->
           let concrete =
             match Module_declaration.to_concrete module_declaration with
-            | None -> failwith "module_declaration"
+            | None -> conversion_failed "module_declaration"
             | Some n -> n
           in
           let { pmd_name; pmd_type; pmd_attributes; pmd_loc } : Module_declaration.concrete = concrete in
@@ -5142,7 +5144,7 @@ module V4_07 = struct
         fun module_type_declaration acc ->
           let concrete =
             match Module_type_declaration.to_concrete module_type_declaration with
-            | None -> failwith "module_type_declaration"
+            | None -> conversion_failed "module_type_declaration"
             | Some n -> n
           in
           let { pmtd_name; pmtd_type; pmtd_attributes; pmtd_loc } : Module_type_declaration.concrete = concrete in
@@ -5155,7 +5157,7 @@ module V4_07 = struct
         fun open_description acc ->
           let concrete =
             match Open_description.to_concrete open_description with
-            | None -> failwith "open_description"
+            | None -> conversion_failed "open_description"
             | Some n -> n
           in
           let { popen_lid; popen_override; popen_loc; popen_attributes } : Open_description.concrete = concrete in
@@ -5168,7 +5170,7 @@ module V4_07 = struct
         fun include_infos acc ->
           let concrete =
             match Include_infos.to_concrete_module_expr include_infos with
-            | None -> failwith "include_infos"
+            | None -> conversion_failed "include_infos"
             | Some n -> n
           in
           let { pincl_mod; pincl_loc; pincl_attributes } : Module_expr.t Include_infos.concrete = concrete in
@@ -5180,7 +5182,7 @@ module V4_07 = struct
         fun include_infos acc ->
           let concrete =
             match Include_infos.to_concrete_module_type include_infos with
-            | None -> failwith "include_infos"
+            | None -> conversion_failed "include_infos"
             | Some n -> n
           in
           let { pincl_mod; pincl_loc; pincl_attributes } : Module_type.t Include_infos.concrete = concrete in
@@ -5192,7 +5194,7 @@ module V4_07 = struct
         fun include_description acc ->
           let concrete =
             match Include_description.to_concrete include_description with
-            | None -> failwith "include_description"
+            | None -> conversion_failed "include_description"
             | Some n -> n
           in
           let (concrete, acc) = self#include_infos_module_type concrete acc in
@@ -5201,7 +5203,7 @@ module V4_07 = struct
         fun include_declaration acc ->
           let concrete =
             match Include_declaration.to_concrete include_declaration with
-            | None -> failwith "include_declaration"
+            | None -> conversion_failed "include_declaration"
             | Some n -> n
           in
           let (concrete, acc) = self#include_infos_module_expr concrete acc in
@@ -5210,7 +5212,7 @@ module V4_07 = struct
         fun with_constraint acc ->
           let concrete =
             match With_constraint.to_concrete with_constraint with
-            | None -> failwith "with_constraint"
+            | None -> conversion_failed "with_constraint"
             | Some n -> n
           in
           match (concrete : With_constraint.concrete) with
@@ -5234,7 +5236,7 @@ module V4_07 = struct
         fun module_expr acc ->
           let concrete =
             match Module_expr.to_concrete module_expr with
-            | None -> failwith "module_expr"
+            | None -> conversion_failed "module_expr"
             | Some n -> n
           in
           let { pmod_desc; pmod_loc; pmod_attributes } : Module_expr.concrete = concrete in
@@ -5246,7 +5248,7 @@ module V4_07 = struct
         fun module_expr_desc acc ->
           let concrete =
             match Module_expr_desc.to_concrete module_expr_desc with
-            | None -> failwith "module_expr_desc"
+            | None -> conversion_failed "module_expr_desc"
             | Some n -> n
           in
           match (concrete : Module_expr_desc.concrete) with
@@ -5279,7 +5281,7 @@ module V4_07 = struct
         fun structure acc ->
           let concrete =
             match Structure.to_concrete structure with
-            | None -> failwith "structure"
+            | None -> conversion_failed "structure"
             | Some n -> n
           in
           let (concrete, acc) = self#list self#structure_item concrete acc in
@@ -5288,7 +5290,7 @@ module V4_07 = struct
         fun structure_item acc ->
           let concrete =
             match Structure_item.to_concrete structure_item with
-            | None -> failwith "structure_item"
+            | None -> conversion_failed "structure_item"
             | Some n -> n
           in
           let { pstr_desc; pstr_loc } : Structure_item.concrete = concrete in
@@ -5299,7 +5301,7 @@ module V4_07 = struct
         fun structure_item_desc acc ->
           let concrete =
             match Structure_item_desc.to_concrete structure_item_desc with
-            | None -> failwith "structure_item_desc"
+            | None -> conversion_failed "structure_item_desc"
             | Some n -> n
           in
           match (concrete : Structure_item_desc.concrete) with
@@ -5356,7 +5358,7 @@ module V4_07 = struct
         fun value_binding acc ->
           let concrete =
             match Value_binding.to_concrete value_binding with
-            | None -> failwith "value_binding"
+            | None -> conversion_failed "value_binding"
             | Some n -> n
           in
           let { pvb_pat; pvb_expr; pvb_attributes; pvb_loc } : Value_binding.concrete = concrete in
@@ -5369,7 +5371,7 @@ module V4_07 = struct
         fun module_binding acc ->
           let concrete =
             match Module_binding.to_concrete module_binding with
-            | None -> failwith "module_binding"
+            | None -> conversion_failed "module_binding"
             | Some n -> n
           in
           let { pmb_name; pmb_expr; pmb_attributes; pmb_loc } : Module_binding.concrete = concrete in
@@ -5382,7 +5384,7 @@ module V4_07 = struct
         fun toplevel_phrase acc ->
           let concrete =
             match Toplevel_phrase.to_concrete toplevel_phrase with
-            | None -> failwith "toplevel_phrase"
+            | None -> conversion_failed "toplevel_phrase"
             | Some n -> n
           in
           match (concrete : Toplevel_phrase.concrete) with
@@ -5397,7 +5399,7 @@ module V4_07 = struct
         fun directive_argument acc ->
           let concrete =
             match Directive_argument.to_concrete directive_argument with
-            | None -> failwith "directive_argument"
+            | None -> conversion_failed "directive_argument"
             | Some n -> n
           in
           match (concrete : Directive_argument.concrete) with
@@ -5432,7 +5434,7 @@ module V4_07 = struct
         fun _ctx longident ->
           let concrete =
             match Longident.to_concrete longident with
-            | None -> failwith "longident"
+            | None -> conversion_failed "longident"
             | Some n -> n
           in
           match (concrete : Longident.concrete) with
@@ -5451,7 +5453,7 @@ module V4_07 = struct
         fun _ctx longident_loc ->
           let concrete =
             match Longident_loc.to_concrete longident_loc with
-            | None -> failwith "longident_loc"
+            | None -> conversion_failed "longident_loc"
             | Some n -> n
           in
           let concrete = self#loc self#longident _ctx concrete in
@@ -5460,7 +5462,7 @@ module V4_07 = struct
         fun _ctx rec_flag ->
           let concrete =
             match Rec_flag.to_concrete rec_flag with
-            | None -> failwith "rec_flag"
+            | None -> conversion_failed "rec_flag"
             | Some n -> n
           in
           match (concrete : Rec_flag.concrete) with
@@ -5472,7 +5474,7 @@ module V4_07 = struct
         fun _ctx direction_flag ->
           let concrete =
             match Direction_flag.to_concrete direction_flag with
-            | None -> failwith "direction_flag"
+            | None -> conversion_failed "direction_flag"
             | Some n -> n
           in
           match (concrete : Direction_flag.concrete) with
@@ -5484,7 +5486,7 @@ module V4_07 = struct
         fun _ctx private_flag ->
           let concrete =
             match Private_flag.to_concrete private_flag with
-            | None -> failwith "private_flag"
+            | None -> conversion_failed "private_flag"
             | Some n -> n
           in
           match (concrete : Private_flag.concrete) with
@@ -5496,7 +5498,7 @@ module V4_07 = struct
         fun _ctx mutable_flag ->
           let concrete =
             match Mutable_flag.to_concrete mutable_flag with
-            | None -> failwith "mutable_flag"
+            | None -> conversion_failed "mutable_flag"
             | Some n -> n
           in
           match (concrete : Mutable_flag.concrete) with
@@ -5508,7 +5510,7 @@ module V4_07 = struct
         fun _ctx virtual_flag ->
           let concrete =
             match Virtual_flag.to_concrete virtual_flag with
-            | None -> failwith "virtual_flag"
+            | None -> conversion_failed "virtual_flag"
             | Some n -> n
           in
           match (concrete : Virtual_flag.concrete) with
@@ -5520,7 +5522,7 @@ module V4_07 = struct
         fun _ctx override_flag ->
           let concrete =
             match Override_flag.to_concrete override_flag with
-            | None -> failwith "override_flag"
+            | None -> conversion_failed "override_flag"
             | Some n -> n
           in
           match (concrete : Override_flag.concrete) with
@@ -5532,7 +5534,7 @@ module V4_07 = struct
         fun _ctx closed_flag ->
           let concrete =
             match Closed_flag.to_concrete closed_flag with
-            | None -> failwith "closed_flag"
+            | None -> conversion_failed "closed_flag"
             | Some n -> n
           in
           match (concrete : Closed_flag.concrete) with
@@ -5544,7 +5546,7 @@ module V4_07 = struct
         fun _ctx label ->
           let concrete =
             match Label.to_concrete label with
-            | None -> failwith "label"
+            | None -> conversion_failed "label"
             | Some n -> n
           in
           let concrete = self#string _ctx concrete in
@@ -5553,7 +5555,7 @@ module V4_07 = struct
         fun _ctx arg_label ->
           let concrete =
             match Arg_label.to_concrete arg_label with
-            | None -> failwith "arg_label"
+            | None -> conversion_failed "arg_label"
             | Some n -> n
           in
           match (concrete : Arg_label.concrete) with
@@ -5569,7 +5571,7 @@ module V4_07 = struct
         fun _ctx variance ->
           let concrete =
             match Variance.to_concrete variance with
-            | None -> failwith "variance"
+            | None -> conversion_failed "variance"
             | Some n -> n
           in
           match (concrete : Variance.concrete) with
@@ -5583,7 +5585,7 @@ module V4_07 = struct
         fun _ctx constant ->
           let concrete =
             match Constant.to_concrete constant with
-            | None -> failwith "constant"
+            | None -> conversion_failed "constant"
             | Some n -> n
           in
           match (concrete : Constant.concrete) with
@@ -5606,7 +5608,7 @@ module V4_07 = struct
         fun _ctx attribute ->
           let concrete =
             match Attribute.to_concrete attribute with
-            | None -> failwith "attribute"
+            | None -> conversion_failed "attribute"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -5617,7 +5619,7 @@ module V4_07 = struct
         fun _ctx extension ->
           let concrete =
             match Extension.to_concrete extension with
-            | None -> failwith "extension"
+            | None -> conversion_failed "extension"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -5628,7 +5630,7 @@ module V4_07 = struct
         fun _ctx attributes ->
           let concrete =
             match Attributes.to_concrete attributes with
-            | None -> failwith "attributes"
+            | None -> conversion_failed "attributes"
             | Some n -> n
           in
           let concrete = self#list self#attribute _ctx concrete in
@@ -5637,7 +5639,7 @@ module V4_07 = struct
         fun _ctx payload ->
           let concrete =
             match Payload.to_concrete payload with
-            | None -> failwith "payload"
+            | None -> conversion_failed "payload"
             | Some n -> n
           in
           match (concrete : Payload.concrete) with
@@ -5658,7 +5660,7 @@ module V4_07 = struct
         fun _ctx core_type ->
           let concrete =
             match Core_type.to_concrete core_type with
-            | None -> failwith "core_type"
+            | None -> conversion_failed "core_type"
             | Some n -> n
           in
           let { ptyp_desc; ptyp_loc; ptyp_attributes } : Core_type.concrete = concrete in
@@ -5670,7 +5672,7 @@ module V4_07 = struct
         fun _ctx core_type_desc ->
           let concrete =
             match Core_type_desc.to_concrete core_type_desc with
-            | None -> failwith "core_type_desc"
+            | None -> conversion_failed "core_type_desc"
             | Some n -> n
           in
           match (concrete : Core_type_desc.concrete) with
@@ -5722,7 +5724,7 @@ module V4_07 = struct
         fun _ctx package_type ->
           let concrete =
             match Package_type.to_concrete package_type with
-            | None -> failwith "package_type"
+            | None -> conversion_failed "package_type"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -5733,7 +5735,7 @@ module V4_07 = struct
         fun _ctx row_field ->
           let concrete =
             match Row_field.to_concrete row_field with
-            | None -> failwith "row_field"
+            | None -> conversion_failed "row_field"
             | Some n -> n
           in
           match (concrete : Row_field.concrete) with
@@ -5750,7 +5752,7 @@ module V4_07 = struct
         fun _ctx object_field ->
           let concrete =
             match Object_field.to_concrete object_field with
-            | None -> failwith "object_field"
+            | None -> conversion_failed "object_field"
             | Some n -> n
           in
           match (concrete : Object_field.concrete) with
@@ -5766,7 +5768,7 @@ module V4_07 = struct
         fun _ctx pattern ->
           let concrete =
             match Pattern.to_concrete pattern with
-            | None -> failwith "pattern"
+            | None -> conversion_failed "pattern"
             | Some n -> n
           in
           let { ppat_desc; ppat_loc; ppat_attributes } : Pattern.concrete = concrete in
@@ -5778,7 +5780,7 @@ module V4_07 = struct
         fun _ctx pattern_desc ->
           let concrete =
             match Pattern_desc.to_concrete pattern_desc with
-            | None -> failwith "pattern_desc"
+            | None -> conversion_failed "pattern_desc"
             | Some n -> n
           in
           match (concrete : Pattern_desc.concrete) with
@@ -5847,7 +5849,7 @@ module V4_07 = struct
         fun _ctx expression ->
           let concrete =
             match Expression.to_concrete expression with
-            | None -> failwith "expression"
+            | None -> conversion_failed "expression"
             | Some n -> n
           in
           let { pexp_desc; pexp_loc; pexp_attributes } : Expression.concrete = concrete in
@@ -5859,7 +5861,7 @@ module V4_07 = struct
         fun _ctx expression_desc ->
           let concrete =
             match Expression_desc.to_concrete expression_desc with
-            | None -> failwith "expression_desc"
+            | None -> conversion_failed "expression_desc"
             | Some n -> n
           in
           match (concrete : Expression_desc.concrete) with
@@ -6008,7 +6010,7 @@ module V4_07 = struct
         fun _ctx case ->
           let concrete =
             match Case.to_concrete case with
-            | None -> failwith "case"
+            | None -> conversion_failed "case"
             | Some n -> n
           in
           let { pc_lhs; pc_guard; pc_rhs } : Case.concrete = concrete in
@@ -6020,7 +6022,7 @@ module V4_07 = struct
         fun _ctx value_description ->
           let concrete =
             match Value_description.to_concrete value_description with
-            | None -> failwith "value_description"
+            | None -> conversion_failed "value_description"
             | Some n -> n
           in
           let { pval_name; pval_type; pval_prim; pval_attributes; pval_loc } : Value_description.concrete = concrete in
@@ -6034,7 +6036,7 @@ module V4_07 = struct
         fun _ctx type_declaration ->
           let concrete =
             match Type_declaration.to_concrete type_declaration with
-            | None -> failwith "type_declaration"
+            | None -> conversion_failed "type_declaration"
             | Some n -> n
           in
           let { ptype_name; ptype_params; ptype_cstrs; ptype_kind; ptype_private; ptype_manifest; ptype_attributes; ptype_loc } : Type_declaration.concrete = concrete in
@@ -6051,7 +6053,7 @@ module V4_07 = struct
         fun _ctx type_kind ->
           let concrete =
             match Type_kind.to_concrete type_kind with
-            | None -> failwith "type_kind"
+            | None -> conversion_failed "type_kind"
             | Some n -> n
           in
           match (concrete : Type_kind.concrete) with
@@ -6069,7 +6071,7 @@ module V4_07 = struct
         fun _ctx label_declaration ->
           let concrete =
             match Label_declaration.to_concrete label_declaration with
-            | None -> failwith "label_declaration"
+            | None -> conversion_failed "label_declaration"
             | Some n -> n
           in
           let { pld_name; pld_mutable; pld_type; pld_loc; pld_attributes } : Label_declaration.concrete = concrete in
@@ -6083,7 +6085,7 @@ module V4_07 = struct
         fun _ctx constructor_declaration ->
           let concrete =
             match Constructor_declaration.to_concrete constructor_declaration with
-            | None -> failwith "constructor_declaration"
+            | None -> conversion_failed "constructor_declaration"
             | Some n -> n
           in
           let { pcd_name; pcd_args; pcd_res; pcd_loc; pcd_attributes } : Constructor_declaration.concrete = concrete in
@@ -6097,7 +6099,7 @@ module V4_07 = struct
         fun _ctx constructor_arguments ->
           let concrete =
             match Constructor_arguments.to_concrete constructor_arguments with
-            | None -> failwith "constructor_arguments"
+            | None -> conversion_failed "constructor_arguments"
             | Some n -> n
           in
           match (concrete : Constructor_arguments.concrete) with
@@ -6111,7 +6113,7 @@ module V4_07 = struct
         fun _ctx type_extension ->
           let concrete =
             match Type_extension.to_concrete type_extension with
-            | None -> failwith "type_extension"
+            | None -> conversion_failed "type_extension"
             | Some n -> n
           in
           let { ptyext_path; ptyext_params; ptyext_constructors; ptyext_private; ptyext_attributes } : Type_extension.concrete = concrete in
@@ -6125,7 +6127,7 @@ module V4_07 = struct
         fun _ctx extension_constructor ->
           let concrete =
             match Extension_constructor.to_concrete extension_constructor with
-            | None -> failwith "extension_constructor"
+            | None -> conversion_failed "extension_constructor"
             | Some n -> n
           in
           let { pext_name; pext_kind; pext_loc; pext_attributes } : Extension_constructor.concrete = concrete in
@@ -6138,7 +6140,7 @@ module V4_07 = struct
         fun _ctx extension_constructor_kind ->
           let concrete =
             match Extension_constructor_kind.to_concrete extension_constructor_kind with
-            | None -> failwith "extension_constructor_kind"
+            | None -> conversion_failed "extension_constructor_kind"
             | Some n -> n
           in
           match (concrete : Extension_constructor_kind.concrete) with
@@ -6153,7 +6155,7 @@ module V4_07 = struct
         fun _ctx class_type ->
           let concrete =
             match Class_type.to_concrete class_type with
-            | None -> failwith "class_type"
+            | None -> conversion_failed "class_type"
             | Some n -> n
           in
           let { pcty_desc; pcty_loc; pcty_attributes } : Class_type.concrete = concrete in
@@ -6165,7 +6167,7 @@ module V4_07 = struct
         fun _ctx class_type_desc ->
           let concrete =
             match Class_type_desc.to_concrete class_type_desc with
-            | None -> failwith "class_type_desc"
+            | None -> conversion_failed "class_type_desc"
             | Some n -> n
           in
           match (concrete : Class_type_desc.concrete) with
@@ -6193,7 +6195,7 @@ module V4_07 = struct
         fun _ctx class_signature ->
           let concrete =
             match Class_signature.to_concrete class_signature with
-            | None -> failwith "class_signature"
+            | None -> conversion_failed "class_signature"
             | Some n -> n
           in
           let { pcsig_self; pcsig_fields } : Class_signature.concrete = concrete in
@@ -6204,7 +6206,7 @@ module V4_07 = struct
         fun _ctx class_type_field ->
           let concrete =
             match Class_type_field.to_concrete class_type_field with
-            | None -> failwith "class_type_field"
+            | None -> conversion_failed "class_type_field"
             | Some n -> n
           in
           let { pctf_desc; pctf_loc; pctf_attributes } : Class_type_field.concrete = concrete in
@@ -6216,7 +6218,7 @@ module V4_07 = struct
         fun _ctx class_type_field_desc ->
           let concrete =
             match Class_type_field_desc.to_concrete class_type_field_desc with
-            | None -> failwith "class_type_field_desc"
+            | None -> conversion_failed "class_type_field_desc"
             | Some n -> n
           in
           match (concrete : Class_type_field_desc.concrete) with
@@ -6242,7 +6244,7 @@ module V4_07 = struct
         fun _ctx class_infos ->
           let concrete =
             match Class_infos.to_concrete_class_expr class_infos with
-            | None -> failwith "class_infos"
+            | None -> conversion_failed "class_infos"
             | Some n -> n
           in
           let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_expr.t Class_infos.concrete = concrete in
@@ -6257,7 +6259,7 @@ module V4_07 = struct
         fun _ctx class_infos ->
           let concrete =
             match Class_infos.to_concrete_class_type class_infos with
-            | None -> failwith "class_infos"
+            | None -> conversion_failed "class_infos"
             | Some n -> n
           in
           let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_type.t Class_infos.concrete = concrete in
@@ -6272,7 +6274,7 @@ module V4_07 = struct
         fun _ctx class_description ->
           let concrete =
             match Class_description.to_concrete class_description with
-            | None -> failwith "class_description"
+            | None -> conversion_failed "class_description"
             | Some n -> n
           in
           let concrete = self#class_infos_class_type _ctx concrete in
@@ -6281,7 +6283,7 @@ module V4_07 = struct
         fun _ctx class_type_declaration ->
           let concrete =
             match Class_type_declaration.to_concrete class_type_declaration with
-            | None -> failwith "class_type_declaration"
+            | None -> conversion_failed "class_type_declaration"
             | Some n -> n
           in
           let concrete = self#class_infos_class_type _ctx concrete in
@@ -6290,7 +6292,7 @@ module V4_07 = struct
         fun _ctx class_expr ->
           let concrete =
             match Class_expr.to_concrete class_expr with
-            | None -> failwith "class_expr"
+            | None -> conversion_failed "class_expr"
             | Some n -> n
           in
           let { pcl_desc; pcl_loc; pcl_attributes } : Class_expr.concrete = concrete in
@@ -6302,7 +6304,7 @@ module V4_07 = struct
         fun _ctx class_expr_desc ->
           let concrete =
             match Class_expr_desc.to_concrete class_expr_desc with
-            | None -> failwith "class_expr_desc"
+            | None -> conversion_failed "class_expr_desc"
             | Some n -> n
           in
           match (concrete : Class_expr_desc.concrete) with
@@ -6344,7 +6346,7 @@ module V4_07 = struct
         fun _ctx class_structure ->
           let concrete =
             match Class_structure.to_concrete class_structure with
-            | None -> failwith "class_structure"
+            | None -> conversion_failed "class_structure"
             | Some n -> n
           in
           let { pcstr_self; pcstr_fields } : Class_structure.concrete = concrete in
@@ -6355,7 +6357,7 @@ module V4_07 = struct
         fun _ctx class_field ->
           let concrete =
             match Class_field.to_concrete class_field with
-            | None -> failwith "class_field"
+            | None -> conversion_failed "class_field"
             | Some n -> n
           in
           let { pcf_desc; pcf_loc; pcf_attributes } : Class_field.concrete = concrete in
@@ -6367,7 +6369,7 @@ module V4_07 = struct
         fun _ctx class_field_desc ->
           let concrete =
             match Class_field_desc.to_concrete class_field_desc with
-            | None -> failwith "class_field_desc"
+            | None -> conversion_failed "class_field_desc"
             | Some n -> n
           in
           match (concrete : Class_field_desc.concrete) with
@@ -6398,7 +6400,7 @@ module V4_07 = struct
         fun _ctx class_field_kind ->
           let concrete =
             match Class_field_kind.to_concrete class_field_kind with
-            | None -> failwith "class_field_kind"
+            | None -> conversion_failed "class_field_kind"
             | Some n -> n
           in
           match (concrete : Class_field_kind.concrete) with
@@ -6413,7 +6415,7 @@ module V4_07 = struct
         fun _ctx class_declaration ->
           let concrete =
             match Class_declaration.to_concrete class_declaration with
-            | None -> failwith "class_declaration"
+            | None -> conversion_failed "class_declaration"
             | Some n -> n
           in
           let concrete = self#class_infos_class_expr _ctx concrete in
@@ -6422,7 +6424,7 @@ module V4_07 = struct
         fun _ctx module_type ->
           let concrete =
             match Module_type.to_concrete module_type with
-            | None -> failwith "module_type"
+            | None -> conversion_failed "module_type"
             | Some n -> n
           in
           let { pmty_desc; pmty_loc; pmty_attributes } : Module_type.concrete = concrete in
@@ -6434,7 +6436,7 @@ module V4_07 = struct
         fun _ctx module_type_desc ->
           let concrete =
             match Module_type_desc.to_concrete module_type_desc with
-            | None -> failwith "module_type_desc"
+            | None -> conversion_failed "module_type_desc"
             | Some n -> n
           in
           match (concrete : Module_type_desc.concrete) with
@@ -6466,7 +6468,7 @@ module V4_07 = struct
         fun _ctx signature ->
           let concrete =
             match Signature.to_concrete signature with
-            | None -> failwith "signature"
+            | None -> conversion_failed "signature"
             | Some n -> n
           in
           let concrete = self#list self#signature_item _ctx concrete in
@@ -6475,7 +6477,7 @@ module V4_07 = struct
         fun _ctx signature_item ->
           let concrete =
             match Signature_item.to_concrete signature_item with
-            | None -> failwith "signature_item"
+            | None -> conversion_failed "signature_item"
             | Some n -> n
           in
           let { psig_desc; psig_loc } : Signature_item.concrete = concrete in
@@ -6486,7 +6488,7 @@ module V4_07 = struct
         fun _ctx signature_item_desc ->
           let concrete =
             match Signature_item_desc.to_concrete signature_item_desc with
-            | None -> failwith "signature_item_desc"
+            | None -> conversion_failed "signature_item_desc"
             | Some n -> n
           in
           match (concrete : Signature_item_desc.concrete) with
@@ -6535,7 +6537,7 @@ module V4_07 = struct
         fun _ctx module_declaration ->
           let concrete =
             match Module_declaration.to_concrete module_declaration with
-            | None -> failwith "module_declaration"
+            | None -> conversion_failed "module_declaration"
             | Some n -> n
           in
           let { pmd_name; pmd_type; pmd_attributes; pmd_loc } : Module_declaration.concrete = concrete in
@@ -6548,7 +6550,7 @@ module V4_07 = struct
         fun _ctx module_type_declaration ->
           let concrete =
             match Module_type_declaration.to_concrete module_type_declaration with
-            | None -> failwith "module_type_declaration"
+            | None -> conversion_failed "module_type_declaration"
             | Some n -> n
           in
           let { pmtd_name; pmtd_type; pmtd_attributes; pmtd_loc } : Module_type_declaration.concrete = concrete in
@@ -6561,7 +6563,7 @@ module V4_07 = struct
         fun _ctx open_description ->
           let concrete =
             match Open_description.to_concrete open_description with
-            | None -> failwith "open_description"
+            | None -> conversion_failed "open_description"
             | Some n -> n
           in
           let { popen_lid; popen_override; popen_loc; popen_attributes } : Open_description.concrete = concrete in
@@ -6574,7 +6576,7 @@ module V4_07 = struct
         fun _ctx include_infos ->
           let concrete =
             match Include_infos.to_concrete_module_expr include_infos with
-            | None -> failwith "include_infos"
+            | None -> conversion_failed "include_infos"
             | Some n -> n
           in
           let { pincl_mod; pincl_loc; pincl_attributes } : Module_expr.t Include_infos.concrete = concrete in
@@ -6586,7 +6588,7 @@ module V4_07 = struct
         fun _ctx include_infos ->
           let concrete =
             match Include_infos.to_concrete_module_type include_infos with
-            | None -> failwith "include_infos"
+            | None -> conversion_failed "include_infos"
             | Some n -> n
           in
           let { pincl_mod; pincl_loc; pincl_attributes } : Module_type.t Include_infos.concrete = concrete in
@@ -6598,7 +6600,7 @@ module V4_07 = struct
         fun _ctx include_description ->
           let concrete =
             match Include_description.to_concrete include_description with
-            | None -> failwith "include_description"
+            | None -> conversion_failed "include_description"
             | Some n -> n
           in
           let concrete = self#include_infos_module_type _ctx concrete in
@@ -6607,7 +6609,7 @@ module V4_07 = struct
         fun _ctx include_declaration ->
           let concrete =
             match Include_declaration.to_concrete include_declaration with
-            | None -> failwith "include_declaration"
+            | None -> conversion_failed "include_declaration"
             | Some n -> n
           in
           let concrete = self#include_infos_module_expr _ctx concrete in
@@ -6616,7 +6618,7 @@ module V4_07 = struct
         fun _ctx with_constraint ->
           let concrete =
             match With_constraint.to_concrete with_constraint with
-            | None -> failwith "with_constraint"
+            | None -> conversion_failed "with_constraint"
             | Some n -> n
           in
           match (concrete : With_constraint.concrete) with
@@ -6640,7 +6642,7 @@ module V4_07 = struct
         fun _ctx module_expr ->
           let concrete =
             match Module_expr.to_concrete module_expr with
-            | None -> failwith "module_expr"
+            | None -> conversion_failed "module_expr"
             | Some n -> n
           in
           let { pmod_desc; pmod_loc; pmod_attributes } : Module_expr.concrete = concrete in
@@ -6652,7 +6654,7 @@ module V4_07 = struct
         fun _ctx module_expr_desc ->
           let concrete =
             match Module_expr_desc.to_concrete module_expr_desc with
-            | None -> failwith "module_expr_desc"
+            | None -> conversion_failed "module_expr_desc"
             | Some n -> n
           in
           match (concrete : Module_expr_desc.concrete) with
@@ -6685,7 +6687,7 @@ module V4_07 = struct
         fun _ctx structure ->
           let concrete =
             match Structure.to_concrete structure with
-            | None -> failwith "structure"
+            | None -> conversion_failed "structure"
             | Some n -> n
           in
           let concrete = self#list self#structure_item _ctx concrete in
@@ -6694,7 +6696,7 @@ module V4_07 = struct
         fun _ctx structure_item ->
           let concrete =
             match Structure_item.to_concrete structure_item with
-            | None -> failwith "structure_item"
+            | None -> conversion_failed "structure_item"
             | Some n -> n
           in
           let { pstr_desc; pstr_loc } : Structure_item.concrete = concrete in
@@ -6705,7 +6707,7 @@ module V4_07 = struct
         fun _ctx structure_item_desc ->
           let concrete =
             match Structure_item_desc.to_concrete structure_item_desc with
-            | None -> failwith "structure_item_desc"
+            | None -> conversion_failed "structure_item_desc"
             | Some n -> n
           in
           match (concrete : Structure_item_desc.concrete) with
@@ -6762,7 +6764,7 @@ module V4_07 = struct
         fun _ctx value_binding ->
           let concrete =
             match Value_binding.to_concrete value_binding with
-            | None -> failwith "value_binding"
+            | None -> conversion_failed "value_binding"
             | Some n -> n
           in
           let { pvb_pat; pvb_expr; pvb_attributes; pvb_loc } : Value_binding.concrete = concrete in
@@ -6775,7 +6777,7 @@ module V4_07 = struct
         fun _ctx module_binding ->
           let concrete =
             match Module_binding.to_concrete module_binding with
-            | None -> failwith "module_binding"
+            | None -> conversion_failed "module_binding"
             | Some n -> n
           in
           let { pmb_name; pmb_expr; pmb_attributes; pmb_loc } : Module_binding.concrete = concrete in
@@ -6788,7 +6790,7 @@ module V4_07 = struct
         fun _ctx toplevel_phrase ->
           let concrete =
             match Toplevel_phrase.to_concrete toplevel_phrase with
-            | None -> failwith "toplevel_phrase"
+            | None -> conversion_failed "toplevel_phrase"
             | Some n -> n
           in
           match (concrete : Toplevel_phrase.concrete) with
@@ -6803,7 +6805,7 @@ module V4_07 = struct
         fun _ctx directive_argument ->
           let concrete =
             match Directive_argument.to_concrete directive_argument with
-            | None -> failwith "directive_argument"
+            | None -> conversion_failed "directive_argument"
             | Some n -> n
           in
           match (concrete : Directive_argument.concrete) with
@@ -6841,7 +6843,7 @@ module V4_07 = struct
         fun longident ->
           let concrete =
             match Longident.to_concrete longident with
-            | None -> failwith "longident"
+            | None -> conversion_failed "longident"
             | Some n -> n
           in
           match (concrete : Longident.concrete) with
@@ -6860,7 +6862,7 @@ module V4_07 = struct
         fun longident_loc ->
           let concrete =
             match Longident_loc.to_concrete longident_loc with
-            | None -> failwith "longident_loc"
+            | None -> conversion_failed "longident_loc"
             | Some n -> n
           in
           let concrete = self#loc self#longident concrete in
@@ -6869,7 +6871,7 @@ module V4_07 = struct
         fun rec_flag ->
           let concrete =
             match Rec_flag.to_concrete rec_flag with
-            | None -> failwith "rec_flag"
+            | None -> conversion_failed "rec_flag"
             | Some n -> n
           in
           match (concrete : Rec_flag.concrete) with
@@ -6881,7 +6883,7 @@ module V4_07 = struct
         fun direction_flag ->
           let concrete =
             match Direction_flag.to_concrete direction_flag with
-            | None -> failwith "direction_flag"
+            | None -> conversion_failed "direction_flag"
             | Some n -> n
           in
           match (concrete : Direction_flag.concrete) with
@@ -6893,7 +6895,7 @@ module V4_07 = struct
         fun private_flag ->
           let concrete =
             match Private_flag.to_concrete private_flag with
-            | None -> failwith "private_flag"
+            | None -> conversion_failed "private_flag"
             | Some n -> n
           in
           match (concrete : Private_flag.concrete) with
@@ -6905,7 +6907,7 @@ module V4_07 = struct
         fun mutable_flag ->
           let concrete =
             match Mutable_flag.to_concrete mutable_flag with
-            | None -> failwith "mutable_flag"
+            | None -> conversion_failed "mutable_flag"
             | Some n -> n
           in
           match (concrete : Mutable_flag.concrete) with
@@ -6917,7 +6919,7 @@ module V4_07 = struct
         fun virtual_flag ->
           let concrete =
             match Virtual_flag.to_concrete virtual_flag with
-            | None -> failwith "virtual_flag"
+            | None -> conversion_failed "virtual_flag"
             | Some n -> n
           in
           match (concrete : Virtual_flag.concrete) with
@@ -6929,7 +6931,7 @@ module V4_07 = struct
         fun override_flag ->
           let concrete =
             match Override_flag.to_concrete override_flag with
-            | None -> failwith "override_flag"
+            | None -> conversion_failed "override_flag"
             | Some n -> n
           in
           match (concrete : Override_flag.concrete) with
@@ -6941,7 +6943,7 @@ module V4_07 = struct
         fun closed_flag ->
           let concrete =
             match Closed_flag.to_concrete closed_flag with
-            | None -> failwith "closed_flag"
+            | None -> conversion_failed "closed_flag"
             | Some n -> n
           in
           match (concrete : Closed_flag.concrete) with
@@ -6953,7 +6955,7 @@ module V4_07 = struct
         fun label ->
           let concrete =
             match Label.to_concrete label with
-            | None -> failwith "label"
+            | None -> conversion_failed "label"
             | Some n -> n
           in
           let concrete = self#string concrete in
@@ -6962,7 +6964,7 @@ module V4_07 = struct
         fun arg_label ->
           let concrete =
             match Arg_label.to_concrete arg_label with
-            | None -> failwith "arg_label"
+            | None -> conversion_failed "arg_label"
             | Some n -> n
           in
           match (concrete : Arg_label.concrete) with
@@ -6978,7 +6980,7 @@ module V4_07 = struct
         fun variance ->
           let concrete =
             match Variance.to_concrete variance with
-            | None -> failwith "variance"
+            | None -> conversion_failed "variance"
             | Some n -> n
           in
           match (concrete : Variance.concrete) with
@@ -6992,7 +6994,7 @@ module V4_07 = struct
         fun constant ->
           let concrete =
             match Constant.to_concrete constant with
-            | None -> failwith "constant"
+            | None -> conversion_failed "constant"
             | Some n -> n
           in
           match (concrete : Constant.concrete) with
@@ -7015,7 +7017,7 @@ module V4_07 = struct
         fun attribute ->
           let concrete =
             match Attribute.to_concrete attribute with
-            | None -> failwith "attribute"
+            | None -> conversion_failed "attribute"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -7026,7 +7028,7 @@ module V4_07 = struct
         fun extension ->
           let concrete =
             match Extension.to_concrete extension with
-            | None -> failwith "extension"
+            | None -> conversion_failed "extension"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -7037,7 +7039,7 @@ module V4_07 = struct
         fun attributes ->
           let concrete =
             match Attributes.to_concrete attributes with
-            | None -> failwith "attributes"
+            | None -> conversion_failed "attributes"
             | Some n -> n
           in
           let concrete = self#list self#attribute concrete in
@@ -7046,7 +7048,7 @@ module V4_07 = struct
         fun payload ->
           let concrete =
             match Payload.to_concrete payload with
-            | None -> failwith "payload"
+            | None -> conversion_failed "payload"
             | Some n -> n
           in
           match (concrete : Payload.concrete) with
@@ -7067,7 +7069,7 @@ module V4_07 = struct
         fun core_type ->
           let concrete =
             match Core_type.to_concrete core_type with
-            | None -> failwith "core_type"
+            | None -> conversion_failed "core_type"
             | Some n -> n
           in
           let { ptyp_desc; ptyp_loc; ptyp_attributes } : Core_type.concrete = concrete in
@@ -7079,7 +7081,7 @@ module V4_07 = struct
         fun core_type_desc ->
           let concrete =
             match Core_type_desc.to_concrete core_type_desc with
-            | None -> failwith "core_type_desc"
+            | None -> conversion_failed "core_type_desc"
             | Some n -> n
           in
           match (concrete : Core_type_desc.concrete) with
@@ -7131,7 +7133,7 @@ module V4_07 = struct
         fun package_type ->
           let concrete =
             match Package_type.to_concrete package_type with
-            | None -> failwith "package_type"
+            | None -> conversion_failed "package_type"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -7142,7 +7144,7 @@ module V4_07 = struct
         fun row_field ->
           let concrete =
             match Row_field.to_concrete row_field with
-            | None -> failwith "row_field"
+            | None -> conversion_failed "row_field"
             | Some n -> n
           in
           match (concrete : Row_field.concrete) with
@@ -7159,7 +7161,7 @@ module V4_07 = struct
         fun object_field ->
           let concrete =
             match Object_field.to_concrete object_field with
-            | None -> failwith "object_field"
+            | None -> conversion_failed "object_field"
             | Some n -> n
           in
           match (concrete : Object_field.concrete) with
@@ -7175,7 +7177,7 @@ module V4_07 = struct
         fun pattern ->
           let concrete =
             match Pattern.to_concrete pattern with
-            | None -> failwith "pattern"
+            | None -> conversion_failed "pattern"
             | Some n -> n
           in
           let { ppat_desc; ppat_loc; ppat_attributes } : Pattern.concrete = concrete in
@@ -7187,7 +7189,7 @@ module V4_07 = struct
         fun pattern_desc ->
           let concrete =
             match Pattern_desc.to_concrete pattern_desc with
-            | None -> failwith "pattern_desc"
+            | None -> conversion_failed "pattern_desc"
             | Some n -> n
           in
           match (concrete : Pattern_desc.concrete) with
@@ -7256,7 +7258,7 @@ module V4_07 = struct
         fun expression ->
           let concrete =
             match Expression.to_concrete expression with
-            | None -> failwith "expression"
+            | None -> conversion_failed "expression"
             | Some n -> n
           in
           let { pexp_desc; pexp_loc; pexp_attributes } : Expression.concrete = concrete in
@@ -7268,7 +7270,7 @@ module V4_07 = struct
         fun expression_desc ->
           let concrete =
             match Expression_desc.to_concrete expression_desc with
-            | None -> failwith "expression_desc"
+            | None -> conversion_failed "expression_desc"
             | Some n -> n
           in
           match (concrete : Expression_desc.concrete) with
@@ -7417,7 +7419,7 @@ module V4_07 = struct
         fun case ->
           let concrete =
             match Case.to_concrete case with
-            | None -> failwith "case"
+            | None -> conversion_failed "case"
             | Some n -> n
           in
           let { pc_lhs; pc_guard; pc_rhs } : Case.concrete = concrete in
@@ -7429,7 +7431,7 @@ module V4_07 = struct
         fun value_description ->
           let concrete =
             match Value_description.to_concrete value_description with
-            | None -> failwith "value_description"
+            | None -> conversion_failed "value_description"
             | Some n -> n
           in
           let { pval_name; pval_type; pval_prim; pval_attributes; pval_loc } : Value_description.concrete = concrete in
@@ -7443,7 +7445,7 @@ module V4_07 = struct
         fun type_declaration ->
           let concrete =
             match Type_declaration.to_concrete type_declaration with
-            | None -> failwith "type_declaration"
+            | None -> conversion_failed "type_declaration"
             | Some n -> n
           in
           let { ptype_name; ptype_params; ptype_cstrs; ptype_kind; ptype_private; ptype_manifest; ptype_attributes; ptype_loc } : Type_declaration.concrete = concrete in
@@ -7460,7 +7462,7 @@ module V4_07 = struct
         fun type_kind ->
           let concrete =
             match Type_kind.to_concrete type_kind with
-            | None -> failwith "type_kind"
+            | None -> conversion_failed "type_kind"
             | Some n -> n
           in
           match (concrete : Type_kind.concrete) with
@@ -7478,7 +7480,7 @@ module V4_07 = struct
         fun label_declaration ->
           let concrete =
             match Label_declaration.to_concrete label_declaration with
-            | None -> failwith "label_declaration"
+            | None -> conversion_failed "label_declaration"
             | Some n -> n
           in
           let { pld_name; pld_mutable; pld_type; pld_loc; pld_attributes } : Label_declaration.concrete = concrete in
@@ -7492,7 +7494,7 @@ module V4_07 = struct
         fun constructor_declaration ->
           let concrete =
             match Constructor_declaration.to_concrete constructor_declaration with
-            | None -> failwith "constructor_declaration"
+            | None -> conversion_failed "constructor_declaration"
             | Some n -> n
           in
           let { pcd_name; pcd_args; pcd_res; pcd_loc; pcd_attributes } : Constructor_declaration.concrete = concrete in
@@ -7506,7 +7508,7 @@ module V4_07 = struct
         fun constructor_arguments ->
           let concrete =
             match Constructor_arguments.to_concrete constructor_arguments with
-            | None -> failwith "constructor_arguments"
+            | None -> conversion_failed "constructor_arguments"
             | Some n -> n
           in
           match (concrete : Constructor_arguments.concrete) with
@@ -7520,7 +7522,7 @@ module V4_07 = struct
         fun type_extension ->
           let concrete =
             match Type_extension.to_concrete type_extension with
-            | None -> failwith "type_extension"
+            | None -> conversion_failed "type_extension"
             | Some n -> n
           in
           let { ptyext_path; ptyext_params; ptyext_constructors; ptyext_private; ptyext_attributes } : Type_extension.concrete = concrete in
@@ -7534,7 +7536,7 @@ module V4_07 = struct
         fun extension_constructor ->
           let concrete =
             match Extension_constructor.to_concrete extension_constructor with
-            | None -> failwith "extension_constructor"
+            | None -> conversion_failed "extension_constructor"
             | Some n -> n
           in
           let { pext_name; pext_kind; pext_loc; pext_attributes } : Extension_constructor.concrete = concrete in
@@ -7547,7 +7549,7 @@ module V4_07 = struct
         fun extension_constructor_kind ->
           let concrete =
             match Extension_constructor_kind.to_concrete extension_constructor_kind with
-            | None -> failwith "extension_constructor_kind"
+            | None -> conversion_failed "extension_constructor_kind"
             | Some n -> n
           in
           match (concrete : Extension_constructor_kind.concrete) with
@@ -7562,7 +7564,7 @@ module V4_07 = struct
         fun class_type ->
           let concrete =
             match Class_type.to_concrete class_type with
-            | None -> failwith "class_type"
+            | None -> conversion_failed "class_type"
             | Some n -> n
           in
           let { pcty_desc; pcty_loc; pcty_attributes } : Class_type.concrete = concrete in
@@ -7574,7 +7576,7 @@ module V4_07 = struct
         fun class_type_desc ->
           let concrete =
             match Class_type_desc.to_concrete class_type_desc with
-            | None -> failwith "class_type_desc"
+            | None -> conversion_failed "class_type_desc"
             | Some n -> n
           in
           match (concrete : Class_type_desc.concrete) with
@@ -7602,7 +7604,7 @@ module V4_07 = struct
         fun class_signature ->
           let concrete =
             match Class_signature.to_concrete class_signature with
-            | None -> failwith "class_signature"
+            | None -> conversion_failed "class_signature"
             | Some n -> n
           in
           let { pcsig_self; pcsig_fields } : Class_signature.concrete = concrete in
@@ -7613,7 +7615,7 @@ module V4_07 = struct
         fun class_type_field ->
           let concrete =
             match Class_type_field.to_concrete class_type_field with
-            | None -> failwith "class_type_field"
+            | None -> conversion_failed "class_type_field"
             | Some n -> n
           in
           let { pctf_desc; pctf_loc; pctf_attributes } : Class_type_field.concrete = concrete in
@@ -7625,7 +7627,7 @@ module V4_07 = struct
         fun class_type_field_desc ->
           let concrete =
             match Class_type_field_desc.to_concrete class_type_field_desc with
-            | None -> failwith "class_type_field_desc"
+            | None -> conversion_failed "class_type_field_desc"
             | Some n -> n
           in
           match (concrete : Class_type_field_desc.concrete) with
@@ -7651,7 +7653,7 @@ module V4_07 = struct
         fun class_infos ->
           let concrete =
             match Class_infos.to_concrete_class_expr class_infos with
-            | None -> failwith "class_infos"
+            | None -> conversion_failed "class_infos"
             | Some n -> n
           in
           let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_expr.t Class_infos.concrete = concrete in
@@ -7666,7 +7668,7 @@ module V4_07 = struct
         fun class_infos ->
           let concrete =
             match Class_infos.to_concrete_class_type class_infos with
-            | None -> failwith "class_infos"
+            | None -> conversion_failed "class_infos"
             | Some n -> n
           in
           let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_type.t Class_infos.concrete = concrete in
@@ -7681,7 +7683,7 @@ module V4_07 = struct
         fun class_description ->
           let concrete =
             match Class_description.to_concrete class_description with
-            | None -> failwith "class_description"
+            | None -> conversion_failed "class_description"
             | Some n -> n
           in
           let concrete = self#class_infos_class_type concrete in
@@ -7690,7 +7692,7 @@ module V4_07 = struct
         fun class_type_declaration ->
           let concrete =
             match Class_type_declaration.to_concrete class_type_declaration with
-            | None -> failwith "class_type_declaration"
+            | None -> conversion_failed "class_type_declaration"
             | Some n -> n
           in
           let concrete = self#class_infos_class_type concrete in
@@ -7699,7 +7701,7 @@ module V4_07 = struct
         fun class_expr ->
           let concrete =
             match Class_expr.to_concrete class_expr with
-            | None -> failwith "class_expr"
+            | None -> conversion_failed "class_expr"
             | Some n -> n
           in
           let { pcl_desc; pcl_loc; pcl_attributes } : Class_expr.concrete = concrete in
@@ -7711,7 +7713,7 @@ module V4_07 = struct
         fun class_expr_desc ->
           let concrete =
             match Class_expr_desc.to_concrete class_expr_desc with
-            | None -> failwith "class_expr_desc"
+            | None -> conversion_failed "class_expr_desc"
             | Some n -> n
           in
           match (concrete : Class_expr_desc.concrete) with
@@ -7753,7 +7755,7 @@ module V4_07 = struct
         fun class_structure ->
           let concrete =
             match Class_structure.to_concrete class_structure with
-            | None -> failwith "class_structure"
+            | None -> conversion_failed "class_structure"
             | Some n -> n
           in
           let { pcstr_self; pcstr_fields } : Class_structure.concrete = concrete in
@@ -7764,7 +7766,7 @@ module V4_07 = struct
         fun class_field ->
           let concrete =
             match Class_field.to_concrete class_field with
-            | None -> failwith "class_field"
+            | None -> conversion_failed "class_field"
             | Some n -> n
           in
           let { pcf_desc; pcf_loc; pcf_attributes } : Class_field.concrete = concrete in
@@ -7776,7 +7778,7 @@ module V4_07 = struct
         fun class_field_desc ->
           let concrete =
             match Class_field_desc.to_concrete class_field_desc with
-            | None -> failwith "class_field_desc"
+            | None -> conversion_failed "class_field_desc"
             | Some n -> n
           in
           match (concrete : Class_field_desc.concrete) with
@@ -7807,7 +7809,7 @@ module V4_07 = struct
         fun class_field_kind ->
           let concrete =
             match Class_field_kind.to_concrete class_field_kind with
-            | None -> failwith "class_field_kind"
+            | None -> conversion_failed "class_field_kind"
             | Some n -> n
           in
           match (concrete : Class_field_kind.concrete) with
@@ -7822,7 +7824,7 @@ module V4_07 = struct
         fun class_declaration ->
           let concrete =
             match Class_declaration.to_concrete class_declaration with
-            | None -> failwith "class_declaration"
+            | None -> conversion_failed "class_declaration"
             | Some n -> n
           in
           let concrete = self#class_infos_class_expr concrete in
@@ -7831,7 +7833,7 @@ module V4_07 = struct
         fun module_type ->
           let concrete =
             match Module_type.to_concrete module_type with
-            | None -> failwith "module_type"
+            | None -> conversion_failed "module_type"
             | Some n -> n
           in
           let { pmty_desc; pmty_loc; pmty_attributes } : Module_type.concrete = concrete in
@@ -7843,7 +7845,7 @@ module V4_07 = struct
         fun module_type_desc ->
           let concrete =
             match Module_type_desc.to_concrete module_type_desc with
-            | None -> failwith "module_type_desc"
+            | None -> conversion_failed "module_type_desc"
             | Some n -> n
           in
           match (concrete : Module_type_desc.concrete) with
@@ -7875,7 +7877,7 @@ module V4_07 = struct
         fun signature ->
           let concrete =
             match Signature.to_concrete signature with
-            | None -> failwith "signature"
+            | None -> conversion_failed "signature"
             | Some n -> n
           in
           let concrete = self#list self#signature_item concrete in
@@ -7884,7 +7886,7 @@ module V4_07 = struct
         fun signature_item ->
           let concrete =
             match Signature_item.to_concrete signature_item with
-            | None -> failwith "signature_item"
+            | None -> conversion_failed "signature_item"
             | Some n -> n
           in
           let { psig_desc; psig_loc } : Signature_item.concrete = concrete in
@@ -7895,7 +7897,7 @@ module V4_07 = struct
         fun signature_item_desc ->
           let concrete =
             match Signature_item_desc.to_concrete signature_item_desc with
-            | None -> failwith "signature_item_desc"
+            | None -> conversion_failed "signature_item_desc"
             | Some n -> n
           in
           match (concrete : Signature_item_desc.concrete) with
@@ -7944,7 +7946,7 @@ module V4_07 = struct
         fun module_declaration ->
           let concrete =
             match Module_declaration.to_concrete module_declaration with
-            | None -> failwith "module_declaration"
+            | None -> conversion_failed "module_declaration"
             | Some n -> n
           in
           let { pmd_name; pmd_type; pmd_attributes; pmd_loc } : Module_declaration.concrete = concrete in
@@ -7957,7 +7959,7 @@ module V4_07 = struct
         fun module_type_declaration ->
           let concrete =
             match Module_type_declaration.to_concrete module_type_declaration with
-            | None -> failwith "module_type_declaration"
+            | None -> conversion_failed "module_type_declaration"
             | Some n -> n
           in
           let { pmtd_name; pmtd_type; pmtd_attributes; pmtd_loc } : Module_type_declaration.concrete = concrete in
@@ -7970,7 +7972,7 @@ module V4_07 = struct
         fun open_description ->
           let concrete =
             match Open_description.to_concrete open_description with
-            | None -> failwith "open_description"
+            | None -> conversion_failed "open_description"
             | Some n -> n
           in
           let { popen_lid; popen_override; popen_loc; popen_attributes } : Open_description.concrete = concrete in
@@ -7983,7 +7985,7 @@ module V4_07 = struct
         fun include_infos ->
           let concrete =
             match Include_infos.to_concrete_module_expr include_infos with
-            | None -> failwith "include_infos"
+            | None -> conversion_failed "include_infos"
             | Some n -> n
           in
           let { pincl_mod; pincl_loc; pincl_attributes } : Module_expr.t Include_infos.concrete = concrete in
@@ -7995,7 +7997,7 @@ module V4_07 = struct
         fun include_infos ->
           let concrete =
             match Include_infos.to_concrete_module_type include_infos with
-            | None -> failwith "include_infos"
+            | None -> conversion_failed "include_infos"
             | Some n -> n
           in
           let { pincl_mod; pincl_loc; pincl_attributes } : Module_type.t Include_infos.concrete = concrete in
@@ -8007,7 +8009,7 @@ module V4_07 = struct
         fun include_description ->
           let concrete =
             match Include_description.to_concrete include_description with
-            | None -> failwith "include_description"
+            | None -> conversion_failed "include_description"
             | Some n -> n
           in
           let concrete = self#include_infos_module_type concrete in
@@ -8016,7 +8018,7 @@ module V4_07 = struct
         fun include_declaration ->
           let concrete =
             match Include_declaration.to_concrete include_declaration with
-            | None -> failwith "include_declaration"
+            | None -> conversion_failed "include_declaration"
             | Some n -> n
           in
           let concrete = self#include_infos_module_expr concrete in
@@ -8025,7 +8027,7 @@ module V4_07 = struct
         fun with_constraint ->
           let concrete =
             match With_constraint.to_concrete with_constraint with
-            | None -> failwith "with_constraint"
+            | None -> conversion_failed "with_constraint"
             | Some n -> n
           in
           match (concrete : With_constraint.concrete) with
@@ -8049,7 +8051,7 @@ module V4_07 = struct
         fun module_expr ->
           let concrete =
             match Module_expr.to_concrete module_expr with
-            | None -> failwith "module_expr"
+            | None -> conversion_failed "module_expr"
             | Some n -> n
           in
           let { pmod_desc; pmod_loc; pmod_attributes } : Module_expr.concrete = concrete in
@@ -8061,7 +8063,7 @@ module V4_07 = struct
         fun module_expr_desc ->
           let concrete =
             match Module_expr_desc.to_concrete module_expr_desc with
-            | None -> failwith "module_expr_desc"
+            | None -> conversion_failed "module_expr_desc"
             | Some n -> n
           in
           match (concrete : Module_expr_desc.concrete) with
@@ -8094,7 +8096,7 @@ module V4_07 = struct
         fun structure ->
           let concrete =
             match Structure.to_concrete structure with
-            | None -> failwith "structure"
+            | None -> conversion_failed "structure"
             | Some n -> n
           in
           let concrete = self#list self#structure_item concrete in
@@ -8103,7 +8105,7 @@ module V4_07 = struct
         fun structure_item ->
           let concrete =
             match Structure_item.to_concrete structure_item with
-            | None -> failwith "structure_item"
+            | None -> conversion_failed "structure_item"
             | Some n -> n
           in
           let { pstr_desc; pstr_loc } : Structure_item.concrete = concrete in
@@ -8114,7 +8116,7 @@ module V4_07 = struct
         fun structure_item_desc ->
           let concrete =
             match Structure_item_desc.to_concrete structure_item_desc with
-            | None -> failwith "structure_item_desc"
+            | None -> conversion_failed "structure_item_desc"
             | Some n -> n
           in
           match (concrete : Structure_item_desc.concrete) with
@@ -8171,7 +8173,7 @@ module V4_07 = struct
         fun value_binding ->
           let concrete =
             match Value_binding.to_concrete value_binding with
-            | None -> failwith "value_binding"
+            | None -> conversion_failed "value_binding"
             | Some n -> n
           in
           let { pvb_pat; pvb_expr; pvb_attributes; pvb_loc } : Value_binding.concrete = concrete in
@@ -8184,7 +8186,7 @@ module V4_07 = struct
         fun module_binding ->
           let concrete =
             match Module_binding.to_concrete module_binding with
-            | None -> failwith "module_binding"
+            | None -> conversion_failed "module_binding"
             | Some n -> n
           in
           let { pmb_name; pmb_expr; pmb_attributes; pmb_loc } : Module_binding.concrete = concrete in
@@ -8197,7 +8199,7 @@ module V4_07 = struct
         fun toplevel_phrase ->
           let concrete =
             match Toplevel_phrase.to_concrete toplevel_phrase with
-            | None -> failwith "toplevel_phrase"
+            | None -> conversion_failed "toplevel_phrase"
             | Some n -> n
           in
           match (concrete : Toplevel_phrase.concrete) with
@@ -8212,7 +8214,7 @@ module V4_07 = struct
         fun directive_argument ->
           let concrete =
             match Directive_argument.to_concrete directive_argument with
-            | None -> failwith "directive_argument"
+            | None -> conversion_failed "directive_argument"
             | Some n -> n
           in
           match (concrete : Directive_argument.concrete) with
@@ -8237,6 +8239,8 @@ end
 module V4_06 = struct
   open Versions.V4_06
 
+  let conversion_failed name = Raise.conversion_failed ~version:"V4_06" name
+
   class virtual map =
     object (self)
       method virtual bool : bool -> bool
@@ -8251,7 +8255,7 @@ module V4_06 = struct
         fun longident ->
           let concrete =
             match Longident.to_concrete longident with
-            | None -> failwith "longident"
+            | None -> conversion_failed "longident"
             | Some n -> n
           in
           match (concrete : Longident.concrete) with
@@ -8270,7 +8274,7 @@ module V4_06 = struct
         fun longident_loc ->
           let concrete =
             match Longident_loc.to_concrete longident_loc with
-            | None -> failwith "longident_loc"
+            | None -> conversion_failed "longident_loc"
             | Some n -> n
           in
           let concrete = self#loc self#longident concrete in
@@ -8279,7 +8283,7 @@ module V4_06 = struct
         fun rec_flag ->
           let concrete =
             match Rec_flag.to_concrete rec_flag with
-            | None -> failwith "rec_flag"
+            | None -> conversion_failed "rec_flag"
             | Some n -> n
           in
           match (concrete : Rec_flag.concrete) with
@@ -8291,7 +8295,7 @@ module V4_06 = struct
         fun direction_flag ->
           let concrete =
             match Direction_flag.to_concrete direction_flag with
-            | None -> failwith "direction_flag"
+            | None -> conversion_failed "direction_flag"
             | Some n -> n
           in
           match (concrete : Direction_flag.concrete) with
@@ -8303,7 +8307,7 @@ module V4_06 = struct
         fun private_flag ->
           let concrete =
             match Private_flag.to_concrete private_flag with
-            | None -> failwith "private_flag"
+            | None -> conversion_failed "private_flag"
             | Some n -> n
           in
           match (concrete : Private_flag.concrete) with
@@ -8315,7 +8319,7 @@ module V4_06 = struct
         fun mutable_flag ->
           let concrete =
             match Mutable_flag.to_concrete mutable_flag with
-            | None -> failwith "mutable_flag"
+            | None -> conversion_failed "mutable_flag"
             | Some n -> n
           in
           match (concrete : Mutable_flag.concrete) with
@@ -8327,7 +8331,7 @@ module V4_06 = struct
         fun virtual_flag ->
           let concrete =
             match Virtual_flag.to_concrete virtual_flag with
-            | None -> failwith "virtual_flag"
+            | None -> conversion_failed "virtual_flag"
             | Some n -> n
           in
           match (concrete : Virtual_flag.concrete) with
@@ -8339,7 +8343,7 @@ module V4_06 = struct
         fun override_flag ->
           let concrete =
             match Override_flag.to_concrete override_flag with
-            | None -> failwith "override_flag"
+            | None -> conversion_failed "override_flag"
             | Some n -> n
           in
           match (concrete : Override_flag.concrete) with
@@ -8351,7 +8355,7 @@ module V4_06 = struct
         fun closed_flag ->
           let concrete =
             match Closed_flag.to_concrete closed_flag with
-            | None -> failwith "closed_flag"
+            | None -> conversion_failed "closed_flag"
             | Some n -> n
           in
           match (concrete : Closed_flag.concrete) with
@@ -8363,7 +8367,7 @@ module V4_06 = struct
         fun label ->
           let concrete =
             match Label.to_concrete label with
-            | None -> failwith "label"
+            | None -> conversion_failed "label"
             | Some n -> n
           in
           let concrete = self#string concrete in
@@ -8372,7 +8376,7 @@ module V4_06 = struct
         fun arg_label ->
           let concrete =
             match Arg_label.to_concrete arg_label with
-            | None -> failwith "arg_label"
+            | None -> conversion_failed "arg_label"
             | Some n -> n
           in
           match (concrete : Arg_label.concrete) with
@@ -8388,7 +8392,7 @@ module V4_06 = struct
         fun variance ->
           let concrete =
             match Variance.to_concrete variance with
-            | None -> failwith "variance"
+            | None -> conversion_failed "variance"
             | Some n -> n
           in
           match (concrete : Variance.concrete) with
@@ -8402,7 +8406,7 @@ module V4_06 = struct
         fun constant ->
           let concrete =
             match Constant.to_concrete constant with
-            | None -> failwith "constant"
+            | None -> conversion_failed "constant"
             | Some n -> n
           in
           match (concrete : Constant.concrete) with
@@ -8425,7 +8429,7 @@ module V4_06 = struct
         fun attribute ->
           let concrete =
             match Attribute.to_concrete attribute with
-            | None -> failwith "attribute"
+            | None -> conversion_failed "attribute"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -8436,7 +8440,7 @@ module V4_06 = struct
         fun extension ->
           let concrete =
             match Extension.to_concrete extension with
-            | None -> failwith "extension"
+            | None -> conversion_failed "extension"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -8447,7 +8451,7 @@ module V4_06 = struct
         fun attributes ->
           let concrete =
             match Attributes.to_concrete attributes with
-            | None -> failwith "attributes"
+            | None -> conversion_failed "attributes"
             | Some n -> n
           in
           let concrete = self#list self#attribute concrete in
@@ -8456,7 +8460,7 @@ module V4_06 = struct
         fun payload ->
           let concrete =
             match Payload.to_concrete payload with
-            | None -> failwith "payload"
+            | None -> conversion_failed "payload"
             | Some n -> n
           in
           match (concrete : Payload.concrete) with
@@ -8477,7 +8481,7 @@ module V4_06 = struct
         fun core_type ->
           let concrete =
             match Core_type.to_concrete core_type with
-            | None -> failwith "core_type"
+            | None -> conversion_failed "core_type"
             | Some n -> n
           in
           let { ptyp_desc; ptyp_loc; ptyp_attributes } : Core_type.concrete = concrete in
@@ -8489,7 +8493,7 @@ module V4_06 = struct
         fun core_type_desc ->
           let concrete =
             match Core_type_desc.to_concrete core_type_desc with
-            | None -> failwith "core_type_desc"
+            | None -> conversion_failed "core_type_desc"
             | Some n -> n
           in
           match (concrete : Core_type_desc.concrete) with
@@ -8541,7 +8545,7 @@ module V4_06 = struct
         fun package_type ->
           let concrete =
             match Package_type.to_concrete package_type with
-            | None -> failwith "package_type"
+            | None -> conversion_failed "package_type"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -8552,7 +8556,7 @@ module V4_06 = struct
         fun row_field ->
           let concrete =
             match Row_field.to_concrete row_field with
-            | None -> failwith "row_field"
+            | None -> conversion_failed "row_field"
             | Some n -> n
           in
           match (concrete : Row_field.concrete) with
@@ -8569,7 +8573,7 @@ module V4_06 = struct
         fun object_field ->
           let concrete =
             match Object_field.to_concrete object_field with
-            | None -> failwith "object_field"
+            | None -> conversion_failed "object_field"
             | Some n -> n
           in
           match (concrete : Object_field.concrete) with
@@ -8585,7 +8589,7 @@ module V4_06 = struct
         fun pattern ->
           let concrete =
             match Pattern.to_concrete pattern with
-            | None -> failwith "pattern"
+            | None -> conversion_failed "pattern"
             | Some n -> n
           in
           let { ppat_desc; ppat_loc; ppat_attributes } : Pattern.concrete = concrete in
@@ -8597,7 +8601,7 @@ module V4_06 = struct
         fun pattern_desc ->
           let concrete =
             match Pattern_desc.to_concrete pattern_desc with
-            | None -> failwith "pattern_desc"
+            | None -> conversion_failed "pattern_desc"
             | Some n -> n
           in
           match (concrete : Pattern_desc.concrete) with
@@ -8666,7 +8670,7 @@ module V4_06 = struct
         fun expression ->
           let concrete =
             match Expression.to_concrete expression with
-            | None -> failwith "expression"
+            | None -> conversion_failed "expression"
             | Some n -> n
           in
           let { pexp_desc; pexp_loc; pexp_attributes } : Expression.concrete = concrete in
@@ -8678,7 +8682,7 @@ module V4_06 = struct
         fun expression_desc ->
           let concrete =
             match Expression_desc.to_concrete expression_desc with
-            | None -> failwith "expression_desc"
+            | None -> conversion_failed "expression_desc"
             | Some n -> n
           in
           match (concrete : Expression_desc.concrete) with
@@ -8827,7 +8831,7 @@ module V4_06 = struct
         fun case ->
           let concrete =
             match Case.to_concrete case with
-            | None -> failwith "case"
+            | None -> conversion_failed "case"
             | Some n -> n
           in
           let { pc_lhs; pc_guard; pc_rhs } : Case.concrete = concrete in
@@ -8839,7 +8843,7 @@ module V4_06 = struct
         fun value_description ->
           let concrete =
             match Value_description.to_concrete value_description with
-            | None -> failwith "value_description"
+            | None -> conversion_failed "value_description"
             | Some n -> n
           in
           let { pval_name; pval_type; pval_prim; pval_attributes; pval_loc } : Value_description.concrete = concrete in
@@ -8853,7 +8857,7 @@ module V4_06 = struct
         fun type_declaration ->
           let concrete =
             match Type_declaration.to_concrete type_declaration with
-            | None -> failwith "type_declaration"
+            | None -> conversion_failed "type_declaration"
             | Some n -> n
           in
           let { ptype_name; ptype_params; ptype_cstrs; ptype_kind; ptype_private; ptype_manifest; ptype_attributes; ptype_loc } : Type_declaration.concrete = concrete in
@@ -8870,7 +8874,7 @@ module V4_06 = struct
         fun type_kind ->
           let concrete =
             match Type_kind.to_concrete type_kind with
-            | None -> failwith "type_kind"
+            | None -> conversion_failed "type_kind"
             | Some n -> n
           in
           match (concrete : Type_kind.concrete) with
@@ -8888,7 +8892,7 @@ module V4_06 = struct
         fun label_declaration ->
           let concrete =
             match Label_declaration.to_concrete label_declaration with
-            | None -> failwith "label_declaration"
+            | None -> conversion_failed "label_declaration"
             | Some n -> n
           in
           let { pld_name; pld_mutable; pld_type; pld_loc; pld_attributes } : Label_declaration.concrete = concrete in
@@ -8902,7 +8906,7 @@ module V4_06 = struct
         fun constructor_declaration ->
           let concrete =
             match Constructor_declaration.to_concrete constructor_declaration with
-            | None -> failwith "constructor_declaration"
+            | None -> conversion_failed "constructor_declaration"
             | Some n -> n
           in
           let { pcd_name; pcd_args; pcd_res; pcd_loc; pcd_attributes } : Constructor_declaration.concrete = concrete in
@@ -8916,7 +8920,7 @@ module V4_06 = struct
         fun constructor_arguments ->
           let concrete =
             match Constructor_arguments.to_concrete constructor_arguments with
-            | None -> failwith "constructor_arguments"
+            | None -> conversion_failed "constructor_arguments"
             | Some n -> n
           in
           match (concrete : Constructor_arguments.concrete) with
@@ -8930,7 +8934,7 @@ module V4_06 = struct
         fun type_extension ->
           let concrete =
             match Type_extension.to_concrete type_extension with
-            | None -> failwith "type_extension"
+            | None -> conversion_failed "type_extension"
             | Some n -> n
           in
           let { ptyext_path; ptyext_params; ptyext_constructors; ptyext_private; ptyext_attributes } : Type_extension.concrete = concrete in
@@ -8944,7 +8948,7 @@ module V4_06 = struct
         fun extension_constructor ->
           let concrete =
             match Extension_constructor.to_concrete extension_constructor with
-            | None -> failwith "extension_constructor"
+            | None -> conversion_failed "extension_constructor"
             | Some n -> n
           in
           let { pext_name; pext_kind; pext_loc; pext_attributes } : Extension_constructor.concrete = concrete in
@@ -8957,7 +8961,7 @@ module V4_06 = struct
         fun extension_constructor_kind ->
           let concrete =
             match Extension_constructor_kind.to_concrete extension_constructor_kind with
-            | None -> failwith "extension_constructor_kind"
+            | None -> conversion_failed "extension_constructor_kind"
             | Some n -> n
           in
           match (concrete : Extension_constructor_kind.concrete) with
@@ -8972,7 +8976,7 @@ module V4_06 = struct
         fun class_type ->
           let concrete =
             match Class_type.to_concrete class_type with
-            | None -> failwith "class_type"
+            | None -> conversion_failed "class_type"
             | Some n -> n
           in
           let { pcty_desc; pcty_loc; pcty_attributes } : Class_type.concrete = concrete in
@@ -8984,7 +8988,7 @@ module V4_06 = struct
         fun class_type_desc ->
           let concrete =
             match Class_type_desc.to_concrete class_type_desc with
-            | None -> failwith "class_type_desc"
+            | None -> conversion_failed "class_type_desc"
             | Some n -> n
           in
           match (concrete : Class_type_desc.concrete) with
@@ -9012,7 +9016,7 @@ module V4_06 = struct
         fun class_signature ->
           let concrete =
             match Class_signature.to_concrete class_signature with
-            | None -> failwith "class_signature"
+            | None -> conversion_failed "class_signature"
             | Some n -> n
           in
           let { pcsig_self; pcsig_fields } : Class_signature.concrete = concrete in
@@ -9023,7 +9027,7 @@ module V4_06 = struct
         fun class_type_field ->
           let concrete =
             match Class_type_field.to_concrete class_type_field with
-            | None -> failwith "class_type_field"
+            | None -> conversion_failed "class_type_field"
             | Some n -> n
           in
           let { pctf_desc; pctf_loc; pctf_attributes } : Class_type_field.concrete = concrete in
@@ -9035,7 +9039,7 @@ module V4_06 = struct
         fun class_type_field_desc ->
           let concrete =
             match Class_type_field_desc.to_concrete class_type_field_desc with
-            | None -> failwith "class_type_field_desc"
+            | None -> conversion_failed "class_type_field_desc"
             | Some n -> n
           in
           match (concrete : Class_type_field_desc.concrete) with
@@ -9061,7 +9065,7 @@ module V4_06 = struct
         fun class_infos ->
           let concrete =
             match Class_infos.to_concrete_class_expr class_infos with
-            | None -> failwith "class_infos"
+            | None -> conversion_failed "class_infos"
             | Some n -> n
           in
           let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_expr.t Class_infos.concrete = concrete in
@@ -9076,7 +9080,7 @@ module V4_06 = struct
         fun class_infos ->
           let concrete =
             match Class_infos.to_concrete_class_type class_infos with
-            | None -> failwith "class_infos"
+            | None -> conversion_failed "class_infos"
             | Some n -> n
           in
           let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_type.t Class_infos.concrete = concrete in
@@ -9091,7 +9095,7 @@ module V4_06 = struct
         fun class_description ->
           let concrete =
             match Class_description.to_concrete class_description with
-            | None -> failwith "class_description"
+            | None -> conversion_failed "class_description"
             | Some n -> n
           in
           let concrete = self#class_infos_class_type concrete in
@@ -9100,7 +9104,7 @@ module V4_06 = struct
         fun class_type_declaration ->
           let concrete =
             match Class_type_declaration.to_concrete class_type_declaration with
-            | None -> failwith "class_type_declaration"
+            | None -> conversion_failed "class_type_declaration"
             | Some n -> n
           in
           let concrete = self#class_infos_class_type concrete in
@@ -9109,7 +9113,7 @@ module V4_06 = struct
         fun class_expr ->
           let concrete =
             match Class_expr.to_concrete class_expr with
-            | None -> failwith "class_expr"
+            | None -> conversion_failed "class_expr"
             | Some n -> n
           in
           let { pcl_desc; pcl_loc; pcl_attributes } : Class_expr.concrete = concrete in
@@ -9121,7 +9125,7 @@ module V4_06 = struct
         fun class_expr_desc ->
           let concrete =
             match Class_expr_desc.to_concrete class_expr_desc with
-            | None -> failwith "class_expr_desc"
+            | None -> conversion_failed "class_expr_desc"
             | Some n -> n
           in
           match (concrete : Class_expr_desc.concrete) with
@@ -9163,7 +9167,7 @@ module V4_06 = struct
         fun class_structure ->
           let concrete =
             match Class_structure.to_concrete class_structure with
-            | None -> failwith "class_structure"
+            | None -> conversion_failed "class_structure"
             | Some n -> n
           in
           let { pcstr_self; pcstr_fields } : Class_structure.concrete = concrete in
@@ -9174,7 +9178,7 @@ module V4_06 = struct
         fun class_field ->
           let concrete =
             match Class_field.to_concrete class_field with
-            | None -> failwith "class_field"
+            | None -> conversion_failed "class_field"
             | Some n -> n
           in
           let { pcf_desc; pcf_loc; pcf_attributes } : Class_field.concrete = concrete in
@@ -9186,7 +9190,7 @@ module V4_06 = struct
         fun class_field_desc ->
           let concrete =
             match Class_field_desc.to_concrete class_field_desc with
-            | None -> failwith "class_field_desc"
+            | None -> conversion_failed "class_field_desc"
             | Some n -> n
           in
           match (concrete : Class_field_desc.concrete) with
@@ -9217,7 +9221,7 @@ module V4_06 = struct
         fun class_field_kind ->
           let concrete =
             match Class_field_kind.to_concrete class_field_kind with
-            | None -> failwith "class_field_kind"
+            | None -> conversion_failed "class_field_kind"
             | Some n -> n
           in
           match (concrete : Class_field_kind.concrete) with
@@ -9232,7 +9236,7 @@ module V4_06 = struct
         fun class_declaration ->
           let concrete =
             match Class_declaration.to_concrete class_declaration with
-            | None -> failwith "class_declaration"
+            | None -> conversion_failed "class_declaration"
             | Some n -> n
           in
           let concrete = self#class_infos_class_expr concrete in
@@ -9241,7 +9245,7 @@ module V4_06 = struct
         fun module_type ->
           let concrete =
             match Module_type.to_concrete module_type with
-            | None -> failwith "module_type"
+            | None -> conversion_failed "module_type"
             | Some n -> n
           in
           let { pmty_desc; pmty_loc; pmty_attributes } : Module_type.concrete = concrete in
@@ -9253,7 +9257,7 @@ module V4_06 = struct
         fun module_type_desc ->
           let concrete =
             match Module_type_desc.to_concrete module_type_desc with
-            | None -> failwith "module_type_desc"
+            | None -> conversion_failed "module_type_desc"
             | Some n -> n
           in
           match (concrete : Module_type_desc.concrete) with
@@ -9285,7 +9289,7 @@ module V4_06 = struct
         fun signature ->
           let concrete =
             match Signature.to_concrete signature with
-            | None -> failwith "signature"
+            | None -> conversion_failed "signature"
             | Some n -> n
           in
           let concrete = self#list self#signature_item concrete in
@@ -9294,7 +9298,7 @@ module V4_06 = struct
         fun signature_item ->
           let concrete =
             match Signature_item.to_concrete signature_item with
-            | None -> failwith "signature_item"
+            | None -> conversion_failed "signature_item"
             | Some n -> n
           in
           let { psig_desc; psig_loc } : Signature_item.concrete = concrete in
@@ -9305,7 +9309,7 @@ module V4_06 = struct
         fun signature_item_desc ->
           let concrete =
             match Signature_item_desc.to_concrete signature_item_desc with
-            | None -> failwith "signature_item_desc"
+            | None -> conversion_failed "signature_item_desc"
             | Some n -> n
           in
           match (concrete : Signature_item_desc.concrete) with
@@ -9354,7 +9358,7 @@ module V4_06 = struct
         fun module_declaration ->
           let concrete =
             match Module_declaration.to_concrete module_declaration with
-            | None -> failwith "module_declaration"
+            | None -> conversion_failed "module_declaration"
             | Some n -> n
           in
           let { pmd_name; pmd_type; pmd_attributes; pmd_loc } : Module_declaration.concrete = concrete in
@@ -9367,7 +9371,7 @@ module V4_06 = struct
         fun module_type_declaration ->
           let concrete =
             match Module_type_declaration.to_concrete module_type_declaration with
-            | None -> failwith "module_type_declaration"
+            | None -> conversion_failed "module_type_declaration"
             | Some n -> n
           in
           let { pmtd_name; pmtd_type; pmtd_attributes; pmtd_loc } : Module_type_declaration.concrete = concrete in
@@ -9380,7 +9384,7 @@ module V4_06 = struct
         fun open_description ->
           let concrete =
             match Open_description.to_concrete open_description with
-            | None -> failwith "open_description"
+            | None -> conversion_failed "open_description"
             | Some n -> n
           in
           let { popen_lid; popen_override; popen_loc; popen_attributes } : Open_description.concrete = concrete in
@@ -9393,7 +9397,7 @@ module V4_06 = struct
         fun include_infos ->
           let concrete =
             match Include_infos.to_concrete_module_expr include_infos with
-            | None -> failwith "include_infos"
+            | None -> conversion_failed "include_infos"
             | Some n -> n
           in
           let { pincl_mod; pincl_loc; pincl_attributes } : Module_expr.t Include_infos.concrete = concrete in
@@ -9405,7 +9409,7 @@ module V4_06 = struct
         fun include_infos ->
           let concrete =
             match Include_infos.to_concrete_module_type include_infos with
-            | None -> failwith "include_infos"
+            | None -> conversion_failed "include_infos"
             | Some n -> n
           in
           let { pincl_mod; pincl_loc; pincl_attributes } : Module_type.t Include_infos.concrete = concrete in
@@ -9417,7 +9421,7 @@ module V4_06 = struct
         fun include_description ->
           let concrete =
             match Include_description.to_concrete include_description with
-            | None -> failwith "include_description"
+            | None -> conversion_failed "include_description"
             | Some n -> n
           in
           let concrete = self#include_infos_module_type concrete in
@@ -9426,7 +9430,7 @@ module V4_06 = struct
         fun include_declaration ->
           let concrete =
             match Include_declaration.to_concrete include_declaration with
-            | None -> failwith "include_declaration"
+            | None -> conversion_failed "include_declaration"
             | Some n -> n
           in
           let concrete = self#include_infos_module_expr concrete in
@@ -9435,7 +9439,7 @@ module V4_06 = struct
         fun with_constraint ->
           let concrete =
             match With_constraint.to_concrete with_constraint with
-            | None -> failwith "with_constraint"
+            | None -> conversion_failed "with_constraint"
             | Some n -> n
           in
           match (concrete : With_constraint.concrete) with
@@ -9459,7 +9463,7 @@ module V4_06 = struct
         fun module_expr ->
           let concrete =
             match Module_expr.to_concrete module_expr with
-            | None -> failwith "module_expr"
+            | None -> conversion_failed "module_expr"
             | Some n -> n
           in
           let { pmod_desc; pmod_loc; pmod_attributes } : Module_expr.concrete = concrete in
@@ -9471,7 +9475,7 @@ module V4_06 = struct
         fun module_expr_desc ->
           let concrete =
             match Module_expr_desc.to_concrete module_expr_desc with
-            | None -> failwith "module_expr_desc"
+            | None -> conversion_failed "module_expr_desc"
             | Some n -> n
           in
           match (concrete : Module_expr_desc.concrete) with
@@ -9504,7 +9508,7 @@ module V4_06 = struct
         fun structure ->
           let concrete =
             match Structure.to_concrete structure with
-            | None -> failwith "structure"
+            | None -> conversion_failed "structure"
             | Some n -> n
           in
           let concrete = self#list self#structure_item concrete in
@@ -9513,7 +9517,7 @@ module V4_06 = struct
         fun structure_item ->
           let concrete =
             match Structure_item.to_concrete structure_item with
-            | None -> failwith "structure_item"
+            | None -> conversion_failed "structure_item"
             | Some n -> n
           in
           let { pstr_desc; pstr_loc } : Structure_item.concrete = concrete in
@@ -9524,7 +9528,7 @@ module V4_06 = struct
         fun structure_item_desc ->
           let concrete =
             match Structure_item_desc.to_concrete structure_item_desc with
-            | None -> failwith "structure_item_desc"
+            | None -> conversion_failed "structure_item_desc"
             | Some n -> n
           in
           match (concrete : Structure_item_desc.concrete) with
@@ -9581,7 +9585,7 @@ module V4_06 = struct
         fun value_binding ->
           let concrete =
             match Value_binding.to_concrete value_binding with
-            | None -> failwith "value_binding"
+            | None -> conversion_failed "value_binding"
             | Some n -> n
           in
           let { pvb_pat; pvb_expr; pvb_attributes; pvb_loc } : Value_binding.concrete = concrete in
@@ -9594,7 +9598,7 @@ module V4_06 = struct
         fun module_binding ->
           let concrete =
             match Module_binding.to_concrete module_binding with
-            | None -> failwith "module_binding"
+            | None -> conversion_failed "module_binding"
             | Some n -> n
           in
           let { pmb_name; pmb_expr; pmb_attributes; pmb_loc } : Module_binding.concrete = concrete in
@@ -9607,7 +9611,7 @@ module V4_06 = struct
         fun toplevel_phrase ->
           let concrete =
             match Toplevel_phrase.to_concrete toplevel_phrase with
-            | None -> failwith "toplevel_phrase"
+            | None -> conversion_failed "toplevel_phrase"
             | Some n -> n
           in
           match (concrete : Toplevel_phrase.concrete) with
@@ -9622,7 +9626,7 @@ module V4_06 = struct
         fun directive_argument ->
           let concrete =
             match Directive_argument.to_concrete directive_argument with
-            | None -> failwith "directive_argument"
+            | None -> conversion_failed "directive_argument"
             | Some n -> n
           in
           match (concrete : Directive_argument.concrete) with
@@ -9657,7 +9661,7 @@ module V4_06 = struct
         fun longident ->
           let concrete =
             match Longident.to_concrete longident with
-            | None -> failwith "longident"
+            | None -> conversion_failed "longident"
             | Some n -> n
           in
           match (concrete : Longident.concrete) with
@@ -9673,7 +9677,7 @@ module V4_06 = struct
         fun longident_loc ->
           let concrete =
             match Longident_loc.to_concrete longident_loc with
-            | None -> failwith "longident_loc"
+            | None -> conversion_failed "longident_loc"
             | Some n -> n
           in
           self#loc self#longident concrete
@@ -9681,7 +9685,7 @@ module V4_06 = struct
         fun rec_flag ->
           let concrete =
             match Rec_flag.to_concrete rec_flag with
-            | None -> failwith "rec_flag"
+            | None -> conversion_failed "rec_flag"
             | Some n -> n
           in
           match (concrete : Rec_flag.concrete) with
@@ -9693,7 +9697,7 @@ module V4_06 = struct
         fun direction_flag ->
           let concrete =
             match Direction_flag.to_concrete direction_flag with
-            | None -> failwith "direction_flag"
+            | None -> conversion_failed "direction_flag"
             | Some n -> n
           in
           match (concrete : Direction_flag.concrete) with
@@ -9705,7 +9709,7 @@ module V4_06 = struct
         fun private_flag ->
           let concrete =
             match Private_flag.to_concrete private_flag with
-            | None -> failwith "private_flag"
+            | None -> conversion_failed "private_flag"
             | Some n -> n
           in
           match (concrete : Private_flag.concrete) with
@@ -9717,7 +9721,7 @@ module V4_06 = struct
         fun mutable_flag ->
           let concrete =
             match Mutable_flag.to_concrete mutable_flag with
-            | None -> failwith "mutable_flag"
+            | None -> conversion_failed "mutable_flag"
             | Some n -> n
           in
           match (concrete : Mutable_flag.concrete) with
@@ -9729,7 +9733,7 @@ module V4_06 = struct
         fun virtual_flag ->
           let concrete =
             match Virtual_flag.to_concrete virtual_flag with
-            | None -> failwith "virtual_flag"
+            | None -> conversion_failed "virtual_flag"
             | Some n -> n
           in
           match (concrete : Virtual_flag.concrete) with
@@ -9741,7 +9745,7 @@ module V4_06 = struct
         fun override_flag ->
           let concrete =
             match Override_flag.to_concrete override_flag with
-            | None -> failwith "override_flag"
+            | None -> conversion_failed "override_flag"
             | Some n -> n
           in
           match (concrete : Override_flag.concrete) with
@@ -9753,7 +9757,7 @@ module V4_06 = struct
         fun closed_flag ->
           let concrete =
             match Closed_flag.to_concrete closed_flag with
-            | None -> failwith "closed_flag"
+            | None -> conversion_failed "closed_flag"
             | Some n -> n
           in
           match (concrete : Closed_flag.concrete) with
@@ -9765,7 +9769,7 @@ module V4_06 = struct
         fun label ->
           let concrete =
             match Label.to_concrete label with
-            | None -> failwith "label"
+            | None -> conversion_failed "label"
             | Some n -> n
           in
           self#string concrete
@@ -9773,7 +9777,7 @@ module V4_06 = struct
         fun arg_label ->
           let concrete =
             match Arg_label.to_concrete arg_label with
-            | None -> failwith "arg_label"
+            | None -> conversion_failed "arg_label"
             | Some n -> n
           in
           match (concrete : Arg_label.concrete) with
@@ -9787,7 +9791,7 @@ module V4_06 = struct
         fun variance ->
           let concrete =
             match Variance.to_concrete variance with
-            | None -> failwith "variance"
+            | None -> conversion_failed "variance"
             | Some n -> n
           in
           match (concrete : Variance.concrete) with
@@ -9801,7 +9805,7 @@ module V4_06 = struct
         fun constant ->
           let concrete =
             match Constant.to_concrete constant with
-            | None -> failwith "constant"
+            | None -> conversion_failed "constant"
             | Some n -> n
           in
           match (concrete : Constant.concrete) with
@@ -9820,7 +9824,7 @@ module V4_06 = struct
         fun attribute ->
           let concrete =
             match Attribute.to_concrete attribute with
-            | None -> failwith "attribute"
+            | None -> conversion_failed "attribute"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -9830,7 +9834,7 @@ module V4_06 = struct
         fun extension ->
           let concrete =
             match Extension.to_concrete extension with
-            | None -> failwith "extension"
+            | None -> conversion_failed "extension"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -9840,7 +9844,7 @@ module V4_06 = struct
         fun attributes ->
           let concrete =
             match Attributes.to_concrete attributes with
-            | None -> failwith "attributes"
+            | None -> conversion_failed "attributes"
             | Some n -> n
           in
           self#list self#attribute concrete
@@ -9848,7 +9852,7 @@ module V4_06 = struct
         fun payload ->
           let concrete =
             match Payload.to_concrete payload with
-            | None -> failwith "payload"
+            | None -> conversion_failed "payload"
             | Some n -> n
           in
           match (concrete : Payload.concrete) with
@@ -9865,7 +9869,7 @@ module V4_06 = struct
         fun core_type ->
           let concrete =
             match Core_type.to_concrete core_type with
-            | None -> failwith "core_type"
+            | None -> conversion_failed "core_type"
             | Some n -> n
           in
           let { ptyp_desc; ptyp_loc; ptyp_attributes } : Core_type.concrete = concrete in
@@ -9876,7 +9880,7 @@ module V4_06 = struct
         fun core_type_desc ->
           let concrete =
             match Core_type_desc.to_concrete core_type_desc with
-            | None -> failwith "core_type_desc"
+            | None -> conversion_failed "core_type_desc"
             | Some n -> n
           in
           match (concrete : Core_type_desc.concrete) with
@@ -9917,7 +9921,7 @@ module V4_06 = struct
         fun package_type ->
           let concrete =
             match Package_type.to_concrete package_type with
-            | None -> failwith "package_type"
+            | None -> conversion_failed "package_type"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -9927,7 +9931,7 @@ module V4_06 = struct
         fun row_field ->
           let concrete =
             match Row_field.to_concrete row_field with
-            | None -> failwith "row_field"
+            | None -> conversion_failed "row_field"
             | Some n -> n
           in
           match (concrete : Row_field.concrete) with
@@ -9942,7 +9946,7 @@ module V4_06 = struct
         fun object_field ->
           let concrete =
             match Object_field.to_concrete object_field with
-            | None -> failwith "object_field"
+            | None -> conversion_failed "object_field"
             | Some n -> n
           in
           match (concrete : Object_field.concrete) with
@@ -9956,7 +9960,7 @@ module V4_06 = struct
         fun pattern ->
           let concrete =
             match Pattern.to_concrete pattern with
-            | None -> failwith "pattern"
+            | None -> conversion_failed "pattern"
             | Some n -> n
           in
           let { ppat_desc; ppat_loc; ppat_attributes } : Pattern.concrete = concrete in
@@ -9967,7 +9971,7 @@ module V4_06 = struct
         fun pattern_desc ->
           let concrete =
             match Pattern_desc.to_concrete pattern_desc with
-            | None -> failwith "pattern_desc"
+            | None -> conversion_failed "pattern_desc"
             | Some n -> n
           in
           match (concrete : Pattern_desc.concrete) with
@@ -10019,7 +10023,7 @@ module V4_06 = struct
         fun expression ->
           let concrete =
             match Expression.to_concrete expression with
-            | None -> failwith "expression"
+            | None -> conversion_failed "expression"
             | Some n -> n
           in
           let { pexp_desc; pexp_loc; pexp_attributes } : Expression.concrete = concrete in
@@ -10030,7 +10034,7 @@ module V4_06 = struct
         fun expression_desc ->
           let concrete =
             match Expression_desc.to_concrete expression_desc with
-            | None -> failwith "expression_desc"
+            | None -> conversion_failed "expression_desc"
             | Some n -> n
           in
           match (concrete : Expression_desc.concrete) with
@@ -10144,7 +10148,7 @@ module V4_06 = struct
         fun case ->
           let concrete =
             match Case.to_concrete case with
-            | None -> failwith "case"
+            | None -> conversion_failed "case"
             | Some n -> n
           in
           let { pc_lhs; pc_guard; pc_rhs } : Case.concrete = concrete in
@@ -10155,7 +10159,7 @@ module V4_06 = struct
         fun value_description ->
           let concrete =
             match Value_description.to_concrete value_description with
-            | None -> failwith "value_description"
+            | None -> conversion_failed "value_description"
             | Some n -> n
           in
           let { pval_name; pval_type; pval_prim; pval_attributes; pval_loc } : Value_description.concrete = concrete in
@@ -10168,7 +10172,7 @@ module V4_06 = struct
         fun type_declaration ->
           let concrete =
             match Type_declaration.to_concrete type_declaration with
-            | None -> failwith "type_declaration"
+            | None -> conversion_failed "type_declaration"
             | Some n -> n
           in
           let { ptype_name; ptype_params; ptype_cstrs; ptype_kind; ptype_private; ptype_manifest; ptype_attributes; ptype_loc } : Type_declaration.concrete = concrete in
@@ -10184,7 +10188,7 @@ module V4_06 = struct
         fun type_kind ->
           let concrete =
             match Type_kind.to_concrete type_kind with
-            | None -> failwith "type_kind"
+            | None -> conversion_failed "type_kind"
             | Some n -> n
           in
           match (concrete : Type_kind.concrete) with
@@ -10200,7 +10204,7 @@ module V4_06 = struct
         fun label_declaration ->
           let concrete =
             match Label_declaration.to_concrete label_declaration with
-            | None -> failwith "label_declaration"
+            | None -> conversion_failed "label_declaration"
             | Some n -> n
           in
           let { pld_name; pld_mutable; pld_type; pld_loc; pld_attributes } : Label_declaration.concrete = concrete in
@@ -10213,7 +10217,7 @@ module V4_06 = struct
         fun constructor_declaration ->
           let concrete =
             match Constructor_declaration.to_concrete constructor_declaration with
-            | None -> failwith "constructor_declaration"
+            | None -> conversion_failed "constructor_declaration"
             | Some n -> n
           in
           let { pcd_name; pcd_args; pcd_res; pcd_loc; pcd_attributes } : Constructor_declaration.concrete = concrete in
@@ -10226,7 +10230,7 @@ module V4_06 = struct
         fun constructor_arguments ->
           let concrete =
             match Constructor_arguments.to_concrete constructor_arguments with
-            | None -> failwith "constructor_arguments"
+            | None -> conversion_failed "constructor_arguments"
             | Some n -> n
           in
           match (concrete : Constructor_arguments.concrete) with
@@ -10238,7 +10242,7 @@ module V4_06 = struct
         fun type_extension ->
           let concrete =
             match Type_extension.to_concrete type_extension with
-            | None -> failwith "type_extension"
+            | None -> conversion_failed "type_extension"
             | Some n -> n
           in
           let { ptyext_path; ptyext_params; ptyext_constructors; ptyext_private; ptyext_attributes } : Type_extension.concrete = concrete in
@@ -10251,7 +10255,7 @@ module V4_06 = struct
         fun extension_constructor ->
           let concrete =
             match Extension_constructor.to_concrete extension_constructor with
-            | None -> failwith "extension_constructor"
+            | None -> conversion_failed "extension_constructor"
             | Some n -> n
           in
           let { pext_name; pext_kind; pext_loc; pext_attributes } : Extension_constructor.concrete = concrete in
@@ -10263,7 +10267,7 @@ module V4_06 = struct
         fun extension_constructor_kind ->
           let concrete =
             match Extension_constructor_kind.to_concrete extension_constructor_kind with
-            | None -> failwith "extension_constructor_kind"
+            | None -> conversion_failed "extension_constructor_kind"
             | Some n -> n
           in
           match (concrete : Extension_constructor_kind.concrete) with
@@ -10276,7 +10280,7 @@ module V4_06 = struct
         fun class_type ->
           let concrete =
             match Class_type.to_concrete class_type with
-            | None -> failwith "class_type"
+            | None -> conversion_failed "class_type"
             | Some n -> n
           in
           let { pcty_desc; pcty_loc; pcty_attributes } : Class_type.concrete = concrete in
@@ -10287,7 +10291,7 @@ module V4_06 = struct
         fun class_type_desc ->
           let concrete =
             match Class_type_desc.to_concrete class_type_desc with
-            | None -> failwith "class_type_desc"
+            | None -> conversion_failed "class_type_desc"
             | Some n -> n
           in
           match (concrete : Class_type_desc.concrete) with
@@ -10310,7 +10314,7 @@ module V4_06 = struct
         fun class_signature ->
           let concrete =
             match Class_signature.to_concrete class_signature with
-            | None -> failwith "class_signature"
+            | None -> conversion_failed "class_signature"
             | Some n -> n
           in
           let { pcsig_self; pcsig_fields } : Class_signature.concrete = concrete in
@@ -10320,7 +10324,7 @@ module V4_06 = struct
         fun class_type_field ->
           let concrete =
             match Class_type_field.to_concrete class_type_field with
-            | None -> failwith "class_type_field"
+            | None -> conversion_failed "class_type_field"
             | Some n -> n
           in
           let { pctf_desc; pctf_loc; pctf_attributes } : Class_type_field.concrete = concrete in
@@ -10331,7 +10335,7 @@ module V4_06 = struct
         fun class_type_field_desc ->
           let concrete =
             match Class_type_field_desc.to_concrete class_type_field_desc with
-            | None -> failwith "class_type_field_desc"
+            | None -> conversion_failed "class_type_field_desc"
             | Some n -> n
           in
           match (concrete : Class_type_field_desc.concrete) with
@@ -10351,7 +10355,7 @@ module V4_06 = struct
         fun class_infos ->
           let concrete =
             match Class_infos.to_concrete_class_expr class_infos with
-            | None -> failwith "class_infos"
+            | None -> conversion_failed "class_infos"
             | Some n -> n
           in
           let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_expr.t Class_infos.concrete = concrete in
@@ -10365,7 +10369,7 @@ module V4_06 = struct
         fun class_infos ->
           let concrete =
             match Class_infos.to_concrete_class_type class_infos with
-            | None -> failwith "class_infos"
+            | None -> conversion_failed "class_infos"
             | Some n -> n
           in
           let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_type.t Class_infos.concrete = concrete in
@@ -10379,7 +10383,7 @@ module V4_06 = struct
         fun class_description ->
           let concrete =
             match Class_description.to_concrete class_description with
-            | None -> failwith "class_description"
+            | None -> conversion_failed "class_description"
             | Some n -> n
           in
           self#class_infos_class_type concrete
@@ -10387,7 +10391,7 @@ module V4_06 = struct
         fun class_type_declaration ->
           let concrete =
             match Class_type_declaration.to_concrete class_type_declaration with
-            | None -> failwith "class_type_declaration"
+            | None -> conversion_failed "class_type_declaration"
             | Some n -> n
           in
           self#class_infos_class_type concrete
@@ -10395,7 +10399,7 @@ module V4_06 = struct
         fun class_expr ->
           let concrete =
             match Class_expr.to_concrete class_expr with
-            | None -> failwith "class_expr"
+            | None -> conversion_failed "class_expr"
             | Some n -> n
           in
           let { pcl_desc; pcl_loc; pcl_attributes } : Class_expr.concrete = concrete in
@@ -10406,7 +10410,7 @@ module V4_06 = struct
         fun class_expr_desc ->
           let concrete =
             match Class_expr_desc.to_concrete class_expr_desc with
-            | None -> failwith "class_expr_desc"
+            | None -> conversion_failed "class_expr_desc"
             | Some n -> n
           in
           match (concrete : Class_expr_desc.concrete) with
@@ -10440,7 +10444,7 @@ module V4_06 = struct
         fun class_structure ->
           let concrete =
             match Class_structure.to_concrete class_structure with
-            | None -> failwith "class_structure"
+            | None -> conversion_failed "class_structure"
             | Some n -> n
           in
           let { pcstr_self; pcstr_fields } : Class_structure.concrete = concrete in
@@ -10450,7 +10454,7 @@ module V4_06 = struct
         fun class_field ->
           let concrete =
             match Class_field.to_concrete class_field with
-            | None -> failwith "class_field"
+            | None -> conversion_failed "class_field"
             | Some n -> n
           in
           let { pcf_desc; pcf_loc; pcf_attributes } : Class_field.concrete = concrete in
@@ -10461,7 +10465,7 @@ module V4_06 = struct
         fun class_field_desc ->
           let concrete =
             match Class_field_desc.to_concrete class_field_desc with
-            | None -> failwith "class_field_desc"
+            | None -> conversion_failed "class_field_desc"
             | Some n -> n
           in
           match (concrete : Class_field_desc.concrete) with
@@ -10485,7 +10489,7 @@ module V4_06 = struct
         fun class_field_kind ->
           let concrete =
             match Class_field_kind.to_concrete class_field_kind with
-            | None -> failwith "class_field_kind"
+            | None -> conversion_failed "class_field_kind"
             | Some n -> n
           in
           match (concrete : Class_field_kind.concrete) with
@@ -10498,7 +10502,7 @@ module V4_06 = struct
         fun class_declaration ->
           let concrete =
             match Class_declaration.to_concrete class_declaration with
-            | None -> failwith "class_declaration"
+            | None -> conversion_failed "class_declaration"
             | Some n -> n
           in
           self#class_infos_class_expr concrete
@@ -10506,7 +10510,7 @@ module V4_06 = struct
         fun module_type ->
           let concrete =
             match Module_type.to_concrete module_type with
-            | None -> failwith "module_type"
+            | None -> conversion_failed "module_type"
             | Some n -> n
           in
           let { pmty_desc; pmty_loc; pmty_attributes } : Module_type.concrete = concrete in
@@ -10517,7 +10521,7 @@ module V4_06 = struct
         fun module_type_desc ->
           let concrete =
             match Module_type_desc.to_concrete module_type_desc with
-            | None -> failwith "module_type_desc"
+            | None -> conversion_failed "module_type_desc"
             | Some n -> n
           in
           match (concrete : Module_type_desc.concrete) with
@@ -10542,7 +10546,7 @@ module V4_06 = struct
         fun signature ->
           let concrete =
             match Signature.to_concrete signature with
-            | None -> failwith "signature"
+            | None -> conversion_failed "signature"
             | Some n -> n
           in
           self#list self#signature_item concrete
@@ -10550,7 +10554,7 @@ module V4_06 = struct
         fun signature_item ->
           let concrete =
             match Signature_item.to_concrete signature_item with
-            | None -> failwith "signature_item"
+            | None -> conversion_failed "signature_item"
             | Some n -> n
           in
           let { psig_desc; psig_loc } : Signature_item.concrete = concrete in
@@ -10560,7 +10564,7 @@ module V4_06 = struct
         fun signature_item_desc ->
           let concrete =
             match Signature_item_desc.to_concrete signature_item_desc with
-            | None -> failwith "signature_item_desc"
+            | None -> conversion_failed "signature_item_desc"
             | Some n -> n
           in
           match (concrete : Signature_item_desc.concrete) with
@@ -10596,7 +10600,7 @@ module V4_06 = struct
         fun module_declaration ->
           let concrete =
             match Module_declaration.to_concrete module_declaration with
-            | None -> failwith "module_declaration"
+            | None -> conversion_failed "module_declaration"
             | Some n -> n
           in
           let { pmd_name; pmd_type; pmd_attributes; pmd_loc } : Module_declaration.concrete = concrete in
@@ -10608,7 +10612,7 @@ module V4_06 = struct
         fun module_type_declaration ->
           let concrete =
             match Module_type_declaration.to_concrete module_type_declaration with
-            | None -> failwith "module_type_declaration"
+            | None -> conversion_failed "module_type_declaration"
             | Some n -> n
           in
           let { pmtd_name; pmtd_type; pmtd_attributes; pmtd_loc } : Module_type_declaration.concrete = concrete in
@@ -10620,7 +10624,7 @@ module V4_06 = struct
         fun open_description ->
           let concrete =
             match Open_description.to_concrete open_description with
-            | None -> failwith "open_description"
+            | None -> conversion_failed "open_description"
             | Some n -> n
           in
           let { popen_lid; popen_override; popen_loc; popen_attributes } : Open_description.concrete = concrete in
@@ -10632,7 +10636,7 @@ module V4_06 = struct
         fun include_infos ->
           let concrete =
             match Include_infos.to_concrete_module_expr include_infos with
-            | None -> failwith "include_infos"
+            | None -> conversion_failed "include_infos"
             | Some n -> n
           in
           let { pincl_mod; pincl_loc; pincl_attributes } : Module_expr.t Include_infos.concrete = concrete in
@@ -10643,7 +10647,7 @@ module V4_06 = struct
         fun include_infos ->
           let concrete =
             match Include_infos.to_concrete_module_type include_infos with
-            | None -> failwith "include_infos"
+            | None -> conversion_failed "include_infos"
             | Some n -> n
           in
           let { pincl_mod; pincl_loc; pincl_attributes } : Module_type.t Include_infos.concrete = concrete in
@@ -10654,7 +10658,7 @@ module V4_06 = struct
         fun include_description ->
           let concrete =
             match Include_description.to_concrete include_description with
-            | None -> failwith "include_description"
+            | None -> conversion_failed "include_description"
             | Some n -> n
           in
           self#include_infos_module_type concrete
@@ -10662,7 +10666,7 @@ module V4_06 = struct
         fun include_declaration ->
           let concrete =
             match Include_declaration.to_concrete include_declaration with
-            | None -> failwith "include_declaration"
+            | None -> conversion_failed "include_declaration"
             | Some n -> n
           in
           self#include_infos_module_expr concrete
@@ -10670,7 +10674,7 @@ module V4_06 = struct
         fun with_constraint ->
           let concrete =
             match With_constraint.to_concrete with_constraint with
-            | None -> failwith "with_constraint"
+            | None -> conversion_failed "with_constraint"
             | Some n -> n
           in
           match (concrete : With_constraint.concrete) with
@@ -10690,7 +10694,7 @@ module V4_06 = struct
         fun module_expr ->
           let concrete =
             match Module_expr.to_concrete module_expr with
-            | None -> failwith "module_expr"
+            | None -> conversion_failed "module_expr"
             | Some n -> n
           in
           let { pmod_desc; pmod_loc; pmod_attributes } : Module_expr.concrete = concrete in
@@ -10701,7 +10705,7 @@ module V4_06 = struct
         fun module_expr_desc ->
           let concrete =
             match Module_expr_desc.to_concrete module_expr_desc with
-            | None -> failwith "module_expr_desc"
+            | None -> conversion_failed "module_expr_desc"
             | Some n -> n
           in
           match (concrete : Module_expr_desc.concrete) with
@@ -10727,7 +10731,7 @@ module V4_06 = struct
         fun structure ->
           let concrete =
             match Structure.to_concrete structure with
-            | None -> failwith "structure"
+            | None -> conversion_failed "structure"
             | Some n -> n
           in
           self#list self#structure_item concrete
@@ -10735,7 +10739,7 @@ module V4_06 = struct
         fun structure_item ->
           let concrete =
             match Structure_item.to_concrete structure_item with
-            | None -> failwith "structure_item"
+            | None -> conversion_failed "structure_item"
             | Some n -> n
           in
           let { pstr_desc; pstr_loc } : Structure_item.concrete = concrete in
@@ -10745,7 +10749,7 @@ module V4_06 = struct
         fun structure_item_desc ->
           let concrete =
             match Structure_item_desc.to_concrete structure_item_desc with
-            | None -> failwith "structure_item_desc"
+            | None -> conversion_failed "structure_item_desc"
             | Some n -> n
           in
           match (concrete : Structure_item_desc.concrete) with
@@ -10787,7 +10791,7 @@ module V4_06 = struct
         fun value_binding ->
           let concrete =
             match Value_binding.to_concrete value_binding with
-            | None -> failwith "value_binding"
+            | None -> conversion_failed "value_binding"
             | Some n -> n
           in
           let { pvb_pat; pvb_expr; pvb_attributes; pvb_loc } : Value_binding.concrete = concrete in
@@ -10799,7 +10803,7 @@ module V4_06 = struct
         fun module_binding ->
           let concrete =
             match Module_binding.to_concrete module_binding with
-            | None -> failwith "module_binding"
+            | None -> conversion_failed "module_binding"
             | Some n -> n
           in
           let { pmb_name; pmb_expr; pmb_attributes; pmb_loc } : Module_binding.concrete = concrete in
@@ -10811,7 +10815,7 @@ module V4_06 = struct
         fun toplevel_phrase ->
           let concrete =
             match Toplevel_phrase.to_concrete toplevel_phrase with
-            | None -> failwith "toplevel_phrase"
+            | None -> conversion_failed "toplevel_phrase"
             | Some n -> n
           in
           match (concrete : Toplevel_phrase.concrete) with
@@ -10824,7 +10828,7 @@ module V4_06 = struct
         fun directive_argument ->
           let concrete =
             match Directive_argument.to_concrete directive_argument with
-            | None -> failwith "directive_argument"
+            | None -> conversion_failed "directive_argument"
             | Some n -> n
           in
           match (concrete : Directive_argument.concrete) with
@@ -10855,7 +10859,7 @@ module V4_06 = struct
         fun longident acc ->
           let concrete =
             match Longident.to_concrete longident with
-            | None -> failwith "longident"
+            | None -> conversion_failed "longident"
             | Some n -> n
           in
           match (concrete : Longident.concrete) with
@@ -10874,7 +10878,7 @@ module V4_06 = struct
         fun longident_loc acc ->
           let concrete =
             match Longident_loc.to_concrete longident_loc with
-            | None -> failwith "longident_loc"
+            | None -> conversion_failed "longident_loc"
             | Some n -> n
           in
           let acc = self#loc self#longident concrete acc in
@@ -10883,7 +10887,7 @@ module V4_06 = struct
         fun rec_flag acc ->
           let concrete =
             match Rec_flag.to_concrete rec_flag with
-            | None -> failwith "rec_flag"
+            | None -> conversion_failed "rec_flag"
             | Some n -> n
           in
           match (concrete : Rec_flag.concrete) with
@@ -10895,7 +10899,7 @@ module V4_06 = struct
         fun direction_flag acc ->
           let concrete =
             match Direction_flag.to_concrete direction_flag with
-            | None -> failwith "direction_flag"
+            | None -> conversion_failed "direction_flag"
             | Some n -> n
           in
           match (concrete : Direction_flag.concrete) with
@@ -10907,7 +10911,7 @@ module V4_06 = struct
         fun private_flag acc ->
           let concrete =
             match Private_flag.to_concrete private_flag with
-            | None -> failwith "private_flag"
+            | None -> conversion_failed "private_flag"
             | Some n -> n
           in
           match (concrete : Private_flag.concrete) with
@@ -10919,7 +10923,7 @@ module V4_06 = struct
         fun mutable_flag acc ->
           let concrete =
             match Mutable_flag.to_concrete mutable_flag with
-            | None -> failwith "mutable_flag"
+            | None -> conversion_failed "mutable_flag"
             | Some n -> n
           in
           match (concrete : Mutable_flag.concrete) with
@@ -10931,7 +10935,7 @@ module V4_06 = struct
         fun virtual_flag acc ->
           let concrete =
             match Virtual_flag.to_concrete virtual_flag with
-            | None -> failwith "virtual_flag"
+            | None -> conversion_failed "virtual_flag"
             | Some n -> n
           in
           match (concrete : Virtual_flag.concrete) with
@@ -10943,7 +10947,7 @@ module V4_06 = struct
         fun override_flag acc ->
           let concrete =
             match Override_flag.to_concrete override_flag with
-            | None -> failwith "override_flag"
+            | None -> conversion_failed "override_flag"
             | Some n -> n
           in
           match (concrete : Override_flag.concrete) with
@@ -10955,7 +10959,7 @@ module V4_06 = struct
         fun closed_flag acc ->
           let concrete =
             match Closed_flag.to_concrete closed_flag with
-            | None -> failwith "closed_flag"
+            | None -> conversion_failed "closed_flag"
             | Some n -> n
           in
           match (concrete : Closed_flag.concrete) with
@@ -10967,7 +10971,7 @@ module V4_06 = struct
         fun label acc ->
           let concrete =
             match Label.to_concrete label with
-            | None -> failwith "label"
+            | None -> conversion_failed "label"
             | Some n -> n
           in
           let acc = self#string concrete acc in
@@ -10976,7 +10980,7 @@ module V4_06 = struct
         fun arg_label acc ->
           let concrete =
             match Arg_label.to_concrete arg_label with
-            | None -> failwith "arg_label"
+            | None -> conversion_failed "arg_label"
             | Some n -> n
           in
           match (concrete : Arg_label.concrete) with
@@ -10992,7 +10996,7 @@ module V4_06 = struct
         fun variance acc ->
           let concrete =
             match Variance.to_concrete variance with
-            | None -> failwith "variance"
+            | None -> conversion_failed "variance"
             | Some n -> n
           in
           match (concrete : Variance.concrete) with
@@ -11006,7 +11010,7 @@ module V4_06 = struct
         fun constant acc ->
           let concrete =
             match Constant.to_concrete constant with
-            | None -> failwith "constant"
+            | None -> conversion_failed "constant"
             | Some n -> n
           in
           match (concrete : Constant.concrete) with
@@ -11029,7 +11033,7 @@ module V4_06 = struct
         fun attribute acc ->
           let concrete =
             match Attribute.to_concrete attribute with
-            | None -> failwith "attribute"
+            | None -> conversion_failed "attribute"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -11040,7 +11044,7 @@ module V4_06 = struct
         fun extension acc ->
           let concrete =
             match Extension.to_concrete extension with
-            | None -> failwith "extension"
+            | None -> conversion_failed "extension"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -11051,7 +11055,7 @@ module V4_06 = struct
         fun attributes acc ->
           let concrete =
             match Attributes.to_concrete attributes with
-            | None -> failwith "attributes"
+            | None -> conversion_failed "attributes"
             | Some n -> n
           in
           let acc = self#list self#attribute concrete acc in
@@ -11060,7 +11064,7 @@ module V4_06 = struct
         fun payload acc ->
           let concrete =
             match Payload.to_concrete payload with
-            | None -> failwith "payload"
+            | None -> conversion_failed "payload"
             | Some n -> n
           in
           match (concrete : Payload.concrete) with
@@ -11081,7 +11085,7 @@ module V4_06 = struct
         fun core_type acc ->
           let concrete =
             match Core_type.to_concrete core_type with
-            | None -> failwith "core_type"
+            | None -> conversion_failed "core_type"
             | Some n -> n
           in
           let { ptyp_desc; ptyp_loc; ptyp_attributes } : Core_type.concrete = concrete in
@@ -11093,7 +11097,7 @@ module V4_06 = struct
         fun core_type_desc acc ->
           let concrete =
             match Core_type_desc.to_concrete core_type_desc with
-            | None -> failwith "core_type_desc"
+            | None -> conversion_failed "core_type_desc"
             | Some n -> n
           in
           match (concrete : Core_type_desc.concrete) with
@@ -11145,7 +11149,7 @@ module V4_06 = struct
         fun package_type acc ->
           let concrete =
             match Package_type.to_concrete package_type with
-            | None -> failwith "package_type"
+            | None -> conversion_failed "package_type"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -11156,7 +11160,7 @@ module V4_06 = struct
         fun row_field acc ->
           let concrete =
             match Row_field.to_concrete row_field with
-            | None -> failwith "row_field"
+            | None -> conversion_failed "row_field"
             | Some n -> n
           in
           match (concrete : Row_field.concrete) with
@@ -11173,7 +11177,7 @@ module V4_06 = struct
         fun object_field acc ->
           let concrete =
             match Object_field.to_concrete object_field with
-            | None -> failwith "object_field"
+            | None -> conversion_failed "object_field"
             | Some n -> n
           in
           match (concrete : Object_field.concrete) with
@@ -11189,7 +11193,7 @@ module V4_06 = struct
         fun pattern acc ->
           let concrete =
             match Pattern.to_concrete pattern with
-            | None -> failwith "pattern"
+            | None -> conversion_failed "pattern"
             | Some n -> n
           in
           let { ppat_desc; ppat_loc; ppat_attributes } : Pattern.concrete = concrete in
@@ -11201,7 +11205,7 @@ module V4_06 = struct
         fun pattern_desc acc ->
           let concrete =
             match Pattern_desc.to_concrete pattern_desc with
-            | None -> failwith "pattern_desc"
+            | None -> conversion_failed "pattern_desc"
             | Some n -> n
           in
           match (concrete : Pattern_desc.concrete) with
@@ -11270,7 +11274,7 @@ module V4_06 = struct
         fun expression acc ->
           let concrete =
             match Expression.to_concrete expression with
-            | None -> failwith "expression"
+            | None -> conversion_failed "expression"
             | Some n -> n
           in
           let { pexp_desc; pexp_loc; pexp_attributes } : Expression.concrete = concrete in
@@ -11282,7 +11286,7 @@ module V4_06 = struct
         fun expression_desc acc ->
           let concrete =
             match Expression_desc.to_concrete expression_desc with
-            | None -> failwith "expression_desc"
+            | None -> conversion_failed "expression_desc"
             | Some n -> n
           in
           match (concrete : Expression_desc.concrete) with
@@ -11431,7 +11435,7 @@ module V4_06 = struct
         fun case acc ->
           let concrete =
             match Case.to_concrete case with
-            | None -> failwith "case"
+            | None -> conversion_failed "case"
             | Some n -> n
           in
           let { pc_lhs; pc_guard; pc_rhs } : Case.concrete = concrete in
@@ -11443,7 +11447,7 @@ module V4_06 = struct
         fun value_description acc ->
           let concrete =
             match Value_description.to_concrete value_description with
-            | None -> failwith "value_description"
+            | None -> conversion_failed "value_description"
             | Some n -> n
           in
           let { pval_name; pval_type; pval_prim; pval_attributes; pval_loc } : Value_description.concrete = concrete in
@@ -11457,7 +11461,7 @@ module V4_06 = struct
         fun type_declaration acc ->
           let concrete =
             match Type_declaration.to_concrete type_declaration with
-            | None -> failwith "type_declaration"
+            | None -> conversion_failed "type_declaration"
             | Some n -> n
           in
           let { ptype_name; ptype_params; ptype_cstrs; ptype_kind; ptype_private; ptype_manifest; ptype_attributes; ptype_loc } : Type_declaration.concrete = concrete in
@@ -11474,7 +11478,7 @@ module V4_06 = struct
         fun type_kind acc ->
           let concrete =
             match Type_kind.to_concrete type_kind with
-            | None -> failwith "type_kind"
+            | None -> conversion_failed "type_kind"
             | Some n -> n
           in
           match (concrete : Type_kind.concrete) with
@@ -11492,7 +11496,7 @@ module V4_06 = struct
         fun label_declaration acc ->
           let concrete =
             match Label_declaration.to_concrete label_declaration with
-            | None -> failwith "label_declaration"
+            | None -> conversion_failed "label_declaration"
             | Some n -> n
           in
           let { pld_name; pld_mutable; pld_type; pld_loc; pld_attributes } : Label_declaration.concrete = concrete in
@@ -11506,7 +11510,7 @@ module V4_06 = struct
         fun constructor_declaration acc ->
           let concrete =
             match Constructor_declaration.to_concrete constructor_declaration with
-            | None -> failwith "constructor_declaration"
+            | None -> conversion_failed "constructor_declaration"
             | Some n -> n
           in
           let { pcd_name; pcd_args; pcd_res; pcd_loc; pcd_attributes } : Constructor_declaration.concrete = concrete in
@@ -11520,7 +11524,7 @@ module V4_06 = struct
         fun constructor_arguments acc ->
           let concrete =
             match Constructor_arguments.to_concrete constructor_arguments with
-            | None -> failwith "constructor_arguments"
+            | None -> conversion_failed "constructor_arguments"
             | Some n -> n
           in
           match (concrete : Constructor_arguments.concrete) with
@@ -11534,7 +11538,7 @@ module V4_06 = struct
         fun type_extension acc ->
           let concrete =
             match Type_extension.to_concrete type_extension with
-            | None -> failwith "type_extension"
+            | None -> conversion_failed "type_extension"
             | Some n -> n
           in
           let { ptyext_path; ptyext_params; ptyext_constructors; ptyext_private; ptyext_attributes } : Type_extension.concrete = concrete in
@@ -11548,7 +11552,7 @@ module V4_06 = struct
         fun extension_constructor acc ->
           let concrete =
             match Extension_constructor.to_concrete extension_constructor with
-            | None -> failwith "extension_constructor"
+            | None -> conversion_failed "extension_constructor"
             | Some n -> n
           in
           let { pext_name; pext_kind; pext_loc; pext_attributes } : Extension_constructor.concrete = concrete in
@@ -11561,7 +11565,7 @@ module V4_06 = struct
         fun extension_constructor_kind acc ->
           let concrete =
             match Extension_constructor_kind.to_concrete extension_constructor_kind with
-            | None -> failwith "extension_constructor_kind"
+            | None -> conversion_failed "extension_constructor_kind"
             | Some n -> n
           in
           match (concrete : Extension_constructor_kind.concrete) with
@@ -11576,7 +11580,7 @@ module V4_06 = struct
         fun class_type acc ->
           let concrete =
             match Class_type.to_concrete class_type with
-            | None -> failwith "class_type"
+            | None -> conversion_failed "class_type"
             | Some n -> n
           in
           let { pcty_desc; pcty_loc; pcty_attributes } : Class_type.concrete = concrete in
@@ -11588,7 +11592,7 @@ module V4_06 = struct
         fun class_type_desc acc ->
           let concrete =
             match Class_type_desc.to_concrete class_type_desc with
-            | None -> failwith "class_type_desc"
+            | None -> conversion_failed "class_type_desc"
             | Some n -> n
           in
           match (concrete : Class_type_desc.concrete) with
@@ -11616,7 +11620,7 @@ module V4_06 = struct
         fun class_signature acc ->
           let concrete =
             match Class_signature.to_concrete class_signature with
-            | None -> failwith "class_signature"
+            | None -> conversion_failed "class_signature"
             | Some n -> n
           in
           let { pcsig_self; pcsig_fields } : Class_signature.concrete = concrete in
@@ -11627,7 +11631,7 @@ module V4_06 = struct
         fun class_type_field acc ->
           let concrete =
             match Class_type_field.to_concrete class_type_field with
-            | None -> failwith "class_type_field"
+            | None -> conversion_failed "class_type_field"
             | Some n -> n
           in
           let { pctf_desc; pctf_loc; pctf_attributes } : Class_type_field.concrete = concrete in
@@ -11639,7 +11643,7 @@ module V4_06 = struct
         fun class_type_field_desc acc ->
           let concrete =
             match Class_type_field_desc.to_concrete class_type_field_desc with
-            | None -> failwith "class_type_field_desc"
+            | None -> conversion_failed "class_type_field_desc"
             | Some n -> n
           in
           match (concrete : Class_type_field_desc.concrete) with
@@ -11665,7 +11669,7 @@ module V4_06 = struct
         fun class_infos acc ->
           let concrete =
             match Class_infos.to_concrete_class_expr class_infos with
-            | None -> failwith "class_infos"
+            | None -> conversion_failed "class_infos"
             | Some n -> n
           in
           let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_expr.t Class_infos.concrete = concrete in
@@ -11680,7 +11684,7 @@ module V4_06 = struct
         fun class_infos acc ->
           let concrete =
             match Class_infos.to_concrete_class_type class_infos with
-            | None -> failwith "class_infos"
+            | None -> conversion_failed "class_infos"
             | Some n -> n
           in
           let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_type.t Class_infos.concrete = concrete in
@@ -11695,7 +11699,7 @@ module V4_06 = struct
         fun class_description acc ->
           let concrete =
             match Class_description.to_concrete class_description with
-            | None -> failwith "class_description"
+            | None -> conversion_failed "class_description"
             | Some n -> n
           in
           let acc = self#class_infos_class_type concrete acc in
@@ -11704,7 +11708,7 @@ module V4_06 = struct
         fun class_type_declaration acc ->
           let concrete =
             match Class_type_declaration.to_concrete class_type_declaration with
-            | None -> failwith "class_type_declaration"
+            | None -> conversion_failed "class_type_declaration"
             | Some n -> n
           in
           let acc = self#class_infos_class_type concrete acc in
@@ -11713,7 +11717,7 @@ module V4_06 = struct
         fun class_expr acc ->
           let concrete =
             match Class_expr.to_concrete class_expr with
-            | None -> failwith "class_expr"
+            | None -> conversion_failed "class_expr"
             | Some n -> n
           in
           let { pcl_desc; pcl_loc; pcl_attributes } : Class_expr.concrete = concrete in
@@ -11725,7 +11729,7 @@ module V4_06 = struct
         fun class_expr_desc acc ->
           let concrete =
             match Class_expr_desc.to_concrete class_expr_desc with
-            | None -> failwith "class_expr_desc"
+            | None -> conversion_failed "class_expr_desc"
             | Some n -> n
           in
           match (concrete : Class_expr_desc.concrete) with
@@ -11767,7 +11771,7 @@ module V4_06 = struct
         fun class_structure acc ->
           let concrete =
             match Class_structure.to_concrete class_structure with
-            | None -> failwith "class_structure"
+            | None -> conversion_failed "class_structure"
             | Some n -> n
           in
           let { pcstr_self; pcstr_fields } : Class_structure.concrete = concrete in
@@ -11778,7 +11782,7 @@ module V4_06 = struct
         fun class_field acc ->
           let concrete =
             match Class_field.to_concrete class_field with
-            | None -> failwith "class_field"
+            | None -> conversion_failed "class_field"
             | Some n -> n
           in
           let { pcf_desc; pcf_loc; pcf_attributes } : Class_field.concrete = concrete in
@@ -11790,7 +11794,7 @@ module V4_06 = struct
         fun class_field_desc acc ->
           let concrete =
             match Class_field_desc.to_concrete class_field_desc with
-            | None -> failwith "class_field_desc"
+            | None -> conversion_failed "class_field_desc"
             | Some n -> n
           in
           match (concrete : Class_field_desc.concrete) with
@@ -11821,7 +11825,7 @@ module V4_06 = struct
         fun class_field_kind acc ->
           let concrete =
             match Class_field_kind.to_concrete class_field_kind with
-            | None -> failwith "class_field_kind"
+            | None -> conversion_failed "class_field_kind"
             | Some n -> n
           in
           match (concrete : Class_field_kind.concrete) with
@@ -11836,7 +11840,7 @@ module V4_06 = struct
         fun class_declaration acc ->
           let concrete =
             match Class_declaration.to_concrete class_declaration with
-            | None -> failwith "class_declaration"
+            | None -> conversion_failed "class_declaration"
             | Some n -> n
           in
           let acc = self#class_infos_class_expr concrete acc in
@@ -11845,7 +11849,7 @@ module V4_06 = struct
         fun module_type acc ->
           let concrete =
             match Module_type.to_concrete module_type with
-            | None -> failwith "module_type"
+            | None -> conversion_failed "module_type"
             | Some n -> n
           in
           let { pmty_desc; pmty_loc; pmty_attributes } : Module_type.concrete = concrete in
@@ -11857,7 +11861,7 @@ module V4_06 = struct
         fun module_type_desc acc ->
           let concrete =
             match Module_type_desc.to_concrete module_type_desc with
-            | None -> failwith "module_type_desc"
+            | None -> conversion_failed "module_type_desc"
             | Some n -> n
           in
           match (concrete : Module_type_desc.concrete) with
@@ -11889,7 +11893,7 @@ module V4_06 = struct
         fun signature acc ->
           let concrete =
             match Signature.to_concrete signature with
-            | None -> failwith "signature"
+            | None -> conversion_failed "signature"
             | Some n -> n
           in
           let acc = self#list self#signature_item concrete acc in
@@ -11898,7 +11902,7 @@ module V4_06 = struct
         fun signature_item acc ->
           let concrete =
             match Signature_item.to_concrete signature_item with
-            | None -> failwith "signature_item"
+            | None -> conversion_failed "signature_item"
             | Some n -> n
           in
           let { psig_desc; psig_loc } : Signature_item.concrete = concrete in
@@ -11909,7 +11913,7 @@ module V4_06 = struct
         fun signature_item_desc acc ->
           let concrete =
             match Signature_item_desc.to_concrete signature_item_desc with
-            | None -> failwith "signature_item_desc"
+            | None -> conversion_failed "signature_item_desc"
             | Some n -> n
           in
           match (concrete : Signature_item_desc.concrete) with
@@ -11958,7 +11962,7 @@ module V4_06 = struct
         fun module_declaration acc ->
           let concrete =
             match Module_declaration.to_concrete module_declaration with
-            | None -> failwith "module_declaration"
+            | None -> conversion_failed "module_declaration"
             | Some n -> n
           in
           let { pmd_name; pmd_type; pmd_attributes; pmd_loc } : Module_declaration.concrete = concrete in
@@ -11971,7 +11975,7 @@ module V4_06 = struct
         fun module_type_declaration acc ->
           let concrete =
             match Module_type_declaration.to_concrete module_type_declaration with
-            | None -> failwith "module_type_declaration"
+            | None -> conversion_failed "module_type_declaration"
             | Some n -> n
           in
           let { pmtd_name; pmtd_type; pmtd_attributes; pmtd_loc } : Module_type_declaration.concrete = concrete in
@@ -11984,7 +11988,7 @@ module V4_06 = struct
         fun open_description acc ->
           let concrete =
             match Open_description.to_concrete open_description with
-            | None -> failwith "open_description"
+            | None -> conversion_failed "open_description"
             | Some n -> n
           in
           let { popen_lid; popen_override; popen_loc; popen_attributes } : Open_description.concrete = concrete in
@@ -11997,7 +12001,7 @@ module V4_06 = struct
         fun include_infos acc ->
           let concrete =
             match Include_infos.to_concrete_module_expr include_infos with
-            | None -> failwith "include_infos"
+            | None -> conversion_failed "include_infos"
             | Some n -> n
           in
           let { pincl_mod; pincl_loc; pincl_attributes } : Module_expr.t Include_infos.concrete = concrete in
@@ -12009,7 +12013,7 @@ module V4_06 = struct
         fun include_infos acc ->
           let concrete =
             match Include_infos.to_concrete_module_type include_infos with
-            | None -> failwith "include_infos"
+            | None -> conversion_failed "include_infos"
             | Some n -> n
           in
           let { pincl_mod; pincl_loc; pincl_attributes } : Module_type.t Include_infos.concrete = concrete in
@@ -12021,7 +12025,7 @@ module V4_06 = struct
         fun include_description acc ->
           let concrete =
             match Include_description.to_concrete include_description with
-            | None -> failwith "include_description"
+            | None -> conversion_failed "include_description"
             | Some n -> n
           in
           let acc = self#include_infos_module_type concrete acc in
@@ -12030,7 +12034,7 @@ module V4_06 = struct
         fun include_declaration acc ->
           let concrete =
             match Include_declaration.to_concrete include_declaration with
-            | None -> failwith "include_declaration"
+            | None -> conversion_failed "include_declaration"
             | Some n -> n
           in
           let acc = self#include_infos_module_expr concrete acc in
@@ -12039,7 +12043,7 @@ module V4_06 = struct
         fun with_constraint acc ->
           let concrete =
             match With_constraint.to_concrete with_constraint with
-            | None -> failwith "with_constraint"
+            | None -> conversion_failed "with_constraint"
             | Some n -> n
           in
           match (concrete : With_constraint.concrete) with
@@ -12063,7 +12067,7 @@ module V4_06 = struct
         fun module_expr acc ->
           let concrete =
             match Module_expr.to_concrete module_expr with
-            | None -> failwith "module_expr"
+            | None -> conversion_failed "module_expr"
             | Some n -> n
           in
           let { pmod_desc; pmod_loc; pmod_attributes } : Module_expr.concrete = concrete in
@@ -12075,7 +12079,7 @@ module V4_06 = struct
         fun module_expr_desc acc ->
           let concrete =
             match Module_expr_desc.to_concrete module_expr_desc with
-            | None -> failwith "module_expr_desc"
+            | None -> conversion_failed "module_expr_desc"
             | Some n -> n
           in
           match (concrete : Module_expr_desc.concrete) with
@@ -12108,7 +12112,7 @@ module V4_06 = struct
         fun structure acc ->
           let concrete =
             match Structure.to_concrete structure with
-            | None -> failwith "structure"
+            | None -> conversion_failed "structure"
             | Some n -> n
           in
           let acc = self#list self#structure_item concrete acc in
@@ -12117,7 +12121,7 @@ module V4_06 = struct
         fun structure_item acc ->
           let concrete =
             match Structure_item.to_concrete structure_item with
-            | None -> failwith "structure_item"
+            | None -> conversion_failed "structure_item"
             | Some n -> n
           in
           let { pstr_desc; pstr_loc } : Structure_item.concrete = concrete in
@@ -12128,7 +12132,7 @@ module V4_06 = struct
         fun structure_item_desc acc ->
           let concrete =
             match Structure_item_desc.to_concrete structure_item_desc with
-            | None -> failwith "structure_item_desc"
+            | None -> conversion_failed "structure_item_desc"
             | Some n -> n
           in
           match (concrete : Structure_item_desc.concrete) with
@@ -12185,7 +12189,7 @@ module V4_06 = struct
         fun value_binding acc ->
           let concrete =
             match Value_binding.to_concrete value_binding with
-            | None -> failwith "value_binding"
+            | None -> conversion_failed "value_binding"
             | Some n -> n
           in
           let { pvb_pat; pvb_expr; pvb_attributes; pvb_loc } : Value_binding.concrete = concrete in
@@ -12198,7 +12202,7 @@ module V4_06 = struct
         fun module_binding acc ->
           let concrete =
             match Module_binding.to_concrete module_binding with
-            | None -> failwith "module_binding"
+            | None -> conversion_failed "module_binding"
             | Some n -> n
           in
           let { pmb_name; pmb_expr; pmb_attributes; pmb_loc } : Module_binding.concrete = concrete in
@@ -12211,7 +12215,7 @@ module V4_06 = struct
         fun toplevel_phrase acc ->
           let concrete =
             match Toplevel_phrase.to_concrete toplevel_phrase with
-            | None -> failwith "toplevel_phrase"
+            | None -> conversion_failed "toplevel_phrase"
             | Some n -> n
           in
           match (concrete : Toplevel_phrase.concrete) with
@@ -12226,7 +12230,7 @@ module V4_06 = struct
         fun directive_argument acc ->
           let concrete =
             match Directive_argument.to_concrete directive_argument with
-            | None -> failwith "directive_argument"
+            | None -> conversion_failed "directive_argument"
             | Some n -> n
           in
           match (concrete : Directive_argument.concrete) with
@@ -12261,7 +12265,7 @@ module V4_06 = struct
         fun longident acc ->
           let concrete =
             match Longident.to_concrete longident with
-            | None -> failwith "longident"
+            | None -> conversion_failed "longident"
             | Some n -> n
           in
           match (concrete : Longident.concrete) with
@@ -12280,7 +12284,7 @@ module V4_06 = struct
         fun longident_loc acc ->
           let concrete =
             match Longident_loc.to_concrete longident_loc with
-            | None -> failwith "longident_loc"
+            | None -> conversion_failed "longident_loc"
             | Some n -> n
           in
           let (concrete, acc) = self#loc self#longident concrete acc in
@@ -12289,7 +12293,7 @@ module V4_06 = struct
         fun rec_flag acc ->
           let concrete =
             match Rec_flag.to_concrete rec_flag with
-            | None -> failwith "rec_flag"
+            | None -> conversion_failed "rec_flag"
             | Some n -> n
           in
           match (concrete : Rec_flag.concrete) with
@@ -12301,7 +12305,7 @@ module V4_06 = struct
         fun direction_flag acc ->
           let concrete =
             match Direction_flag.to_concrete direction_flag with
-            | None -> failwith "direction_flag"
+            | None -> conversion_failed "direction_flag"
             | Some n -> n
           in
           match (concrete : Direction_flag.concrete) with
@@ -12313,7 +12317,7 @@ module V4_06 = struct
         fun private_flag acc ->
           let concrete =
             match Private_flag.to_concrete private_flag with
-            | None -> failwith "private_flag"
+            | None -> conversion_failed "private_flag"
             | Some n -> n
           in
           match (concrete : Private_flag.concrete) with
@@ -12325,7 +12329,7 @@ module V4_06 = struct
         fun mutable_flag acc ->
           let concrete =
             match Mutable_flag.to_concrete mutable_flag with
-            | None -> failwith "mutable_flag"
+            | None -> conversion_failed "mutable_flag"
             | Some n -> n
           in
           match (concrete : Mutable_flag.concrete) with
@@ -12337,7 +12341,7 @@ module V4_06 = struct
         fun virtual_flag acc ->
           let concrete =
             match Virtual_flag.to_concrete virtual_flag with
-            | None -> failwith "virtual_flag"
+            | None -> conversion_failed "virtual_flag"
             | Some n -> n
           in
           match (concrete : Virtual_flag.concrete) with
@@ -12349,7 +12353,7 @@ module V4_06 = struct
         fun override_flag acc ->
           let concrete =
             match Override_flag.to_concrete override_flag with
-            | None -> failwith "override_flag"
+            | None -> conversion_failed "override_flag"
             | Some n -> n
           in
           match (concrete : Override_flag.concrete) with
@@ -12361,7 +12365,7 @@ module V4_06 = struct
         fun closed_flag acc ->
           let concrete =
             match Closed_flag.to_concrete closed_flag with
-            | None -> failwith "closed_flag"
+            | None -> conversion_failed "closed_flag"
             | Some n -> n
           in
           match (concrete : Closed_flag.concrete) with
@@ -12373,7 +12377,7 @@ module V4_06 = struct
         fun label acc ->
           let concrete =
             match Label.to_concrete label with
-            | None -> failwith "label"
+            | None -> conversion_failed "label"
             | Some n -> n
           in
           let (concrete, acc) = self#string concrete acc in
@@ -12382,7 +12386,7 @@ module V4_06 = struct
         fun arg_label acc ->
           let concrete =
             match Arg_label.to_concrete arg_label with
-            | None -> failwith "arg_label"
+            | None -> conversion_failed "arg_label"
             | Some n -> n
           in
           match (concrete : Arg_label.concrete) with
@@ -12398,7 +12402,7 @@ module V4_06 = struct
         fun variance acc ->
           let concrete =
             match Variance.to_concrete variance with
-            | None -> failwith "variance"
+            | None -> conversion_failed "variance"
             | Some n -> n
           in
           match (concrete : Variance.concrete) with
@@ -12412,7 +12416,7 @@ module V4_06 = struct
         fun constant acc ->
           let concrete =
             match Constant.to_concrete constant with
-            | None -> failwith "constant"
+            | None -> conversion_failed "constant"
             | Some n -> n
           in
           match (concrete : Constant.concrete) with
@@ -12435,7 +12439,7 @@ module V4_06 = struct
         fun attribute acc ->
           let concrete =
             match Attribute.to_concrete attribute with
-            | None -> failwith "attribute"
+            | None -> conversion_failed "attribute"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -12446,7 +12450,7 @@ module V4_06 = struct
         fun extension acc ->
           let concrete =
             match Extension.to_concrete extension with
-            | None -> failwith "extension"
+            | None -> conversion_failed "extension"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -12457,7 +12461,7 @@ module V4_06 = struct
         fun attributes acc ->
           let concrete =
             match Attributes.to_concrete attributes with
-            | None -> failwith "attributes"
+            | None -> conversion_failed "attributes"
             | Some n -> n
           in
           let (concrete, acc) = self#list self#attribute concrete acc in
@@ -12466,7 +12470,7 @@ module V4_06 = struct
         fun payload acc ->
           let concrete =
             match Payload.to_concrete payload with
-            | None -> failwith "payload"
+            | None -> conversion_failed "payload"
             | Some n -> n
           in
           match (concrete : Payload.concrete) with
@@ -12487,7 +12491,7 @@ module V4_06 = struct
         fun core_type acc ->
           let concrete =
             match Core_type.to_concrete core_type with
-            | None -> failwith "core_type"
+            | None -> conversion_failed "core_type"
             | Some n -> n
           in
           let { ptyp_desc; ptyp_loc; ptyp_attributes } : Core_type.concrete = concrete in
@@ -12499,7 +12503,7 @@ module V4_06 = struct
         fun core_type_desc acc ->
           let concrete =
             match Core_type_desc.to_concrete core_type_desc with
-            | None -> failwith "core_type_desc"
+            | None -> conversion_failed "core_type_desc"
             | Some n -> n
           in
           match (concrete : Core_type_desc.concrete) with
@@ -12551,7 +12555,7 @@ module V4_06 = struct
         fun package_type acc ->
           let concrete =
             match Package_type.to_concrete package_type with
-            | None -> failwith "package_type"
+            | None -> conversion_failed "package_type"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -12562,7 +12566,7 @@ module V4_06 = struct
         fun row_field acc ->
           let concrete =
             match Row_field.to_concrete row_field with
-            | None -> failwith "row_field"
+            | None -> conversion_failed "row_field"
             | Some n -> n
           in
           match (concrete : Row_field.concrete) with
@@ -12579,7 +12583,7 @@ module V4_06 = struct
         fun object_field acc ->
           let concrete =
             match Object_field.to_concrete object_field with
-            | None -> failwith "object_field"
+            | None -> conversion_failed "object_field"
             | Some n -> n
           in
           match (concrete : Object_field.concrete) with
@@ -12595,7 +12599,7 @@ module V4_06 = struct
         fun pattern acc ->
           let concrete =
             match Pattern.to_concrete pattern with
-            | None -> failwith "pattern"
+            | None -> conversion_failed "pattern"
             | Some n -> n
           in
           let { ppat_desc; ppat_loc; ppat_attributes } : Pattern.concrete = concrete in
@@ -12607,7 +12611,7 @@ module V4_06 = struct
         fun pattern_desc acc ->
           let concrete =
             match Pattern_desc.to_concrete pattern_desc with
-            | None -> failwith "pattern_desc"
+            | None -> conversion_failed "pattern_desc"
             | Some n -> n
           in
           match (concrete : Pattern_desc.concrete) with
@@ -12676,7 +12680,7 @@ module V4_06 = struct
         fun expression acc ->
           let concrete =
             match Expression.to_concrete expression with
-            | None -> failwith "expression"
+            | None -> conversion_failed "expression"
             | Some n -> n
           in
           let { pexp_desc; pexp_loc; pexp_attributes } : Expression.concrete = concrete in
@@ -12688,7 +12692,7 @@ module V4_06 = struct
         fun expression_desc acc ->
           let concrete =
             match Expression_desc.to_concrete expression_desc with
-            | None -> failwith "expression_desc"
+            | None -> conversion_failed "expression_desc"
             | Some n -> n
           in
           match (concrete : Expression_desc.concrete) with
@@ -12837,7 +12841,7 @@ module V4_06 = struct
         fun case acc ->
           let concrete =
             match Case.to_concrete case with
-            | None -> failwith "case"
+            | None -> conversion_failed "case"
             | Some n -> n
           in
           let { pc_lhs; pc_guard; pc_rhs } : Case.concrete = concrete in
@@ -12849,7 +12853,7 @@ module V4_06 = struct
         fun value_description acc ->
           let concrete =
             match Value_description.to_concrete value_description with
-            | None -> failwith "value_description"
+            | None -> conversion_failed "value_description"
             | Some n -> n
           in
           let { pval_name; pval_type; pval_prim; pval_attributes; pval_loc } : Value_description.concrete = concrete in
@@ -12863,7 +12867,7 @@ module V4_06 = struct
         fun type_declaration acc ->
           let concrete =
             match Type_declaration.to_concrete type_declaration with
-            | None -> failwith "type_declaration"
+            | None -> conversion_failed "type_declaration"
             | Some n -> n
           in
           let { ptype_name; ptype_params; ptype_cstrs; ptype_kind; ptype_private; ptype_manifest; ptype_attributes; ptype_loc } : Type_declaration.concrete = concrete in
@@ -12880,7 +12884,7 @@ module V4_06 = struct
         fun type_kind acc ->
           let concrete =
             match Type_kind.to_concrete type_kind with
-            | None -> failwith "type_kind"
+            | None -> conversion_failed "type_kind"
             | Some n -> n
           in
           match (concrete : Type_kind.concrete) with
@@ -12898,7 +12902,7 @@ module V4_06 = struct
         fun label_declaration acc ->
           let concrete =
             match Label_declaration.to_concrete label_declaration with
-            | None -> failwith "label_declaration"
+            | None -> conversion_failed "label_declaration"
             | Some n -> n
           in
           let { pld_name; pld_mutable; pld_type; pld_loc; pld_attributes } : Label_declaration.concrete = concrete in
@@ -12912,7 +12916,7 @@ module V4_06 = struct
         fun constructor_declaration acc ->
           let concrete =
             match Constructor_declaration.to_concrete constructor_declaration with
-            | None -> failwith "constructor_declaration"
+            | None -> conversion_failed "constructor_declaration"
             | Some n -> n
           in
           let { pcd_name; pcd_args; pcd_res; pcd_loc; pcd_attributes } : Constructor_declaration.concrete = concrete in
@@ -12926,7 +12930,7 @@ module V4_06 = struct
         fun constructor_arguments acc ->
           let concrete =
             match Constructor_arguments.to_concrete constructor_arguments with
-            | None -> failwith "constructor_arguments"
+            | None -> conversion_failed "constructor_arguments"
             | Some n -> n
           in
           match (concrete : Constructor_arguments.concrete) with
@@ -12940,7 +12944,7 @@ module V4_06 = struct
         fun type_extension acc ->
           let concrete =
             match Type_extension.to_concrete type_extension with
-            | None -> failwith "type_extension"
+            | None -> conversion_failed "type_extension"
             | Some n -> n
           in
           let { ptyext_path; ptyext_params; ptyext_constructors; ptyext_private; ptyext_attributes } : Type_extension.concrete = concrete in
@@ -12954,7 +12958,7 @@ module V4_06 = struct
         fun extension_constructor acc ->
           let concrete =
             match Extension_constructor.to_concrete extension_constructor with
-            | None -> failwith "extension_constructor"
+            | None -> conversion_failed "extension_constructor"
             | Some n -> n
           in
           let { pext_name; pext_kind; pext_loc; pext_attributes } : Extension_constructor.concrete = concrete in
@@ -12967,7 +12971,7 @@ module V4_06 = struct
         fun extension_constructor_kind acc ->
           let concrete =
             match Extension_constructor_kind.to_concrete extension_constructor_kind with
-            | None -> failwith "extension_constructor_kind"
+            | None -> conversion_failed "extension_constructor_kind"
             | Some n -> n
           in
           match (concrete : Extension_constructor_kind.concrete) with
@@ -12982,7 +12986,7 @@ module V4_06 = struct
         fun class_type acc ->
           let concrete =
             match Class_type.to_concrete class_type with
-            | None -> failwith "class_type"
+            | None -> conversion_failed "class_type"
             | Some n -> n
           in
           let { pcty_desc; pcty_loc; pcty_attributes } : Class_type.concrete = concrete in
@@ -12994,7 +12998,7 @@ module V4_06 = struct
         fun class_type_desc acc ->
           let concrete =
             match Class_type_desc.to_concrete class_type_desc with
-            | None -> failwith "class_type_desc"
+            | None -> conversion_failed "class_type_desc"
             | Some n -> n
           in
           match (concrete : Class_type_desc.concrete) with
@@ -13022,7 +13026,7 @@ module V4_06 = struct
         fun class_signature acc ->
           let concrete =
             match Class_signature.to_concrete class_signature with
-            | None -> failwith "class_signature"
+            | None -> conversion_failed "class_signature"
             | Some n -> n
           in
           let { pcsig_self; pcsig_fields } : Class_signature.concrete = concrete in
@@ -13033,7 +13037,7 @@ module V4_06 = struct
         fun class_type_field acc ->
           let concrete =
             match Class_type_field.to_concrete class_type_field with
-            | None -> failwith "class_type_field"
+            | None -> conversion_failed "class_type_field"
             | Some n -> n
           in
           let { pctf_desc; pctf_loc; pctf_attributes } : Class_type_field.concrete = concrete in
@@ -13045,7 +13049,7 @@ module V4_06 = struct
         fun class_type_field_desc acc ->
           let concrete =
             match Class_type_field_desc.to_concrete class_type_field_desc with
-            | None -> failwith "class_type_field_desc"
+            | None -> conversion_failed "class_type_field_desc"
             | Some n -> n
           in
           match (concrete : Class_type_field_desc.concrete) with
@@ -13071,7 +13075,7 @@ module V4_06 = struct
         fun class_infos acc ->
           let concrete =
             match Class_infos.to_concrete_class_expr class_infos with
-            | None -> failwith "class_infos"
+            | None -> conversion_failed "class_infos"
             | Some n -> n
           in
           let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_expr.t Class_infos.concrete = concrete in
@@ -13086,7 +13090,7 @@ module V4_06 = struct
         fun class_infos acc ->
           let concrete =
             match Class_infos.to_concrete_class_type class_infos with
-            | None -> failwith "class_infos"
+            | None -> conversion_failed "class_infos"
             | Some n -> n
           in
           let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_type.t Class_infos.concrete = concrete in
@@ -13101,7 +13105,7 @@ module V4_06 = struct
         fun class_description acc ->
           let concrete =
             match Class_description.to_concrete class_description with
-            | None -> failwith "class_description"
+            | None -> conversion_failed "class_description"
             | Some n -> n
           in
           let (concrete, acc) = self#class_infos_class_type concrete acc in
@@ -13110,7 +13114,7 @@ module V4_06 = struct
         fun class_type_declaration acc ->
           let concrete =
             match Class_type_declaration.to_concrete class_type_declaration with
-            | None -> failwith "class_type_declaration"
+            | None -> conversion_failed "class_type_declaration"
             | Some n -> n
           in
           let (concrete, acc) = self#class_infos_class_type concrete acc in
@@ -13119,7 +13123,7 @@ module V4_06 = struct
         fun class_expr acc ->
           let concrete =
             match Class_expr.to_concrete class_expr with
-            | None -> failwith "class_expr"
+            | None -> conversion_failed "class_expr"
             | Some n -> n
           in
           let { pcl_desc; pcl_loc; pcl_attributes } : Class_expr.concrete = concrete in
@@ -13131,7 +13135,7 @@ module V4_06 = struct
         fun class_expr_desc acc ->
           let concrete =
             match Class_expr_desc.to_concrete class_expr_desc with
-            | None -> failwith "class_expr_desc"
+            | None -> conversion_failed "class_expr_desc"
             | Some n -> n
           in
           match (concrete : Class_expr_desc.concrete) with
@@ -13173,7 +13177,7 @@ module V4_06 = struct
         fun class_structure acc ->
           let concrete =
             match Class_structure.to_concrete class_structure with
-            | None -> failwith "class_structure"
+            | None -> conversion_failed "class_structure"
             | Some n -> n
           in
           let { pcstr_self; pcstr_fields } : Class_structure.concrete = concrete in
@@ -13184,7 +13188,7 @@ module V4_06 = struct
         fun class_field acc ->
           let concrete =
             match Class_field.to_concrete class_field with
-            | None -> failwith "class_field"
+            | None -> conversion_failed "class_field"
             | Some n -> n
           in
           let { pcf_desc; pcf_loc; pcf_attributes } : Class_field.concrete = concrete in
@@ -13196,7 +13200,7 @@ module V4_06 = struct
         fun class_field_desc acc ->
           let concrete =
             match Class_field_desc.to_concrete class_field_desc with
-            | None -> failwith "class_field_desc"
+            | None -> conversion_failed "class_field_desc"
             | Some n -> n
           in
           match (concrete : Class_field_desc.concrete) with
@@ -13227,7 +13231,7 @@ module V4_06 = struct
         fun class_field_kind acc ->
           let concrete =
             match Class_field_kind.to_concrete class_field_kind with
-            | None -> failwith "class_field_kind"
+            | None -> conversion_failed "class_field_kind"
             | Some n -> n
           in
           match (concrete : Class_field_kind.concrete) with
@@ -13242,7 +13246,7 @@ module V4_06 = struct
         fun class_declaration acc ->
           let concrete =
             match Class_declaration.to_concrete class_declaration with
-            | None -> failwith "class_declaration"
+            | None -> conversion_failed "class_declaration"
             | Some n -> n
           in
           let (concrete, acc) = self#class_infos_class_expr concrete acc in
@@ -13251,7 +13255,7 @@ module V4_06 = struct
         fun module_type acc ->
           let concrete =
             match Module_type.to_concrete module_type with
-            | None -> failwith "module_type"
+            | None -> conversion_failed "module_type"
             | Some n -> n
           in
           let { pmty_desc; pmty_loc; pmty_attributes } : Module_type.concrete = concrete in
@@ -13263,7 +13267,7 @@ module V4_06 = struct
         fun module_type_desc acc ->
           let concrete =
             match Module_type_desc.to_concrete module_type_desc with
-            | None -> failwith "module_type_desc"
+            | None -> conversion_failed "module_type_desc"
             | Some n -> n
           in
           match (concrete : Module_type_desc.concrete) with
@@ -13295,7 +13299,7 @@ module V4_06 = struct
         fun signature acc ->
           let concrete =
             match Signature.to_concrete signature with
-            | None -> failwith "signature"
+            | None -> conversion_failed "signature"
             | Some n -> n
           in
           let (concrete, acc) = self#list self#signature_item concrete acc in
@@ -13304,7 +13308,7 @@ module V4_06 = struct
         fun signature_item acc ->
           let concrete =
             match Signature_item.to_concrete signature_item with
-            | None -> failwith "signature_item"
+            | None -> conversion_failed "signature_item"
             | Some n -> n
           in
           let { psig_desc; psig_loc } : Signature_item.concrete = concrete in
@@ -13315,7 +13319,7 @@ module V4_06 = struct
         fun signature_item_desc acc ->
           let concrete =
             match Signature_item_desc.to_concrete signature_item_desc with
-            | None -> failwith "signature_item_desc"
+            | None -> conversion_failed "signature_item_desc"
             | Some n -> n
           in
           match (concrete : Signature_item_desc.concrete) with
@@ -13364,7 +13368,7 @@ module V4_06 = struct
         fun module_declaration acc ->
           let concrete =
             match Module_declaration.to_concrete module_declaration with
-            | None -> failwith "module_declaration"
+            | None -> conversion_failed "module_declaration"
             | Some n -> n
           in
           let { pmd_name; pmd_type; pmd_attributes; pmd_loc } : Module_declaration.concrete = concrete in
@@ -13377,7 +13381,7 @@ module V4_06 = struct
         fun module_type_declaration acc ->
           let concrete =
             match Module_type_declaration.to_concrete module_type_declaration with
-            | None -> failwith "module_type_declaration"
+            | None -> conversion_failed "module_type_declaration"
             | Some n -> n
           in
           let { pmtd_name; pmtd_type; pmtd_attributes; pmtd_loc } : Module_type_declaration.concrete = concrete in
@@ -13390,7 +13394,7 @@ module V4_06 = struct
         fun open_description acc ->
           let concrete =
             match Open_description.to_concrete open_description with
-            | None -> failwith "open_description"
+            | None -> conversion_failed "open_description"
             | Some n -> n
           in
           let { popen_lid; popen_override; popen_loc; popen_attributes } : Open_description.concrete = concrete in
@@ -13403,7 +13407,7 @@ module V4_06 = struct
         fun include_infos acc ->
           let concrete =
             match Include_infos.to_concrete_module_expr include_infos with
-            | None -> failwith "include_infos"
+            | None -> conversion_failed "include_infos"
             | Some n -> n
           in
           let { pincl_mod; pincl_loc; pincl_attributes } : Module_expr.t Include_infos.concrete = concrete in
@@ -13415,7 +13419,7 @@ module V4_06 = struct
         fun include_infos acc ->
           let concrete =
             match Include_infos.to_concrete_module_type include_infos with
-            | None -> failwith "include_infos"
+            | None -> conversion_failed "include_infos"
             | Some n -> n
           in
           let { pincl_mod; pincl_loc; pincl_attributes } : Module_type.t Include_infos.concrete = concrete in
@@ -13427,7 +13431,7 @@ module V4_06 = struct
         fun include_description acc ->
           let concrete =
             match Include_description.to_concrete include_description with
-            | None -> failwith "include_description"
+            | None -> conversion_failed "include_description"
             | Some n -> n
           in
           let (concrete, acc) = self#include_infos_module_type concrete acc in
@@ -13436,7 +13440,7 @@ module V4_06 = struct
         fun include_declaration acc ->
           let concrete =
             match Include_declaration.to_concrete include_declaration with
-            | None -> failwith "include_declaration"
+            | None -> conversion_failed "include_declaration"
             | Some n -> n
           in
           let (concrete, acc) = self#include_infos_module_expr concrete acc in
@@ -13445,7 +13449,7 @@ module V4_06 = struct
         fun with_constraint acc ->
           let concrete =
             match With_constraint.to_concrete with_constraint with
-            | None -> failwith "with_constraint"
+            | None -> conversion_failed "with_constraint"
             | Some n -> n
           in
           match (concrete : With_constraint.concrete) with
@@ -13469,7 +13473,7 @@ module V4_06 = struct
         fun module_expr acc ->
           let concrete =
             match Module_expr.to_concrete module_expr with
-            | None -> failwith "module_expr"
+            | None -> conversion_failed "module_expr"
             | Some n -> n
           in
           let { pmod_desc; pmod_loc; pmod_attributes } : Module_expr.concrete = concrete in
@@ -13481,7 +13485,7 @@ module V4_06 = struct
         fun module_expr_desc acc ->
           let concrete =
             match Module_expr_desc.to_concrete module_expr_desc with
-            | None -> failwith "module_expr_desc"
+            | None -> conversion_failed "module_expr_desc"
             | Some n -> n
           in
           match (concrete : Module_expr_desc.concrete) with
@@ -13514,7 +13518,7 @@ module V4_06 = struct
         fun structure acc ->
           let concrete =
             match Structure.to_concrete structure with
-            | None -> failwith "structure"
+            | None -> conversion_failed "structure"
             | Some n -> n
           in
           let (concrete, acc) = self#list self#structure_item concrete acc in
@@ -13523,7 +13527,7 @@ module V4_06 = struct
         fun structure_item acc ->
           let concrete =
             match Structure_item.to_concrete structure_item with
-            | None -> failwith "structure_item"
+            | None -> conversion_failed "structure_item"
             | Some n -> n
           in
           let { pstr_desc; pstr_loc } : Structure_item.concrete = concrete in
@@ -13534,7 +13538,7 @@ module V4_06 = struct
         fun structure_item_desc acc ->
           let concrete =
             match Structure_item_desc.to_concrete structure_item_desc with
-            | None -> failwith "structure_item_desc"
+            | None -> conversion_failed "structure_item_desc"
             | Some n -> n
           in
           match (concrete : Structure_item_desc.concrete) with
@@ -13591,7 +13595,7 @@ module V4_06 = struct
         fun value_binding acc ->
           let concrete =
             match Value_binding.to_concrete value_binding with
-            | None -> failwith "value_binding"
+            | None -> conversion_failed "value_binding"
             | Some n -> n
           in
           let { pvb_pat; pvb_expr; pvb_attributes; pvb_loc } : Value_binding.concrete = concrete in
@@ -13604,7 +13608,7 @@ module V4_06 = struct
         fun module_binding acc ->
           let concrete =
             match Module_binding.to_concrete module_binding with
-            | None -> failwith "module_binding"
+            | None -> conversion_failed "module_binding"
             | Some n -> n
           in
           let { pmb_name; pmb_expr; pmb_attributes; pmb_loc } : Module_binding.concrete = concrete in
@@ -13617,7 +13621,7 @@ module V4_06 = struct
         fun toplevel_phrase acc ->
           let concrete =
             match Toplevel_phrase.to_concrete toplevel_phrase with
-            | None -> failwith "toplevel_phrase"
+            | None -> conversion_failed "toplevel_phrase"
             | Some n -> n
           in
           match (concrete : Toplevel_phrase.concrete) with
@@ -13632,7 +13636,7 @@ module V4_06 = struct
         fun directive_argument acc ->
           let concrete =
             match Directive_argument.to_concrete directive_argument with
-            | None -> failwith "directive_argument"
+            | None -> conversion_failed "directive_argument"
             | Some n -> n
           in
           match (concrete : Directive_argument.concrete) with
@@ -13667,7 +13671,7 @@ module V4_06 = struct
         fun _ctx longident ->
           let concrete =
             match Longident.to_concrete longident with
-            | None -> failwith "longident"
+            | None -> conversion_failed "longident"
             | Some n -> n
           in
           match (concrete : Longident.concrete) with
@@ -13686,7 +13690,7 @@ module V4_06 = struct
         fun _ctx longident_loc ->
           let concrete =
             match Longident_loc.to_concrete longident_loc with
-            | None -> failwith "longident_loc"
+            | None -> conversion_failed "longident_loc"
             | Some n -> n
           in
           let concrete = self#loc self#longident _ctx concrete in
@@ -13695,7 +13699,7 @@ module V4_06 = struct
         fun _ctx rec_flag ->
           let concrete =
             match Rec_flag.to_concrete rec_flag with
-            | None -> failwith "rec_flag"
+            | None -> conversion_failed "rec_flag"
             | Some n -> n
           in
           match (concrete : Rec_flag.concrete) with
@@ -13707,7 +13711,7 @@ module V4_06 = struct
         fun _ctx direction_flag ->
           let concrete =
             match Direction_flag.to_concrete direction_flag with
-            | None -> failwith "direction_flag"
+            | None -> conversion_failed "direction_flag"
             | Some n -> n
           in
           match (concrete : Direction_flag.concrete) with
@@ -13719,7 +13723,7 @@ module V4_06 = struct
         fun _ctx private_flag ->
           let concrete =
             match Private_flag.to_concrete private_flag with
-            | None -> failwith "private_flag"
+            | None -> conversion_failed "private_flag"
             | Some n -> n
           in
           match (concrete : Private_flag.concrete) with
@@ -13731,7 +13735,7 @@ module V4_06 = struct
         fun _ctx mutable_flag ->
           let concrete =
             match Mutable_flag.to_concrete mutable_flag with
-            | None -> failwith "mutable_flag"
+            | None -> conversion_failed "mutable_flag"
             | Some n -> n
           in
           match (concrete : Mutable_flag.concrete) with
@@ -13743,7 +13747,7 @@ module V4_06 = struct
         fun _ctx virtual_flag ->
           let concrete =
             match Virtual_flag.to_concrete virtual_flag with
-            | None -> failwith "virtual_flag"
+            | None -> conversion_failed "virtual_flag"
             | Some n -> n
           in
           match (concrete : Virtual_flag.concrete) with
@@ -13755,7 +13759,7 @@ module V4_06 = struct
         fun _ctx override_flag ->
           let concrete =
             match Override_flag.to_concrete override_flag with
-            | None -> failwith "override_flag"
+            | None -> conversion_failed "override_flag"
             | Some n -> n
           in
           match (concrete : Override_flag.concrete) with
@@ -13767,7 +13771,7 @@ module V4_06 = struct
         fun _ctx closed_flag ->
           let concrete =
             match Closed_flag.to_concrete closed_flag with
-            | None -> failwith "closed_flag"
+            | None -> conversion_failed "closed_flag"
             | Some n -> n
           in
           match (concrete : Closed_flag.concrete) with
@@ -13779,7 +13783,7 @@ module V4_06 = struct
         fun _ctx label ->
           let concrete =
             match Label.to_concrete label with
-            | None -> failwith "label"
+            | None -> conversion_failed "label"
             | Some n -> n
           in
           let concrete = self#string _ctx concrete in
@@ -13788,7 +13792,7 @@ module V4_06 = struct
         fun _ctx arg_label ->
           let concrete =
             match Arg_label.to_concrete arg_label with
-            | None -> failwith "arg_label"
+            | None -> conversion_failed "arg_label"
             | Some n -> n
           in
           match (concrete : Arg_label.concrete) with
@@ -13804,7 +13808,7 @@ module V4_06 = struct
         fun _ctx variance ->
           let concrete =
             match Variance.to_concrete variance with
-            | None -> failwith "variance"
+            | None -> conversion_failed "variance"
             | Some n -> n
           in
           match (concrete : Variance.concrete) with
@@ -13818,7 +13822,7 @@ module V4_06 = struct
         fun _ctx constant ->
           let concrete =
             match Constant.to_concrete constant with
-            | None -> failwith "constant"
+            | None -> conversion_failed "constant"
             | Some n -> n
           in
           match (concrete : Constant.concrete) with
@@ -13841,7 +13845,7 @@ module V4_06 = struct
         fun _ctx attribute ->
           let concrete =
             match Attribute.to_concrete attribute with
-            | None -> failwith "attribute"
+            | None -> conversion_failed "attribute"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -13852,7 +13856,7 @@ module V4_06 = struct
         fun _ctx extension ->
           let concrete =
             match Extension.to_concrete extension with
-            | None -> failwith "extension"
+            | None -> conversion_failed "extension"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -13863,7 +13867,7 @@ module V4_06 = struct
         fun _ctx attributes ->
           let concrete =
             match Attributes.to_concrete attributes with
-            | None -> failwith "attributes"
+            | None -> conversion_failed "attributes"
             | Some n -> n
           in
           let concrete = self#list self#attribute _ctx concrete in
@@ -13872,7 +13876,7 @@ module V4_06 = struct
         fun _ctx payload ->
           let concrete =
             match Payload.to_concrete payload with
-            | None -> failwith "payload"
+            | None -> conversion_failed "payload"
             | Some n -> n
           in
           match (concrete : Payload.concrete) with
@@ -13893,7 +13897,7 @@ module V4_06 = struct
         fun _ctx core_type ->
           let concrete =
             match Core_type.to_concrete core_type with
-            | None -> failwith "core_type"
+            | None -> conversion_failed "core_type"
             | Some n -> n
           in
           let { ptyp_desc; ptyp_loc; ptyp_attributes } : Core_type.concrete = concrete in
@@ -13905,7 +13909,7 @@ module V4_06 = struct
         fun _ctx core_type_desc ->
           let concrete =
             match Core_type_desc.to_concrete core_type_desc with
-            | None -> failwith "core_type_desc"
+            | None -> conversion_failed "core_type_desc"
             | Some n -> n
           in
           match (concrete : Core_type_desc.concrete) with
@@ -13957,7 +13961,7 @@ module V4_06 = struct
         fun _ctx package_type ->
           let concrete =
             match Package_type.to_concrete package_type with
-            | None -> failwith "package_type"
+            | None -> conversion_failed "package_type"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -13968,7 +13972,7 @@ module V4_06 = struct
         fun _ctx row_field ->
           let concrete =
             match Row_field.to_concrete row_field with
-            | None -> failwith "row_field"
+            | None -> conversion_failed "row_field"
             | Some n -> n
           in
           match (concrete : Row_field.concrete) with
@@ -13985,7 +13989,7 @@ module V4_06 = struct
         fun _ctx object_field ->
           let concrete =
             match Object_field.to_concrete object_field with
-            | None -> failwith "object_field"
+            | None -> conversion_failed "object_field"
             | Some n -> n
           in
           match (concrete : Object_field.concrete) with
@@ -14001,7 +14005,7 @@ module V4_06 = struct
         fun _ctx pattern ->
           let concrete =
             match Pattern.to_concrete pattern with
-            | None -> failwith "pattern"
+            | None -> conversion_failed "pattern"
             | Some n -> n
           in
           let { ppat_desc; ppat_loc; ppat_attributes } : Pattern.concrete = concrete in
@@ -14013,7 +14017,7 @@ module V4_06 = struct
         fun _ctx pattern_desc ->
           let concrete =
             match Pattern_desc.to_concrete pattern_desc with
-            | None -> failwith "pattern_desc"
+            | None -> conversion_failed "pattern_desc"
             | Some n -> n
           in
           match (concrete : Pattern_desc.concrete) with
@@ -14082,7 +14086,7 @@ module V4_06 = struct
         fun _ctx expression ->
           let concrete =
             match Expression.to_concrete expression with
-            | None -> failwith "expression"
+            | None -> conversion_failed "expression"
             | Some n -> n
           in
           let { pexp_desc; pexp_loc; pexp_attributes } : Expression.concrete = concrete in
@@ -14094,7 +14098,7 @@ module V4_06 = struct
         fun _ctx expression_desc ->
           let concrete =
             match Expression_desc.to_concrete expression_desc with
-            | None -> failwith "expression_desc"
+            | None -> conversion_failed "expression_desc"
             | Some n -> n
           in
           match (concrete : Expression_desc.concrete) with
@@ -14243,7 +14247,7 @@ module V4_06 = struct
         fun _ctx case ->
           let concrete =
             match Case.to_concrete case with
-            | None -> failwith "case"
+            | None -> conversion_failed "case"
             | Some n -> n
           in
           let { pc_lhs; pc_guard; pc_rhs } : Case.concrete = concrete in
@@ -14255,7 +14259,7 @@ module V4_06 = struct
         fun _ctx value_description ->
           let concrete =
             match Value_description.to_concrete value_description with
-            | None -> failwith "value_description"
+            | None -> conversion_failed "value_description"
             | Some n -> n
           in
           let { pval_name; pval_type; pval_prim; pval_attributes; pval_loc } : Value_description.concrete = concrete in
@@ -14269,7 +14273,7 @@ module V4_06 = struct
         fun _ctx type_declaration ->
           let concrete =
             match Type_declaration.to_concrete type_declaration with
-            | None -> failwith "type_declaration"
+            | None -> conversion_failed "type_declaration"
             | Some n -> n
           in
           let { ptype_name; ptype_params; ptype_cstrs; ptype_kind; ptype_private; ptype_manifest; ptype_attributes; ptype_loc } : Type_declaration.concrete = concrete in
@@ -14286,7 +14290,7 @@ module V4_06 = struct
         fun _ctx type_kind ->
           let concrete =
             match Type_kind.to_concrete type_kind with
-            | None -> failwith "type_kind"
+            | None -> conversion_failed "type_kind"
             | Some n -> n
           in
           match (concrete : Type_kind.concrete) with
@@ -14304,7 +14308,7 @@ module V4_06 = struct
         fun _ctx label_declaration ->
           let concrete =
             match Label_declaration.to_concrete label_declaration with
-            | None -> failwith "label_declaration"
+            | None -> conversion_failed "label_declaration"
             | Some n -> n
           in
           let { pld_name; pld_mutable; pld_type; pld_loc; pld_attributes } : Label_declaration.concrete = concrete in
@@ -14318,7 +14322,7 @@ module V4_06 = struct
         fun _ctx constructor_declaration ->
           let concrete =
             match Constructor_declaration.to_concrete constructor_declaration with
-            | None -> failwith "constructor_declaration"
+            | None -> conversion_failed "constructor_declaration"
             | Some n -> n
           in
           let { pcd_name; pcd_args; pcd_res; pcd_loc; pcd_attributes } : Constructor_declaration.concrete = concrete in
@@ -14332,7 +14336,7 @@ module V4_06 = struct
         fun _ctx constructor_arguments ->
           let concrete =
             match Constructor_arguments.to_concrete constructor_arguments with
-            | None -> failwith "constructor_arguments"
+            | None -> conversion_failed "constructor_arguments"
             | Some n -> n
           in
           match (concrete : Constructor_arguments.concrete) with
@@ -14346,7 +14350,7 @@ module V4_06 = struct
         fun _ctx type_extension ->
           let concrete =
             match Type_extension.to_concrete type_extension with
-            | None -> failwith "type_extension"
+            | None -> conversion_failed "type_extension"
             | Some n -> n
           in
           let { ptyext_path; ptyext_params; ptyext_constructors; ptyext_private; ptyext_attributes } : Type_extension.concrete = concrete in
@@ -14360,7 +14364,7 @@ module V4_06 = struct
         fun _ctx extension_constructor ->
           let concrete =
             match Extension_constructor.to_concrete extension_constructor with
-            | None -> failwith "extension_constructor"
+            | None -> conversion_failed "extension_constructor"
             | Some n -> n
           in
           let { pext_name; pext_kind; pext_loc; pext_attributes } : Extension_constructor.concrete = concrete in
@@ -14373,7 +14377,7 @@ module V4_06 = struct
         fun _ctx extension_constructor_kind ->
           let concrete =
             match Extension_constructor_kind.to_concrete extension_constructor_kind with
-            | None -> failwith "extension_constructor_kind"
+            | None -> conversion_failed "extension_constructor_kind"
             | Some n -> n
           in
           match (concrete : Extension_constructor_kind.concrete) with
@@ -14388,7 +14392,7 @@ module V4_06 = struct
         fun _ctx class_type ->
           let concrete =
             match Class_type.to_concrete class_type with
-            | None -> failwith "class_type"
+            | None -> conversion_failed "class_type"
             | Some n -> n
           in
           let { pcty_desc; pcty_loc; pcty_attributes } : Class_type.concrete = concrete in
@@ -14400,7 +14404,7 @@ module V4_06 = struct
         fun _ctx class_type_desc ->
           let concrete =
             match Class_type_desc.to_concrete class_type_desc with
-            | None -> failwith "class_type_desc"
+            | None -> conversion_failed "class_type_desc"
             | Some n -> n
           in
           match (concrete : Class_type_desc.concrete) with
@@ -14428,7 +14432,7 @@ module V4_06 = struct
         fun _ctx class_signature ->
           let concrete =
             match Class_signature.to_concrete class_signature with
-            | None -> failwith "class_signature"
+            | None -> conversion_failed "class_signature"
             | Some n -> n
           in
           let { pcsig_self; pcsig_fields } : Class_signature.concrete = concrete in
@@ -14439,7 +14443,7 @@ module V4_06 = struct
         fun _ctx class_type_field ->
           let concrete =
             match Class_type_field.to_concrete class_type_field with
-            | None -> failwith "class_type_field"
+            | None -> conversion_failed "class_type_field"
             | Some n -> n
           in
           let { pctf_desc; pctf_loc; pctf_attributes } : Class_type_field.concrete = concrete in
@@ -14451,7 +14455,7 @@ module V4_06 = struct
         fun _ctx class_type_field_desc ->
           let concrete =
             match Class_type_field_desc.to_concrete class_type_field_desc with
-            | None -> failwith "class_type_field_desc"
+            | None -> conversion_failed "class_type_field_desc"
             | Some n -> n
           in
           match (concrete : Class_type_field_desc.concrete) with
@@ -14477,7 +14481,7 @@ module V4_06 = struct
         fun _ctx class_infos ->
           let concrete =
             match Class_infos.to_concrete_class_expr class_infos with
-            | None -> failwith "class_infos"
+            | None -> conversion_failed "class_infos"
             | Some n -> n
           in
           let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_expr.t Class_infos.concrete = concrete in
@@ -14492,7 +14496,7 @@ module V4_06 = struct
         fun _ctx class_infos ->
           let concrete =
             match Class_infos.to_concrete_class_type class_infos with
-            | None -> failwith "class_infos"
+            | None -> conversion_failed "class_infos"
             | Some n -> n
           in
           let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_type.t Class_infos.concrete = concrete in
@@ -14507,7 +14511,7 @@ module V4_06 = struct
         fun _ctx class_description ->
           let concrete =
             match Class_description.to_concrete class_description with
-            | None -> failwith "class_description"
+            | None -> conversion_failed "class_description"
             | Some n -> n
           in
           let concrete = self#class_infos_class_type _ctx concrete in
@@ -14516,7 +14520,7 @@ module V4_06 = struct
         fun _ctx class_type_declaration ->
           let concrete =
             match Class_type_declaration.to_concrete class_type_declaration with
-            | None -> failwith "class_type_declaration"
+            | None -> conversion_failed "class_type_declaration"
             | Some n -> n
           in
           let concrete = self#class_infos_class_type _ctx concrete in
@@ -14525,7 +14529,7 @@ module V4_06 = struct
         fun _ctx class_expr ->
           let concrete =
             match Class_expr.to_concrete class_expr with
-            | None -> failwith "class_expr"
+            | None -> conversion_failed "class_expr"
             | Some n -> n
           in
           let { pcl_desc; pcl_loc; pcl_attributes } : Class_expr.concrete = concrete in
@@ -14537,7 +14541,7 @@ module V4_06 = struct
         fun _ctx class_expr_desc ->
           let concrete =
             match Class_expr_desc.to_concrete class_expr_desc with
-            | None -> failwith "class_expr_desc"
+            | None -> conversion_failed "class_expr_desc"
             | Some n -> n
           in
           match (concrete : Class_expr_desc.concrete) with
@@ -14579,7 +14583,7 @@ module V4_06 = struct
         fun _ctx class_structure ->
           let concrete =
             match Class_structure.to_concrete class_structure with
-            | None -> failwith "class_structure"
+            | None -> conversion_failed "class_structure"
             | Some n -> n
           in
           let { pcstr_self; pcstr_fields } : Class_structure.concrete = concrete in
@@ -14590,7 +14594,7 @@ module V4_06 = struct
         fun _ctx class_field ->
           let concrete =
             match Class_field.to_concrete class_field with
-            | None -> failwith "class_field"
+            | None -> conversion_failed "class_field"
             | Some n -> n
           in
           let { pcf_desc; pcf_loc; pcf_attributes } : Class_field.concrete = concrete in
@@ -14602,7 +14606,7 @@ module V4_06 = struct
         fun _ctx class_field_desc ->
           let concrete =
             match Class_field_desc.to_concrete class_field_desc with
-            | None -> failwith "class_field_desc"
+            | None -> conversion_failed "class_field_desc"
             | Some n -> n
           in
           match (concrete : Class_field_desc.concrete) with
@@ -14633,7 +14637,7 @@ module V4_06 = struct
         fun _ctx class_field_kind ->
           let concrete =
             match Class_field_kind.to_concrete class_field_kind with
-            | None -> failwith "class_field_kind"
+            | None -> conversion_failed "class_field_kind"
             | Some n -> n
           in
           match (concrete : Class_field_kind.concrete) with
@@ -14648,7 +14652,7 @@ module V4_06 = struct
         fun _ctx class_declaration ->
           let concrete =
             match Class_declaration.to_concrete class_declaration with
-            | None -> failwith "class_declaration"
+            | None -> conversion_failed "class_declaration"
             | Some n -> n
           in
           let concrete = self#class_infos_class_expr _ctx concrete in
@@ -14657,7 +14661,7 @@ module V4_06 = struct
         fun _ctx module_type ->
           let concrete =
             match Module_type.to_concrete module_type with
-            | None -> failwith "module_type"
+            | None -> conversion_failed "module_type"
             | Some n -> n
           in
           let { pmty_desc; pmty_loc; pmty_attributes } : Module_type.concrete = concrete in
@@ -14669,7 +14673,7 @@ module V4_06 = struct
         fun _ctx module_type_desc ->
           let concrete =
             match Module_type_desc.to_concrete module_type_desc with
-            | None -> failwith "module_type_desc"
+            | None -> conversion_failed "module_type_desc"
             | Some n -> n
           in
           match (concrete : Module_type_desc.concrete) with
@@ -14701,7 +14705,7 @@ module V4_06 = struct
         fun _ctx signature ->
           let concrete =
             match Signature.to_concrete signature with
-            | None -> failwith "signature"
+            | None -> conversion_failed "signature"
             | Some n -> n
           in
           let concrete = self#list self#signature_item _ctx concrete in
@@ -14710,7 +14714,7 @@ module V4_06 = struct
         fun _ctx signature_item ->
           let concrete =
             match Signature_item.to_concrete signature_item with
-            | None -> failwith "signature_item"
+            | None -> conversion_failed "signature_item"
             | Some n -> n
           in
           let { psig_desc; psig_loc } : Signature_item.concrete = concrete in
@@ -14721,7 +14725,7 @@ module V4_06 = struct
         fun _ctx signature_item_desc ->
           let concrete =
             match Signature_item_desc.to_concrete signature_item_desc with
-            | None -> failwith "signature_item_desc"
+            | None -> conversion_failed "signature_item_desc"
             | Some n -> n
           in
           match (concrete : Signature_item_desc.concrete) with
@@ -14770,7 +14774,7 @@ module V4_06 = struct
         fun _ctx module_declaration ->
           let concrete =
             match Module_declaration.to_concrete module_declaration with
-            | None -> failwith "module_declaration"
+            | None -> conversion_failed "module_declaration"
             | Some n -> n
           in
           let { pmd_name; pmd_type; pmd_attributes; pmd_loc } : Module_declaration.concrete = concrete in
@@ -14783,7 +14787,7 @@ module V4_06 = struct
         fun _ctx module_type_declaration ->
           let concrete =
             match Module_type_declaration.to_concrete module_type_declaration with
-            | None -> failwith "module_type_declaration"
+            | None -> conversion_failed "module_type_declaration"
             | Some n -> n
           in
           let { pmtd_name; pmtd_type; pmtd_attributes; pmtd_loc } : Module_type_declaration.concrete = concrete in
@@ -14796,7 +14800,7 @@ module V4_06 = struct
         fun _ctx open_description ->
           let concrete =
             match Open_description.to_concrete open_description with
-            | None -> failwith "open_description"
+            | None -> conversion_failed "open_description"
             | Some n -> n
           in
           let { popen_lid; popen_override; popen_loc; popen_attributes } : Open_description.concrete = concrete in
@@ -14809,7 +14813,7 @@ module V4_06 = struct
         fun _ctx include_infos ->
           let concrete =
             match Include_infos.to_concrete_module_expr include_infos with
-            | None -> failwith "include_infos"
+            | None -> conversion_failed "include_infos"
             | Some n -> n
           in
           let { pincl_mod; pincl_loc; pincl_attributes } : Module_expr.t Include_infos.concrete = concrete in
@@ -14821,7 +14825,7 @@ module V4_06 = struct
         fun _ctx include_infos ->
           let concrete =
             match Include_infos.to_concrete_module_type include_infos with
-            | None -> failwith "include_infos"
+            | None -> conversion_failed "include_infos"
             | Some n -> n
           in
           let { pincl_mod; pincl_loc; pincl_attributes } : Module_type.t Include_infos.concrete = concrete in
@@ -14833,7 +14837,7 @@ module V4_06 = struct
         fun _ctx include_description ->
           let concrete =
             match Include_description.to_concrete include_description with
-            | None -> failwith "include_description"
+            | None -> conversion_failed "include_description"
             | Some n -> n
           in
           let concrete = self#include_infos_module_type _ctx concrete in
@@ -14842,7 +14846,7 @@ module V4_06 = struct
         fun _ctx include_declaration ->
           let concrete =
             match Include_declaration.to_concrete include_declaration with
-            | None -> failwith "include_declaration"
+            | None -> conversion_failed "include_declaration"
             | Some n -> n
           in
           let concrete = self#include_infos_module_expr _ctx concrete in
@@ -14851,7 +14855,7 @@ module V4_06 = struct
         fun _ctx with_constraint ->
           let concrete =
             match With_constraint.to_concrete with_constraint with
-            | None -> failwith "with_constraint"
+            | None -> conversion_failed "with_constraint"
             | Some n -> n
           in
           match (concrete : With_constraint.concrete) with
@@ -14875,7 +14879,7 @@ module V4_06 = struct
         fun _ctx module_expr ->
           let concrete =
             match Module_expr.to_concrete module_expr with
-            | None -> failwith "module_expr"
+            | None -> conversion_failed "module_expr"
             | Some n -> n
           in
           let { pmod_desc; pmod_loc; pmod_attributes } : Module_expr.concrete = concrete in
@@ -14887,7 +14891,7 @@ module V4_06 = struct
         fun _ctx module_expr_desc ->
           let concrete =
             match Module_expr_desc.to_concrete module_expr_desc with
-            | None -> failwith "module_expr_desc"
+            | None -> conversion_failed "module_expr_desc"
             | Some n -> n
           in
           match (concrete : Module_expr_desc.concrete) with
@@ -14920,7 +14924,7 @@ module V4_06 = struct
         fun _ctx structure ->
           let concrete =
             match Structure.to_concrete structure with
-            | None -> failwith "structure"
+            | None -> conversion_failed "structure"
             | Some n -> n
           in
           let concrete = self#list self#structure_item _ctx concrete in
@@ -14929,7 +14933,7 @@ module V4_06 = struct
         fun _ctx structure_item ->
           let concrete =
             match Structure_item.to_concrete structure_item with
-            | None -> failwith "structure_item"
+            | None -> conversion_failed "structure_item"
             | Some n -> n
           in
           let { pstr_desc; pstr_loc } : Structure_item.concrete = concrete in
@@ -14940,7 +14944,7 @@ module V4_06 = struct
         fun _ctx structure_item_desc ->
           let concrete =
             match Structure_item_desc.to_concrete structure_item_desc with
-            | None -> failwith "structure_item_desc"
+            | None -> conversion_failed "structure_item_desc"
             | Some n -> n
           in
           match (concrete : Structure_item_desc.concrete) with
@@ -14997,7 +15001,7 @@ module V4_06 = struct
         fun _ctx value_binding ->
           let concrete =
             match Value_binding.to_concrete value_binding with
-            | None -> failwith "value_binding"
+            | None -> conversion_failed "value_binding"
             | Some n -> n
           in
           let { pvb_pat; pvb_expr; pvb_attributes; pvb_loc } : Value_binding.concrete = concrete in
@@ -15010,7 +15014,7 @@ module V4_06 = struct
         fun _ctx module_binding ->
           let concrete =
             match Module_binding.to_concrete module_binding with
-            | None -> failwith "module_binding"
+            | None -> conversion_failed "module_binding"
             | Some n -> n
           in
           let { pmb_name; pmb_expr; pmb_attributes; pmb_loc } : Module_binding.concrete = concrete in
@@ -15023,7 +15027,7 @@ module V4_06 = struct
         fun _ctx toplevel_phrase ->
           let concrete =
             match Toplevel_phrase.to_concrete toplevel_phrase with
-            | None -> failwith "toplevel_phrase"
+            | None -> conversion_failed "toplevel_phrase"
             | Some n -> n
           in
           match (concrete : Toplevel_phrase.concrete) with
@@ -15038,7 +15042,7 @@ module V4_06 = struct
         fun _ctx directive_argument ->
           let concrete =
             match Directive_argument.to_concrete directive_argument with
-            | None -> failwith "directive_argument"
+            | None -> conversion_failed "directive_argument"
             | Some n -> n
           in
           match (concrete : Directive_argument.concrete) with
@@ -15076,7 +15080,7 @@ module V4_06 = struct
         fun longident ->
           let concrete =
             match Longident.to_concrete longident with
-            | None -> failwith "longident"
+            | None -> conversion_failed "longident"
             | Some n -> n
           in
           match (concrete : Longident.concrete) with
@@ -15095,7 +15099,7 @@ module V4_06 = struct
         fun longident_loc ->
           let concrete =
             match Longident_loc.to_concrete longident_loc with
-            | None -> failwith "longident_loc"
+            | None -> conversion_failed "longident_loc"
             | Some n -> n
           in
           let concrete = self#loc self#longident concrete in
@@ -15104,7 +15108,7 @@ module V4_06 = struct
         fun rec_flag ->
           let concrete =
             match Rec_flag.to_concrete rec_flag with
-            | None -> failwith "rec_flag"
+            | None -> conversion_failed "rec_flag"
             | Some n -> n
           in
           match (concrete : Rec_flag.concrete) with
@@ -15116,7 +15120,7 @@ module V4_06 = struct
         fun direction_flag ->
           let concrete =
             match Direction_flag.to_concrete direction_flag with
-            | None -> failwith "direction_flag"
+            | None -> conversion_failed "direction_flag"
             | Some n -> n
           in
           match (concrete : Direction_flag.concrete) with
@@ -15128,7 +15132,7 @@ module V4_06 = struct
         fun private_flag ->
           let concrete =
             match Private_flag.to_concrete private_flag with
-            | None -> failwith "private_flag"
+            | None -> conversion_failed "private_flag"
             | Some n -> n
           in
           match (concrete : Private_flag.concrete) with
@@ -15140,7 +15144,7 @@ module V4_06 = struct
         fun mutable_flag ->
           let concrete =
             match Mutable_flag.to_concrete mutable_flag with
-            | None -> failwith "mutable_flag"
+            | None -> conversion_failed "mutable_flag"
             | Some n -> n
           in
           match (concrete : Mutable_flag.concrete) with
@@ -15152,7 +15156,7 @@ module V4_06 = struct
         fun virtual_flag ->
           let concrete =
             match Virtual_flag.to_concrete virtual_flag with
-            | None -> failwith "virtual_flag"
+            | None -> conversion_failed "virtual_flag"
             | Some n -> n
           in
           match (concrete : Virtual_flag.concrete) with
@@ -15164,7 +15168,7 @@ module V4_06 = struct
         fun override_flag ->
           let concrete =
             match Override_flag.to_concrete override_flag with
-            | None -> failwith "override_flag"
+            | None -> conversion_failed "override_flag"
             | Some n -> n
           in
           match (concrete : Override_flag.concrete) with
@@ -15176,7 +15180,7 @@ module V4_06 = struct
         fun closed_flag ->
           let concrete =
             match Closed_flag.to_concrete closed_flag with
-            | None -> failwith "closed_flag"
+            | None -> conversion_failed "closed_flag"
             | Some n -> n
           in
           match (concrete : Closed_flag.concrete) with
@@ -15188,7 +15192,7 @@ module V4_06 = struct
         fun label ->
           let concrete =
             match Label.to_concrete label with
-            | None -> failwith "label"
+            | None -> conversion_failed "label"
             | Some n -> n
           in
           let concrete = self#string concrete in
@@ -15197,7 +15201,7 @@ module V4_06 = struct
         fun arg_label ->
           let concrete =
             match Arg_label.to_concrete arg_label with
-            | None -> failwith "arg_label"
+            | None -> conversion_failed "arg_label"
             | Some n -> n
           in
           match (concrete : Arg_label.concrete) with
@@ -15213,7 +15217,7 @@ module V4_06 = struct
         fun variance ->
           let concrete =
             match Variance.to_concrete variance with
-            | None -> failwith "variance"
+            | None -> conversion_failed "variance"
             | Some n -> n
           in
           match (concrete : Variance.concrete) with
@@ -15227,7 +15231,7 @@ module V4_06 = struct
         fun constant ->
           let concrete =
             match Constant.to_concrete constant with
-            | None -> failwith "constant"
+            | None -> conversion_failed "constant"
             | Some n -> n
           in
           match (concrete : Constant.concrete) with
@@ -15250,7 +15254,7 @@ module V4_06 = struct
         fun attribute ->
           let concrete =
             match Attribute.to_concrete attribute with
-            | None -> failwith "attribute"
+            | None -> conversion_failed "attribute"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -15261,7 +15265,7 @@ module V4_06 = struct
         fun extension ->
           let concrete =
             match Extension.to_concrete extension with
-            | None -> failwith "extension"
+            | None -> conversion_failed "extension"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -15272,7 +15276,7 @@ module V4_06 = struct
         fun attributes ->
           let concrete =
             match Attributes.to_concrete attributes with
-            | None -> failwith "attributes"
+            | None -> conversion_failed "attributes"
             | Some n -> n
           in
           let concrete = self#list self#attribute concrete in
@@ -15281,7 +15285,7 @@ module V4_06 = struct
         fun payload ->
           let concrete =
             match Payload.to_concrete payload with
-            | None -> failwith "payload"
+            | None -> conversion_failed "payload"
             | Some n -> n
           in
           match (concrete : Payload.concrete) with
@@ -15302,7 +15306,7 @@ module V4_06 = struct
         fun core_type ->
           let concrete =
             match Core_type.to_concrete core_type with
-            | None -> failwith "core_type"
+            | None -> conversion_failed "core_type"
             | Some n -> n
           in
           let { ptyp_desc; ptyp_loc; ptyp_attributes } : Core_type.concrete = concrete in
@@ -15314,7 +15318,7 @@ module V4_06 = struct
         fun core_type_desc ->
           let concrete =
             match Core_type_desc.to_concrete core_type_desc with
-            | None -> failwith "core_type_desc"
+            | None -> conversion_failed "core_type_desc"
             | Some n -> n
           in
           match (concrete : Core_type_desc.concrete) with
@@ -15366,7 +15370,7 @@ module V4_06 = struct
         fun package_type ->
           let concrete =
             match Package_type.to_concrete package_type with
-            | None -> failwith "package_type"
+            | None -> conversion_failed "package_type"
             | Some n -> n
           in
           let (x0, x1) = concrete in
@@ -15377,7 +15381,7 @@ module V4_06 = struct
         fun row_field ->
           let concrete =
             match Row_field.to_concrete row_field with
-            | None -> failwith "row_field"
+            | None -> conversion_failed "row_field"
             | Some n -> n
           in
           match (concrete : Row_field.concrete) with
@@ -15394,7 +15398,7 @@ module V4_06 = struct
         fun object_field ->
           let concrete =
             match Object_field.to_concrete object_field with
-            | None -> failwith "object_field"
+            | None -> conversion_failed "object_field"
             | Some n -> n
           in
           match (concrete : Object_field.concrete) with
@@ -15410,7 +15414,7 @@ module V4_06 = struct
         fun pattern ->
           let concrete =
             match Pattern.to_concrete pattern with
-            | None -> failwith "pattern"
+            | None -> conversion_failed "pattern"
             | Some n -> n
           in
           let { ppat_desc; ppat_loc; ppat_attributes } : Pattern.concrete = concrete in
@@ -15422,7 +15426,7 @@ module V4_06 = struct
         fun pattern_desc ->
           let concrete =
             match Pattern_desc.to_concrete pattern_desc with
-            | None -> failwith "pattern_desc"
+            | None -> conversion_failed "pattern_desc"
             | Some n -> n
           in
           match (concrete : Pattern_desc.concrete) with
@@ -15491,7 +15495,7 @@ module V4_06 = struct
         fun expression ->
           let concrete =
             match Expression.to_concrete expression with
-            | None -> failwith "expression"
+            | None -> conversion_failed "expression"
             | Some n -> n
           in
           let { pexp_desc; pexp_loc; pexp_attributes } : Expression.concrete = concrete in
@@ -15503,7 +15507,7 @@ module V4_06 = struct
         fun expression_desc ->
           let concrete =
             match Expression_desc.to_concrete expression_desc with
-            | None -> failwith "expression_desc"
+            | None -> conversion_failed "expression_desc"
             | Some n -> n
           in
           match (concrete : Expression_desc.concrete) with
@@ -15652,7 +15656,7 @@ module V4_06 = struct
         fun case ->
           let concrete =
             match Case.to_concrete case with
-            | None -> failwith "case"
+            | None -> conversion_failed "case"
             | Some n -> n
           in
           let { pc_lhs; pc_guard; pc_rhs } : Case.concrete = concrete in
@@ -15664,7 +15668,7 @@ module V4_06 = struct
         fun value_description ->
           let concrete =
             match Value_description.to_concrete value_description with
-            | None -> failwith "value_description"
+            | None -> conversion_failed "value_description"
             | Some n -> n
           in
           let { pval_name; pval_type; pval_prim; pval_attributes; pval_loc } : Value_description.concrete = concrete in
@@ -15678,7 +15682,7 @@ module V4_06 = struct
         fun type_declaration ->
           let concrete =
             match Type_declaration.to_concrete type_declaration with
-            | None -> failwith "type_declaration"
+            | None -> conversion_failed "type_declaration"
             | Some n -> n
           in
           let { ptype_name; ptype_params; ptype_cstrs; ptype_kind; ptype_private; ptype_manifest; ptype_attributes; ptype_loc } : Type_declaration.concrete = concrete in
@@ -15695,7 +15699,7 @@ module V4_06 = struct
         fun type_kind ->
           let concrete =
             match Type_kind.to_concrete type_kind with
-            | None -> failwith "type_kind"
+            | None -> conversion_failed "type_kind"
             | Some n -> n
           in
           match (concrete : Type_kind.concrete) with
@@ -15713,7 +15717,7 @@ module V4_06 = struct
         fun label_declaration ->
           let concrete =
             match Label_declaration.to_concrete label_declaration with
-            | None -> failwith "label_declaration"
+            | None -> conversion_failed "label_declaration"
             | Some n -> n
           in
           let { pld_name; pld_mutable; pld_type; pld_loc; pld_attributes } : Label_declaration.concrete = concrete in
@@ -15727,7 +15731,7 @@ module V4_06 = struct
         fun constructor_declaration ->
           let concrete =
             match Constructor_declaration.to_concrete constructor_declaration with
-            | None -> failwith "constructor_declaration"
+            | None -> conversion_failed "constructor_declaration"
             | Some n -> n
           in
           let { pcd_name; pcd_args; pcd_res; pcd_loc; pcd_attributes } : Constructor_declaration.concrete = concrete in
@@ -15741,7 +15745,7 @@ module V4_06 = struct
         fun constructor_arguments ->
           let concrete =
             match Constructor_arguments.to_concrete constructor_arguments with
-            | None -> failwith "constructor_arguments"
+            | None -> conversion_failed "constructor_arguments"
             | Some n -> n
           in
           match (concrete : Constructor_arguments.concrete) with
@@ -15755,7 +15759,7 @@ module V4_06 = struct
         fun type_extension ->
           let concrete =
             match Type_extension.to_concrete type_extension with
-            | None -> failwith "type_extension"
+            | None -> conversion_failed "type_extension"
             | Some n -> n
           in
           let { ptyext_path; ptyext_params; ptyext_constructors; ptyext_private; ptyext_attributes } : Type_extension.concrete = concrete in
@@ -15769,7 +15773,7 @@ module V4_06 = struct
         fun extension_constructor ->
           let concrete =
             match Extension_constructor.to_concrete extension_constructor with
-            | None -> failwith "extension_constructor"
+            | None -> conversion_failed "extension_constructor"
             | Some n -> n
           in
           let { pext_name; pext_kind; pext_loc; pext_attributes } : Extension_constructor.concrete = concrete in
@@ -15782,7 +15786,7 @@ module V4_06 = struct
         fun extension_constructor_kind ->
           let concrete =
             match Extension_constructor_kind.to_concrete extension_constructor_kind with
-            | None -> failwith "extension_constructor_kind"
+            | None -> conversion_failed "extension_constructor_kind"
             | Some n -> n
           in
           match (concrete : Extension_constructor_kind.concrete) with
@@ -15797,7 +15801,7 @@ module V4_06 = struct
         fun class_type ->
           let concrete =
             match Class_type.to_concrete class_type with
-            | None -> failwith "class_type"
+            | None -> conversion_failed "class_type"
             | Some n -> n
           in
           let { pcty_desc; pcty_loc; pcty_attributes } : Class_type.concrete = concrete in
@@ -15809,7 +15813,7 @@ module V4_06 = struct
         fun class_type_desc ->
           let concrete =
             match Class_type_desc.to_concrete class_type_desc with
-            | None -> failwith "class_type_desc"
+            | None -> conversion_failed "class_type_desc"
             | Some n -> n
           in
           match (concrete : Class_type_desc.concrete) with
@@ -15837,7 +15841,7 @@ module V4_06 = struct
         fun class_signature ->
           let concrete =
             match Class_signature.to_concrete class_signature with
-            | None -> failwith "class_signature"
+            | None -> conversion_failed "class_signature"
             | Some n -> n
           in
           let { pcsig_self; pcsig_fields } : Class_signature.concrete = concrete in
@@ -15848,7 +15852,7 @@ module V4_06 = struct
         fun class_type_field ->
           let concrete =
             match Class_type_field.to_concrete class_type_field with
-            | None -> failwith "class_type_field"
+            | None -> conversion_failed "class_type_field"
             | Some n -> n
           in
           let { pctf_desc; pctf_loc; pctf_attributes } : Class_type_field.concrete = concrete in
@@ -15860,7 +15864,7 @@ module V4_06 = struct
         fun class_type_field_desc ->
           let concrete =
             match Class_type_field_desc.to_concrete class_type_field_desc with
-            | None -> failwith "class_type_field_desc"
+            | None -> conversion_failed "class_type_field_desc"
             | Some n -> n
           in
           match (concrete : Class_type_field_desc.concrete) with
@@ -15886,7 +15890,7 @@ module V4_06 = struct
         fun class_infos ->
           let concrete =
             match Class_infos.to_concrete_class_expr class_infos with
-            | None -> failwith "class_infos"
+            | None -> conversion_failed "class_infos"
             | Some n -> n
           in
           let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_expr.t Class_infos.concrete = concrete in
@@ -15901,7 +15905,7 @@ module V4_06 = struct
         fun class_infos ->
           let concrete =
             match Class_infos.to_concrete_class_type class_infos with
-            | None -> failwith "class_infos"
+            | None -> conversion_failed "class_infos"
             | Some n -> n
           in
           let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_type.t Class_infos.concrete = concrete in
@@ -15916,7 +15920,7 @@ module V4_06 = struct
         fun class_description ->
           let concrete =
             match Class_description.to_concrete class_description with
-            | None -> failwith "class_description"
+            | None -> conversion_failed "class_description"
             | Some n -> n
           in
           let concrete = self#class_infos_class_type concrete in
@@ -15925,7 +15929,7 @@ module V4_06 = struct
         fun class_type_declaration ->
           let concrete =
             match Class_type_declaration.to_concrete class_type_declaration with
-            | None -> failwith "class_type_declaration"
+            | None -> conversion_failed "class_type_declaration"
             | Some n -> n
           in
           let concrete = self#class_infos_class_type concrete in
@@ -15934,7 +15938,7 @@ module V4_06 = struct
         fun class_expr ->
           let concrete =
             match Class_expr.to_concrete class_expr with
-            | None -> failwith "class_expr"
+            | None -> conversion_failed "class_expr"
             | Some n -> n
           in
           let { pcl_desc; pcl_loc; pcl_attributes } : Class_expr.concrete = concrete in
@@ -15946,7 +15950,7 @@ module V4_06 = struct
         fun class_expr_desc ->
           let concrete =
             match Class_expr_desc.to_concrete class_expr_desc with
-            | None -> failwith "class_expr_desc"
+            | None -> conversion_failed "class_expr_desc"
             | Some n -> n
           in
           match (concrete : Class_expr_desc.concrete) with
@@ -15988,7 +15992,7 @@ module V4_06 = struct
         fun class_structure ->
           let concrete =
             match Class_structure.to_concrete class_structure with
-            | None -> failwith "class_structure"
+            | None -> conversion_failed "class_structure"
             | Some n -> n
           in
           let { pcstr_self; pcstr_fields } : Class_structure.concrete = concrete in
@@ -15999,7 +16003,7 @@ module V4_06 = struct
         fun class_field ->
           let concrete =
             match Class_field.to_concrete class_field with
-            | None -> failwith "class_field"
+            | None -> conversion_failed "class_field"
             | Some n -> n
           in
           let { pcf_desc; pcf_loc; pcf_attributes } : Class_field.concrete = concrete in
@@ -16011,7 +16015,7 @@ module V4_06 = struct
         fun class_field_desc ->
           let concrete =
             match Class_field_desc.to_concrete class_field_desc with
-            | None -> failwith "class_field_desc"
+            | None -> conversion_failed "class_field_desc"
             | Some n -> n
           in
           match (concrete : Class_field_desc.concrete) with
@@ -16042,7 +16046,7 @@ module V4_06 = struct
         fun class_field_kind ->
           let concrete =
             match Class_field_kind.to_concrete class_field_kind with
-            | None -> failwith "class_field_kind"
+            | None -> conversion_failed "class_field_kind"
             | Some n -> n
           in
           match (concrete : Class_field_kind.concrete) with
@@ -16057,7 +16061,7 @@ module V4_06 = struct
         fun class_declaration ->
           let concrete =
             match Class_declaration.to_concrete class_declaration with
-            | None -> failwith "class_declaration"
+            | None -> conversion_failed "class_declaration"
             | Some n -> n
           in
           let concrete = self#class_infos_class_expr concrete in
@@ -16066,7 +16070,7 @@ module V4_06 = struct
         fun module_type ->
           let concrete =
             match Module_type.to_concrete module_type with
-            | None -> failwith "module_type"
+            | None -> conversion_failed "module_type"
             | Some n -> n
           in
           let { pmty_desc; pmty_loc; pmty_attributes } : Module_type.concrete = concrete in
@@ -16078,7 +16082,7 @@ module V4_06 = struct
         fun module_type_desc ->
           let concrete =
             match Module_type_desc.to_concrete module_type_desc with
-            | None -> failwith "module_type_desc"
+            | None -> conversion_failed "module_type_desc"
             | Some n -> n
           in
           match (concrete : Module_type_desc.concrete) with
@@ -16110,7 +16114,7 @@ module V4_06 = struct
         fun signature ->
           let concrete =
             match Signature.to_concrete signature with
-            | None -> failwith "signature"
+            | None -> conversion_failed "signature"
             | Some n -> n
           in
           let concrete = self#list self#signature_item concrete in
@@ -16119,7 +16123,7 @@ module V4_06 = struct
         fun signature_item ->
           let concrete =
             match Signature_item.to_concrete signature_item with
-            | None -> failwith "signature_item"
+            | None -> conversion_failed "signature_item"
             | Some n -> n
           in
           let { psig_desc; psig_loc } : Signature_item.concrete = concrete in
@@ -16130,7 +16134,7 @@ module V4_06 = struct
         fun signature_item_desc ->
           let concrete =
             match Signature_item_desc.to_concrete signature_item_desc with
-            | None -> failwith "signature_item_desc"
+            | None -> conversion_failed "signature_item_desc"
             | Some n -> n
           in
           match (concrete : Signature_item_desc.concrete) with
@@ -16179,7 +16183,7 @@ module V4_06 = struct
         fun module_declaration ->
           let concrete =
             match Module_declaration.to_concrete module_declaration with
-            | None -> failwith "module_declaration"
+            | None -> conversion_failed "module_declaration"
             | Some n -> n
           in
           let { pmd_name; pmd_type; pmd_attributes; pmd_loc } : Module_declaration.concrete = concrete in
@@ -16192,7 +16196,7 @@ module V4_06 = struct
         fun module_type_declaration ->
           let concrete =
             match Module_type_declaration.to_concrete module_type_declaration with
-            | None -> failwith "module_type_declaration"
+            | None -> conversion_failed "module_type_declaration"
             | Some n -> n
           in
           let { pmtd_name; pmtd_type; pmtd_attributes; pmtd_loc } : Module_type_declaration.concrete = concrete in
@@ -16205,7 +16209,7 @@ module V4_06 = struct
         fun open_description ->
           let concrete =
             match Open_description.to_concrete open_description with
-            | None -> failwith "open_description"
+            | None -> conversion_failed "open_description"
             | Some n -> n
           in
           let { popen_lid; popen_override; popen_loc; popen_attributes } : Open_description.concrete = concrete in
@@ -16218,7 +16222,7 @@ module V4_06 = struct
         fun include_infos ->
           let concrete =
             match Include_infos.to_concrete_module_expr include_infos with
-            | None -> failwith "include_infos"
+            | None -> conversion_failed "include_infos"
             | Some n -> n
           in
           let { pincl_mod; pincl_loc; pincl_attributes } : Module_expr.t Include_infos.concrete = concrete in
@@ -16230,7 +16234,7 @@ module V4_06 = struct
         fun include_infos ->
           let concrete =
             match Include_infos.to_concrete_module_type include_infos with
-            | None -> failwith "include_infos"
+            | None -> conversion_failed "include_infos"
             | Some n -> n
           in
           let { pincl_mod; pincl_loc; pincl_attributes } : Module_type.t Include_infos.concrete = concrete in
@@ -16242,7 +16246,7 @@ module V4_06 = struct
         fun include_description ->
           let concrete =
             match Include_description.to_concrete include_description with
-            | None -> failwith "include_description"
+            | None -> conversion_failed "include_description"
             | Some n -> n
           in
           let concrete = self#include_infos_module_type concrete in
@@ -16251,7 +16255,7 @@ module V4_06 = struct
         fun include_declaration ->
           let concrete =
             match Include_declaration.to_concrete include_declaration with
-            | None -> failwith "include_declaration"
+            | None -> conversion_failed "include_declaration"
             | Some n -> n
           in
           let concrete = self#include_infos_module_expr concrete in
@@ -16260,7 +16264,7 @@ module V4_06 = struct
         fun with_constraint ->
           let concrete =
             match With_constraint.to_concrete with_constraint with
-            | None -> failwith "with_constraint"
+            | None -> conversion_failed "with_constraint"
             | Some n -> n
           in
           match (concrete : With_constraint.concrete) with
@@ -16284,7 +16288,7 @@ module V4_06 = struct
         fun module_expr ->
           let concrete =
             match Module_expr.to_concrete module_expr with
-            | None -> failwith "module_expr"
+            | None -> conversion_failed "module_expr"
             | Some n -> n
           in
           let { pmod_desc; pmod_loc; pmod_attributes } : Module_expr.concrete = concrete in
@@ -16296,7 +16300,7 @@ module V4_06 = struct
         fun module_expr_desc ->
           let concrete =
             match Module_expr_desc.to_concrete module_expr_desc with
-            | None -> failwith "module_expr_desc"
+            | None -> conversion_failed "module_expr_desc"
             | Some n -> n
           in
           match (concrete : Module_expr_desc.concrete) with
@@ -16329,7 +16333,7 @@ module V4_06 = struct
         fun structure ->
           let concrete =
             match Structure.to_concrete structure with
-            | None -> failwith "structure"
+            | None -> conversion_failed "structure"
             | Some n -> n
           in
           let concrete = self#list self#structure_item concrete in
@@ -16338,7 +16342,7 @@ module V4_06 = struct
         fun structure_item ->
           let concrete =
             match Structure_item.to_concrete structure_item with
-            | None -> failwith "structure_item"
+            | None -> conversion_failed "structure_item"
             | Some n -> n
           in
           let { pstr_desc; pstr_loc } : Structure_item.concrete = concrete in
@@ -16349,7 +16353,7 @@ module V4_06 = struct
         fun structure_item_desc ->
           let concrete =
             match Structure_item_desc.to_concrete structure_item_desc with
-            | None -> failwith "structure_item_desc"
+            | None -> conversion_failed "structure_item_desc"
             | Some n -> n
           in
           match (concrete : Structure_item_desc.concrete) with
@@ -16406,7 +16410,7 @@ module V4_06 = struct
         fun value_binding ->
           let concrete =
             match Value_binding.to_concrete value_binding with
-            | None -> failwith "value_binding"
+            | None -> conversion_failed "value_binding"
             | Some n -> n
           in
           let { pvb_pat; pvb_expr; pvb_attributes; pvb_loc } : Value_binding.concrete = concrete in
@@ -16419,7 +16423,7 @@ module V4_06 = struct
         fun module_binding ->
           let concrete =
             match Module_binding.to_concrete module_binding with
-            | None -> failwith "module_binding"
+            | None -> conversion_failed "module_binding"
             | Some n -> n
           in
           let { pmb_name; pmb_expr; pmb_attributes; pmb_loc } : Module_binding.concrete = concrete in
@@ -16432,7 +16436,7 @@ module V4_06 = struct
         fun toplevel_phrase ->
           let concrete =
             match Toplevel_phrase.to_concrete toplevel_phrase with
-            | None -> failwith "toplevel_phrase"
+            | None -> conversion_failed "toplevel_phrase"
             | Some n -> n
           in
           match (concrete : Toplevel_phrase.concrete) with
@@ -16447,7 +16451,7 @@ module V4_06 = struct
         fun directive_argument ->
           let concrete =
             match Directive_argument.to_concrete directive_argument with
-            | None -> failwith "directive_argument"
+            | None -> conversion_failed "directive_argument"
             | Some n -> n
           in
           match (concrete : Directive_argument.concrete) with
