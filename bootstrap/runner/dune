@@ -1,0 +1,15 @@
+(library
+ (name ppx_bootstrap_runner)
+ (libraries
+  ocaml-compiler-libs.common
+  ppx.bootstrap
+  ppx_metaquot_expander
+  stdppx)
+ (flags (:standard -safe-string))
+ (ppx.driver
+  ;; This is the entry point of the ppx driver
+  (main Ppx_bootstrap_runner.run)
+  ;; Replaces the default which is "--as-ppx" for historical
+  ;; reasons. These flags are passed to the generated ppx.exe driver
+  ;; executable
+  (flags)))

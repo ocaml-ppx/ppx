@@ -1,6 +1,6 @@
 open! Import
 
-exception Expected of Location.t * string
+include Ppx_bootstrap.Expected
 
 let fail loc expected =
   raise (Expected (loc, expected))

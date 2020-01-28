@@ -91,6 +91,8 @@ val declare_inline_with_path_arg
   -> (loc:Location.t -> path:string -> arg:Longident.t Asttypes.loc option -> 'a)
   -> t
 
+val of_bootstrap_extension : Ppx_bootstrap.Extension.t -> t
+
 module For_context : sig
   (** This module is used to implement {!Context_free.V1.map_top_down} *)
 

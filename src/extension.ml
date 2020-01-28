@@ -313,6 +313,13 @@ let declare_inline_with_path_arg name context pattern k =
   T (M.declare ~with_arg:true name context pattern k')
 ;;
 
+let of_bootstrap_extension ext =
+  let wrap f ~loc ~path:_ x = f ~loc x in
+  match (ext : Ppx_bootstrap.Extension.t) with
+  | Patt { name; callback } -> declare name Pattern    Ast_pattern.__ (wrap callback)
+  | Expr { name; callback } -> declare name Expression Ast_pattern.__ (wrap callback)
+;;
+
 module V2 = struct
   type nonrec t = t
 

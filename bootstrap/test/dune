@@ -1,0 +1,8 @@
+(library
+ (name ppx_bootstrap_test)
+ (libraries ppx)
+ (preprocess (pps ppx_bootstrap_runner)))
+
+(alias
+ (name runtest)
+ (deps (alias check)))
