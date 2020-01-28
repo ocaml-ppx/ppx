@@ -1,6 +1,6 @@
 (** Type for shortcuts from description types to their parent record types:
-    - [record] is the parent type name
-    - [variant] is the description type name
+    - [outter_record] is the parent type name
+    - [inner_variant] is the description type name
     - [desc_field] is the name of the field in the parent pointing to the
     description
     - [loc_field] is the name of the field in the parent pointing to the
