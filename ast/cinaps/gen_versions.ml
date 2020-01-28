@@ -345,7 +345,10 @@ end
 let print_ast_types grammars =
   List.iter (Unversioned.all_types grammars) ~f:(fun (type_name, tvars) ->
     let type_name_ = type_name ^ "_" in
-    Ml.declare_type type_name_ ~tvars Empty;
+    Ml.declare_type type_name_ ~tvars Empty);
+  Print.newline ();
+  List.iter (Unversioned.all_types grammars) ~f:(fun (type_name, tvars) ->
+    let type_name_ = type_name ^ "_" in
     Ml.declare_type type_name ~tvars
       (Line (Grammar.string_of_ty ~internal:true
                (Instance ("node",
