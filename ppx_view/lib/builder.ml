@@ -1,6 +1,4 @@
-open Stdppx
-open Ppx_ast.V4_07
-open Ppx_ast.Builder
+open Import
 
 module Module : sig
   val view : string
@@ -22,13 +20,13 @@ let view_lib_larray_cons ~loc = view_lib_ident ~loc "larray_cons"
 
 module Exp = struct
   let apply_lident ~loc lident args =
-    let f = V4_07.pexp_ident ~loc lident in
+    let f = pexp_ident ~loc lident in
     eapply ~loc f args
 
-  let lident ~loc name = V4_07.pexp_ident (Located.lident ~loc name)
+  let lident ~loc name = pexp_ident ~loc (Located.lident ~loc name)
 
   let view_lib_ident ~loc name =
-    V4_07.pexp_ident ~loc (view_lib_ident ~loc name)
+    pexp_ident ~loc (view_lib_ident ~loc name)
 
   let view_lib_capture ~loc =
     view_lib_ident ~loc "__"
@@ -55,9 +53,9 @@ module Pat = struct
       match args with
       | [] -> None
       | [one] -> Some one
-      | _ -> Some (V4_07.ppat_tuple ~loc args)
+      | _ -> Some (ppat_tuple ~loc args)
     in
-    V4_07.ppat_construct ident args
+    ppat_construct ~loc ident args
 
   let view_lib_var_nil ~loc =
     construct ~loc (view_lib_ident ~loc "Var_nil") []
