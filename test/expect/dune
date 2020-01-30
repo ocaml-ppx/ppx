@@ -3,6 +3,6 @@
  (modules expect_test)
  (link_flags (-linkall))
  (modes byte)
- (libraries unix compiler-libs.toplevel ppx ppx.traverse))
+ (libraries unix compiler-libs.toplevel ppx ppx.metaquot ppx.traverse))
 
 (ocamllex expect_test)
