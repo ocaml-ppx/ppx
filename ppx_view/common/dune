@@ -1,9 +1,0 @@
-(library
- (name ppx_view_common)
- (public_name ppx.ppx_view.common)
- (flags :standard -open Ocaml_shadow)
- (libraries
-  compiler-libs.common
-  ocaml-compiler-libs.shadow
-  ocaml-compiler-libs.common
-  ocaml-migrate-parsetree))
