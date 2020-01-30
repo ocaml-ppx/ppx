@@ -1,8 +1,3 @@
-#use "topfind";;
-#require "base";;
-#load "ppx_metaquot_lifters.cmo";;
-#load "ppx_metaquot.cmo";;
-
 open Ppx
 
 
