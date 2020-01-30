@@ -11,6 +11,21 @@ let int32 x = eint32 ~loc x
 let float x = efloat ~loc x
 let ident x = pexp_ident ~loc (Located.lident ~loc x)
 
+let class_infos =
+  let open Builder.V4_07 in
+  let extension =
+    Extension.create
+      ( Astlib.Loc.create ~txt:"ext" ~loc ()
+      , Payload.pstr (Structure.create []) )
+  in
+  Class_infos.create
+    ~pci_virt:Virtual_flag.virtual_
+    ~pci_params:[]
+    ~pci_name:(Astlib.Loc.create ~txt:"name" ~loc ())
+    ~pci_loc:loc
+    ~pci_attributes:(Attributes.create [])
+    ~pci_expr:(pcty_extension ~loc extension)
+
 open Viewer.V4_07
 
 let%expect_test "match failure" =
@@ -19,7 +34,7 @@ let%expect_test "match failure" =
       print_string "matched"
   with e ->
     print_string (Printexc.to_string e)
-  end;[%expect {|"Match_failure ppx_view/test/test.ml:17:12"|}]
+  end;[%expect {|"Match_failure ppx_view/test/test.ml:32:12"|}]
 
 let%expect_test "match simple" =
   let match_3 = function%view
@@ -108,6 +123,18 @@ let%expect_test "match with record" =
   begin
     match_ident (ident "x");
   end;[%expect {|x|}]
+
+let%expect_test "match with polymorphic AST type" =
+  (match%view class_infos with
+   | { pci_virt = Virtual
+     ; pci_params = []
+     ; pci_name = {txt = "name"; _}
+     ; pci_expr = Pcty_extension _ext
+     ; _
+     } ->
+     print_string "OK"
+   | _ -> print_string "KO");
+  [%expect {|OK|}]
 
 type custom = Int of int | Unit of unit | Nothing
 

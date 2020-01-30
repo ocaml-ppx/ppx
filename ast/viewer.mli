@@ -16,7 +16,8 @@ end
 
 (*$ Ppx_ast_cinaps.print_viewer_mli () *)
 module V4_07 : sig
-  open Versions.V4_07
+  open Versions
+  open V4_07
   include LOC_TYPES
   val lident : (string, 'i, 'o) View.t -> (Longident.t, 'i, 'o) View.t
   val ldot : ((Longident.t * string), 'i, 'o) View.t -> (Longident.t, 'i, 'o) View.t
@@ -266,6 +267,18 @@ module V4_07 : sig
   val pctf_attribute : (Attribute.t, 'i, 'o) View.t -> (Class_type_field.t, 'i, 'o) View.t
   val pctf_extension : (Extension.t, 'i, 'o) View.t -> (Class_type_field.t, 'i, 'o) View.t
 
+  val pci_virt'match : (Virtual_flag.t, 'i, 'o) View.t -> ('a node Class_infos.t, 'i, 'o) View.t
+
+  val pci_params'match : ((Core_type.t * Variance.t) list, 'i, 'o) View.t -> ('a node Class_infos.t, 'i, 'o) View.t
+
+  val pci_name'match : (string Astlib.Loc.t, 'i, 'o) View.t -> ('a node Class_infos.t, 'i, 'o) View.t
+
+  val pci_expr'match : ('a node, 'i, 'o) View.t -> ('a node Class_infos.t, 'i, 'o) View.t
+
+  val pci_loc'match : (Astlib.Location.t, 'i, 'o) View.t -> ('a node Class_infos.t, 'i, 'o) View.t
+
+  val pci_attributes'match : (Attributes.t, 'i, 'o) View.t -> ('a node Class_infos.t, 'i, 'o) View.t
+
   val pcl_desc'match : (Class_expr_desc.t, 'i, 'o) View.t -> (Class_expr.t, 'i, 'o) View.t
 
   val pcl_loc'match : (Astlib.Location.t, 'i, 'o) View.t -> (Class_expr.t, 'i, 'o) View.t
@@ -352,6 +365,12 @@ module V4_07 : sig
   val popen_loc'match : (Astlib.Location.t, 'i, 'o) View.t -> (Open_description.t, 'i, 'o) View.t
 
   val popen_attributes'match : (Attributes.t, 'i, 'o) View.t -> (Open_description.t, 'i, 'o) View.t
+
+  val pincl_mod'match : ('a node, 'i, 'o) View.t -> ('a node Include_infos.t, 'i, 'o) View.t
+
+  val pincl_loc'match : (Astlib.Location.t, 'i, 'o) View.t -> ('a node Include_infos.t, 'i, 'o) View.t
+
+  val pincl_attributes'match : (Attributes.t, 'i, 'o) View.t -> ('a node Include_infos.t, 'i, 'o) View.t
   val pwith_type : ((Longident_loc.t * Type_declaration.t), 'i, 'o) View.t -> (With_constraint.t, 'i, 'o) View.t
   val pwith_module : ((Longident_loc.t * Longident_loc.t), 'i, 'o) View.t -> (With_constraint.t, 'i, 'o) View.t
   val pwith_typesubst : ((Longident_loc.t * Type_declaration.t), 'i, 'o) View.t -> (With_constraint.t, 'i, 'o) View.t
@@ -415,7 +434,8 @@ module V4_07 : sig
 end
 
 module V4_06 : sig
-  open Versions.V4_06
+  open Versions
+  open V4_06
   include LOC_TYPES
   val lident : (string, 'i, 'o) View.t -> (Longident.t, 'i, 'o) View.t
   val ldot : ((Longident.t * string), 'i, 'o) View.t -> (Longident.t, 'i, 'o) View.t
@@ -665,6 +685,18 @@ module V4_06 : sig
   val pctf_attribute : (Attribute.t, 'i, 'o) View.t -> (Class_type_field.t, 'i, 'o) View.t
   val pctf_extension : (Extension.t, 'i, 'o) View.t -> (Class_type_field.t, 'i, 'o) View.t
 
+  val pci_virt'match : (Virtual_flag.t, 'i, 'o) View.t -> ('a node Class_infos.t, 'i, 'o) View.t
+
+  val pci_params'match : ((Core_type.t * Variance.t) list, 'i, 'o) View.t -> ('a node Class_infos.t, 'i, 'o) View.t
+
+  val pci_name'match : (string Astlib.Loc.t, 'i, 'o) View.t -> ('a node Class_infos.t, 'i, 'o) View.t
+
+  val pci_expr'match : ('a node, 'i, 'o) View.t -> ('a node Class_infos.t, 'i, 'o) View.t
+
+  val pci_loc'match : (Astlib.Location.t, 'i, 'o) View.t -> ('a node Class_infos.t, 'i, 'o) View.t
+
+  val pci_attributes'match : (Attributes.t, 'i, 'o) View.t -> ('a node Class_infos.t, 'i, 'o) View.t
+
   val pcl_desc'match : (Class_expr_desc.t, 'i, 'o) View.t -> (Class_expr.t, 'i, 'o) View.t
 
   val pcl_loc'match : (Astlib.Location.t, 'i, 'o) View.t -> (Class_expr.t, 'i, 'o) View.t
@@ -751,6 +783,12 @@ module V4_06 : sig
   val popen_loc'match : (Astlib.Location.t, 'i, 'o) View.t -> (Open_description.t, 'i, 'o) View.t
 
   val popen_attributes'match : (Attributes.t, 'i, 'o) View.t -> (Open_description.t, 'i, 'o) View.t
+
+  val pincl_mod'match : ('a node, 'i, 'o) View.t -> ('a node Include_infos.t, 'i, 'o) View.t
+
+  val pincl_loc'match : (Astlib.Location.t, 'i, 'o) View.t -> ('a node Include_infos.t, 'i, 'o) View.t
+
+  val pincl_attributes'match : (Attributes.t, 'i, 'o) View.t -> ('a node Include_infos.t, 'i, 'o) View.t
   val pwith_type : ((Longident_loc.t * Type_declaration.t), 'i, 'o) View.t -> (With_constraint.t, 'i, 'o) View.t
   val pwith_module : ((Longident_loc.t * Longident_loc.t), 'i, 'o) View.t -> (With_constraint.t, 'i, 'o) View.t
   val pwith_typesubst : ((Longident_loc.t * Type_declaration.t), 'i, 'o) View.t -> (With_constraint.t, 'i, 'o) View.t

@@ -2113,6 +2113,54 @@ module V4_07 = struct
     | Class_type_field_desc.Pctf_extension arg -> view arg
     | _ -> View.error
 
+  let pci_virt'match view value =
+    let concrete =
+      match Class_infos.to_concrete value with
+      | None -> conversion_failed "class_infos"
+      | Some n -> n
+    in
+    view concrete.Class_infos.pci_virt
+
+  let pci_params'match view value =
+    let concrete =
+      match Class_infos.to_concrete value with
+      | None -> conversion_failed "class_infos"
+      | Some n -> n
+    in
+    view concrete.Class_infos.pci_params
+
+  let pci_name'match view value =
+    let concrete =
+      match Class_infos.to_concrete value with
+      | None -> conversion_failed "class_infos"
+      | Some n -> n
+    in
+    view concrete.Class_infos.pci_name
+
+  let pci_expr'match view value =
+    let concrete =
+      match Class_infos.to_concrete value with
+      | None -> conversion_failed "class_infos"
+      | Some n -> n
+    in
+    view concrete.Class_infos.pci_expr
+
+  let pci_loc'match view value =
+    let concrete =
+      match Class_infos.to_concrete value with
+      | None -> conversion_failed "class_infos"
+      | Some n -> n
+    in
+    view concrete.Class_infos.pci_loc
+
+  let pci_attributes'match view value =
+    let concrete =
+      match Class_infos.to_concrete value with
+      | None -> conversion_failed "class_infos"
+      | Some n -> n
+    in
+    view concrete.Class_infos.pci_attributes
+
   let pcl_desc'match view value =
     let concrete =
       match Class_expr.to_concrete value with
@@ -2892,6 +2940,30 @@ module V4_07 = struct
       | Some n -> n
     in
     view concrete.Open_description.popen_attributes
+
+  let pincl_mod'match view value =
+    let concrete =
+      match Include_infos.to_concrete value with
+      | None -> conversion_failed "include_infos"
+      | Some n -> n
+    in
+    view concrete.Include_infos.pincl_mod
+
+  let pincl_loc'match view value =
+    let concrete =
+      match Include_infos.to_concrete value with
+      | None -> conversion_failed "include_infos"
+      | Some n -> n
+    in
+    view concrete.Include_infos.pincl_loc
+
+  let pincl_attributes'match view value =
+    let concrete =
+      match Include_infos.to_concrete value with
+      | None -> conversion_failed "include_infos"
+      | Some n -> n
+    in
+    view concrete.Include_infos.pincl_attributes
 
   let pwith_type view value =
     let concrete =
@@ -5544,6 +5616,54 @@ module V4_06 = struct
     | Class_type_field_desc.Pctf_extension arg -> view arg
     | _ -> View.error
 
+  let pci_virt'match view value =
+    let concrete =
+      match Class_infos.to_concrete value with
+      | None -> conversion_failed "class_infos"
+      | Some n -> n
+    in
+    view concrete.Class_infos.pci_virt
+
+  let pci_params'match view value =
+    let concrete =
+      match Class_infos.to_concrete value with
+      | None -> conversion_failed "class_infos"
+      | Some n -> n
+    in
+    view concrete.Class_infos.pci_params
+
+  let pci_name'match view value =
+    let concrete =
+      match Class_infos.to_concrete value with
+      | None -> conversion_failed "class_infos"
+      | Some n -> n
+    in
+    view concrete.Class_infos.pci_name
+
+  let pci_expr'match view value =
+    let concrete =
+      match Class_infos.to_concrete value with
+      | None -> conversion_failed "class_infos"
+      | Some n -> n
+    in
+    view concrete.Class_infos.pci_expr
+
+  let pci_loc'match view value =
+    let concrete =
+      match Class_infos.to_concrete value with
+      | None -> conversion_failed "class_infos"
+      | Some n -> n
+    in
+    view concrete.Class_infos.pci_loc
+
+  let pci_attributes'match view value =
+    let concrete =
+      match Class_infos.to_concrete value with
+      | None -> conversion_failed "class_infos"
+      | Some n -> n
+    in
+    view concrete.Class_infos.pci_attributes
+
   let pcl_desc'match view value =
     let concrete =
       match Class_expr.to_concrete value with
@@ -6323,6 +6443,30 @@ module V4_06 = struct
       | Some n -> n
     in
     view concrete.Open_description.popen_attributes
+
+  let pincl_mod'match view value =
+    let concrete =
+      match Include_infos.to_concrete value with
+      | None -> conversion_failed "include_infos"
+      | Some n -> n
+    in
+    view concrete.Include_infos.pincl_mod
+
+  let pincl_loc'match view value =
+    let concrete =
+      match Include_infos.to_concrete value with
+      | None -> conversion_failed "include_infos"
+      | Some n -> n
+    in
+    view concrete.Include_infos.pincl_loc
+
+  let pincl_attributes'match view value =
+    let concrete =
+      match Include_infos.to_concrete value with
+      | None -> conversion_failed "include_infos"
+      | Some n -> n
+    in
+    view concrete.Include_infos.pincl_attributes
 
   let pwith_type view value =
     let concrete =

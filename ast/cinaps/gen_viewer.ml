@@ -4,6 +4,7 @@ let string_of_ty ty = Grammar.string_of_ty ~internal:false ty
 
 module type VIEWER_PRINTER = sig
   val print_field_viewer :
+    targs: string list ->
     name: string ->
     (string * Astlib.Grammar.ty) ->
     unit
@@ -34,7 +35,7 @@ module Structure : VIEWER_PRINTER = struct
       let vars = List.mapi tyl ~f:(fun i _ -> Printf.sprintf "arg%d" i) in
       Ml.tuple vars
 
-  let print_field_viewer ~name (fname, _ty) =
+  let print_field_viewer ~targs:_ ~name (fname, _ty) =
     Print.newline ();
     Print.println "let %s'match view value =" (Ml.id fname);
     Print.indented (fun () ->
@@ -67,28 +68,49 @@ module Structure : VIEWER_PRINTER = struct
          1. no sharing of field names accross different variant types and within
          a variant type, fields with the same name also have the same type.
          2. some deeper changes to ppx_view *)
-      ()
+      assert false
 end
 
 module Signature : VIEWER_PRINTER = struct
   let view_t ty ~in_ ~out =
-    Printf.sprintf "(%s, %s, %s) View.t" (string_of_ty ty) in_ out
+    Printf.sprintf "(%s, %s, %s) View.t" ty in_ out
 
-  let value_type ~shortcut name : Astlib.Grammar.ty =
-    match (shortcut : Shortcut.t option) with
-    | None -> Name name
-    | Some {outter_record; _} -> Name outter_record
+  let t_type node_name = string_of_ty (Name node_name)
 
-  let print_field_viewer ~name (fname, ty) =
+  let value_type ~targs ~shortcut name =
+    match targs, (shortcut : Shortcut.t option) with
+    | [], None -> t_type name
+    | _, None ->
+      let args = List.map ~f:Ml.tvar targs in
+      let node_type = Ml.poly_inst ~args "node" in
+      Printf.sprintf "%s %s" node_type (t_type name)
+    | [], Some {outter_record; _} -> (t_type outter_record)
+    | _, Some _ ->
+      (* If we ever have shortcuts to polymorphic types we'll need to explicitly
+         deal with it.
+         In particular we'll need to know if [outter_record] is polymorphic
+         over the the same type argument or if it expects a specific instance
+         of [inner_variant]. *)
+      assert false
+
+  let view_type ~targs ty =
+    match (ty : Astlib.Grammar.ty) with
+    (* Polymorphic types in the AST can only be instanciated with other nodes *)
+    | Var v when List.mem ~set:targs v -> Ml.(poly_inst ~args:[tvar v] "node")
+    | _ -> string_of_ty ty
+
+  let print_field_viewer ~targs ~name (fname, ty) =
+    let value_type = value_type ~targs ~shortcut:None name in
+    let view_type = view_type ~targs ty in
     Print.newline ();
     let in_, out = "'i", "'o" in
     Print.println "val %s'match : %s -> %s"
       (Ml.id fname)
-      (view_t ty ~in_ ~out)
-      (view_t (Name name) ~in_ ~out)
+      (view_t view_type ~in_ ~out)
+      (view_t value_type ~in_ ~out)
 
   let print_variant_viewer ~name ~shortcut (cname, clause) =
-    let value_type = value_type ~shortcut name in
+    let value_type = value_type ~targs:[] ~shortcut name in
     match (clause : Astlib.Grammar.clause) with
     | Empty ->
       Print.newline ();
@@ -103,7 +125,7 @@ module Signature : VIEWER_PRINTER = struct
       in
       Print.println "val %s : %s -> %s"
         (Ml.id cname)
-        (view_t arg_type ~in_ ~out)
+        (view_t (string_of_ty arg_type) ~in_ ~out)
         (view_t value_type ~in_ ~out)
     | Record _fields -> ()
 end
@@ -114,21 +136,25 @@ let print_viewer ~what ~shortcuts (name, kind) =
     | `Intf -> (module Signature)
     | `Impl -> (module Structure)
   in
-  match (kind : Astlib.Grammar.kind) with
-  | Poly (_, _decl) ->
-    (* We skip polymorphic types because [Versions] only provide specialized
-       [to_concrete_xxx] functions which mean we would have to generate
-       [xxx'match] function for each instance of the type. *)
+  let targs, decl =
+    match (kind : Astlib.Grammar.kind) with
+    | Mono decl -> ([], decl)
+    | Poly (targs, decl) -> (targs, decl)
+  in
+  match targs, decl with
+  | [], Variant variants ->
+    let shortcut = Shortcut.Map.find shortcuts name in
+    List.iter variants ~f:(M.print_variant_viewer ~name ~shortcut)
+  | _, Variant _ ->
+    (* There are no polymorphic variant types in the AST atm. If some are
+       added we'll need to handle a few things, including properly generating
+       fresh type variables for the input and output type varibales in the
+       [View.t] types for empty variants. *)
+    assert false
+  | _, Record fields ->
+    List.iter fields ~f:(M.print_field_viewer ~targs ~name)
+  | _, Alias _ ->
     ()
-  | Mono decl ->
-    (match decl with
-     | Variant variants ->
-       let shortcut = Shortcut.Map.find shortcuts name in
-       List.iter variants ~f:(M.print_variant_viewer ~name ~shortcut)
-     | Record fields ->
-       List.iter fields ~f:(M.print_field_viewer ~name)
-     | Alias _ ->
-       ())
 
 let print_viewer_ml () =
   Print.newline ();
@@ -146,6 +172,7 @@ let print_viewer_mli () =
   let grammars = Astlib.History.versioned_grammars Astlib.history in
   Ml.declare_modules grammars ~f:(fun version grammar ->
     let shortcuts = Shortcut.Map.from_grammar grammar in
-    Print.println "open Versions.%s" (Ml.module_name version);
+    Print.println "open Versions";
+    Print.println "open %s" (Ml.module_name version);
     Print.println "include LOC_TYPES";
     List.iter grammar ~f:(print_viewer ~what:`Intf ~shortcuts))
