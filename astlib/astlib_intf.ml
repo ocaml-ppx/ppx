@@ -30,6 +30,7 @@ module type Astlib = sig
   module Loc = Loc
   module Location = Location
   module Position = Position
+  module Syntax = Syntax
 
   val current_version : string
   val history : History.t
