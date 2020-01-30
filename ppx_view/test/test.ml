@@ -320,3 +320,11 @@ let%expect_test "shortcut fields pattern" =
      print_int y
    | _ -> assert false);
   [%expect {|123|}]
+
+let%expect_test "constructor translated to keyword" =
+  let open Viewlib in
+  let virtual_ _ = View.ok in
+  (match%view 1 with
+   | Virtual -> print_string "OK"
+   | _ -> print_string "KO");
+  [%expect {|OK|}]
