@@ -272,3 +272,51 @@ let%expect_test "match with array" =
    | [|x; y|] -> print_int (x + y)
    | _ -> assert false);
   [%expect {|3|}]
+
+module Shortcut = struct
+  type a =
+    | An_int of int
+    | A_float of float
+
+  type t =
+    { a : a
+    ; b : int
+    ; c : int
+    }
+
+  let an_int view value =
+    match value.a with
+    | An_int i -> view i
+    | _ -> Viewlib.View.error
+
+  let a_float view value =
+    match value.a with
+    | A_float f -> view f
+    | _ -> Viewlib.View.error
+
+  let a'match view value = view value.a
+
+  let b'match view value = view value.b
+
+  let c'match view value = view value.c
+end
+
+let%expect_test "shortcut fields" =
+  let open Shortcut in
+  (match%view {a = An_int 1; b = 2; c = 3} with
+   | An_int a [@view? {b; c}] ->
+     print_int a;
+     print_int b;
+     print_int c
+   | _ -> assert false);
+  [%expect {|123|}]
+
+let%expect_test "shortcut fields pattern" =
+  let open Shortcut in
+  (match%view {a = An_int 1; b = 2; c = 3} with
+   | An_int a [@view? {b = (2 as x); c = (_ as y)}] ->
+     print_int a;
+     print_int x;
+     print_int y
+   | _ -> assert false);
+  [%expect {|123|}]
