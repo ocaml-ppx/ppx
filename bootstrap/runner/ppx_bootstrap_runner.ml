@@ -25,6 +25,7 @@ end
 
 module Metaquot = Ppx_metaquot_expander.Extensions (Driver)
 
+(* eventually add ppx_view extensions here *)
 let extensions = Metaquot.extensions
 
 let entry_map list =
