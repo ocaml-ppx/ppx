@@ -1,4 +1,4 @@
 (library
  (name ppx_view_lib)
  (public_name ppx._ppx_view_lib)
- (libraries astlib ppx_ast stdppx))
+ (libraries astlib ppx_ast ppx_ast_deprecated stdppx))
