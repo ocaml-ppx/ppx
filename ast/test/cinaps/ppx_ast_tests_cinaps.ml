@@ -1,8 +1,6 @@
 open StdLabels
 open Ppx_ast_cinaps
 
-let version = Astlib.current_version
-
 let rec string_of_ty ty =
   match (ty : Astlib.Grammar.ty) with
   | Var var -> Ml.tvar var
@@ -28,7 +26,9 @@ let print_decl_intf ~name ~tvars =
   Print.println "[@@deriving equal, quickcheck, sexp_of]"
 
 let print_deriving_mli () =
-  let grammar = Astlib.History.find_grammar Astlib.history ~version in
+  let grammar =
+    Astlib.History.find_grammar Astlib.history ~version:Astlib.current_version
+  in
   List.iter grammar ~f:(fun (name, kind) ->
     Print.newline ();
     Ml.declare_module name (fun () ->
@@ -261,7 +261,9 @@ let print_deriving_quickcheck grammar =
       (underscores ~tvars:(tvars_of kind)))
 
 let print_deriving_ml () =
-  let grammar = Astlib.History.find_grammar Astlib.history ~version in
+  let grammar =
+    Astlib.History.find_grammar Astlib.history ~version:Astlib.current_version
+  in
   List.iteri grammar ~f:(fun index (name, kind) ->
     Print.newline ();
     match (kind : Astlib.Grammar.kind) with
@@ -279,10 +281,10 @@ let print_deriving_ml () =
 
 let entry_points = ["signature"; "structure"; "toplevel_phrase"]
 
-let print_test name =
+let print_test name ~version =
   Print.println "let%%expect_test %S =" name;
   Print.indented (fun () ->
-    Print.println "Test.run_exn";
+    Print.println "Test.run_exn ~config";
     Print.indented (fun () ->
       Print.println "(module Deriving.%s)" (Ml.module_name name);
       Print.println "~f:(fun x ->";
@@ -290,18 +292,34 @@ let print_test name =
         Print.println "require_equal [%%here] (module Deriving.%s) x"
           (Ml.module_name name);
         Print.indented (fun () ->
-          Print.println "(Conversion.ast_to_%s (Conversion.ast_of_%s x)));"
-            (Ml.id name)
-            (Ml.id name))));
+          Print.println
+            "(Conversion.ast_to_%s"
+            (Ml.id name);
+          Print.indented (fun () ->
+            Print.println
+              "((new Traverse.%s.map)#%s"
+              (Ml.module_name version)
+              (Ml.id name);
+            Print.indented (fun () ->
+              Print.println
+                "(Conversion.ast_of_%s x))));"
+                (Ml.id name))))));
     Print.println "[%%expect {| |}]")
 
 let print_test_ml () =
-  let grammar = Astlib.History.find_grammar Astlib.history ~version in
-  List.iter grammar ~f:(fun (name, kind) ->
-    match (kind : Astlib.Grammar.kind) with
-    | Poly _ -> ()
-    | Mono _ ->
-      if List.mem name ~set:entry_points
-      then (
-        Print.newline ();
-        print_test name))
+  let alist = Astlib.History.versioned_grammars Astlib.history in
+  Print.newline ();
+  Print.println "let config = { Test.default_config with test_count = 1_000 }";
+  List.iter alist ~f:(fun (version, grammar) ->
+    Print.newline ();
+    Ml.define_module version (fun () ->
+      let have_printed = ref false in
+      List.iter grammar ~f:(fun (name, kind) ->
+        match (kind : Astlib.Grammar.kind) with
+        | Poly _ -> ()
+        | Mono _ ->
+          if List.mem name ~set:entry_points
+          then (
+            if !have_printed then Print.newline ();
+            have_printed := true;
+            print_test name ~version))))
