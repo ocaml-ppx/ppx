@@ -1,13 +1,13 @@
 open StdLabels
 
-let versions : (module Version_intf.S) list =
-  [ (module Version_4_07)
-  ; (module Version_4_06)
-  ]
+module Current = Version_4_07
 
-let current_version =
-  let (module V) = List.hd versions in
-  V.version
+let current_version = Current.version
+
+let versions : (module Version_intf.S) list =
+  [ (module Unstable_for_testing)
+  ; (module Current)
+  ]
 
 let history =
   let versioned_grammars =
