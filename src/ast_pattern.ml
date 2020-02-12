@@ -11,7 +11,8 @@ let parse (T f) loc ?on_error x k =
   try f { matched = 0 } loc x k
   with Expected (loc, expected) ->
     match on_error with
-    | None -> Location.raise_errorf ~loc "%s expected" expected
+    | None ->
+      Location.raise_errorf ~loc:(Astlib.Location.to_location loc) "%s expected" expected
     | Some f -> f ()
 
 module Packed = struct

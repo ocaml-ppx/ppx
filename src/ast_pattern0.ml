@@ -3,7 +3,7 @@ open! Import
 include Ppx_bootstrap.Expected
 
 let fail loc expected =
-  raise (Expected (loc, expected))
+  raise (Expected (Astlib.Location.of_location loc, expected))
 ;;
 
 type context =

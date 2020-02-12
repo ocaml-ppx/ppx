@@ -1,16 +1,16 @@
 open! Stdppx
 
 module Expected : sig
-  exception Expected of Location.t * string
+  exception Expected of Astlib.Location.t * string
 end
 
 module Extension : sig
   type 'a entry =
     { name : string
-    ; callback : (loc:Location.t -> Parsetree.payload -> 'a)
+    ; callback : (loc:Astlib.Location.t -> Ppx_ast.payload -> 'a)
     }
 
   type t =
-    | Patt of Parsetree.pattern    entry
-    | Expr of Parsetree.expression entry
+    | Patt of Ppx_ast.pattern    entry
+    | Expr of Ppx_ast.expression entry
 end

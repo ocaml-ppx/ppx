@@ -314,10 +314,17 @@ let declare_inline_with_path_arg name context pattern k =
 ;;
 
 let of_bootstrap_extension ext =
-  let wrap f ~loc ~path:_ x = f ~loc x in
+  let wrap f of_ast ~loc ~path:_ x =
+    of_ast
+      (f ~loc:(Astlib.Location.of_location loc) (Ppx_ast.Conversion.ast_of_payload x))
+  in
   match (ext : Ppx_bootstrap.Extension.t) with
-  | Patt { name; callback } -> declare name Pattern    Ast_pattern.__ (wrap callback)
-  | Expr { name; callback } -> declare name Expression Ast_pattern.__ (wrap callback)
+  | Patt { name; callback } ->
+    declare name Pattern Ast_pattern.__
+      (wrap callback Ppx_ast.Conversion.ast_to_pattern)
+  | Expr { name; callback } ->
+    declare name Expression Ast_pattern.__
+      (wrap callback Ppx_ast.Conversion.ast_to_expression)
 ;;
 
 module V2 = struct
