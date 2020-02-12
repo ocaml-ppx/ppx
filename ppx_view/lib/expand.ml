@@ -49,14 +49,24 @@ let predefined_ident ~loc = function
   | "Not" -> Some (Builder.view_lib_ident ~loc "not")
   | _ -> None
 
+let is_keyword s =
+  List.mem_sorted ~compare:String.compare s Astlib.Syntax.keywords
+
+let ctor_viewer s =
+  let lowercase = String.uncapitalize_ascii s in
+  if is_keyword lowercase then
+    lowercase ^ "_"
+  else
+    lowercase
+
 let translate_ctor_ident ~loc (ident : Longident.concrete) =
   match ident with
   | Lident s ->
     (match predefined_ident ~loc s with
      | Some ident -> ident
-     | None -> Located.lident ~loc (String.uncapitalize_ascii s))
+     | None -> Located.lident ~loc (ctor_viewer s))
   | Ldot (li, s) ->
-    Located.longident ~loc (Longident.ldot li (String.uncapitalize_ascii s))
+    Located.longident ~loc (Longident.ldot li (ctor_viewer s))
   | (Lapply _) as li ->
     Located.longident ~loc (Longident.of_concrete li)
 
