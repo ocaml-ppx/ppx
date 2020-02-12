@@ -4,11 +4,6 @@ open Parsetree
 
 module Kind = struct
   type t = Intf | Impl
-
-  let of_flag_string = function
-    | "--impl" -> Impl
-    | "--intf" -> Intf
-    | _ -> assert false
 end
 
 module Label_map = Map.Make (String)
@@ -98,22 +93,28 @@ let write_target_file filename ast =
   | `Intf signature -> Pparse.write_ast Signature filename signature
   | `Impl structure -> Pparse.write_ast Structure filename structure
 
-let rewrite_file ~source_filename ~target_filename ~kind_flag =
-  let kind = Kind.of_flag_string kind_flag in
+let rewrite_file ~source_filename ~target_filename ~kind =
   let source_ast = read_source_file source_filename kind in
   let target_ast = rewrite_ast source_ast in
   write_target_file target_filename target_ast
 
 let run () =
-  match Sys.argv with
-  | [| _
-     ; "--cookie"; _
-     ; "-o"; target_filename
-     ; ("--impl" | "--intf" as kind_flag)
-     ; source_filename
-    |] ->
-    rewrite_file ~source_filename ~target_filename ~kind_flag
-  | _ ->
-    Printf.eprintf "unexpected arguments:\n";
-    Array.iter Sys.argv ~f:(Printf.eprintf "  %S\n");
-    exit 1
+  let target_filename = ref "" in
+  let kind = ref Kind.Impl in
+  let args =
+    Arg.align
+      [ "--cookie", String ignore,
+        "STRING Ignored during bootstrap"
+      ; "-o", Set_string target_filename, "FILENAME Output file name."
+      ; "--impl", Arg.Unit (fun () -> kind := Impl),
+        " Treat the input as an implementation."
+      ; "--intf", Arg.Unit (fun () -> kind := Intf),
+        " Treat the input as in interface."
+      ]
+  in
+  let anon source_filename =
+    rewrite_file ~source_filename ~target_filename:!target_filename ~kind:!kind
+  in
+  let usage = Printf.sprintf "Usage: %s [OPTIONS]"
+                (Filename.basename Sys.executable_name) in
+  Arg.parse args anon usage
