@@ -1,11 +1,32 @@
-open Migrate_parsetree.Ast_407
-open Viewast.Parseview
+open Ppx_ast
+open V4_07
+open Builder.V4_07
+open Builder.Common
 
+let loc = Astlib.Location.of_location Ocaml_common.Location.none
+[@@warning "-3"]
 
-let int   x = Ast_helper.(Exp.constant (Const.int   x))
-let int32 x = Ast_helper.(Exp.constant (Const.int32 x))
-let float x = Ast_helper.(Exp.constant (Const.float x))
-let ident x = Ast_helper.(Exp.ident { txt = Lident x; loc = Location.none; })
+let int x = eint ~loc x
+let int32 x = eint32 ~loc x
+let float x = efloat ~loc x
+let ident x = pexp_ident ~loc (Located.lident ~loc x)
+
+let class_infos =
+  let open Builder.V4_07 in
+  let extension =
+    Extension.create
+      ( Astlib.Loc.create ~txt:"ext" ~loc ()
+      , Payload.pstr (Structure.create []) )
+  in
+  Class_infos.create
+    ~pci_virt:Virtual_flag.virtual_
+    ~pci_params:[]
+    ~pci_name:(Astlib.Loc.create ~txt:"name" ~loc ())
+    ~pci_loc:loc
+    ~pci_attributes:(Attributes.create [])
+    ~pci_expr:(pcty_extension ~loc extension)
+
+open Viewer.V4_07
 
 let%expect_test "match failure" =
   begin try match%view int 3 with
@@ -13,7 +34,7 @@ let%expect_test "match failure" =
       print_string "matched"
   with e ->
     print_string (Printexc.to_string e)
-  end;[%expect {|"Match_failure ppx_view/test/test.ml:11:18"|}]
+  end;[%expect {|"Match_failure ppx_view/test/test.ml:32:12"|}]
 
 let%expect_test "match simple" =
   let match_3 = function%view
@@ -50,7 +71,7 @@ let%expect_test "match or-pattern" =
   begin
     match_3 (int      3);
     match_3 (int32   3l);
-    match_3 (float "3.")
+    match_3 (float 3.0)
   end;[%expect {|333|}]
 
 let%expect_test "match or-pattern with variable" =
@@ -64,7 +85,7 @@ let%expect_test "match or-pattern with variable" =
   begin
     match_3xyz (int        3);
     match_3xyz (int32   321l);
-    match_3xyz (float "3.14")
+    match_3xyz (float 3.14)
   end;[%expect {|333|}]
 
 let%expect_test "match deep or-pattern" =
@@ -92,14 +113,28 @@ let%expect_test "match with alias" =
 
 let%expect_test "match with record" =
   let match_ident = function%view
-    | Pexp_ident { txt = Lident id; } ->
-      print_string id
+    | Pexp_ident longident_loc ->
+      (match%view Longident_loc.to_concrete longident_loc with
+       | Some { txt = Lident id; _} -> print_string id
+       | _ -> print_string "KO")
     | _ ->
       print_string "KO"
   in
   begin
     match_ident (ident "x");
   end;[%expect {|x|}]
+
+let%expect_test "match with polymorphic AST type" =
+  (match%view class_infos with
+   | { pci_virt = Virtual
+     ; pci_params = []
+     ; pci_name = {txt = "name"; _}
+     ; pci_expr = Pcty_extension _ext
+     ; _
+     } ->
+     print_string "OK"
+   | _ -> print_string "KO");
+  [%expect {|OK|}]
 
 type custom = Int of int | Unit of unit | Nothing
 

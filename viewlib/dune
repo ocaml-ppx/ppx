@@ -1,0 +1,3 @@
+(library
+ (name viewlib)
+ (public_name ppx.viewlib))

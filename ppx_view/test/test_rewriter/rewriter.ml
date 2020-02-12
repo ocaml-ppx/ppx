@@ -1,32 +1,19 @@
-open Ppx_view_common.Ast_utils
-open Ppx_view_common.Ast_utils.Fixed_ast
+open Ppxlib
 
-let raise_error loc str =
-  raise Location.(Error (error ~loc str))
+let name = "view"
 
-let ppx_error loc msg =
-  raise_error loc ("ppx: " ^ msg)
+let extension =
+  Extension.V3.declare
+    name
+    Extension.Context.expression
+    Ast_pattern.(single_expr_payload __)
+    (fun ~ctxt payload ->
+       let loc = Expansion_context.Extension.extension_point_loc ctxt in
+       Ppx_view_lib.Expand.parsetree_payload ~loc payload)
 
-let mapper =
-  let super = Ast_mapper.default_mapper in
-  let expr self e =
-    let e = super.expr self e in
-    match e.Parsetree.pexp_desc with
-    | Pexp_extension ({ txt = "view"; loc; }, payload) ->
-      begin match payload with
-      | PStr [{ pstr_desc = Pstr_eval (expr, _); _; }] ->
-        Ppx_view_lib.Expand.parsetree_payload ~loc expr
-      | _ ->
-        ppx_error loc "invalid 'view' payload"
-      end
-    | _ ->
-      e
-  in
-  { super with expr; }
-
+let rule = Context_free.Rule.extension extension
 
 let () =
-  Migrate_parsetree.Driver.register
-    ~name:"view_pattern"
-    (module Fixed_ocaml)
-    (fun _ _ -> mapper)
+  Driver.register_transformation
+    ~rules:[rule]
+    name
