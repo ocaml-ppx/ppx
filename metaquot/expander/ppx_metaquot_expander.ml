@@ -5,19 +5,17 @@ module Traverse = Ppx_ast.Traverse.V4_07
 module Traverse_builtins = Ppx_ast.Traverse_builtins
 
 module type Driver = sig
-  val assert_no_attributes : Parsetree.attributes -> unit
-  val mark_attribute_as_handled_manually : Parsetree.attribute -> unit
+  val assert_no_attributes : Ppx_ast.attributes -> unit
+  val mark_attribute_as_handled_manually : Ppx_ast.attribute -> unit
 end
 
 module type Non_terminal = sig
   type t
-  type parsetree
   val cast : Extension.t -> t
-  val location : Location.t -> t
-  val attributes : (Location.t -> t) option
-  class std_lifters : Location.t -> [t] Traverse_builtins.std_lifters
-  val convert : t -> parsetree
-  val extension : parsetree Ppx_bootstrap.Extension.entry -> Ppx_bootstrap.Extension.t
+  val location : Astlib.Location.t -> t
+  val attributes : (Astlib.Location.t -> t) option
+  class std_lifters : Astlib.Location.t -> [t] Traverse_builtins.std_lifters
+  val extension : t Ppx_bootstrap.Extension.entry -> Ppx_bootstrap.Extension.t
 end
 
 module Make (Driver : Driver) (Non_terminal : Non_terminal) = struct
@@ -26,7 +24,7 @@ module Make (Driver : Driver) (Non_terminal : Non_terminal) = struct
     inherit! Non_terminal.std_lifters loc
 
     method! attribute x =
-      Driver.mark_attribute_as_handled_manually (Conversion.ast_to_attribute x);
+      Driver.mark_attribute_as_handled_manually x;
       super#attribute x
 
     method! location _ = Non_terminal.location loc
@@ -34,7 +32,7 @@ module Make (Driver : Driver) (Non_terminal : Non_terminal) = struct
       match Non_terminal.attributes with
       | None -> super#attributes x
       | Some f ->
-        Driver.assert_no_attributes (Conversion.ast_to_attributes x); f loc
+        Driver.assert_no_attributes x; f loc
 
     method! expression e =
       let expression_escape e =
@@ -131,7 +129,7 @@ module Make (Driver : Driver) (Non_terminal : Non_terminal) = struct
       in
       match structure_item_escape i with
       | Some (ext, attrs) ->
-        Driver.assert_no_attributes (Conversion.ast_to_attributes attrs);
+        Driver.assert_no_attributes attrs;
         Non_terminal.cast ext
       | _ -> super#structure_item i
 
@@ -150,7 +148,7 @@ module Make (Driver : Driver) (Non_terminal : Non_terminal) = struct
       in
       match signature_item_escape i with
       | Some (ext, attrs) ->
-        Driver.assert_no_attributes (Conversion.ast_to_attributes attrs);
+        Driver.assert_no_attributes attrs;
         Non_terminal.cast ext
       | _ -> super#signature_item i
   end
@@ -198,9 +196,7 @@ let ppat_any ~loc =
 
 module Expr (Driver : Driver) = struct
   type t = Expression.t
-  type parsetree = Parsetree.expression
   let location loc =
-    let loc = Astlib.Location.of_location loc in
     Expression.create
       ~pexp_loc:loc
       ~pexp_attributes:(Attributes.create [])
@@ -212,20 +208,18 @@ module Expr (Driver : Driver) = struct
   let cast ext =
     match expr_payload_of ext with
     | Some (e, attrs) ->
-      Driver.assert_no_attributes (Conversion.ast_to_attributes attrs);
+      Driver.assert_no_attributes attrs;
       e
     | _ ->
       Location.raise_errorf ?loc:(loc_of_extension ext)
         "expression expected"
-  let convert = Conversion.ast_to_expression
   let extension entry = Ppx_bootstrap.Extension.Expr entry
 end
 
 module Patt = struct
   type t = Pattern.t
-  type parsetree = Parsetree.pattern
-  let location loc = ppat_any ~loc:(Astlib.Location.of_location loc)
-  let attributes = Some (fun loc -> ppat_any ~loc:(Astlib.Location.of_location loc))
+  let location loc = ppat_any ~loc
+  let attributes = Some (fun loc -> ppat_any ~loc)
   class std_lifters = Ppx_metaquot_lifters.pattern_lifters
   let cast ext =
     match pattern_payload_of ext with
@@ -236,11 +230,37 @@ module Patt = struct
     | _ ->
       Location.raise_errorf ?loc:(loc_of_extension ext)
         "pattern expected"
-  let convert = Conversion.ast_to_pattern
   let extension entry = Ppx_bootstrap.Extension.Patt entry
 end
 
 let expected loc string = raise (Ppx_bootstrap.Expected.Expected (loc, string))
+
+let single_signature_item_payload payload =
+  match Payload.to_concrete payload with
+  | None | Some (PStr _ | PTyp _ | PPat _) -> None
+  | Some (PSig signature) ->
+    match Signature.to_concrete signature with
+    | None | Some [] | Some (_ :: _ :: _) -> None
+    | Some [item] -> Some item
+
+let single_structure_item_payload payload =
+  match Payload.to_concrete payload with
+  | None | Some (PSig _ | PTyp _ | PPat _) -> None
+  | Some (PStr structure) ->
+    match Structure.to_concrete structure with
+    | None | Some [] | Some (_ :: _ :: _) -> None
+    | Some [item] -> Some item
+
+let single_expression_payload payload =
+  match single_structure_item_payload payload with
+  | None -> None
+  | Some item ->
+    match Structure_item.to_concrete item with
+    | None -> None
+    | Some item ->
+      match Structure_item_desc.to_concrete item.pstr_desc with
+      | Some Pstr_eval (e, attr) -> Some (e, attr)
+      | Some _ | None -> None
 
 module Extensions_for_nt (Driver : Driver) (Non_terminal : Non_terminal) = struct
   module Lift = Make (Driver) (Non_terminal)
@@ -249,61 +269,34 @@ module Extensions_for_nt (Driver : Driver) (Non_terminal : Non_terminal) = struc
 
   let extensions =
     [ extension "expr" (fun ~loc payload ->
-        match payload with
-        | PStr [{ pstr_desc = Pstr_eval (e, attrs); _ }] ->
+        match single_expression_payload payload with
+        | Some (e, attrs) ->
           Driver.assert_no_attributes attrs;
-          e
-          |> Conversion.ast_of_expression
-          |> (Lift.lift loc)#expression
-          |> Non_terminal.convert
-        | _ -> expected loc "single-expression payload")
+          (Lift.lift loc)#expression e
+        | None -> expected loc "single-expression payload")
     ; extension "pat" (fun ~loc payload ->
-        match payload with
-        | PPat (p, None) ->
-          p
-          |> Conversion.ast_of_pattern
-          |> (Lift.lift loc)#pattern
-          |> Non_terminal.convert
+        match Payload.to_concrete payload with
+        | Some (PPat (p, None)) -> (Lift.lift loc)#pattern p
         | _ -> expected loc "pattern without guard")
     ; extension "str" (fun ~loc payload ->
-        match payload with
-        | PStr s ->
-          s
-          |> Conversion.ast_of_structure
-          |> (Lift.lift loc)#structure
-          |> Non_terminal.convert
+        match Payload.to_concrete payload with
+        | Some (PStr s) -> (Lift.lift loc)#structure s
         | _ -> expected loc "structure")
     ; extension "stri" (fun ~loc payload ->
-        match payload with
-        | PStr [s] ->
-          s
-          |> Conversion.ast_of_structure_item
-          |> (Lift.lift loc)#structure_item
-          |> Non_terminal.convert
+        match single_structure_item_payload payload with
+        | Some s -> (Lift.lift loc)#structure_item s
         | _ -> expected loc "structure item")
     ; extension "sig" (fun ~loc payload ->
-        match payload with
-        | PSig s ->
-          s
-          |> Conversion.ast_of_signature
-          |> (Lift.lift loc)#signature
-          |> Non_terminal.convert
+        match Payload.to_concrete payload with
+        | Some (PSig s) -> (Lift.lift loc)#signature s
         | _ -> expected loc "signature")
     ; extension "sigi" (fun ~loc payload ->
-        match payload with
-        | PSig [s] ->
-          s
-          |> Conversion.ast_of_signature_item
-          |> (Lift.lift loc)#signature_item
-          |> Non_terminal.convert
+        match single_signature_item_payload payload with
+        | Some s -> (Lift.lift loc)#signature_item s
         | _ -> expected loc "signature item")
     ; extension "type" (fun ~loc payload ->
-        match payload with
-        | PTyp t ->
-          t
-          |> Conversion.ast_of_core_type
-          |> (Lift.lift loc)#core_type
-          |> Non_terminal.convert
+        match Payload.to_concrete payload with
+        | Some (PTyp t) -> (Lift.lift loc)#core_type t
         | _ -> expected loc "type")
     ]
 end

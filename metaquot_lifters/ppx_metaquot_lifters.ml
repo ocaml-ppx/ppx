@@ -45,7 +45,6 @@ let ptuple ~loc list =
   | _ :: _ :: _ -> pattern ~loc (Pat.ppat_tuple list)
 
 class expression_lifters loc =
-  let loc = Astlib.Location.of_location loc in
   object
     inherit [Expression.t] Traverse_builtins.lift
     method record flds =
@@ -79,7 +78,6 @@ class expression_lifters loc =
   end
 
 class pattern_lifters loc =
-  let loc = Astlib.Location.of_location loc in
   object
     inherit [Pattern.t] Traverse_builtins.lift
     method record flds =
