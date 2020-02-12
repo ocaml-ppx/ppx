@@ -84,6 +84,12 @@ let rewrite_ast = function
 
 let read_source_file filename kind =
   let lexbuf = Lexing.from_channel (open_in filename) in
+  lexbuf.lex_curr_p <-
+    { pos_fname = filename
+    ; pos_lnum  = 1
+    ; pos_bol   = 0
+    ; pos_cnum  = 0
+    };
   match (kind : Kind.t) with
   | Intf -> `Intf (Parse.interface lexbuf)
   | Impl -> `Impl (Parse.implementation lexbuf)
