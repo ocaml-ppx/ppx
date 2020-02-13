@@ -25,8 +25,26 @@ end
 
 module Metaquot = Ppx_metaquot_expander.Extensions (Driver)
 
-(* eventually add ppx_view extensions here *)
-let extensions = Metaquot.extensions
+module Ppx_view = struct
+  let expr : Ppx_bootstrap.Extension.t =
+    Expr
+      { name = "view"
+      ; callback =
+          fun ~loc payload ->
+            match Ppx_bootstrap.single_expression_payload payload with
+            | Some (expr, attrs) ->
+              Driver.assert_no_attributes attrs;
+              Ppx_view_lib.Expand.payload ~loc expr
+            | _ ->
+              Ppx_bootstrap.Expected.raise_ ~loc "single-expression payload"
+      }
+
+  let extensions = [expr]
+end
+
+let extensions =
+  Metaquot.extensions
+  @ Ppx_view.extensions
 
 let entry_map list =
   Label_map.of_list_map_exn list ~f:(fun (entry : _ Ppx_bootstrap.Extension.entry) ->

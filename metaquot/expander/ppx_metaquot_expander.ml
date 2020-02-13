@@ -233,35 +233,6 @@ module Patt = struct
   let extension entry = Ppx_bootstrap.Extension.Patt entry
 end
 
-let expected loc string = raise (Ppx_bootstrap.Expected.Expected (loc, string))
-
-let single_signature_item_payload payload =
-  match Payload.to_concrete payload with
-  | None | Some (PStr _ | PTyp _ | PPat _) -> None
-  | Some (PSig signature) ->
-    match Signature.to_concrete signature with
-    | None | Some [] | Some (_ :: _ :: _) -> None
-    | Some [item] -> Some item
-
-let single_structure_item_payload payload =
-  match Payload.to_concrete payload with
-  | None | Some (PSig _ | PTyp _ | PPat _) -> None
-  | Some (PStr structure) ->
-    match Structure.to_concrete structure with
-    | None | Some [] | Some (_ :: _ :: _) -> None
-    | Some [item] -> Some item
-
-let single_expression_payload payload =
-  match single_structure_item_payload payload with
-  | None -> None
-  | Some item ->
-    match Structure_item.to_concrete item with
-    | None -> None
-    | Some item ->
-      match Structure_item_desc.to_concrete item.pstr_desc with
-      | Some Pstr_eval (e, attr) -> Some (e, attr)
-      | Some _ | None -> None
-
 module Extensions_for_nt (Driver : Driver) (Non_terminal : Non_terminal) = struct
   module Lift = Make (Driver) (Non_terminal)
 
@@ -269,35 +240,35 @@ module Extensions_for_nt (Driver : Driver) (Non_terminal : Non_terminal) = struc
 
   let extensions =
     [ extension "expr" (fun ~loc payload ->
-        match single_expression_payload payload with
+        match Ppx_bootstrap.single_expression_payload payload with
         | Some (e, attrs) ->
           Driver.assert_no_attributes attrs;
           (Lift.lift loc)#expression e
-        | None -> expected loc "single-expression payload")
+        | None -> Ppx_bootstrap.Expected.raise_ ~loc "single-expression payload")
     ; extension "pat" (fun ~loc payload ->
         match Payload.to_concrete payload with
         | Some (PPat (p, None)) -> (Lift.lift loc)#pattern p
-        | _ -> expected loc "pattern without guard")
+        | _ -> Ppx_bootstrap.Expected.raise_ ~loc "pattern without guard")
     ; extension "str" (fun ~loc payload ->
         match Payload.to_concrete payload with
         | Some (PStr s) -> (Lift.lift loc)#structure s
-        | _ -> expected loc "structure")
+        | _ -> Ppx_bootstrap.Expected.raise_ ~loc "structure")
     ; extension "stri" (fun ~loc payload ->
-        match single_structure_item_payload payload with
+        match Ppx_bootstrap.single_structure_item_payload payload with
         | Some s -> (Lift.lift loc)#structure_item s
-        | _ -> expected loc "structure item")
+        | _ -> Ppx_bootstrap.Expected.raise_ ~loc "structure item")
     ; extension "sig" (fun ~loc payload ->
         match Payload.to_concrete payload with
         | Some (PSig s) -> (Lift.lift loc)#signature s
-        | _ -> expected loc "signature")
+        | _ -> Ppx_bootstrap.Expected.raise_ ~loc "signature")
     ; extension "sigi" (fun ~loc payload ->
-        match single_signature_item_payload payload with
+        match Ppx_bootstrap.single_signature_item_payload payload with
         | Some s -> (Lift.lift loc)#signature_item s
-        | _ -> expected loc "signature item")
+        | _ -> Ppx_bootstrap.Expected.raise_ ~loc "signature item")
     ; extension "type" (fun ~loc payload ->
         match Payload.to_concrete payload with
         | Some (PTyp t) -> (Lift.lift loc)#core_type t
-        | _ -> expected loc "type")
+        | _ -> Ppx_bootstrap.Expected.raise_ ~loc "type")
     ]
 end
 

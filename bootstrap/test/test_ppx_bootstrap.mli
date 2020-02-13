@@ -15,3 +15,5 @@ val f_stri : Ppx.structure_item -> bool
 val f_str  : Ppx.structure      -> bool
 val f_sigi : Ppx.signature_item -> bool
 val f_sig  : Ppx.signature      -> bool
+
+val f_view : Ppx_ast.expression -> (Ppx_ast.expression * Ppx_ast.core_type) option
