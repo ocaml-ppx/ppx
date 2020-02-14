@@ -38,6 +38,12 @@ let declare_base_method ~signature {method_name; params; type_name} =
   let signature = base_method_signature ~signature ~params ~type_name in
   Ml.declare_method ~virtual_:true ~signature ~name:method_name ()
 
+(* This type describes a variables bound when deconstructing a value.
+   - [var] is the variable name
+   - [recursive_call] is the function to apply to the variable to recursively
+   traverse it. It is based on the type of the variable. For example if the
+   variable is an expression it will be ["self#expression"]. If it's a list
+    of integers it will be ["self#list self#int"]. *)
 type var =
   { var : string
   ; recursive_call : string
@@ -49,23 +55,57 @@ type kind =
   | Ktuple
   | Kconstr of string
 
+(** This is a generic type used to describe how to deconstruct a value of any
+    given type.
+    - [pattern] is the OCaml pattern used to deconstruct the value, as a string.
+    For example, for a record type with two fields a and b, it would be
+    ["{a; b}"], for a pair it would be ["(x0, x1)"].
+    - [vars] is the list of variables that are bound in the above mentioned
+    pattern.
+    - [kind] describes the kind of value of the deconstructed value. *)
 type deconstructed =
   { pattern : string
   ; vars : var list
   ; kind : kind
   }
 
+(** This type describes the context in which we're trying to traverse a value.
+    - [Toplevel {node_name; targs}] means we are traversing a named type of
+    the AST. [node_name] is the name of the AST node we
+    want to traverse and [targs] are the its type arguments if it is an
+    instance of a polymorphic AST type.
+    - [In_recursive_call] means we're inside an anonymous function and want
+    to traverse something that isn't a named type of the AST.
+
+    This distinction is useful for map-like traversal classes that need to
+    return abstract type and therefore must wrap the "reconstructed" value
+    in an [of_concrete] call in the [Toplevel _] case.
+    Other traversal classes can ignore the context. *)
 type recurse_kind =
   | Toplevel of {node_name : string; targs : Astlib.Grammar.ty list}
   | In_recursive_call
 
+(** The type used to describe the various traversal classes and how to generate
+    them.
+    - [class_name] is the name of the class
+    - [extra_methods] prints any methods which isn't generated from the types
+    description in the grammar that the class needs
+    - [complete] determines whether all methods are defined in [Virtual_traverse]
+    and [Traverse_builtins] or if it needs to be declared as [virtual] in
+    [Traverse].
+    - [params] is the list of type parameters for the class, as strings.
+    - [signature] returns the signature of a method given the name of the input
+    type. For examples for map, [signature "expression"] is
+    ["expression -> expression"].
+    - [args] returns the list of arguments of one the class' methods, given the
+    name of the node it must be applied to. For example, for fold, [args "x"] is
+    [["x"; "acc"]].
+    - [recurse] is the core of the traversal. It generates the code for traversing
+    a the given deconstructed value. *)
 type traversal =
   { class_name : string
   ; extra_methods : (unit -> unit) option
   ; complete : bool
-  (** [complete] determines whether all methods are defined in [Virtual_traverse]
-      and [Traverse_builtins] or if it needs to be declared as [virtual] in
-      [Traverse]. *)
   ; params : string list option
   ; signature : string -> string
   ; args : string -> string list
