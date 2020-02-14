@@ -3,5 +3,5 @@
  (kind ppx_rewriter)
  (libraries
   ppxlib
-  ppx_view_lib)
+  ppx_view_lib_deprecated)
  (ppx_runtime_libraries viewlib))
