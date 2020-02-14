@@ -688,4 +688,31 @@ module Common = struct
         (Some (ppat_tuple ~loc [pat; list_pat]))
     in
     List.fold_right exprs ~f:cons ~init:nil
+
+  module Error_ext = struct
+    open Versions
+
+    let extension ~loc msg =
+      let pp fmt = Format.pp_print_string fmt msg in
+      let error = Astlib.Location.Error.make ~loc pp in
+      Conversion.ast_of_extension (Astlib.Location.Error.to_extension error)
+
+    let build_ext : 'node 'a .
+      (loc: Astlib.Location.t -> extension -> 'node) ->
+      loc: Astlib.Location.t ->
+      ('a, unit, string, 'node) format4 ->
+      'a
+      =
+      fun f ~loc fmt -> Format.ksprintf (fun msg -> f ~loc (extension ~loc msg)) fmt
+
+    let no_attr = Attributes.create []
+
+    let exprf ~loc fmt = build_ext pexp_extension ~loc fmt
+    let patf ~loc fmt = build_ext ppat_extension ~loc fmt
+    let typf ~loc fmt = build_ext ptyp_extension ~loc fmt
+    let strif ~loc fmt =
+      build_ext (fun ~loc ext -> pstr_extension ~loc ext no_attr) ~loc fmt
+    let sigif ~loc fmt =
+      build_ext (fun ~loc ext -> psig_extension ~loc ext no_attr) ~loc fmt
+  end
 end

@@ -1423,4 +1423,36 @@ module Common : sig
   val pbool : loc: Astlib.Location.t -> bool -> Versions.pattern
   val pnil : loc: Astlib.Location.t -> Versions.pattern
   val plist : loc: Astlib.Location.t -> Versions.pattern list -> Versions.pattern
+
+  module Error_ext : sig
+    (** Functions to build error as extension points. Each of these functions
+        formats the given error message and returns the extension point for
+        the required context, [exprf] for [expression], [patf] for [pattern],
+        etc. *)
+
+    val exprf :
+      loc:Astlib.Location.t ->
+      ('a, unit, string, Versions.expression) format4 ->
+      'a
+
+    val patf :
+      loc:Astlib.Location.t ->
+      ('a, unit, string, Versions.pattern) format4 ->
+      'a
+
+    val typf :
+      loc:Astlib.Location.t ->
+      ('a, unit, string, Versions.core_type) format4 ->
+      'a
+
+    val strif :
+      loc:Astlib.Location.t ->
+      ('a, unit, string, Versions.structure_item) format4 ->
+      'a
+
+    val sigif :
+      loc:Astlib.Location.t ->
+      ('a, unit, string, Versions.signature_item) format4 ->
+      'a
+  end
 end
