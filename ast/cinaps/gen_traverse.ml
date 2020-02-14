@@ -69,21 +69,21 @@ type deconstructed =
   ; kind : kind
   }
 
-(** This type describes the context in which we're trying to traverse a value.
-    - [Toplevel {node_name; targs}] means we are traversing a named type of
+(** This type describes the kind of value we're trying to traverse.
+    - [Ast_type {node_name; targs}] means we are traversing a named type of
     the AST. [node_name] is the name of the AST node we
-    want to traverse and [targs] are the its type arguments if it is an
+    want to traverse and [targs] are its type arguments if it is an
     instance of a polymorphic AST type.
-    - [In_recursive_call] means we're inside an anonymous function and want
+    - [Abstract] means we're inside an anonymous function and want
     to traverse something that isn't a named type of the AST.
 
     This distinction is useful for map-like traversal classes that need to
     return abstract type and therefore must wrap the "reconstructed" value
-    in an [of_concrete] call in the [Toplevel _] case.
+    in an [of_concrete] call in the [Ast_type _] case.
     Other traversal classes can ignore the context. *)
-type recurse_kind =
-  | Toplevel of {node_name : string; targs : Astlib.Grammar.ty list}
-  | In_recursive_call
+type value_kind =
+  | Ast_type of {node_name : string; targs : Astlib.Grammar.ty list}
+  | Abstract
 
 (** The type used to describe the various traversal classes and how to generate
     them.
@@ -109,7 +109,7 @@ type traversal =
   ; params : string list option
   ; signature : string -> string
   ; args : string -> string list
-  ; recurse : recurse_kind: recurse_kind -> deconstructed: deconstructed -> string list
+  ; recurse : value_kind: value_kind -> deconstructed: deconstructed -> string list
   }
 
 type type_ = Concrete | T
@@ -174,7 +174,7 @@ and recursive_call ?(nested=false) ~traversal (ty : Astlib.Grammar.ty) =
   | Option ty -> parens (Printf.sprintf "self#option %s" (recursive_call ~nested:true ty))
   | Tuple tyl ->
     let deconstructed = deconstruct_tuple ~traversal tyl in
-    let exprs = traversal.recurse ~recurse_kind:In_recursive_call ~deconstructed in
+    let exprs = traversal.recurse ~value_kind:Abstract ~deconstructed in
     let args = String.concat ~sep:" " (traversal.args deconstructed.pattern) in
     Printf.sprintf "(fun %s -> %s)" args (String.concat ~sep:" " exprs)
   | Instance (n, tyl) ->
@@ -187,21 +187,21 @@ let print_method_body ~traversal ~targs ~node_name (decl : Astlib.Grammar.decl) 
   | Alias (Tuple tyl) ->
     let deconstructed = deconstruct_tuple ~traversal tyl in
     let exprs =
-      traversal.recurse ~recurse_kind:(Toplevel {node_name; targs}) ~deconstructed
+      traversal.recurse ~value_kind:(Ast_type {node_name; targs}) ~deconstructed
     in
     Print.println "let %s = concrete in" deconstructed.pattern;
     List.iter exprs ~f:(Print.println "%s")
   | Alias ty ->
     let deconstructed = deconstruct_alias ~traversal ~var:"concrete" ty in
     let exprs =
-      traversal.recurse ~recurse_kind:(Toplevel {node_name; targs}) ~deconstructed
+      traversal.recurse ~value_kind:(Ast_type {node_name; targs}) ~deconstructed
     in
     List.iter exprs ~f:(Print.println "%s")
   | Record fields ->
     let deconstructed = deconstruct_record ~traversal fields in
     let concrete_type = (node_type ~type_:Concrete ~args:targs node_name) in
     let exprs =
-      traversal.recurse ~recurse_kind:(Toplevel {node_name; targs}) ~deconstructed
+      traversal.recurse ~value_kind:(Ast_type {node_name; targs}) ~deconstructed
     in
     Print.println "let %s : %s = concrete in" deconstructed.pattern concrete_type;
     List.iter exprs ~f:(Print.println "%s")
@@ -212,7 +212,7 @@ let print_method_body ~traversal ~targs ~node_name (decl : Astlib.Grammar.decl) 
       ~f:(fun variant ->
         let deconstructed = deconstruct_variant ~traversal variant in
         let exprs =
-          traversal.recurse ~recurse_kind:(Toplevel {node_name; targs}) ~deconstructed
+          traversal.recurse ~value_kind:(Ast_type {node_name; targs}) ~deconstructed
         in
         Print.println "| %s ->" deconstructed.pattern;
         Print.indented (fun () -> List.iter exprs ~f:(Print.println "%s")))
@@ -228,7 +228,7 @@ module Map = struct
 
   let args x = [x]
 
-  let recurse ~recurse_kind ~deconstructed =
+  let recurse ~value_kind ~deconstructed =
     let {pattern; vars; _} = deconstructed in
     let recurse =
       List.map vars
@@ -236,9 +236,9 @@ module Map = struct
           Printf.sprintf "let %s = %s %s in" var recursive_call var)
     in
     let return =
-      match recurse_kind with
-      | In_recursive_call -> pattern
-      | Toplevel {node_name; targs=_} ->
+      match value_kind with
+      | Abstract -> pattern
+      | Ast_type {node_name; targs=_} ->
         Printf.sprintf "%s.%s %s"
           (Ml.module_name node_name)
           "of_concrete"
@@ -262,7 +262,7 @@ module Iter = struct
 
   let args x = [x]
 
-  let recurse ~recurse_kind:_ ~deconstructed:{vars; _} =
+  let recurse ~value_kind:_ ~deconstructed:{vars; _} =
     match vars with
     | [] -> ["()"]
     | _ ->
@@ -291,7 +291,7 @@ module Fold = struct
 
   let args x = [x; acc_var]
 
-  let recurse ~recurse_kind:_ ~deconstructed:{vars; _} =
+  let recurse ~value_kind:_ ~deconstructed:{vars; _} =
     let recurse =
       List.map vars
         ~f:(fun {var; recursive_call} ->
@@ -320,7 +320,7 @@ module Fold_map = struct
 
   let args x = [x; acc_var]
 
-  let recurse ~recurse_kind ~deconstructed =
+  let recurse ~value_kind ~deconstructed =
     let {pattern; vars; _} = deconstructed in
     let recurse =
       List.map vars
@@ -328,9 +328,9 @@ module Fold_map = struct
           Printf.sprintf "let %s = %s %s %s in" (Ml.tuple [var; acc_var]) recursive_call var acc_var)
     in
     let return =
-      match recurse_kind with
-      | In_recursive_call -> Ml.tuple [pattern; acc_var]
-      | Toplevel {node_name; targs=_} ->
+      match value_kind with
+      | Abstract -> Ml.tuple [pattern; acc_var]
+      | Ast_type {node_name; targs=_} ->
         let mapped =
           Printf.sprintf "%s.%s %s"
             (Ml.module_name node_name)
@@ -361,7 +361,7 @@ module Map_with_context = struct
 
   let args x = [ctx_var; x]
 
-  let recurse ~recurse_kind ~deconstructed =
+  let recurse ~value_kind ~deconstructed =
     let {pattern; vars; _} = deconstructed in
     let recurse =
       List.map vars
@@ -369,9 +369,9 @@ module Map_with_context = struct
           Printf.sprintf "let %s = %s %s %s in" var recursive_call ctx_var var)
     in
     let return =
-      match recurse_kind with
-      | In_recursive_call -> pattern
-      | Toplevel {node_name; targs=_} ->
+      match value_kind with
+      | Abstract -> pattern
+      | Ast_type {node_name; targs=_} ->
         Printf.sprintf "%s.%s %s"
           (Ml.module_name node_name)
           "of_concrete"
@@ -413,7 +413,7 @@ module Lift = struct
     let name_and_val var_name = Printf.sprintf "(%S, %s)" var_name var_name in
     Ml.list_lit (List.map ~f:name_and_val var_names)
 
-  let recurse ~recurse_kind:_ ~deconstructed =
+  let recurse ~value_kind:_ ~deconstructed =
     let {kind; vars; pattern} = deconstructed in
     let recurse =
       List.map vars
