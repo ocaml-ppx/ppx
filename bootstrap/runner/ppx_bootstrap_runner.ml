@@ -36,7 +36,8 @@ module Ppx_view = struct
               Driver.assert_no_attributes attrs;
               Ppx_view_lib.Expand.payload ~loc expr
             | _ ->
-              Ppx_bootstrap.Expected.raise_ ~loc "single-expression payload"
+              Builder.Error_ext.exprf ~loc
+                "Invalid view payload: expected a single expression"
       }
 
   let extensions = [expr]
