@@ -1,0 +1,4 @@
+(library
+ (name ppx_view_lib_deprecated)
+ (public_name ppx._ppx_view_lib_deprecated)
+ (libraries ppx_view_lib ppx_ast_deprecated))

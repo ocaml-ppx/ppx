@@ -307,9 +307,3 @@ let payload ~loc payload_expr =
     translate_match ~loc ~err_loc:pexp_loc match_cases
   | _ ->
     Error.invalid_payload ~loc:pexp_loc
-
-let parsetree_payload ~loc payload_expr =
-  let loc = Astlib.Location.of_location loc in
-  let astlib_payload_expr = Ppx_ast.Conversion.ast_of_expression payload_expr in
-  let expanded = payload ~loc astlib_payload_expr in
-  Ppx_ast.Conversion.ast_to_expression expanded

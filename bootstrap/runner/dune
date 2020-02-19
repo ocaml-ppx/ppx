@@ -4,6 +4,7 @@
   ocaml-compiler-libs.common
   ppx.bootstrap
   ppx_metaquot_expander
+  ppx_view_lib
   stdppx)
  (flags (:standard -safe-string))
  (ppx.driver

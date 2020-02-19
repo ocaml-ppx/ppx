@@ -4,6 +4,6 @@
  (kind ppx_rewriter)
  (libraries
   ppx
-  ppx_view_lib)
+  ppx_view_lib_deprecated)
  (flags :standard -open Ocaml_shadow)
  (ppx_runtime_libraries viewlib))
