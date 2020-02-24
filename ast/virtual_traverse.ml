@@ -6828,8 +6828,8 @@ module Unstable_for_testing = struct
 
   class virtual ['res] lift =
     object (self)
-      method virtual record : (string * 'res) list -> 'res
-      method virtual constr : string -> 'res list -> 'res
+      method virtual record : (string * int) option -> (string * 'res) list -> 'res
+      method virtual constr : (string * int) option -> string -> 'res list -> 'res
       method virtual tuple : 'res list -> 'res
       method virtual bool : bool -> 'res
       method virtual char : char -> 'res
@@ -6849,19 +6849,19 @@ module Unstable_for_testing = struct
           match (concrete : Directive_argument.concrete) with
           | Pdir_bool x0 ->
             let x0 = self#bool x0 in
-            self#constr "Pdir_bool" [x0]
+            self#constr (Some ("directive_argument", 0)) "Pdir_bool" [x0]
           | Pdir_ident x0 ->
             let x0 = self#longident x0 in
-            self#constr "Pdir_ident" [x0]
+            self#constr (Some ("directive_argument", 0)) "Pdir_ident" [x0]
           | Pdir_int (x0, x1) ->
             let x0 = self#option self#char x0 in
             let x1 = self#string x1 in
-            self#constr "Pdir_int" [x0; x1]
+            self#constr (Some ("directive_argument", 0)) "Pdir_int" [x0; x1]
           | Pdir_string x0 ->
             let x0 = self#string x0 in
-            self#constr "Pdir_string" [x0]
+            self#constr (Some ("directive_argument", 0)) "Pdir_string" [x0]
           | Pdir_none ->
-            self#constr "Pdir_none" []
+            self#constr (Some ("directive_argument", 0)) "Pdir_none" []
       method toplevel_phrase : Toplevel_phrase.t -> 'res  =
         fun toplevel_phrase ->
           let concrete =
@@ -6873,10 +6873,10 @@ module Unstable_for_testing = struct
           | Ptop_dir (x0, x1) ->
             let x0 = self#directive_argument x0 in
             let x1 = self#string x1 in
-            self#constr "Ptop_dir" [x0; x1]
+            self#constr (Some ("toplevel_phrase", 0)) "Ptop_dir" [x0; x1]
           | Ptop_def x0 ->
             let x0 = self#structure x0 in
-            self#constr "Ptop_def" [x0]
+            self#constr (Some ("toplevel_phrase", 0)) "Ptop_def" [x0]
       method module_binding : Module_binding.t -> 'res  =
         fun module_binding ->
           let concrete =
@@ -6889,7 +6889,7 @@ module Unstable_for_testing = struct
           let pmb_attributes = self#attributes pmb_attributes in
           let pmb_expr = self#module_expr pmb_expr in
           let pmb_name = self#loc self#string pmb_name in
-          self#record [("pmb_loc", pmb_loc); ("pmb_attributes", pmb_attributes); ("pmb_expr", pmb_expr); ("pmb_name", pmb_name)]
+          self#record (Some ("module_binding", 0)) [("pmb_loc", pmb_loc); ("pmb_attributes", pmb_attributes); ("pmb_expr", pmb_expr); ("pmb_name", pmb_name)]
       method value_binding : Value_binding.t -> 'res  =
         fun value_binding ->
           let concrete =
@@ -6902,7 +6902,7 @@ module Unstable_for_testing = struct
           let pvb_attributes = self#attributes pvb_attributes in
           let pvb_expr = self#expression pvb_expr in
           let pvb_pat = self#pattern pvb_pat in
-          self#record [("pvb_loc", pvb_loc); ("pvb_attributes", pvb_attributes); ("pvb_expr", pvb_expr); ("pvb_pat", pvb_pat)]
+          self#record (Some ("value_binding", 0)) [("pvb_loc", pvb_loc); ("pvb_attributes", pvb_attributes); ("pvb_expr", pvb_expr); ("pvb_pat", pvb_pat)]
       method structure_item_desc : Structure_item_desc.t -> 'res  =
         fun structure_item_desc ->
           let concrete =
@@ -6914,52 +6914,52 @@ module Unstable_for_testing = struct
           | Pstr_extension (x0, x1) ->
             let x0 = self#attributes x0 in
             let x1 = self#extension x1 in
-            self#constr "Pstr_extension" [x0; x1]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_extension" [x0; x1]
           | Pstr_attribute x0 ->
             let x0 = self#attribute x0 in
-            self#constr "Pstr_attribute" [x0]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_attribute" [x0]
           | Pstr_include x0 ->
             let x0 = self#include_declaration x0 in
-            self#constr "Pstr_include" [x0]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_include" [x0]
           | Pstr_class_type x0 ->
             let x0 = self#list self#class_type_declaration x0 in
-            self#constr "Pstr_class_type" [x0]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_class_type" [x0]
           | Pstr_class x0 ->
             let x0 = self#list self#class_declaration x0 in
-            self#constr "Pstr_class" [x0]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_class" [x0]
           | Pstr_open x0 ->
             let x0 = self#open_description x0 in
-            self#constr "Pstr_open" [x0]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_open" [x0]
           | Pstr_modtype x0 ->
             let x0 = self#module_type_declaration x0 in
-            self#constr "Pstr_modtype" [x0]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_modtype" [x0]
           | Pstr_recmodule x0 ->
             let x0 = self#list self#module_binding x0 in
-            self#constr "Pstr_recmodule" [x0]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_recmodule" [x0]
           | Pstr_module x0 ->
             let x0 = self#module_binding x0 in
-            self#constr "Pstr_module" [x0]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_module" [x0]
           | Pstr_exception x0 ->
             let x0 = self#extension_constructor x0 in
-            self#constr "Pstr_exception" [x0]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_exception" [x0]
           | Pstr_typext x0 ->
             let x0 = self#type_extension x0 in
-            self#constr "Pstr_typext" [x0]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_typext" [x0]
           | Pstr_type (x0, x1) ->
             let x0 = self#list self#type_declaration x0 in
             let x1 = self#rec_flag x1 in
-            self#constr "Pstr_type" [x0; x1]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_type" [x0; x1]
           | Pstr_primitive x0 ->
             let x0 = self#value_description x0 in
-            self#constr "Pstr_primitive" [x0]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_primitive" [x0]
           | Pstr_value (x0, x1) ->
             let x0 = self#list self#value_binding x0 in
             let x1 = self#rec_flag x1 in
-            self#constr "Pstr_value" [x0; x1]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_value" [x0; x1]
           | Pstr_eval (x0, x1) ->
             let x0 = self#attributes x0 in
             let x1 = self#expression x1 in
-            self#constr "Pstr_eval" [x0; x1]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_eval" [x0; x1]
       method structure_item : Structure_item.t -> 'res  =
         fun structure_item ->
           let concrete =
@@ -6970,7 +6970,7 @@ module Unstable_for_testing = struct
           let { pstr_loc; pstr_desc } : Structure_item.concrete = concrete in
           let pstr_loc = self#location pstr_loc in
           let pstr_desc = self#structure_item_desc pstr_desc in
-          self#record [("pstr_loc", pstr_loc); ("pstr_desc", pstr_desc)]
+          self#record (Some ("structure_item", 0)) [("pstr_loc", pstr_loc); ("pstr_desc", pstr_desc)]
       method structure : Structure.t -> 'res  =
         fun structure ->
           let concrete =
@@ -6990,29 +6990,29 @@ module Unstable_for_testing = struct
           match (concrete : Module_expr_desc.concrete) with
           | Pmod_extension x0 ->
             let x0 = self#extension x0 in
-            self#constr "Pmod_extension" [x0]
+            self#constr (Some ("module_expr_desc", 0)) "Pmod_extension" [x0]
           | Pmod_unpack x0 ->
             let x0 = self#expression x0 in
-            self#constr "Pmod_unpack" [x0]
+            self#constr (Some ("module_expr_desc", 0)) "Pmod_unpack" [x0]
           | Pmod_constraint (x0, x1) ->
             let x0 = self#module_type x0 in
             let x1 = self#module_expr x1 in
-            self#constr "Pmod_constraint" [x0; x1]
+            self#constr (Some ("module_expr_desc", 0)) "Pmod_constraint" [x0; x1]
           | Pmod_apply (x0, x1) ->
             let x0 = self#module_expr x0 in
             let x1 = self#module_expr x1 in
-            self#constr "Pmod_apply" [x0; x1]
+            self#constr (Some ("module_expr_desc", 0)) "Pmod_apply" [x0; x1]
           | Pmod_functor (x0, x1, x2) ->
             let x0 = self#module_expr x0 in
             let x1 = self#option self#module_type x1 in
             let x2 = self#loc self#string x2 in
-            self#constr "Pmod_functor" [x0; x1; x2]
+            self#constr (Some ("module_expr_desc", 0)) "Pmod_functor" [x0; x1; x2]
           | Pmod_structure x0 ->
             let x0 = self#structure x0 in
-            self#constr "Pmod_structure" [x0]
+            self#constr (Some ("module_expr_desc", 0)) "Pmod_structure" [x0]
           | Pmod_ident x0 ->
             let x0 = self#longident_loc x0 in
-            self#constr "Pmod_ident" [x0]
+            self#constr (Some ("module_expr_desc", 0)) "Pmod_ident" [x0]
       method module_expr : Module_expr.t -> 'res  =
         fun module_expr ->
           let concrete =
@@ -7024,7 +7024,7 @@ module Unstable_for_testing = struct
           let pmod_attributes = self#attributes pmod_attributes in
           let pmod_loc = self#location pmod_loc in
           let pmod_desc = self#module_expr_desc pmod_desc in
-          self#record [("pmod_attributes", pmod_attributes); ("pmod_loc", pmod_loc); ("pmod_desc", pmod_desc)]
+          self#record (Some ("module_expr", 0)) [("pmod_attributes", pmod_attributes); ("pmod_loc", pmod_loc); ("pmod_desc", pmod_desc)]
       method with_constraint : With_constraint.t -> 'res  =
         fun with_constraint ->
           let concrete =
@@ -7036,19 +7036,19 @@ module Unstable_for_testing = struct
           | Pwith_modsubst (x0, x1) ->
             let x0 = self#longident_loc x0 in
             let x1 = self#longident_loc x1 in
-            self#constr "Pwith_modsubst" [x0; x1]
+            self#constr (Some ("with_constraint", 0)) "Pwith_modsubst" [x0; x1]
           | Pwith_typesubst (x0, x1) ->
             let x0 = self#type_declaration x0 in
             let x1 = self#longident_loc x1 in
-            self#constr "Pwith_typesubst" [x0; x1]
+            self#constr (Some ("with_constraint", 0)) "Pwith_typesubst" [x0; x1]
           | Pwith_module (x0, x1) ->
             let x0 = self#longident_loc x0 in
             let x1 = self#longident_loc x1 in
-            self#constr "Pwith_module" [x0; x1]
+            self#constr (Some ("with_constraint", 0)) "Pwith_module" [x0; x1]
           | Pwith_type (x0, x1) ->
             let x0 = self#type_declaration x0 in
             let x1 = self#longident_loc x1 in
-            self#constr "Pwith_type" [x0; x1]
+            self#constr (Some ("with_constraint", 0)) "Pwith_type" [x0; x1]
       method include_declaration : Include_declaration.t -> 'res  =
         fun include_declaration ->
           let concrete =
@@ -7078,7 +7078,7 @@ module Unstable_for_testing = struct
           let pincl_attributes = self#attributes pincl_attributes in
           let pincl_loc = self#location pincl_loc in
           let pincl_mod = self#module_expr pincl_mod in
-          self#record [("pincl_attributes", pincl_attributes); ("pincl_loc", pincl_loc); ("pincl_mod", pincl_mod)]
+          self#record (Some ("include_infos", 1)) [("pincl_attributes", pincl_attributes); ("pincl_loc", pincl_loc); ("pincl_mod", pincl_mod)]
       method include_infos_module_type : Module_type.t Include_infos.t -> 'res  =
         fun include_infos ->
           let concrete =
@@ -7090,7 +7090,7 @@ module Unstable_for_testing = struct
           let pincl_attributes = self#attributes pincl_attributes in
           let pincl_loc = self#location pincl_loc in
           let pincl_mod = self#module_type pincl_mod in
-          self#record [("pincl_attributes", pincl_attributes); ("pincl_loc", pincl_loc); ("pincl_mod", pincl_mod)]
+          self#record (Some ("include_infos", 1)) [("pincl_attributes", pincl_attributes); ("pincl_loc", pincl_loc); ("pincl_mod", pincl_mod)]
       method open_description : Open_description.t -> 'res  =
         fun open_description ->
           let concrete =
@@ -7103,7 +7103,7 @@ module Unstable_for_testing = struct
           let popen_loc = self#location popen_loc in
           let popen_override = self#override_flag popen_override in
           let popen_lid = self#longident_loc popen_lid in
-          self#record [("popen_attributes", popen_attributes); ("popen_loc", popen_loc); ("popen_override", popen_override); ("popen_lid", popen_lid)]
+          self#record (Some ("open_description", 0)) [("popen_attributes", popen_attributes); ("popen_loc", popen_loc); ("popen_override", popen_override); ("popen_lid", popen_lid)]
       method module_type_declaration : Module_type_declaration.t -> 'res  =
         fun module_type_declaration ->
           let concrete =
@@ -7116,7 +7116,7 @@ module Unstable_for_testing = struct
           let pmtd_attributes = self#attributes pmtd_attributes in
           let pmtd_type = self#option self#module_type pmtd_type in
           let pmtd_name = self#loc self#string pmtd_name in
-          self#record [("pmtd_loc", pmtd_loc); ("pmtd_attributes", pmtd_attributes); ("pmtd_type", pmtd_type); ("pmtd_name", pmtd_name)]
+          self#record (Some ("module_type_declaration", 0)) [("pmtd_loc", pmtd_loc); ("pmtd_attributes", pmtd_attributes); ("pmtd_type", pmtd_type); ("pmtd_name", pmtd_name)]
       method module_declaration : Module_declaration.t -> 'res  =
         fun module_declaration ->
           let concrete =
@@ -7129,7 +7129,7 @@ module Unstable_for_testing = struct
           let pmd_attributes = self#attributes pmd_attributes in
           let pmd_type = self#module_type pmd_type in
           let pmd_name = self#loc self#string pmd_name in
-          self#record [("pmd_loc", pmd_loc); ("pmd_attributes", pmd_attributes); ("pmd_type", pmd_type); ("pmd_name", pmd_name)]
+          self#record (Some ("module_declaration", 0)) [("pmd_loc", pmd_loc); ("pmd_attributes", pmd_attributes); ("pmd_type", pmd_type); ("pmd_name", pmd_name)]
       method signature_item_desc : Signature_item_desc.t -> 'res  =
         fun signature_item_desc ->
           let concrete =
@@ -7141,44 +7141,44 @@ module Unstable_for_testing = struct
           | Psig_extension (x0, x1) ->
             let x0 = self#attributes x0 in
             let x1 = self#extension x1 in
-            self#constr "Psig_extension" [x0; x1]
+            self#constr (Some ("signature_item_desc", 0)) "Psig_extension" [x0; x1]
           | Psig_attribute x0 ->
             let x0 = self#attribute x0 in
-            self#constr "Psig_attribute" [x0]
+            self#constr (Some ("signature_item_desc", 0)) "Psig_attribute" [x0]
           | Psig_class_type x0 ->
             let x0 = self#list self#class_type_declaration x0 in
-            self#constr "Psig_class_type" [x0]
+            self#constr (Some ("signature_item_desc", 0)) "Psig_class_type" [x0]
           | Psig_class x0 ->
             let x0 = self#list self#class_description x0 in
-            self#constr "Psig_class" [x0]
+            self#constr (Some ("signature_item_desc", 0)) "Psig_class" [x0]
           | Psig_include x0 ->
             let x0 = self#include_description x0 in
-            self#constr "Psig_include" [x0]
+            self#constr (Some ("signature_item_desc", 0)) "Psig_include" [x0]
           | Psig_open x0 ->
             let x0 = self#open_description x0 in
-            self#constr "Psig_open" [x0]
+            self#constr (Some ("signature_item_desc", 0)) "Psig_open" [x0]
           | Psig_modtype x0 ->
             let x0 = self#module_type_declaration x0 in
-            self#constr "Psig_modtype" [x0]
+            self#constr (Some ("signature_item_desc", 0)) "Psig_modtype" [x0]
           | Psig_recmodule x0 ->
             let x0 = self#list self#module_declaration x0 in
-            self#constr "Psig_recmodule" [x0]
+            self#constr (Some ("signature_item_desc", 0)) "Psig_recmodule" [x0]
           | Psig_module x0 ->
             let x0 = self#module_declaration x0 in
-            self#constr "Psig_module" [x0]
+            self#constr (Some ("signature_item_desc", 0)) "Psig_module" [x0]
           | Psig_exception x0 ->
             let x0 = self#extension_constructor x0 in
-            self#constr "Psig_exception" [x0]
+            self#constr (Some ("signature_item_desc", 0)) "Psig_exception" [x0]
           | Psig_typext x0 ->
             let x0 = self#type_extension x0 in
-            self#constr "Psig_typext" [x0]
+            self#constr (Some ("signature_item_desc", 0)) "Psig_typext" [x0]
           | Psig_type (x0, x1) ->
             let x0 = self#list self#type_declaration x0 in
             let x1 = self#rec_flag x1 in
-            self#constr "Psig_type" [x0; x1]
+            self#constr (Some ("signature_item_desc", 0)) "Psig_type" [x0; x1]
           | Psig_value x0 ->
             let x0 = self#value_description x0 in
-            self#constr "Psig_value" [x0]
+            self#constr (Some ("signature_item_desc", 0)) "Psig_value" [x0]
       method signature_item : Signature_item.t -> 'res  =
         fun signature_item ->
           let concrete =
@@ -7189,7 +7189,7 @@ module Unstable_for_testing = struct
           let { psig_loc; psig_desc } : Signature_item.concrete = concrete in
           let psig_loc = self#location psig_loc in
           let psig_desc = self#signature_item_desc psig_desc in
-          self#record [("psig_loc", psig_loc); ("psig_desc", psig_desc)]
+          self#record (Some ("signature_item", 0)) [("psig_loc", psig_loc); ("psig_desc", psig_desc)]
       method signature : Signature.t -> 'res  =
         fun signature ->
           let concrete =
@@ -7209,28 +7209,28 @@ module Unstable_for_testing = struct
           match (concrete : Module_type_desc.concrete) with
           | Pmty_alias x0 ->
             let x0 = self#longident_loc x0 in
-            self#constr "Pmty_alias" [x0]
+            self#constr (Some ("module_type_desc", 0)) "Pmty_alias" [x0]
           | Pmty_extension x0 ->
             let x0 = self#extension x0 in
-            self#constr "Pmty_extension" [x0]
+            self#constr (Some ("module_type_desc", 0)) "Pmty_extension" [x0]
           | Pmty_typeof x0 ->
             let x0 = self#module_expr x0 in
-            self#constr "Pmty_typeof" [x0]
+            self#constr (Some ("module_type_desc", 0)) "Pmty_typeof" [x0]
           | Pmty_with (x0, x1) ->
             let x0 = self#list self#with_constraint x0 in
             let x1 = self#module_type x1 in
-            self#constr "Pmty_with" [x0; x1]
+            self#constr (Some ("module_type_desc", 0)) "Pmty_with" [x0; x1]
           | Pmty_functor (x0, x1, x2) ->
             let x0 = self#module_type x0 in
             let x1 = self#option self#module_type x1 in
             let x2 = self#loc self#string x2 in
-            self#constr "Pmty_functor" [x0; x1; x2]
+            self#constr (Some ("module_type_desc", 0)) "Pmty_functor" [x0; x1; x2]
           | Pmty_signature x0 ->
             let x0 = self#signature x0 in
-            self#constr "Pmty_signature" [x0]
+            self#constr (Some ("module_type_desc", 0)) "Pmty_signature" [x0]
           | Pmty_ident x0 ->
             let x0 = self#longident_loc x0 in
-            self#constr "Pmty_ident" [x0]
+            self#constr (Some ("module_type_desc", 0)) "Pmty_ident" [x0]
       method module_type : Module_type.t -> 'res  =
         fun module_type ->
           let concrete =
@@ -7242,7 +7242,7 @@ module Unstable_for_testing = struct
           let pmty_attributes = self#attributes pmty_attributes in
           let pmty_loc = self#location pmty_loc in
           let pmty_desc = self#module_type_desc pmty_desc in
-          self#record [("pmty_attributes", pmty_attributes); ("pmty_loc", pmty_loc); ("pmty_desc", pmty_desc)]
+          self#record (Some ("module_type", 0)) [("pmty_attributes", pmty_attributes); ("pmty_loc", pmty_loc); ("pmty_desc", pmty_desc)]
       method class_declaration : Class_declaration.t -> 'res  =
         fun class_declaration ->
           let concrete =
@@ -7263,10 +7263,10 @@ module Unstable_for_testing = struct
           | Cfk_concrete (x0, x1) ->
             let x0 = self#expression x0 in
             let x1 = self#override_flag x1 in
-            self#constr "Cfk_concrete" [x0; x1]
+            self#constr (Some ("class_field_kind", 0)) "Cfk_concrete" [x0; x1]
           | Cfk_virtual x0 ->
             let x0 = self#core_type x0 in
-            self#constr "Cfk_virtual" [x0]
+            self#constr (Some ("class_field_kind", 0)) "Cfk_virtual" [x0]
       method class_field_desc : Class_field_desc.t -> 'res  =
         fun class_field_desc ->
           let concrete =
@@ -7277,27 +7277,27 @@ module Unstable_for_testing = struct
           match (concrete : Class_field_desc.concrete) with
           | Pcf_extension x0 ->
             let x0 = self#extension x0 in
-            self#constr "Pcf_extension" [x0]
+            self#constr (Some ("class_field_desc", 0)) "Pcf_extension" [x0]
           | Pcf_attribute x0 ->
             let x0 = self#attribute x0 in
-            self#constr "Pcf_attribute" [x0]
+            self#constr (Some ("class_field_desc", 0)) "Pcf_attribute" [x0]
           | Pcf_initializer x0 ->
             let x0 = self#expression x0 in
-            self#constr "Pcf_initializer" [x0]
+            self#constr (Some ("class_field_desc", 0)) "Pcf_initializer" [x0]
           | Pcf_constraint x0 ->
             let x0 = (fun (x0, x1) -> let x0 = self#core_type x0 in let x1 = self#core_type x1 in self#tuple [x0; x1]) x0 in
-            self#constr "Pcf_constraint" [x0]
+            self#constr (Some ("class_field_desc", 0)) "Pcf_constraint" [x0]
           | Pcf_method x0 ->
             let x0 = (fun (x0, x1, x2) -> let x0 = self#class_field_kind x0 in let x1 = self#private_flag x1 in let x2 = self#loc self#label x2 in self#tuple [x0; x1; x2]) x0 in
-            self#constr "Pcf_method" [x0]
+            self#constr (Some ("class_field_desc", 0)) "Pcf_method" [x0]
           | Pcf_val x0 ->
             let x0 = (fun (x0, x1, x2) -> let x0 = self#class_field_kind x0 in let x1 = self#mutable_flag x1 in let x2 = self#loc self#label x2 in self#tuple [x0; x1; x2]) x0 in
-            self#constr "Pcf_val" [x0]
+            self#constr (Some ("class_field_desc", 0)) "Pcf_val" [x0]
           | Pcf_inherit (x0, x1, x2) ->
             let x0 = self#option (self#loc self#string) x0 in
             let x1 = self#class_expr x1 in
             let x2 = self#override_flag x2 in
-            self#constr "Pcf_inherit" [x0; x1; x2]
+            self#constr (Some ("class_field_desc", 0)) "Pcf_inherit" [x0; x1; x2]
       method class_field : Class_field.t -> 'res  =
         fun class_field ->
           let concrete =
@@ -7309,7 +7309,7 @@ module Unstable_for_testing = struct
           let pcf_attributes = self#attributes pcf_attributes in
           let pcf_loc = self#location pcf_loc in
           let pcf_desc = self#class_field_desc pcf_desc in
-          self#record [("pcf_attributes", pcf_attributes); ("pcf_loc", pcf_loc); ("pcf_desc", pcf_desc)]
+          self#record (Some ("class_field", 0)) [("pcf_attributes", pcf_attributes); ("pcf_loc", pcf_loc); ("pcf_desc", pcf_desc)]
       method class_structure : Class_structure.t -> 'res  =
         fun class_structure ->
           let concrete =
@@ -7320,7 +7320,7 @@ module Unstable_for_testing = struct
           let { pcstr_fields; pcstr_self } : Class_structure.concrete = concrete in
           let pcstr_fields = self#list self#class_field pcstr_fields in
           let pcstr_self = self#pattern pcstr_self in
-          self#record [("pcstr_fields", pcstr_fields); ("pcstr_self", pcstr_self)]
+          self#record (Some ("class_structure", 0)) [("pcstr_fields", pcstr_fields); ("pcstr_self", pcstr_self)]
       method class_expr_desc : Class_expr_desc.t -> 'res  =
         fun class_expr_desc ->
           let concrete =
@@ -7333,36 +7333,36 @@ module Unstable_for_testing = struct
             let x0 = self#class_expr x0 in
             let x1 = self#longident_loc x1 in
             let x2 = self#override_flag x2 in
-            self#constr "Pcl_open" [x0; x1; x2]
+            self#constr (Some ("class_expr_desc", 0)) "Pcl_open" [x0; x1; x2]
           | Pcl_extension x0 ->
             let x0 = self#extension x0 in
-            self#constr "Pcl_extension" [x0]
+            self#constr (Some ("class_expr_desc", 0)) "Pcl_extension" [x0]
           | Pcl_constraint (x0, x1) ->
             let x0 = self#class_type x0 in
             let x1 = self#class_expr x1 in
-            self#constr "Pcl_constraint" [x0; x1]
+            self#constr (Some ("class_expr_desc", 0)) "Pcl_constraint" [x0; x1]
           | Pcl_let (x0, x1, x2) ->
             let x0 = self#class_expr x0 in
             let x1 = self#list self#value_binding x1 in
             let x2 = self#rec_flag x2 in
-            self#constr "Pcl_let" [x0; x1; x2]
+            self#constr (Some ("class_expr_desc", 0)) "Pcl_let" [x0; x1; x2]
           | Pcl_apply (x0, x1) ->
             let x0 = self#list (fun (x0, x1) -> let x0 = self#expression x0 in let x1 = self#arg_label x1 in self#tuple [x0; x1]) x0 in
             let x1 = self#class_expr x1 in
-            self#constr "Pcl_apply" [x0; x1]
+            self#constr (Some ("class_expr_desc", 0)) "Pcl_apply" [x0; x1]
           | Pcl_fun (x0, x1, x2, x3) ->
             let x0 = self#class_expr x0 in
             let x1 = self#pattern x1 in
             let x2 = self#option self#expression x2 in
             let x3 = self#arg_label x3 in
-            self#constr "Pcl_fun" [x0; x1; x2; x3]
+            self#constr (Some ("class_expr_desc", 0)) "Pcl_fun" [x0; x1; x2; x3]
           | Pcl_structure x0 ->
             let x0 = self#class_structure x0 in
-            self#constr "Pcl_structure" [x0]
+            self#constr (Some ("class_expr_desc", 0)) "Pcl_structure" [x0]
           | Pcl_constr (x0, x1) ->
             let x0 = self#list self#core_type x0 in
             let x1 = self#longident_loc x1 in
-            self#constr "Pcl_constr" [x0; x1]
+            self#constr (Some ("class_expr_desc", 0)) "Pcl_constr" [x0; x1]
       method class_expr : Class_expr.t -> 'res  =
         fun class_expr ->
           let concrete =
@@ -7374,7 +7374,7 @@ module Unstable_for_testing = struct
           let pcl_attributes = self#attributes pcl_attributes in
           let pcl_loc = self#location pcl_loc in
           let pcl_desc = self#class_expr_desc pcl_desc in
-          self#record [("pcl_attributes", pcl_attributes); ("pcl_loc", pcl_loc); ("pcl_desc", pcl_desc)]
+          self#record (Some ("class_expr", 0)) [("pcl_attributes", pcl_attributes); ("pcl_loc", pcl_loc); ("pcl_desc", pcl_desc)]
       method class_type_declaration : Class_type_declaration.t -> 'res  =
         fun class_type_declaration ->
           let concrete =
@@ -7407,7 +7407,7 @@ module Unstable_for_testing = struct
           let pci_name = self#loc self#string pci_name in
           let pci_params = self#list (fun (x0, x1) -> let x0 = self#variance x0 in let x1 = self#core_type x1 in self#tuple [x0; x1]) pci_params in
           let pci_virt = self#virtual_flag pci_virt in
-          self#record [("pci_attributes", pci_attributes); ("pci_loc", pci_loc); ("pci_expr", pci_expr); ("pci_name", pci_name); ("pci_params", pci_params); ("pci_virt", pci_virt)]
+          self#record (Some ("class_infos", 1)) [("pci_attributes", pci_attributes); ("pci_loc", pci_loc); ("pci_expr", pci_expr); ("pci_name", pci_name); ("pci_params", pci_params); ("pci_virt", pci_virt)]
       method class_infos_class_type : Class_type.t Class_infos.t -> 'res  =
         fun class_infos ->
           let concrete =
@@ -7422,7 +7422,7 @@ module Unstable_for_testing = struct
           let pci_name = self#loc self#string pci_name in
           let pci_params = self#list (fun (x0, x1) -> let x0 = self#variance x0 in let x1 = self#core_type x1 in self#tuple [x0; x1]) pci_params in
           let pci_virt = self#virtual_flag pci_virt in
-          self#record [("pci_attributes", pci_attributes); ("pci_loc", pci_loc); ("pci_expr", pci_expr); ("pci_name", pci_name); ("pci_params", pci_params); ("pci_virt", pci_virt)]
+          self#record (Some ("class_infos", 1)) [("pci_attributes", pci_attributes); ("pci_loc", pci_loc); ("pci_expr", pci_expr); ("pci_name", pci_name); ("pci_params", pci_params); ("pci_virt", pci_virt)]
       method class_type_field_desc : Class_type_field_desc.t -> 'res  =
         fun class_type_field_desc ->
           let concrete =
@@ -7433,22 +7433,22 @@ module Unstable_for_testing = struct
           match (concrete : Class_type_field_desc.concrete) with
           | Pctf_extension x0 ->
             let x0 = self#extension x0 in
-            self#constr "Pctf_extension" [x0]
+            self#constr (Some ("class_type_field_desc", 0)) "Pctf_extension" [x0]
           | Pctf_attribute x0 ->
             let x0 = self#attribute x0 in
-            self#constr "Pctf_attribute" [x0]
+            self#constr (Some ("class_type_field_desc", 0)) "Pctf_attribute" [x0]
           | Pctf_constraint x0 ->
             let x0 = (fun (x0, x1) -> let x0 = self#core_type x0 in let x1 = self#core_type x1 in self#tuple [x0; x1]) x0 in
-            self#constr "Pctf_constraint" [x0]
+            self#constr (Some ("class_type_field_desc", 0)) "Pctf_constraint" [x0]
           | Pctf_method x0 ->
             let x0 = (fun (x0, x1, x2, x3) -> let x0 = self#core_type x0 in let x1 = self#virtual_flag x1 in let x2 = self#private_flag x2 in let x3 = self#loc self#label x3 in self#tuple [x0; x1; x2; x3]) x0 in
-            self#constr "Pctf_method" [x0]
+            self#constr (Some ("class_type_field_desc", 0)) "Pctf_method" [x0]
           | Pctf_val x0 ->
             let x0 = (fun (x0, x1, x2, x3) -> let x0 = self#core_type x0 in let x1 = self#virtual_flag x1 in let x2 = self#mutable_flag x2 in let x3 = self#loc self#label x3 in self#tuple [x0; x1; x2; x3]) x0 in
-            self#constr "Pctf_val" [x0]
+            self#constr (Some ("class_type_field_desc", 0)) "Pctf_val" [x0]
           | Pctf_inherit x0 ->
             let x0 = self#class_type x0 in
-            self#constr "Pctf_inherit" [x0]
+            self#constr (Some ("class_type_field_desc", 0)) "Pctf_inherit" [x0]
       method class_type_field : Class_type_field.t -> 'res  =
         fun class_type_field ->
           let concrete =
@@ -7460,7 +7460,7 @@ module Unstable_for_testing = struct
           let pctf_attributes = self#attributes pctf_attributes in
           let pctf_loc = self#location pctf_loc in
           let pctf_desc = self#class_type_field_desc pctf_desc in
-          self#record [("pctf_attributes", pctf_attributes); ("pctf_loc", pctf_loc); ("pctf_desc", pctf_desc)]
+          self#record (Some ("class_type_field", 0)) [("pctf_attributes", pctf_attributes); ("pctf_loc", pctf_loc); ("pctf_desc", pctf_desc)]
       method class_signature : Class_signature.t -> 'res  =
         fun class_signature ->
           let concrete =
@@ -7471,7 +7471,7 @@ module Unstable_for_testing = struct
           let { pcsig_fields; pcsig_self } : Class_signature.concrete = concrete in
           let pcsig_fields = self#list self#class_type_field pcsig_fields in
           let pcsig_self = self#core_type pcsig_self in
-          self#record [("pcsig_fields", pcsig_fields); ("pcsig_self", pcsig_self)]
+          self#record (Some ("class_signature", 0)) [("pcsig_fields", pcsig_fields); ("pcsig_self", pcsig_self)]
       method class_type_desc : Class_type_desc.t -> 'res  =
         fun class_type_desc ->
           let concrete =
@@ -7484,22 +7484,22 @@ module Unstable_for_testing = struct
             let x0 = self#class_type x0 in
             let x1 = self#longident_loc x1 in
             let x2 = self#override_flag x2 in
-            self#constr "Pcty_open" [x0; x1; x2]
+            self#constr (Some ("class_type_desc", 0)) "Pcty_open" [x0; x1; x2]
           | Pcty_extension x0 ->
             let x0 = self#extension x0 in
-            self#constr "Pcty_extension" [x0]
+            self#constr (Some ("class_type_desc", 0)) "Pcty_extension" [x0]
           | Pcty_arrow (x0, x1, x2) ->
             let x0 = self#class_type x0 in
             let x1 = self#core_type x1 in
             let x2 = self#arg_label x2 in
-            self#constr "Pcty_arrow" [x0; x1; x2]
+            self#constr (Some ("class_type_desc", 0)) "Pcty_arrow" [x0; x1; x2]
           | Pcty_signature x0 ->
             let x0 = self#class_signature x0 in
-            self#constr "Pcty_signature" [x0]
+            self#constr (Some ("class_type_desc", 0)) "Pcty_signature" [x0]
           | Pcty_constr (x0, x1) ->
             let x0 = self#list self#core_type x0 in
             let x1 = self#longident_loc x1 in
-            self#constr "Pcty_constr" [x0; x1]
+            self#constr (Some ("class_type_desc", 0)) "Pcty_constr" [x0; x1]
       method class_type : Class_type.t -> 'res  =
         fun class_type ->
           let concrete =
@@ -7511,7 +7511,7 @@ module Unstable_for_testing = struct
           let pcty_attributes = self#attributes pcty_attributes in
           let pcty_loc = self#location pcty_loc in
           let pcty_desc = self#class_type_desc pcty_desc in
-          self#record [("pcty_attributes", pcty_attributes); ("pcty_loc", pcty_loc); ("pcty_desc", pcty_desc)]
+          self#record (Some ("class_type", 0)) [("pcty_attributes", pcty_attributes); ("pcty_loc", pcty_loc); ("pcty_desc", pcty_desc)]
       method extension_constructor_kind : Extension_constructor_kind.t -> 'res  =
         fun extension_constructor_kind ->
           let concrete =
@@ -7522,11 +7522,11 @@ module Unstable_for_testing = struct
           match (concrete : Extension_constructor_kind.concrete) with
           | Pext_rebind x0 ->
             let x0 = self#longident_loc x0 in
-            self#constr "Pext_rebind" [x0]
+            self#constr (Some ("extension_constructor_kind", 0)) "Pext_rebind" [x0]
           | Pext_decl (x0, x1) ->
             let x0 = self#option self#core_type x0 in
             let x1 = self#constructor_arguments x1 in
-            self#constr "Pext_decl" [x0; x1]
+            self#constr (Some ("extension_constructor_kind", 0)) "Pext_decl" [x0; x1]
       method extension_constructor : Extension_constructor.t -> 'res  =
         fun extension_constructor ->
           let concrete =
@@ -7539,7 +7539,7 @@ module Unstable_for_testing = struct
           let pext_loc = self#location pext_loc in
           let pext_kind = self#extension_constructor_kind pext_kind in
           let pext_name = self#loc self#string pext_name in
-          self#record [("pext_attributes", pext_attributes); ("pext_loc", pext_loc); ("pext_kind", pext_kind); ("pext_name", pext_name)]
+          self#record (Some ("extension_constructor", 0)) [("pext_attributes", pext_attributes); ("pext_loc", pext_loc); ("pext_kind", pext_kind); ("pext_name", pext_name)]
       method type_extension : Type_extension.t -> 'res  =
         fun type_extension ->
           let concrete =
@@ -7553,7 +7553,7 @@ module Unstable_for_testing = struct
           let ptyext_constructors = self#list self#extension_constructor ptyext_constructors in
           let ptyext_params = self#list (fun (x0, x1) -> let x0 = self#variance x0 in let x1 = self#core_type x1 in self#tuple [x0; x1]) ptyext_params in
           let ptyext_path = self#longident_loc ptyext_path in
-          self#record [("ptyext_attributes", ptyext_attributes); ("ptyext_private", ptyext_private); ("ptyext_constructors", ptyext_constructors); ("ptyext_params", ptyext_params); ("ptyext_path", ptyext_path)]
+          self#record (Some ("type_extension", 0)) [("ptyext_attributes", ptyext_attributes); ("ptyext_private", ptyext_private); ("ptyext_constructors", ptyext_constructors); ("ptyext_params", ptyext_params); ("ptyext_path", ptyext_path)]
       method constructor_arguments : Constructor_arguments.t -> 'res  =
         fun constructor_arguments ->
           let concrete =
@@ -7564,10 +7564,10 @@ module Unstable_for_testing = struct
           match (concrete : Constructor_arguments.concrete) with
           | Pcstr_record x0 ->
             let x0 = self#list self#label_declaration x0 in
-            self#constr "Pcstr_record" [x0]
+            self#constr (Some ("constructor_arguments", 0)) "Pcstr_record" [x0]
           | Pcstr_tuple x0 ->
             let x0 = self#list self#core_type x0 in
-            self#constr "Pcstr_tuple" [x0]
+            self#constr (Some ("constructor_arguments", 0)) "Pcstr_tuple" [x0]
       method constructor_declaration : Constructor_declaration.t -> 'res  =
         fun constructor_declaration ->
           let concrete =
@@ -7581,7 +7581,7 @@ module Unstable_for_testing = struct
           let pcd_res = self#option self#core_type pcd_res in
           let pcd_args = self#constructor_arguments pcd_args in
           let pcd_name = self#loc self#string pcd_name in
-          self#record [("pcd_attributes", pcd_attributes); ("pcd_loc", pcd_loc); ("pcd_res", pcd_res); ("pcd_args", pcd_args); ("pcd_name", pcd_name)]
+          self#record (Some ("constructor_declaration", 0)) [("pcd_attributes", pcd_attributes); ("pcd_loc", pcd_loc); ("pcd_res", pcd_res); ("pcd_args", pcd_args); ("pcd_name", pcd_name)]
       method label_declaration : Label_declaration.t -> 'res  =
         fun label_declaration ->
           let concrete =
@@ -7595,7 +7595,7 @@ module Unstable_for_testing = struct
           let pld_type = self#core_type pld_type in
           let pld_mutable = self#mutable_flag pld_mutable in
           let pld_name = self#loc self#string pld_name in
-          self#record [("pld_attributes", pld_attributes); ("pld_loc", pld_loc); ("pld_type", pld_type); ("pld_mutable", pld_mutable); ("pld_name", pld_name)]
+          self#record (Some ("label_declaration", 0)) [("pld_attributes", pld_attributes); ("pld_loc", pld_loc); ("pld_type", pld_type); ("pld_mutable", pld_mutable); ("pld_name", pld_name)]
       method type_kind : Type_kind.t -> 'res  =
         fun type_kind ->
           let concrete =
@@ -7605,15 +7605,15 @@ module Unstable_for_testing = struct
           in
           match (concrete : Type_kind.concrete) with
           | Ptype_open ->
-            self#constr "Ptype_open" []
+            self#constr (Some ("type_kind", 0)) "Ptype_open" []
           | Ptype_record x0 ->
             let x0 = self#list self#label_declaration x0 in
-            self#constr "Ptype_record" [x0]
+            self#constr (Some ("type_kind", 0)) "Ptype_record" [x0]
           | Ptype_variant x0 ->
             let x0 = self#list self#constructor_declaration x0 in
-            self#constr "Ptype_variant" [x0]
+            self#constr (Some ("type_kind", 0)) "Ptype_variant" [x0]
           | Ptype_abstract ->
-            self#constr "Ptype_abstract" []
+            self#constr (Some ("type_kind", 0)) "Ptype_abstract" []
       method type_declaration : Type_declaration.t -> 'res  =
         fun type_declaration ->
           let concrete =
@@ -7630,7 +7630,7 @@ module Unstable_for_testing = struct
           let ptype_cstrs = self#list (fun (x0, x1, x2) -> let x0 = self#location x0 in let x1 = self#core_type x1 in let x2 = self#core_type x2 in self#tuple [x0; x1; x2]) ptype_cstrs in
           let ptype_params = self#list (fun (x0, x1) -> let x0 = self#variance x0 in let x1 = self#core_type x1 in self#tuple [x0; x1]) ptype_params in
           let ptype_name = self#loc self#string ptype_name in
-          self#record [("ptype_loc", ptype_loc); ("ptype_attributes", ptype_attributes); ("ptype_manifest", ptype_manifest); ("ptype_private", ptype_private); ("ptype_kind", ptype_kind); ("ptype_cstrs", ptype_cstrs); ("ptype_params", ptype_params); ("ptype_name", ptype_name)]
+          self#record (Some ("type_declaration", 0)) [("ptype_loc", ptype_loc); ("ptype_attributes", ptype_attributes); ("ptype_manifest", ptype_manifest); ("ptype_private", ptype_private); ("ptype_kind", ptype_kind); ("ptype_cstrs", ptype_cstrs); ("ptype_params", ptype_params); ("ptype_name", ptype_name)]
       method value_description : Value_description.t -> 'res  =
         fun value_description ->
           let concrete =
@@ -7644,7 +7644,7 @@ module Unstable_for_testing = struct
           let pval_prim = self#list self#string pval_prim in
           let pval_type = self#core_type pval_type in
           let pval_name = self#loc self#string pval_name in
-          self#record [("pval_loc", pval_loc); ("pval_attributes", pval_attributes); ("pval_prim", pval_prim); ("pval_type", pval_type); ("pval_name", pval_name)]
+          self#record (Some ("value_description", 0)) [("pval_loc", pval_loc); ("pval_attributes", pval_attributes); ("pval_prim", pval_prim); ("pval_type", pval_type); ("pval_name", pval_name)]
       method case : Case.t -> 'res  =
         fun case ->
           let concrete =
@@ -7656,7 +7656,7 @@ module Unstable_for_testing = struct
           let pc_rhs = self#expression pc_rhs in
           let pc_guard = self#option self#expression pc_guard in
           let pc_lhs = self#pattern pc_lhs in
-          self#record [("pc_rhs", pc_rhs); ("pc_guard", pc_guard); ("pc_lhs", pc_lhs)]
+          self#record (Some ("case", 0)) [("pc_rhs", pc_rhs); ("pc_guard", pc_guard); ("pc_lhs", pc_lhs)]
       method expression_desc : Expression_desc.t -> 'res  =
         fun expression_desc ->
           let concrete =
@@ -7666,146 +7666,146 @@ module Unstable_for_testing = struct
           in
           match (concrete : Expression_desc.concrete) with
           | Pexp_unreachable ->
-            self#constr "Pexp_unreachable" []
+            self#constr (Some ("expression_desc", 0)) "Pexp_unreachable" []
           | Pexp_extension x0 ->
             let x0 = self#extension x0 in
-            self#constr "Pexp_extension" [x0]
+            self#constr (Some ("expression_desc", 0)) "Pexp_extension" [x0]
           | Pexp_open (x0, x1, x2) ->
             let x0 = self#expression x0 in
             let x1 = self#longident_loc x1 in
             let x2 = self#override_flag x2 in
-            self#constr "Pexp_open" [x0; x1; x2]
+            self#constr (Some ("expression_desc", 0)) "Pexp_open" [x0; x1; x2]
           | Pexp_pack x0 ->
             let x0 = self#module_expr x0 in
-            self#constr "Pexp_pack" [x0]
+            self#constr (Some ("expression_desc", 0)) "Pexp_pack" [x0]
           | Pexp_newtype (x0, x1) ->
             let x0 = self#expression x0 in
             let x1 = self#loc self#string x1 in
-            self#constr "Pexp_newtype" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_newtype" [x0; x1]
           | Pexp_object x0 ->
             let x0 = self#class_structure x0 in
-            self#constr "Pexp_object" [x0]
+            self#constr (Some ("expression_desc", 0)) "Pexp_object" [x0]
           | Pexp_poly (x0, x1) ->
             let x0 = self#option self#core_type x0 in
             let x1 = self#expression x1 in
-            self#constr "Pexp_poly" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_poly" [x0; x1]
           | Pexp_lazy x0 ->
             let x0 = self#expression x0 in
-            self#constr "Pexp_lazy" [x0]
+            self#constr (Some ("expression_desc", 0)) "Pexp_lazy" [x0]
           | Pexp_assert x0 ->
             let x0 = self#expression x0 in
-            self#constr "Pexp_assert" [x0]
+            self#constr (Some ("expression_desc", 0)) "Pexp_assert" [x0]
           | Pexp_letexception (x0, x1) ->
             let x0 = self#expression x0 in
             let x1 = self#extension_constructor x1 in
-            self#constr "Pexp_letexception" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_letexception" [x0; x1]
           | Pexp_letmodule (x0, x1, x2) ->
             let x0 = self#expression x0 in
             let x1 = self#module_expr x1 in
             let x2 = self#loc self#string x2 in
-            self#constr "Pexp_letmodule" [x0; x1; x2]
+            self#constr (Some ("expression_desc", 0)) "Pexp_letmodule" [x0; x1; x2]
           | Pexp_override x0 ->
             let x0 = self#list (fun (x0, x1) -> let x0 = self#expression x0 in let x1 = self#loc self#label x1 in self#tuple [x0; x1]) x0 in
-            self#constr "Pexp_override" [x0]
+            self#constr (Some ("expression_desc", 0)) "Pexp_override" [x0]
           | Pexp_setinstvar (x0, x1) ->
             let x0 = self#expression x0 in
             let x1 = self#loc self#label x1 in
-            self#constr "Pexp_setinstvar" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_setinstvar" [x0; x1]
           | Pexp_new x0 ->
             let x0 = self#longident_loc x0 in
-            self#constr "Pexp_new" [x0]
+            self#constr (Some ("expression_desc", 0)) "Pexp_new" [x0]
           | Pexp_send (x0, x1) ->
             let x0 = self#loc self#label x0 in
             let x1 = self#expression x1 in
-            self#constr "Pexp_send" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_send" [x0; x1]
           | Pexp_coerce (x0, x1, x2) ->
             let x0 = self#core_type x0 in
             let x1 = self#option self#core_type x1 in
             let x2 = self#expression x2 in
-            self#constr "Pexp_coerce" [x0; x1; x2]
+            self#constr (Some ("expression_desc", 0)) "Pexp_coerce" [x0; x1; x2]
           | Pexp_constraint (x0, x1) ->
             let x0 = self#core_type x0 in
             let x1 = self#expression x1 in
-            self#constr "Pexp_constraint" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_constraint" [x0; x1]
           | Pexp_for (x0, x1, x2, x3, x4) ->
             let x0 = self#expression x0 in
             let x1 = self#direction_flag x1 in
             let x2 = self#expression x2 in
             let x3 = self#expression x3 in
             let x4 = self#pattern x4 in
-            self#constr "Pexp_for" [x0; x1; x2; x3; x4]
+            self#constr (Some ("expression_desc", 0)) "Pexp_for" [x0; x1; x2; x3; x4]
           | Pexp_while (x0, x1) ->
             let x0 = self#expression x0 in
             let x1 = self#expression x1 in
-            self#constr "Pexp_while" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_while" [x0; x1]
           | Pexp_sequence (x0, x1) ->
             let x0 = self#expression x0 in
             let x1 = self#expression x1 in
-            self#constr "Pexp_sequence" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_sequence" [x0; x1]
           | Pexp_ifthenelse (x0, x1, x2) ->
             let x0 = self#option self#expression x0 in
             let x1 = self#expression x1 in
             let x2 = self#expression x2 in
-            self#constr "Pexp_ifthenelse" [x0; x1; x2]
+            self#constr (Some ("expression_desc", 0)) "Pexp_ifthenelse" [x0; x1; x2]
           | Pexp_array x0 ->
             let x0 = self#list self#expression x0 in
-            self#constr "Pexp_array" [x0]
+            self#constr (Some ("expression_desc", 0)) "Pexp_array" [x0]
           | Pexp_setfield (x0, x1, x2) ->
             let x0 = self#expression x0 in
             let x1 = self#longident_loc x1 in
             let x2 = self#expression x2 in
-            self#constr "Pexp_setfield" [x0; x1; x2]
+            self#constr (Some ("expression_desc", 0)) "Pexp_setfield" [x0; x1; x2]
           | Pexp_field (x0, x1) ->
             let x0 = self#longident_loc x0 in
             let x1 = self#expression x1 in
-            self#constr "Pexp_field" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_field" [x0; x1]
           | Pexp_record (x0, x1) ->
             let x0 = self#option self#expression x0 in
             let x1 = self#list (fun (x0, x1) -> let x0 = self#expression x0 in let x1 = self#longident_loc x1 in self#tuple [x0; x1]) x1 in
-            self#constr "Pexp_record" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_record" [x0; x1]
           | Pexp_variant (x0, x1) ->
             let x0 = self#option self#expression x0 in
             let x1 = self#label x1 in
-            self#constr "Pexp_variant" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_variant" [x0; x1]
           | Pexp_construct (x0, x1) ->
             let x0 = self#option self#expression x0 in
             let x1 = self#longident_loc x1 in
-            self#constr "Pexp_construct" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_construct" [x0; x1]
           | Pexp_tuple x0 ->
             let x0 = self#list self#expression x0 in
-            self#constr "Pexp_tuple" [x0]
+            self#constr (Some ("expression_desc", 0)) "Pexp_tuple" [x0]
           | Pexp_try (x0, x1) ->
             let x0 = self#list self#case x0 in
             let x1 = self#expression x1 in
-            self#constr "Pexp_try" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_try" [x0; x1]
           | Pexp_match (x0, x1) ->
             let x0 = self#list self#case x0 in
             let x1 = self#expression x1 in
-            self#constr "Pexp_match" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_match" [x0; x1]
           | Pexp_apply (x0, x1) ->
             let x0 = self#list (fun (x0, x1) -> let x0 = self#expression x0 in let x1 = self#arg_label x1 in self#tuple [x0; x1]) x0 in
             let x1 = self#expression x1 in
-            self#constr "Pexp_apply" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_apply" [x0; x1]
           | Pexp_fun (x0, x1, x2, x3) ->
             let x0 = self#expression x0 in
             let x1 = self#pattern x1 in
             let x2 = self#option self#expression x2 in
             let x3 = self#arg_label x3 in
-            self#constr "Pexp_fun" [x0; x1; x2; x3]
+            self#constr (Some ("expression_desc", 0)) "Pexp_fun" [x0; x1; x2; x3]
           | Pexp_function x0 ->
             let x0 = self#list self#case x0 in
-            self#constr "Pexp_function" [x0]
+            self#constr (Some ("expression_desc", 0)) "Pexp_function" [x0]
           | Pexp_let (x0, x1, x2) ->
             let x0 = self#expression x0 in
             let x1 = self#list self#value_binding x1 in
             let x2 = self#rec_flag x2 in
-            self#constr "Pexp_let" [x0; x1; x2]
+            self#constr (Some ("expression_desc", 0)) "Pexp_let" [x0; x1; x2]
           | Pexp_constant x0 ->
             let x0 = self#constant x0 in
-            self#constr "Pexp_constant" [x0]
+            self#constr (Some ("expression_desc", 0)) "Pexp_constant" [x0]
           | Pexp_ident x0 ->
             let x0 = self#longident_loc x0 in
-            self#constr "Pexp_ident" [x0]
+            self#constr (Some ("expression_desc", 0)) "Pexp_ident" [x0]
       method expression : Expression.t -> 'res  =
         fun expression ->
           let concrete =
@@ -7817,7 +7817,7 @@ module Unstable_for_testing = struct
           let pexp_attributes = self#attributes pexp_attributes in
           let pexp_loc = self#location pexp_loc in
           let pexp_desc = self#expression_desc pexp_desc in
-          self#record [("pexp_attributes", pexp_attributes); ("pexp_loc", pexp_loc); ("pexp_desc", pexp_desc)]
+          self#record (Some ("expression", 0)) [("pexp_attributes", pexp_attributes); ("pexp_loc", pexp_loc); ("pexp_desc", pexp_desc)]
       method pattern_desc : Pattern_desc.t -> 'res  =
         fun pattern_desc ->
           let concrete =
@@ -7829,64 +7829,64 @@ module Unstable_for_testing = struct
           | Ppat_open (x0, x1) ->
             let x0 = self#pattern x0 in
             let x1 = self#longident_loc x1 in
-            self#constr "Ppat_open" [x0; x1]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_open" [x0; x1]
           | Ppat_extension x0 ->
             let x0 = self#extension x0 in
-            self#constr "Ppat_extension" [x0]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_extension" [x0]
           | Ppat_exception x0 ->
             let x0 = self#pattern x0 in
-            self#constr "Ppat_exception" [x0]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_exception" [x0]
           | Ppat_unpack x0 ->
             let x0 = self#loc self#string x0 in
-            self#constr "Ppat_unpack" [x0]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_unpack" [x0]
           | Ppat_lazy x0 ->
             let x0 = self#pattern x0 in
-            self#constr "Ppat_lazy" [x0]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_lazy" [x0]
           | Ppat_type x0 ->
             let x0 = self#longident_loc x0 in
-            self#constr "Ppat_type" [x0]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_type" [x0]
           | Ppat_constraint (x0, x1) ->
             let x0 = self#core_type x0 in
             let x1 = self#pattern x1 in
-            self#constr "Ppat_constraint" [x0; x1]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_constraint" [x0; x1]
           | Ppat_or (x0, x1) ->
             let x0 = self#pattern x0 in
             let x1 = self#pattern x1 in
-            self#constr "Ppat_or" [x0; x1]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_or" [x0; x1]
           | Ppat_array x0 ->
             let x0 = self#list self#pattern x0 in
-            self#constr "Ppat_array" [x0]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_array" [x0]
           | Ppat_record (x0, x1) ->
             let x0 = self#closed_flag x0 in
             let x1 = self#list (fun (x0, x1) -> let x0 = self#pattern x0 in let x1 = self#longident_loc x1 in self#tuple [x0; x1]) x1 in
-            self#constr "Ppat_record" [x0; x1]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_record" [x0; x1]
           | Ppat_variant (x0, x1) ->
             let x0 = self#option self#pattern x0 in
             let x1 = self#label x1 in
-            self#constr "Ppat_variant" [x0; x1]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_variant" [x0; x1]
           | Ppat_construct (x0, x1) ->
             let x0 = self#option self#pattern x0 in
             let x1 = self#longident_loc x1 in
-            self#constr "Ppat_construct" [x0; x1]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_construct" [x0; x1]
           | Ppat_tuple x0 ->
             let x0 = self#list self#pattern x0 in
-            self#constr "Ppat_tuple" [x0]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_tuple" [x0]
           | Ppat_interval (x0, x1) ->
             let x0 = self#constant x0 in
             let x1 = self#constant x1 in
-            self#constr "Ppat_interval" [x0; x1]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_interval" [x0; x1]
           | Ppat_constant x0 ->
             let x0 = self#constant x0 in
-            self#constr "Ppat_constant" [x0]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_constant" [x0]
           | Ppat_alias (x0, x1) ->
             let x0 = self#loc self#string x0 in
             let x1 = self#pattern x1 in
-            self#constr "Ppat_alias" [x0; x1]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_alias" [x0; x1]
           | Ppat_var x0 ->
             let x0 = self#loc self#string x0 in
-            self#constr "Ppat_var" [x0]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_var" [x0]
           | Ppat_any ->
-            self#constr "Ppat_any" []
+            self#constr (Some ("pattern_desc", 0)) "Ppat_any" []
       method pattern : Pattern.t -> 'res  =
         fun pattern ->
           let concrete =
@@ -7898,7 +7898,7 @@ module Unstable_for_testing = struct
           let ppat_attributes = self#attributes ppat_attributes in
           let ppat_loc = self#location ppat_loc in
           let ppat_desc = self#pattern_desc ppat_desc in
-          self#record [("ppat_attributes", ppat_attributes); ("ppat_loc", ppat_loc); ("ppat_desc", ppat_desc)]
+          self#record (Some ("pattern", 0)) [("ppat_attributes", ppat_attributes); ("ppat_loc", ppat_loc); ("ppat_desc", ppat_desc)]
       method object_field : Object_field.t -> 'res  =
         fun object_field ->
           let concrete =
@@ -7909,12 +7909,12 @@ module Unstable_for_testing = struct
           match (concrete : Object_field.concrete) with
           | Oinherit x0 ->
             let x0 = self#core_type x0 in
-            self#constr "Oinherit" [x0]
+            self#constr (Some ("object_field", 0)) "Oinherit" [x0]
           | Otag (x0, x1, x2) ->
             let x0 = self#core_type x0 in
             let x1 = self#attributes x1 in
             let x2 = self#loc self#label x2 in
-            self#constr "Otag" [x0; x1; x2]
+            self#constr (Some ("object_field", 0)) "Otag" [x0; x1; x2]
       method row_field : Row_field.t -> 'res  =
         fun row_field ->
           let concrete =
@@ -7925,13 +7925,13 @@ module Unstable_for_testing = struct
           match (concrete : Row_field.concrete) with
           | Rinherit x0 ->
             let x0 = self#core_type x0 in
-            self#constr "Rinherit" [x0]
+            self#constr (Some ("row_field", 0)) "Rinherit" [x0]
           | Rtag (x0, x1, x2, x3) ->
             let x0 = self#list self#core_type x0 in
             let x1 = self#bool x1 in
             let x2 = self#attributes x2 in
             let x3 = self#loc self#label x3 in
-            self#constr "Rtag" [x0; x1; x2; x3]
+            self#constr (Some ("row_field", 0)) "Rtag" [x0; x1; x2; x3]
       method package_type : Package_type.t -> 'res  =
         fun package_type ->
           let concrete =
@@ -7953,48 +7953,48 @@ module Unstable_for_testing = struct
           match (concrete : Core_type_desc.concrete) with
           | Ptyp_extension x0 ->
             let x0 = self#extension x0 in
-            self#constr "Ptyp_extension" [x0]
+            self#constr (Some ("core_type_desc", 0)) "Ptyp_extension" [x0]
           | Ptyp_package x0 ->
             let x0 = self#package_type x0 in
-            self#constr "Ptyp_package" [x0]
+            self#constr (Some ("core_type_desc", 0)) "Ptyp_package" [x0]
           | Ptyp_poly (x0, x1) ->
             let x0 = self#core_type x0 in
             let x1 = self#list (self#loc self#string) x1 in
-            self#constr "Ptyp_poly" [x0; x1]
+            self#constr (Some ("core_type_desc", 0)) "Ptyp_poly" [x0; x1]
           | Ptyp_variant (x0, x1, x2) ->
             let x0 = self#option (self#list self#label) x0 in
             let x1 = self#closed_flag x1 in
             let x2 = self#list self#row_field x2 in
-            self#constr "Ptyp_variant" [x0; x1; x2]
+            self#constr (Some ("core_type_desc", 0)) "Ptyp_variant" [x0; x1; x2]
           | Ptyp_alias (x0, x1) ->
             let x0 = self#string x0 in
             let x1 = self#core_type x1 in
-            self#constr "Ptyp_alias" [x0; x1]
+            self#constr (Some ("core_type_desc", 0)) "Ptyp_alias" [x0; x1]
           | Ptyp_class (x0, x1) ->
             let x0 = self#list self#core_type x0 in
             let x1 = self#longident_loc x1 in
-            self#constr "Ptyp_class" [x0; x1]
+            self#constr (Some ("core_type_desc", 0)) "Ptyp_class" [x0; x1]
           | Ptyp_object (x0, x1) ->
             let x0 = self#closed_flag x0 in
             let x1 = self#list self#object_field x1 in
-            self#constr "Ptyp_object" [x0; x1]
+            self#constr (Some ("core_type_desc", 0)) "Ptyp_object" [x0; x1]
           | Ptyp_constr (x0, x1) ->
             let x0 = self#list self#core_type x0 in
             let x1 = self#longident_loc x1 in
-            self#constr "Ptyp_constr" [x0; x1]
+            self#constr (Some ("core_type_desc", 0)) "Ptyp_constr" [x0; x1]
           | Ptyp_tuple x0 ->
             let x0 = self#list self#core_type x0 in
-            self#constr "Ptyp_tuple" [x0]
+            self#constr (Some ("core_type_desc", 0)) "Ptyp_tuple" [x0]
           | Ptyp_arrow (x0, x1, x2) ->
             let x0 = self#core_type x0 in
             let x1 = self#core_type x1 in
             let x2 = self#arg_label x2 in
-            self#constr "Ptyp_arrow" [x0; x1; x2]
+            self#constr (Some ("core_type_desc", 0)) "Ptyp_arrow" [x0; x1; x2]
           | Ptyp_var x0 ->
             let x0 = self#string x0 in
-            self#constr "Ptyp_var" [x0]
+            self#constr (Some ("core_type_desc", 0)) "Ptyp_var" [x0]
           | Ptyp_any ->
-            self#constr "Ptyp_any" []
+            self#constr (Some ("core_type_desc", 0)) "Ptyp_any" []
       method core_type : Core_type.t -> 'res  =
         fun core_type ->
           let concrete =
@@ -8006,7 +8006,7 @@ module Unstable_for_testing = struct
           let ptyp_attributes = self#attributes ptyp_attributes in
           let ptyp_loc = self#location ptyp_loc in
           let ptyp_desc = self#core_type_desc ptyp_desc in
-          self#record [("ptyp_attributes", ptyp_attributes); ("ptyp_loc", ptyp_loc); ("ptyp_desc", ptyp_desc)]
+          self#record (Some ("core_type", 0)) [("ptyp_attributes", ptyp_attributes); ("ptyp_loc", ptyp_loc); ("ptyp_desc", ptyp_desc)]
       method payload : Payload.t -> 'res  =
         fun payload ->
           let concrete =
@@ -8018,16 +8018,16 @@ module Unstable_for_testing = struct
           | PPat (x0, x1) ->
             let x0 = self#option self#expression x0 in
             let x1 = self#pattern x1 in
-            self#constr "PPat" [x0; x1]
+            self#constr (Some ("payload", 0)) "PPat" [x0; x1]
           | PTyp x0 ->
             let x0 = self#core_type x0 in
-            self#constr "PTyp" [x0]
+            self#constr (Some ("payload", 0)) "PTyp" [x0]
           | PSig x0 ->
             let x0 = self#signature x0 in
-            self#constr "PSig" [x0]
+            self#constr (Some ("payload", 0)) "PSig" [x0]
           | PStr x0 ->
             let x0 = self#structure x0 in
-            self#constr "PStr" [x0]
+            self#constr (Some ("payload", 0)) "PStr" [x0]
       method attributes : Attributes.t -> 'res  =
         fun attributes ->
           let concrete =
@@ -8070,18 +8070,18 @@ module Unstable_for_testing = struct
           | Pconst_float (x0, x1) ->
             let x0 = self#option self#char x0 in
             let x1 = self#string x1 in
-            self#constr "Pconst_float" [x0; x1]
+            self#constr (Some ("constant", 0)) "Pconst_float" [x0; x1]
           | Pconst_string (x0, x1) ->
             let x0 = self#option self#string x0 in
             let x1 = self#string x1 in
-            self#constr "Pconst_string" [x0; x1]
+            self#constr (Some ("constant", 0)) "Pconst_string" [x0; x1]
           | Pconst_char x0 ->
             let x0 = self#char x0 in
-            self#constr "Pconst_char" [x0]
+            self#constr (Some ("constant", 0)) "Pconst_char" [x0]
           | Pconst_integer (x0, x1) ->
             let x0 = self#option self#char x0 in
             let x1 = self#string x1 in
-            self#constr "Pconst_integer" [x0; x1]
+            self#constr (Some ("constant", 0)) "Pconst_integer" [x0; x1]
       method variance : Variance.t -> 'res  =
         fun variance ->
           let concrete =
@@ -8091,11 +8091,11 @@ module Unstable_for_testing = struct
           in
           match (concrete : Variance.concrete) with
           | Invariant ->
-            self#constr "Invariant" []
+            self#constr (Some ("variance", 0)) "Invariant" []
           | Contravariant ->
-            self#constr "Contravariant" []
+            self#constr (Some ("variance", 0)) "Contravariant" []
           | Covariant ->
-            self#constr "Covariant" []
+            self#constr (Some ("variance", 0)) "Covariant" []
       method arg_label : Arg_label.t -> 'res  =
         fun arg_label ->
           let concrete =
@@ -8106,12 +8106,12 @@ module Unstable_for_testing = struct
           match (concrete : Arg_label.concrete) with
           | Optional x0 ->
             let x0 = self#string x0 in
-            self#constr "Optional" [x0]
+            self#constr (Some ("arg_label", 0)) "Optional" [x0]
           | Labelled x0 ->
             let x0 = self#string x0 in
-            self#constr "Labelled" [x0]
+            self#constr (Some ("arg_label", 0)) "Labelled" [x0]
           | Nolabel ->
-            self#constr "Nolabel" []
+            self#constr (Some ("arg_label", 0)) "Nolabel" []
       method label : Label.t -> 'res  =
         fun label ->
           let concrete =
@@ -8130,9 +8130,9 @@ module Unstable_for_testing = struct
           in
           match (concrete : Closed_flag.concrete) with
           | Open ->
-            self#constr "Open" []
+            self#constr (Some ("closed_flag", 0)) "Open" []
           | Closed ->
-            self#constr "Closed" []
+            self#constr (Some ("closed_flag", 0)) "Closed" []
       method override_flag : Override_flag.t -> 'res  =
         fun override_flag ->
           let concrete =
@@ -8142,9 +8142,9 @@ module Unstable_for_testing = struct
           in
           match (concrete : Override_flag.concrete) with
           | Fresh ->
-            self#constr "Fresh" []
+            self#constr (Some ("override_flag", 0)) "Fresh" []
           | Override ->
-            self#constr "Override" []
+            self#constr (Some ("override_flag", 0)) "Override" []
       method virtual_flag : Virtual_flag.t -> 'res  =
         fun virtual_flag ->
           let concrete =
@@ -8154,9 +8154,9 @@ module Unstable_for_testing = struct
           in
           match (concrete : Virtual_flag.concrete) with
           | Concrete ->
-            self#constr "Concrete" []
+            self#constr (Some ("virtual_flag", 0)) "Concrete" []
           | Virtual ->
-            self#constr "Virtual" []
+            self#constr (Some ("virtual_flag", 0)) "Virtual" []
       method mutable_flag : Mutable_flag.t -> 'res  =
         fun mutable_flag ->
           let concrete =
@@ -8166,9 +8166,9 @@ module Unstable_for_testing = struct
           in
           match (concrete : Mutable_flag.concrete) with
           | Mutable ->
-            self#constr "Mutable" []
+            self#constr (Some ("mutable_flag", 0)) "Mutable" []
           | Immutable ->
-            self#constr "Immutable" []
+            self#constr (Some ("mutable_flag", 0)) "Immutable" []
       method private_flag : Private_flag.t -> 'res  =
         fun private_flag ->
           let concrete =
@@ -8178,9 +8178,9 @@ module Unstable_for_testing = struct
           in
           match (concrete : Private_flag.concrete) with
           | Public ->
-            self#constr "Public" []
+            self#constr (Some ("private_flag", 0)) "Public" []
           | Private ->
-            self#constr "Private" []
+            self#constr (Some ("private_flag", 0)) "Private" []
       method direction_flag : Direction_flag.t -> 'res  =
         fun direction_flag ->
           let concrete =
@@ -8190,9 +8190,9 @@ module Unstable_for_testing = struct
           in
           match (concrete : Direction_flag.concrete) with
           | Downto ->
-            self#constr "Downto" []
+            self#constr (Some ("direction_flag", 0)) "Downto" []
           | Upto ->
-            self#constr "Upto" []
+            self#constr (Some ("direction_flag", 0)) "Upto" []
       method rec_flag : Rec_flag.t -> 'res  =
         fun rec_flag ->
           let concrete =
@@ -8202,9 +8202,9 @@ module Unstable_for_testing = struct
           in
           match (concrete : Rec_flag.concrete) with
           | Recursive ->
-            self#constr "Recursive" []
+            self#constr (Some ("rec_flag", 0)) "Recursive" []
           | Nonrecursive ->
-            self#constr "Nonrecursive" []
+            self#constr (Some ("rec_flag", 0)) "Nonrecursive" []
       method longident_loc : Longident_loc.t -> 'res  =
         fun longident_loc ->
           let concrete =
@@ -8225,14 +8225,14 @@ module Unstable_for_testing = struct
           | Lapply (x0, x1) ->
             let x0 = self#longident x0 in
             let x1 = self#longident x1 in
-            self#constr "Lapply" [x0; x1]
+            self#constr (Some ("longident", 0)) "Lapply" [x0; x1]
           | Ldot (x0, x1) ->
             let x0 = self#string x0 in
             let x1 = self#longident x1 in
-            self#constr "Ldot" [x0; x1]
+            self#constr (Some ("longident", 0)) "Ldot" [x0; x1]
           | Lident x0 ->
             let x0 = self#string x0 in
-            self#constr "Lident" [x0]
+            self#constr (Some ("longident", 0)) "Lident" [x0]
     end
 end
 
@@ -15065,8 +15065,8 @@ module V4_07 = struct
 
   class virtual ['res] lift =
     object (self)
-      method virtual record : (string * 'res) list -> 'res
-      method virtual constr : string -> 'res list -> 'res
+      method virtual record : (string * int) option -> (string * 'res) list -> 'res
+      method virtual constr : (string * int) option -> string -> 'res list -> 'res
       method virtual tuple : 'res list -> 'res
       method virtual bool : bool -> 'res
       method virtual char : char -> 'res
@@ -15086,15 +15086,15 @@ module V4_07 = struct
           match (concrete : Longident.concrete) with
           | Lident x0 ->
             let x0 = self#string x0 in
-            self#constr "Lident" [x0]
+            self#constr (Some ("longident", 0)) "Lident" [x0]
           | Ldot (x0, x1) ->
             let x0 = self#longident x0 in
             let x1 = self#string x1 in
-            self#constr "Ldot" [x0; x1]
+            self#constr (Some ("longident", 0)) "Ldot" [x0; x1]
           | Lapply (x0, x1) ->
             let x0 = self#longident x0 in
             let x1 = self#longident x1 in
-            self#constr "Lapply" [x0; x1]
+            self#constr (Some ("longident", 0)) "Lapply" [x0; x1]
       method longident_loc : Longident_loc.t -> 'res  =
         fun longident_loc ->
           let concrete =
@@ -15113,9 +15113,9 @@ module V4_07 = struct
           in
           match (concrete : Rec_flag.concrete) with
           | Nonrecursive ->
-            self#constr "Nonrecursive" []
+            self#constr (Some ("rec_flag", 0)) "Nonrecursive" []
           | Recursive ->
-            self#constr "Recursive" []
+            self#constr (Some ("rec_flag", 0)) "Recursive" []
       method direction_flag : Direction_flag.t -> 'res  =
         fun direction_flag ->
           let concrete =
@@ -15125,9 +15125,9 @@ module V4_07 = struct
           in
           match (concrete : Direction_flag.concrete) with
           | Upto ->
-            self#constr "Upto" []
+            self#constr (Some ("direction_flag", 0)) "Upto" []
           | Downto ->
-            self#constr "Downto" []
+            self#constr (Some ("direction_flag", 0)) "Downto" []
       method private_flag : Private_flag.t -> 'res  =
         fun private_flag ->
           let concrete =
@@ -15137,9 +15137,9 @@ module V4_07 = struct
           in
           match (concrete : Private_flag.concrete) with
           | Private ->
-            self#constr "Private" []
+            self#constr (Some ("private_flag", 0)) "Private" []
           | Public ->
-            self#constr "Public" []
+            self#constr (Some ("private_flag", 0)) "Public" []
       method mutable_flag : Mutable_flag.t -> 'res  =
         fun mutable_flag ->
           let concrete =
@@ -15149,9 +15149,9 @@ module V4_07 = struct
           in
           match (concrete : Mutable_flag.concrete) with
           | Immutable ->
-            self#constr "Immutable" []
+            self#constr (Some ("mutable_flag", 0)) "Immutable" []
           | Mutable ->
-            self#constr "Mutable" []
+            self#constr (Some ("mutable_flag", 0)) "Mutable" []
       method virtual_flag : Virtual_flag.t -> 'res  =
         fun virtual_flag ->
           let concrete =
@@ -15161,9 +15161,9 @@ module V4_07 = struct
           in
           match (concrete : Virtual_flag.concrete) with
           | Virtual ->
-            self#constr "Virtual" []
+            self#constr (Some ("virtual_flag", 0)) "Virtual" []
           | Concrete ->
-            self#constr "Concrete" []
+            self#constr (Some ("virtual_flag", 0)) "Concrete" []
       method override_flag : Override_flag.t -> 'res  =
         fun override_flag ->
           let concrete =
@@ -15173,9 +15173,9 @@ module V4_07 = struct
           in
           match (concrete : Override_flag.concrete) with
           | Override ->
-            self#constr "Override" []
+            self#constr (Some ("override_flag", 0)) "Override" []
           | Fresh ->
-            self#constr "Fresh" []
+            self#constr (Some ("override_flag", 0)) "Fresh" []
       method closed_flag : Closed_flag.t -> 'res  =
         fun closed_flag ->
           let concrete =
@@ -15185,9 +15185,9 @@ module V4_07 = struct
           in
           match (concrete : Closed_flag.concrete) with
           | Closed ->
-            self#constr "Closed" []
+            self#constr (Some ("closed_flag", 0)) "Closed" []
           | Open ->
-            self#constr "Open" []
+            self#constr (Some ("closed_flag", 0)) "Open" []
       method label : Label.t -> 'res  =
         fun label ->
           let concrete =
@@ -15206,13 +15206,13 @@ module V4_07 = struct
           in
           match (concrete : Arg_label.concrete) with
           | Nolabel ->
-            self#constr "Nolabel" []
+            self#constr (Some ("arg_label", 0)) "Nolabel" []
           | Labelled x0 ->
             let x0 = self#string x0 in
-            self#constr "Labelled" [x0]
+            self#constr (Some ("arg_label", 0)) "Labelled" [x0]
           | Optional x0 ->
             let x0 = self#string x0 in
-            self#constr "Optional" [x0]
+            self#constr (Some ("arg_label", 0)) "Optional" [x0]
       method variance : Variance.t -> 'res  =
         fun variance ->
           let concrete =
@@ -15222,11 +15222,11 @@ module V4_07 = struct
           in
           match (concrete : Variance.concrete) with
           | Covariant ->
-            self#constr "Covariant" []
+            self#constr (Some ("variance", 0)) "Covariant" []
           | Contravariant ->
-            self#constr "Contravariant" []
+            self#constr (Some ("variance", 0)) "Contravariant" []
           | Invariant ->
-            self#constr "Invariant" []
+            self#constr (Some ("variance", 0)) "Invariant" []
       method constant : Constant.t -> 'res  =
         fun constant ->
           let concrete =
@@ -15238,18 +15238,18 @@ module V4_07 = struct
           | Pconst_integer (x0, x1) ->
             let x0 = self#string x0 in
             let x1 = self#option self#char x1 in
-            self#constr "Pconst_integer" [x0; x1]
+            self#constr (Some ("constant", 0)) "Pconst_integer" [x0; x1]
           | Pconst_char x0 ->
             let x0 = self#char x0 in
-            self#constr "Pconst_char" [x0]
+            self#constr (Some ("constant", 0)) "Pconst_char" [x0]
           | Pconst_string (x0, x1) ->
             let x0 = self#string x0 in
             let x1 = self#option self#string x1 in
-            self#constr "Pconst_string" [x0; x1]
+            self#constr (Some ("constant", 0)) "Pconst_string" [x0; x1]
           | Pconst_float (x0, x1) ->
             let x0 = self#string x0 in
             let x1 = self#option self#char x1 in
-            self#constr "Pconst_float" [x0; x1]
+            self#constr (Some ("constant", 0)) "Pconst_float" [x0; x1]
       method attribute : Attribute.t -> 'res  =
         fun attribute ->
           let concrete =
@@ -15291,17 +15291,17 @@ module V4_07 = struct
           match (concrete : Payload.concrete) with
           | PStr x0 ->
             let x0 = self#structure x0 in
-            self#constr "PStr" [x0]
+            self#constr (Some ("payload", 0)) "PStr" [x0]
           | PSig x0 ->
             let x0 = self#signature x0 in
-            self#constr "PSig" [x0]
+            self#constr (Some ("payload", 0)) "PSig" [x0]
           | PTyp x0 ->
             let x0 = self#core_type x0 in
-            self#constr "PTyp" [x0]
+            self#constr (Some ("payload", 0)) "PTyp" [x0]
           | PPat (x0, x1) ->
             let x0 = self#pattern x0 in
             let x1 = self#option self#expression x1 in
-            self#constr "PPat" [x0; x1]
+            self#constr (Some ("payload", 0)) "PPat" [x0; x1]
       method core_type : Core_type.t -> 'res  =
         fun core_type ->
           let concrete =
@@ -15313,7 +15313,7 @@ module V4_07 = struct
           let ptyp_desc = self#core_type_desc ptyp_desc in
           let ptyp_loc = self#location ptyp_loc in
           let ptyp_attributes = self#attributes ptyp_attributes in
-          self#record [("ptyp_desc", ptyp_desc); ("ptyp_loc", ptyp_loc); ("ptyp_attributes", ptyp_attributes)]
+          self#record (Some ("core_type", 0)) [("ptyp_desc", ptyp_desc); ("ptyp_loc", ptyp_loc); ("ptyp_attributes", ptyp_attributes)]
       method core_type_desc : Core_type_desc.t -> 'res  =
         fun core_type_desc ->
           let concrete =
@@ -15323,49 +15323,49 @@ module V4_07 = struct
           in
           match (concrete : Core_type_desc.concrete) with
           | Ptyp_any ->
-            self#constr "Ptyp_any" []
+            self#constr (Some ("core_type_desc", 0)) "Ptyp_any" []
           | Ptyp_var x0 ->
             let x0 = self#string x0 in
-            self#constr "Ptyp_var" [x0]
+            self#constr (Some ("core_type_desc", 0)) "Ptyp_var" [x0]
           | Ptyp_arrow (x0, x1, x2) ->
             let x0 = self#arg_label x0 in
             let x1 = self#core_type x1 in
             let x2 = self#core_type x2 in
-            self#constr "Ptyp_arrow" [x0; x1; x2]
+            self#constr (Some ("core_type_desc", 0)) "Ptyp_arrow" [x0; x1; x2]
           | Ptyp_tuple x0 ->
             let x0 = self#list self#core_type x0 in
-            self#constr "Ptyp_tuple" [x0]
+            self#constr (Some ("core_type_desc", 0)) "Ptyp_tuple" [x0]
           | Ptyp_constr (x0, x1) ->
             let x0 = self#longident_loc x0 in
             let x1 = self#list self#core_type x1 in
-            self#constr "Ptyp_constr" [x0; x1]
+            self#constr (Some ("core_type_desc", 0)) "Ptyp_constr" [x0; x1]
           | Ptyp_object (x0, x1) ->
             let x0 = self#list self#object_field x0 in
             let x1 = self#closed_flag x1 in
-            self#constr "Ptyp_object" [x0; x1]
+            self#constr (Some ("core_type_desc", 0)) "Ptyp_object" [x0; x1]
           | Ptyp_class (x0, x1) ->
             let x0 = self#longident_loc x0 in
             let x1 = self#list self#core_type x1 in
-            self#constr "Ptyp_class" [x0; x1]
+            self#constr (Some ("core_type_desc", 0)) "Ptyp_class" [x0; x1]
           | Ptyp_alias (x0, x1) ->
             let x0 = self#core_type x0 in
             let x1 = self#string x1 in
-            self#constr "Ptyp_alias" [x0; x1]
+            self#constr (Some ("core_type_desc", 0)) "Ptyp_alias" [x0; x1]
           | Ptyp_variant (x0, x1, x2) ->
             let x0 = self#list self#row_field x0 in
             let x1 = self#closed_flag x1 in
             let x2 = self#option (self#list self#label) x2 in
-            self#constr "Ptyp_variant" [x0; x1; x2]
+            self#constr (Some ("core_type_desc", 0)) "Ptyp_variant" [x0; x1; x2]
           | Ptyp_poly (x0, x1) ->
             let x0 = self#list (self#loc self#string) x0 in
             let x1 = self#core_type x1 in
-            self#constr "Ptyp_poly" [x0; x1]
+            self#constr (Some ("core_type_desc", 0)) "Ptyp_poly" [x0; x1]
           | Ptyp_package x0 ->
             let x0 = self#package_type x0 in
-            self#constr "Ptyp_package" [x0]
+            self#constr (Some ("core_type_desc", 0)) "Ptyp_package" [x0]
           | Ptyp_extension x0 ->
             let x0 = self#extension x0 in
-            self#constr "Ptyp_extension" [x0]
+            self#constr (Some ("core_type_desc", 0)) "Ptyp_extension" [x0]
       method package_type : Package_type.t -> 'res  =
         fun package_type ->
           let concrete =
@@ -15390,10 +15390,10 @@ module V4_07 = struct
             let x1 = self#attributes x1 in
             let x2 = self#bool x2 in
             let x3 = self#list self#core_type x3 in
-            self#constr "Rtag" [x0; x1; x2; x3]
+            self#constr (Some ("row_field", 0)) "Rtag" [x0; x1; x2; x3]
           | Rinherit x0 ->
             let x0 = self#core_type x0 in
-            self#constr "Rinherit" [x0]
+            self#constr (Some ("row_field", 0)) "Rinherit" [x0]
       method object_field : Object_field.t -> 'res  =
         fun object_field ->
           let concrete =
@@ -15406,10 +15406,10 @@ module V4_07 = struct
             let x0 = self#loc self#label x0 in
             let x1 = self#attributes x1 in
             let x2 = self#core_type x2 in
-            self#constr "Otag" [x0; x1; x2]
+            self#constr (Some ("object_field", 0)) "Otag" [x0; x1; x2]
           | Oinherit x0 ->
             let x0 = self#core_type x0 in
-            self#constr "Oinherit" [x0]
+            self#constr (Some ("object_field", 0)) "Oinherit" [x0]
       method pattern : Pattern.t -> 'res  =
         fun pattern ->
           let concrete =
@@ -15421,7 +15421,7 @@ module V4_07 = struct
           let ppat_desc = self#pattern_desc ppat_desc in
           let ppat_loc = self#location ppat_loc in
           let ppat_attributes = self#attributes ppat_attributes in
-          self#record [("ppat_desc", ppat_desc); ("ppat_loc", ppat_loc); ("ppat_attributes", ppat_attributes)]
+          self#record (Some ("pattern", 0)) [("ppat_desc", ppat_desc); ("ppat_loc", ppat_loc); ("ppat_attributes", ppat_attributes)]
       method pattern_desc : Pattern_desc.t -> 'res  =
         fun pattern_desc ->
           let concrete =
@@ -15431,66 +15431,66 @@ module V4_07 = struct
           in
           match (concrete : Pattern_desc.concrete) with
           | Ppat_any ->
-            self#constr "Ppat_any" []
+            self#constr (Some ("pattern_desc", 0)) "Ppat_any" []
           | Ppat_var x0 ->
             let x0 = self#loc self#string x0 in
-            self#constr "Ppat_var" [x0]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_var" [x0]
           | Ppat_alias (x0, x1) ->
             let x0 = self#pattern x0 in
             let x1 = self#loc self#string x1 in
-            self#constr "Ppat_alias" [x0; x1]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_alias" [x0; x1]
           | Ppat_constant x0 ->
             let x0 = self#constant x0 in
-            self#constr "Ppat_constant" [x0]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_constant" [x0]
           | Ppat_interval (x0, x1) ->
             let x0 = self#constant x0 in
             let x1 = self#constant x1 in
-            self#constr "Ppat_interval" [x0; x1]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_interval" [x0; x1]
           | Ppat_tuple x0 ->
             let x0 = self#list self#pattern x0 in
-            self#constr "Ppat_tuple" [x0]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_tuple" [x0]
           | Ppat_construct (x0, x1) ->
             let x0 = self#longident_loc x0 in
             let x1 = self#option self#pattern x1 in
-            self#constr "Ppat_construct" [x0; x1]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_construct" [x0; x1]
           | Ppat_variant (x0, x1) ->
             let x0 = self#label x0 in
             let x1 = self#option self#pattern x1 in
-            self#constr "Ppat_variant" [x0; x1]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_variant" [x0; x1]
           | Ppat_record (x0, x1) ->
             let x0 = self#list (fun (x0, x1) -> let x0 = self#longident_loc x0 in let x1 = self#pattern x1 in self#tuple [x0; x1]) x0 in
             let x1 = self#closed_flag x1 in
-            self#constr "Ppat_record" [x0; x1]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_record" [x0; x1]
           | Ppat_array x0 ->
             let x0 = self#list self#pattern x0 in
-            self#constr "Ppat_array" [x0]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_array" [x0]
           | Ppat_or (x0, x1) ->
             let x0 = self#pattern x0 in
             let x1 = self#pattern x1 in
-            self#constr "Ppat_or" [x0; x1]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_or" [x0; x1]
           | Ppat_constraint (x0, x1) ->
             let x0 = self#pattern x0 in
             let x1 = self#core_type x1 in
-            self#constr "Ppat_constraint" [x0; x1]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_constraint" [x0; x1]
           | Ppat_type x0 ->
             let x0 = self#longident_loc x0 in
-            self#constr "Ppat_type" [x0]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_type" [x0]
           | Ppat_lazy x0 ->
             let x0 = self#pattern x0 in
-            self#constr "Ppat_lazy" [x0]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_lazy" [x0]
           | Ppat_unpack x0 ->
             let x0 = self#loc self#string x0 in
-            self#constr "Ppat_unpack" [x0]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_unpack" [x0]
           | Ppat_exception x0 ->
             let x0 = self#pattern x0 in
-            self#constr "Ppat_exception" [x0]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_exception" [x0]
           | Ppat_extension x0 ->
             let x0 = self#extension x0 in
-            self#constr "Ppat_extension" [x0]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_extension" [x0]
           | Ppat_open (x0, x1) ->
             let x0 = self#longident_loc x0 in
             let x1 = self#pattern x1 in
-            self#constr "Ppat_open" [x0; x1]
+            self#constr (Some ("pattern_desc", 0)) "Ppat_open" [x0; x1]
       method expression : Expression.t -> 'res  =
         fun expression ->
           let concrete =
@@ -15502,7 +15502,7 @@ module V4_07 = struct
           let pexp_desc = self#expression_desc pexp_desc in
           let pexp_loc = self#location pexp_loc in
           let pexp_attributes = self#attributes pexp_attributes in
-          self#record [("pexp_desc", pexp_desc); ("pexp_loc", pexp_loc); ("pexp_attributes", pexp_attributes)]
+          self#record (Some ("expression", 0)) [("pexp_desc", pexp_desc); ("pexp_loc", pexp_loc); ("pexp_attributes", pexp_attributes)]
       method expression_desc : Expression_desc.t -> 'res  =
         fun expression_desc ->
           let concrete =
@@ -15513,145 +15513,145 @@ module V4_07 = struct
           match (concrete : Expression_desc.concrete) with
           | Pexp_ident x0 ->
             let x0 = self#longident_loc x0 in
-            self#constr "Pexp_ident" [x0]
+            self#constr (Some ("expression_desc", 0)) "Pexp_ident" [x0]
           | Pexp_constant x0 ->
             let x0 = self#constant x0 in
-            self#constr "Pexp_constant" [x0]
+            self#constr (Some ("expression_desc", 0)) "Pexp_constant" [x0]
           | Pexp_let (x0, x1, x2) ->
             let x0 = self#rec_flag x0 in
             let x1 = self#list self#value_binding x1 in
             let x2 = self#expression x2 in
-            self#constr "Pexp_let" [x0; x1; x2]
+            self#constr (Some ("expression_desc", 0)) "Pexp_let" [x0; x1; x2]
           | Pexp_function x0 ->
             let x0 = self#list self#case x0 in
-            self#constr "Pexp_function" [x0]
+            self#constr (Some ("expression_desc", 0)) "Pexp_function" [x0]
           | Pexp_fun (x0, x1, x2, x3) ->
             let x0 = self#arg_label x0 in
             let x1 = self#option self#expression x1 in
             let x2 = self#pattern x2 in
             let x3 = self#expression x3 in
-            self#constr "Pexp_fun" [x0; x1; x2; x3]
+            self#constr (Some ("expression_desc", 0)) "Pexp_fun" [x0; x1; x2; x3]
           | Pexp_apply (x0, x1) ->
             let x0 = self#expression x0 in
             let x1 = self#list (fun (x0, x1) -> let x0 = self#arg_label x0 in let x1 = self#expression x1 in self#tuple [x0; x1]) x1 in
-            self#constr "Pexp_apply" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_apply" [x0; x1]
           | Pexp_match (x0, x1) ->
             let x0 = self#expression x0 in
             let x1 = self#list self#case x1 in
-            self#constr "Pexp_match" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_match" [x0; x1]
           | Pexp_try (x0, x1) ->
             let x0 = self#expression x0 in
             let x1 = self#list self#case x1 in
-            self#constr "Pexp_try" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_try" [x0; x1]
           | Pexp_tuple x0 ->
             let x0 = self#list self#expression x0 in
-            self#constr "Pexp_tuple" [x0]
+            self#constr (Some ("expression_desc", 0)) "Pexp_tuple" [x0]
           | Pexp_construct (x0, x1) ->
             let x0 = self#longident_loc x0 in
             let x1 = self#option self#expression x1 in
-            self#constr "Pexp_construct" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_construct" [x0; x1]
           | Pexp_variant (x0, x1) ->
             let x0 = self#label x0 in
             let x1 = self#option self#expression x1 in
-            self#constr "Pexp_variant" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_variant" [x0; x1]
           | Pexp_record (x0, x1) ->
             let x0 = self#list (fun (x0, x1) -> let x0 = self#longident_loc x0 in let x1 = self#expression x1 in self#tuple [x0; x1]) x0 in
             let x1 = self#option self#expression x1 in
-            self#constr "Pexp_record" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_record" [x0; x1]
           | Pexp_field (x0, x1) ->
             let x0 = self#expression x0 in
             let x1 = self#longident_loc x1 in
-            self#constr "Pexp_field" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_field" [x0; x1]
           | Pexp_setfield (x0, x1, x2) ->
             let x0 = self#expression x0 in
             let x1 = self#longident_loc x1 in
             let x2 = self#expression x2 in
-            self#constr "Pexp_setfield" [x0; x1; x2]
+            self#constr (Some ("expression_desc", 0)) "Pexp_setfield" [x0; x1; x2]
           | Pexp_array x0 ->
             let x0 = self#list self#expression x0 in
-            self#constr "Pexp_array" [x0]
+            self#constr (Some ("expression_desc", 0)) "Pexp_array" [x0]
           | Pexp_ifthenelse (x0, x1, x2) ->
             let x0 = self#expression x0 in
             let x1 = self#expression x1 in
             let x2 = self#option self#expression x2 in
-            self#constr "Pexp_ifthenelse" [x0; x1; x2]
+            self#constr (Some ("expression_desc", 0)) "Pexp_ifthenelse" [x0; x1; x2]
           | Pexp_sequence (x0, x1) ->
             let x0 = self#expression x0 in
             let x1 = self#expression x1 in
-            self#constr "Pexp_sequence" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_sequence" [x0; x1]
           | Pexp_while (x0, x1) ->
             let x0 = self#expression x0 in
             let x1 = self#expression x1 in
-            self#constr "Pexp_while" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_while" [x0; x1]
           | Pexp_for (x0, x1, x2, x3, x4) ->
             let x0 = self#pattern x0 in
             let x1 = self#expression x1 in
             let x2 = self#expression x2 in
             let x3 = self#direction_flag x3 in
             let x4 = self#expression x4 in
-            self#constr "Pexp_for" [x0; x1; x2; x3; x4]
+            self#constr (Some ("expression_desc", 0)) "Pexp_for" [x0; x1; x2; x3; x4]
           | Pexp_constraint (x0, x1) ->
             let x0 = self#expression x0 in
             let x1 = self#core_type x1 in
-            self#constr "Pexp_constraint" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_constraint" [x0; x1]
           | Pexp_coerce (x0, x1, x2) ->
             let x0 = self#expression x0 in
             let x1 = self#option self#core_type x1 in
             let x2 = self#core_type x2 in
-            self#constr "Pexp_coerce" [x0; x1; x2]
+            self#constr (Some ("expression_desc", 0)) "Pexp_coerce" [x0; x1; x2]
           | Pexp_send (x0, x1) ->
             let x0 = self#expression x0 in
             let x1 = self#loc self#label x1 in
-            self#constr "Pexp_send" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_send" [x0; x1]
           | Pexp_new x0 ->
             let x0 = self#longident_loc x0 in
-            self#constr "Pexp_new" [x0]
+            self#constr (Some ("expression_desc", 0)) "Pexp_new" [x0]
           | Pexp_setinstvar (x0, x1) ->
             let x0 = self#loc self#label x0 in
             let x1 = self#expression x1 in
-            self#constr "Pexp_setinstvar" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_setinstvar" [x0; x1]
           | Pexp_override x0 ->
             let x0 = self#list (fun (x0, x1) -> let x0 = self#loc self#label x0 in let x1 = self#expression x1 in self#tuple [x0; x1]) x0 in
-            self#constr "Pexp_override" [x0]
+            self#constr (Some ("expression_desc", 0)) "Pexp_override" [x0]
           | Pexp_letmodule (x0, x1, x2) ->
             let x0 = self#loc self#string x0 in
             let x1 = self#module_expr x1 in
             let x2 = self#expression x2 in
-            self#constr "Pexp_letmodule" [x0; x1; x2]
+            self#constr (Some ("expression_desc", 0)) "Pexp_letmodule" [x0; x1; x2]
           | Pexp_letexception (x0, x1) ->
             let x0 = self#extension_constructor x0 in
             let x1 = self#expression x1 in
-            self#constr "Pexp_letexception" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_letexception" [x0; x1]
           | Pexp_assert x0 ->
             let x0 = self#expression x0 in
-            self#constr "Pexp_assert" [x0]
+            self#constr (Some ("expression_desc", 0)) "Pexp_assert" [x0]
           | Pexp_lazy x0 ->
             let x0 = self#expression x0 in
-            self#constr "Pexp_lazy" [x0]
+            self#constr (Some ("expression_desc", 0)) "Pexp_lazy" [x0]
           | Pexp_poly (x0, x1) ->
             let x0 = self#expression x0 in
             let x1 = self#option self#core_type x1 in
-            self#constr "Pexp_poly" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_poly" [x0; x1]
           | Pexp_object x0 ->
             let x0 = self#class_structure x0 in
-            self#constr "Pexp_object" [x0]
+            self#constr (Some ("expression_desc", 0)) "Pexp_object" [x0]
           | Pexp_newtype (x0, x1) ->
             let x0 = self#loc self#string x0 in
             let x1 = self#expression x1 in
-            self#constr "Pexp_newtype" [x0; x1]
+            self#constr (Some ("expression_desc", 0)) "Pexp_newtype" [x0; x1]
           | Pexp_pack x0 ->
             let x0 = self#module_expr x0 in
-            self#constr "Pexp_pack" [x0]
+            self#constr (Some ("expression_desc", 0)) "Pexp_pack" [x0]
           | Pexp_open (x0, x1, x2) ->
             let x0 = self#override_flag x0 in
             let x1 = self#longident_loc x1 in
             let x2 = self#expression x2 in
-            self#constr "Pexp_open" [x0; x1; x2]
+            self#constr (Some ("expression_desc", 0)) "Pexp_open" [x0; x1; x2]
           | Pexp_extension x0 ->
             let x0 = self#extension x0 in
-            self#constr "Pexp_extension" [x0]
+            self#constr (Some ("expression_desc", 0)) "Pexp_extension" [x0]
           | Pexp_unreachable ->
-            self#constr "Pexp_unreachable" []
+            self#constr (Some ("expression_desc", 0)) "Pexp_unreachable" []
       method case : Case.t -> 'res  =
         fun case ->
           let concrete =
@@ -15663,7 +15663,7 @@ module V4_07 = struct
           let pc_lhs = self#pattern pc_lhs in
           let pc_guard = self#option self#expression pc_guard in
           let pc_rhs = self#expression pc_rhs in
-          self#record [("pc_lhs", pc_lhs); ("pc_guard", pc_guard); ("pc_rhs", pc_rhs)]
+          self#record (Some ("case", 0)) [("pc_lhs", pc_lhs); ("pc_guard", pc_guard); ("pc_rhs", pc_rhs)]
       method value_description : Value_description.t -> 'res  =
         fun value_description ->
           let concrete =
@@ -15677,7 +15677,7 @@ module V4_07 = struct
           let pval_prim = self#list self#string pval_prim in
           let pval_attributes = self#attributes pval_attributes in
           let pval_loc = self#location pval_loc in
-          self#record [("pval_name", pval_name); ("pval_type", pval_type); ("pval_prim", pval_prim); ("pval_attributes", pval_attributes); ("pval_loc", pval_loc)]
+          self#record (Some ("value_description", 0)) [("pval_name", pval_name); ("pval_type", pval_type); ("pval_prim", pval_prim); ("pval_attributes", pval_attributes); ("pval_loc", pval_loc)]
       method type_declaration : Type_declaration.t -> 'res  =
         fun type_declaration ->
           let concrete =
@@ -15694,7 +15694,7 @@ module V4_07 = struct
           let ptype_manifest = self#option self#core_type ptype_manifest in
           let ptype_attributes = self#attributes ptype_attributes in
           let ptype_loc = self#location ptype_loc in
-          self#record [("ptype_name", ptype_name); ("ptype_params", ptype_params); ("ptype_cstrs", ptype_cstrs); ("ptype_kind", ptype_kind); ("ptype_private", ptype_private); ("ptype_manifest", ptype_manifest); ("ptype_attributes", ptype_attributes); ("ptype_loc", ptype_loc)]
+          self#record (Some ("type_declaration", 0)) [("ptype_name", ptype_name); ("ptype_params", ptype_params); ("ptype_cstrs", ptype_cstrs); ("ptype_kind", ptype_kind); ("ptype_private", ptype_private); ("ptype_manifest", ptype_manifest); ("ptype_attributes", ptype_attributes); ("ptype_loc", ptype_loc)]
       method type_kind : Type_kind.t -> 'res  =
         fun type_kind ->
           let concrete =
@@ -15704,15 +15704,15 @@ module V4_07 = struct
           in
           match (concrete : Type_kind.concrete) with
           | Ptype_abstract ->
-            self#constr "Ptype_abstract" []
+            self#constr (Some ("type_kind", 0)) "Ptype_abstract" []
           | Ptype_variant x0 ->
             let x0 = self#list self#constructor_declaration x0 in
-            self#constr "Ptype_variant" [x0]
+            self#constr (Some ("type_kind", 0)) "Ptype_variant" [x0]
           | Ptype_record x0 ->
             let x0 = self#list self#label_declaration x0 in
-            self#constr "Ptype_record" [x0]
+            self#constr (Some ("type_kind", 0)) "Ptype_record" [x0]
           | Ptype_open ->
-            self#constr "Ptype_open" []
+            self#constr (Some ("type_kind", 0)) "Ptype_open" []
       method label_declaration : Label_declaration.t -> 'res  =
         fun label_declaration ->
           let concrete =
@@ -15726,7 +15726,7 @@ module V4_07 = struct
           let pld_type = self#core_type pld_type in
           let pld_loc = self#location pld_loc in
           let pld_attributes = self#attributes pld_attributes in
-          self#record [("pld_name", pld_name); ("pld_mutable", pld_mutable); ("pld_type", pld_type); ("pld_loc", pld_loc); ("pld_attributes", pld_attributes)]
+          self#record (Some ("label_declaration", 0)) [("pld_name", pld_name); ("pld_mutable", pld_mutable); ("pld_type", pld_type); ("pld_loc", pld_loc); ("pld_attributes", pld_attributes)]
       method constructor_declaration : Constructor_declaration.t -> 'res  =
         fun constructor_declaration ->
           let concrete =
@@ -15740,7 +15740,7 @@ module V4_07 = struct
           let pcd_res = self#option self#core_type pcd_res in
           let pcd_loc = self#location pcd_loc in
           let pcd_attributes = self#attributes pcd_attributes in
-          self#record [("pcd_name", pcd_name); ("pcd_args", pcd_args); ("pcd_res", pcd_res); ("pcd_loc", pcd_loc); ("pcd_attributes", pcd_attributes)]
+          self#record (Some ("constructor_declaration", 0)) [("pcd_name", pcd_name); ("pcd_args", pcd_args); ("pcd_res", pcd_res); ("pcd_loc", pcd_loc); ("pcd_attributes", pcd_attributes)]
       method constructor_arguments : Constructor_arguments.t -> 'res  =
         fun constructor_arguments ->
           let concrete =
@@ -15751,10 +15751,10 @@ module V4_07 = struct
           match (concrete : Constructor_arguments.concrete) with
           | Pcstr_tuple x0 ->
             let x0 = self#list self#core_type x0 in
-            self#constr "Pcstr_tuple" [x0]
+            self#constr (Some ("constructor_arguments", 0)) "Pcstr_tuple" [x0]
           | Pcstr_record x0 ->
             let x0 = self#list self#label_declaration x0 in
-            self#constr "Pcstr_record" [x0]
+            self#constr (Some ("constructor_arguments", 0)) "Pcstr_record" [x0]
       method type_extension : Type_extension.t -> 'res  =
         fun type_extension ->
           let concrete =
@@ -15768,7 +15768,7 @@ module V4_07 = struct
           let ptyext_constructors = self#list self#extension_constructor ptyext_constructors in
           let ptyext_private = self#private_flag ptyext_private in
           let ptyext_attributes = self#attributes ptyext_attributes in
-          self#record [("ptyext_path", ptyext_path); ("ptyext_params", ptyext_params); ("ptyext_constructors", ptyext_constructors); ("ptyext_private", ptyext_private); ("ptyext_attributes", ptyext_attributes)]
+          self#record (Some ("type_extension", 0)) [("ptyext_path", ptyext_path); ("ptyext_params", ptyext_params); ("ptyext_constructors", ptyext_constructors); ("ptyext_private", ptyext_private); ("ptyext_attributes", ptyext_attributes)]
       method extension_constructor : Extension_constructor.t -> 'res  =
         fun extension_constructor ->
           let concrete =
@@ -15781,7 +15781,7 @@ module V4_07 = struct
           let pext_kind = self#extension_constructor_kind pext_kind in
           let pext_loc = self#location pext_loc in
           let pext_attributes = self#attributes pext_attributes in
-          self#record [("pext_name", pext_name); ("pext_kind", pext_kind); ("pext_loc", pext_loc); ("pext_attributes", pext_attributes)]
+          self#record (Some ("extension_constructor", 0)) [("pext_name", pext_name); ("pext_kind", pext_kind); ("pext_loc", pext_loc); ("pext_attributes", pext_attributes)]
       method extension_constructor_kind : Extension_constructor_kind.t -> 'res  =
         fun extension_constructor_kind ->
           let concrete =
@@ -15793,10 +15793,10 @@ module V4_07 = struct
           | Pext_decl (x0, x1) ->
             let x0 = self#constructor_arguments x0 in
             let x1 = self#option self#core_type x1 in
-            self#constr "Pext_decl" [x0; x1]
+            self#constr (Some ("extension_constructor_kind", 0)) "Pext_decl" [x0; x1]
           | Pext_rebind x0 ->
             let x0 = self#longident_loc x0 in
-            self#constr "Pext_rebind" [x0]
+            self#constr (Some ("extension_constructor_kind", 0)) "Pext_rebind" [x0]
       method class_type : Class_type.t -> 'res  =
         fun class_type ->
           let concrete =
@@ -15808,7 +15808,7 @@ module V4_07 = struct
           let pcty_desc = self#class_type_desc pcty_desc in
           let pcty_loc = self#location pcty_loc in
           let pcty_attributes = self#attributes pcty_attributes in
-          self#record [("pcty_desc", pcty_desc); ("pcty_loc", pcty_loc); ("pcty_attributes", pcty_attributes)]
+          self#record (Some ("class_type", 0)) [("pcty_desc", pcty_desc); ("pcty_loc", pcty_loc); ("pcty_attributes", pcty_attributes)]
       method class_type_desc : Class_type_desc.t -> 'res  =
         fun class_type_desc ->
           let concrete =
@@ -15820,23 +15820,23 @@ module V4_07 = struct
           | Pcty_constr (x0, x1) ->
             let x0 = self#longident_loc x0 in
             let x1 = self#list self#core_type x1 in
-            self#constr "Pcty_constr" [x0; x1]
+            self#constr (Some ("class_type_desc", 0)) "Pcty_constr" [x0; x1]
           | Pcty_signature x0 ->
             let x0 = self#class_signature x0 in
-            self#constr "Pcty_signature" [x0]
+            self#constr (Some ("class_type_desc", 0)) "Pcty_signature" [x0]
           | Pcty_arrow (x0, x1, x2) ->
             let x0 = self#arg_label x0 in
             let x1 = self#core_type x1 in
             let x2 = self#class_type x2 in
-            self#constr "Pcty_arrow" [x0; x1; x2]
+            self#constr (Some ("class_type_desc", 0)) "Pcty_arrow" [x0; x1; x2]
           | Pcty_extension x0 ->
             let x0 = self#extension x0 in
-            self#constr "Pcty_extension" [x0]
+            self#constr (Some ("class_type_desc", 0)) "Pcty_extension" [x0]
           | Pcty_open (x0, x1, x2) ->
             let x0 = self#override_flag x0 in
             let x1 = self#longident_loc x1 in
             let x2 = self#class_type x2 in
-            self#constr "Pcty_open" [x0; x1; x2]
+            self#constr (Some ("class_type_desc", 0)) "Pcty_open" [x0; x1; x2]
       method class_signature : Class_signature.t -> 'res  =
         fun class_signature ->
           let concrete =
@@ -15847,7 +15847,7 @@ module V4_07 = struct
           let { pcsig_self; pcsig_fields } : Class_signature.concrete = concrete in
           let pcsig_self = self#core_type pcsig_self in
           let pcsig_fields = self#list self#class_type_field pcsig_fields in
-          self#record [("pcsig_self", pcsig_self); ("pcsig_fields", pcsig_fields)]
+          self#record (Some ("class_signature", 0)) [("pcsig_self", pcsig_self); ("pcsig_fields", pcsig_fields)]
       method class_type_field : Class_type_field.t -> 'res  =
         fun class_type_field ->
           let concrete =
@@ -15859,7 +15859,7 @@ module V4_07 = struct
           let pctf_desc = self#class_type_field_desc pctf_desc in
           let pctf_loc = self#location pctf_loc in
           let pctf_attributes = self#attributes pctf_attributes in
-          self#record [("pctf_desc", pctf_desc); ("pctf_loc", pctf_loc); ("pctf_attributes", pctf_attributes)]
+          self#record (Some ("class_type_field", 0)) [("pctf_desc", pctf_desc); ("pctf_loc", pctf_loc); ("pctf_attributes", pctf_attributes)]
       method class_type_field_desc : Class_type_field_desc.t -> 'res  =
         fun class_type_field_desc ->
           let concrete =
@@ -15870,22 +15870,22 @@ module V4_07 = struct
           match (concrete : Class_type_field_desc.concrete) with
           | Pctf_inherit x0 ->
             let x0 = self#class_type x0 in
-            self#constr "Pctf_inherit" [x0]
+            self#constr (Some ("class_type_field_desc", 0)) "Pctf_inherit" [x0]
           | Pctf_val x0 ->
             let x0 = (fun (x0, x1, x2, x3) -> let x0 = self#loc self#label x0 in let x1 = self#mutable_flag x1 in let x2 = self#virtual_flag x2 in let x3 = self#core_type x3 in self#tuple [x0; x1; x2; x3]) x0 in
-            self#constr "Pctf_val" [x0]
+            self#constr (Some ("class_type_field_desc", 0)) "Pctf_val" [x0]
           | Pctf_method x0 ->
             let x0 = (fun (x0, x1, x2, x3) -> let x0 = self#loc self#label x0 in let x1 = self#private_flag x1 in let x2 = self#virtual_flag x2 in let x3 = self#core_type x3 in self#tuple [x0; x1; x2; x3]) x0 in
-            self#constr "Pctf_method" [x0]
+            self#constr (Some ("class_type_field_desc", 0)) "Pctf_method" [x0]
           | Pctf_constraint x0 ->
             let x0 = (fun (x0, x1) -> let x0 = self#core_type x0 in let x1 = self#core_type x1 in self#tuple [x0; x1]) x0 in
-            self#constr "Pctf_constraint" [x0]
+            self#constr (Some ("class_type_field_desc", 0)) "Pctf_constraint" [x0]
           | Pctf_attribute x0 ->
             let x0 = self#attribute x0 in
-            self#constr "Pctf_attribute" [x0]
+            self#constr (Some ("class_type_field_desc", 0)) "Pctf_attribute" [x0]
           | Pctf_extension x0 ->
             let x0 = self#extension x0 in
-            self#constr "Pctf_extension" [x0]
+            self#constr (Some ("class_type_field_desc", 0)) "Pctf_extension" [x0]
       method class_infos_class_expr : Class_expr.t Class_infos.t -> 'res  =
         fun class_infos ->
           let concrete =
@@ -15900,7 +15900,7 @@ module V4_07 = struct
           let pci_expr = self#class_expr pci_expr in
           let pci_loc = self#location pci_loc in
           let pci_attributes = self#attributes pci_attributes in
-          self#record [("pci_virt", pci_virt); ("pci_params", pci_params); ("pci_name", pci_name); ("pci_expr", pci_expr); ("pci_loc", pci_loc); ("pci_attributes", pci_attributes)]
+          self#record (Some ("class_infos", 1)) [("pci_virt", pci_virt); ("pci_params", pci_params); ("pci_name", pci_name); ("pci_expr", pci_expr); ("pci_loc", pci_loc); ("pci_attributes", pci_attributes)]
       method class_infos_class_type : Class_type.t Class_infos.t -> 'res  =
         fun class_infos ->
           let concrete =
@@ -15915,7 +15915,7 @@ module V4_07 = struct
           let pci_expr = self#class_type pci_expr in
           let pci_loc = self#location pci_loc in
           let pci_attributes = self#attributes pci_attributes in
-          self#record [("pci_virt", pci_virt); ("pci_params", pci_params); ("pci_name", pci_name); ("pci_expr", pci_expr); ("pci_loc", pci_loc); ("pci_attributes", pci_attributes)]
+          self#record (Some ("class_infos", 1)) [("pci_virt", pci_virt); ("pci_params", pci_params); ("pci_name", pci_name); ("pci_expr", pci_expr); ("pci_loc", pci_loc); ("pci_attributes", pci_attributes)]
       method class_description : Class_description.t -> 'res  =
         fun class_description ->
           let concrete =
@@ -15945,7 +15945,7 @@ module V4_07 = struct
           let pcl_desc = self#class_expr_desc pcl_desc in
           let pcl_loc = self#location pcl_loc in
           let pcl_attributes = self#attributes pcl_attributes in
-          self#record [("pcl_desc", pcl_desc); ("pcl_loc", pcl_loc); ("pcl_attributes", pcl_attributes)]
+          self#record (Some ("class_expr", 0)) [("pcl_desc", pcl_desc); ("pcl_loc", pcl_loc); ("pcl_attributes", pcl_attributes)]
       method class_expr_desc : Class_expr_desc.t -> 'res  =
         fun class_expr_desc ->
           let concrete =
@@ -15957,37 +15957,37 @@ module V4_07 = struct
           | Pcl_constr (x0, x1) ->
             let x0 = self#longident_loc x0 in
             let x1 = self#list self#core_type x1 in
-            self#constr "Pcl_constr" [x0; x1]
+            self#constr (Some ("class_expr_desc", 0)) "Pcl_constr" [x0; x1]
           | Pcl_structure x0 ->
             let x0 = self#class_structure x0 in
-            self#constr "Pcl_structure" [x0]
+            self#constr (Some ("class_expr_desc", 0)) "Pcl_structure" [x0]
           | Pcl_fun (x0, x1, x2, x3) ->
             let x0 = self#arg_label x0 in
             let x1 = self#option self#expression x1 in
             let x2 = self#pattern x2 in
             let x3 = self#class_expr x3 in
-            self#constr "Pcl_fun" [x0; x1; x2; x3]
+            self#constr (Some ("class_expr_desc", 0)) "Pcl_fun" [x0; x1; x2; x3]
           | Pcl_apply (x0, x1) ->
             let x0 = self#class_expr x0 in
             let x1 = self#list (fun (x0, x1) -> let x0 = self#arg_label x0 in let x1 = self#expression x1 in self#tuple [x0; x1]) x1 in
-            self#constr "Pcl_apply" [x0; x1]
+            self#constr (Some ("class_expr_desc", 0)) "Pcl_apply" [x0; x1]
           | Pcl_let (x0, x1, x2) ->
             let x0 = self#rec_flag x0 in
             let x1 = self#list self#value_binding x1 in
             let x2 = self#class_expr x2 in
-            self#constr "Pcl_let" [x0; x1; x2]
+            self#constr (Some ("class_expr_desc", 0)) "Pcl_let" [x0; x1; x2]
           | Pcl_constraint (x0, x1) ->
             let x0 = self#class_expr x0 in
             let x1 = self#class_type x1 in
-            self#constr "Pcl_constraint" [x0; x1]
+            self#constr (Some ("class_expr_desc", 0)) "Pcl_constraint" [x0; x1]
           | Pcl_extension x0 ->
             let x0 = self#extension x0 in
-            self#constr "Pcl_extension" [x0]
+            self#constr (Some ("class_expr_desc", 0)) "Pcl_extension" [x0]
           | Pcl_open (x0, x1, x2) ->
             let x0 = self#override_flag x0 in
             let x1 = self#longident_loc x1 in
             let x2 = self#class_expr x2 in
-            self#constr "Pcl_open" [x0; x1; x2]
+            self#constr (Some ("class_expr_desc", 0)) "Pcl_open" [x0; x1; x2]
       method class_structure : Class_structure.t -> 'res  =
         fun class_structure ->
           let concrete =
@@ -15998,7 +15998,7 @@ module V4_07 = struct
           let { pcstr_self; pcstr_fields } : Class_structure.concrete = concrete in
           let pcstr_self = self#pattern pcstr_self in
           let pcstr_fields = self#list self#class_field pcstr_fields in
-          self#record [("pcstr_self", pcstr_self); ("pcstr_fields", pcstr_fields)]
+          self#record (Some ("class_structure", 0)) [("pcstr_self", pcstr_self); ("pcstr_fields", pcstr_fields)]
       method class_field : Class_field.t -> 'res  =
         fun class_field ->
           let concrete =
@@ -16010,7 +16010,7 @@ module V4_07 = struct
           let pcf_desc = self#class_field_desc pcf_desc in
           let pcf_loc = self#location pcf_loc in
           let pcf_attributes = self#attributes pcf_attributes in
-          self#record [("pcf_desc", pcf_desc); ("pcf_loc", pcf_loc); ("pcf_attributes", pcf_attributes)]
+          self#record (Some ("class_field", 0)) [("pcf_desc", pcf_desc); ("pcf_loc", pcf_loc); ("pcf_attributes", pcf_attributes)]
       method class_field_desc : Class_field_desc.t -> 'res  =
         fun class_field_desc ->
           let concrete =
@@ -16023,25 +16023,25 @@ module V4_07 = struct
             let x0 = self#override_flag x0 in
             let x1 = self#class_expr x1 in
             let x2 = self#option (self#loc self#string) x2 in
-            self#constr "Pcf_inherit" [x0; x1; x2]
+            self#constr (Some ("class_field_desc", 0)) "Pcf_inherit" [x0; x1; x2]
           | Pcf_val x0 ->
             let x0 = (fun (x0, x1, x2) -> let x0 = self#loc self#label x0 in let x1 = self#mutable_flag x1 in let x2 = self#class_field_kind x2 in self#tuple [x0; x1; x2]) x0 in
-            self#constr "Pcf_val" [x0]
+            self#constr (Some ("class_field_desc", 0)) "Pcf_val" [x0]
           | Pcf_method x0 ->
             let x0 = (fun (x0, x1, x2) -> let x0 = self#loc self#label x0 in let x1 = self#private_flag x1 in let x2 = self#class_field_kind x2 in self#tuple [x0; x1; x2]) x0 in
-            self#constr "Pcf_method" [x0]
+            self#constr (Some ("class_field_desc", 0)) "Pcf_method" [x0]
           | Pcf_constraint x0 ->
             let x0 = (fun (x0, x1) -> let x0 = self#core_type x0 in let x1 = self#core_type x1 in self#tuple [x0; x1]) x0 in
-            self#constr "Pcf_constraint" [x0]
+            self#constr (Some ("class_field_desc", 0)) "Pcf_constraint" [x0]
           | Pcf_initializer x0 ->
             let x0 = self#expression x0 in
-            self#constr "Pcf_initializer" [x0]
+            self#constr (Some ("class_field_desc", 0)) "Pcf_initializer" [x0]
           | Pcf_attribute x0 ->
             let x0 = self#attribute x0 in
-            self#constr "Pcf_attribute" [x0]
+            self#constr (Some ("class_field_desc", 0)) "Pcf_attribute" [x0]
           | Pcf_extension x0 ->
             let x0 = self#extension x0 in
-            self#constr "Pcf_extension" [x0]
+            self#constr (Some ("class_field_desc", 0)) "Pcf_extension" [x0]
       method class_field_kind : Class_field_kind.t -> 'res  =
         fun class_field_kind ->
           let concrete =
@@ -16052,11 +16052,11 @@ module V4_07 = struct
           match (concrete : Class_field_kind.concrete) with
           | Cfk_virtual x0 ->
             let x0 = self#core_type x0 in
-            self#constr "Cfk_virtual" [x0]
+            self#constr (Some ("class_field_kind", 0)) "Cfk_virtual" [x0]
           | Cfk_concrete (x0, x1) ->
             let x0 = self#override_flag x0 in
             let x1 = self#expression x1 in
-            self#constr "Cfk_concrete" [x0; x1]
+            self#constr (Some ("class_field_kind", 0)) "Cfk_concrete" [x0; x1]
       method class_declaration : Class_declaration.t -> 'res  =
         fun class_declaration ->
           let concrete =
@@ -16077,7 +16077,7 @@ module V4_07 = struct
           let pmty_desc = self#module_type_desc pmty_desc in
           let pmty_loc = self#location pmty_loc in
           let pmty_attributes = self#attributes pmty_attributes in
-          self#record [("pmty_desc", pmty_desc); ("pmty_loc", pmty_loc); ("pmty_attributes", pmty_attributes)]
+          self#record (Some ("module_type", 0)) [("pmty_desc", pmty_desc); ("pmty_loc", pmty_loc); ("pmty_attributes", pmty_attributes)]
       method module_type_desc : Module_type_desc.t -> 'res  =
         fun module_type_desc ->
           let concrete =
@@ -16088,28 +16088,28 @@ module V4_07 = struct
           match (concrete : Module_type_desc.concrete) with
           | Pmty_ident x0 ->
             let x0 = self#longident_loc x0 in
-            self#constr "Pmty_ident" [x0]
+            self#constr (Some ("module_type_desc", 0)) "Pmty_ident" [x0]
           | Pmty_signature x0 ->
             let x0 = self#signature x0 in
-            self#constr "Pmty_signature" [x0]
+            self#constr (Some ("module_type_desc", 0)) "Pmty_signature" [x0]
           | Pmty_functor (x0, x1, x2) ->
             let x0 = self#loc self#string x0 in
             let x1 = self#option self#module_type x1 in
             let x2 = self#module_type x2 in
-            self#constr "Pmty_functor" [x0; x1; x2]
+            self#constr (Some ("module_type_desc", 0)) "Pmty_functor" [x0; x1; x2]
           | Pmty_with (x0, x1) ->
             let x0 = self#module_type x0 in
             let x1 = self#list self#with_constraint x1 in
-            self#constr "Pmty_with" [x0; x1]
+            self#constr (Some ("module_type_desc", 0)) "Pmty_with" [x0; x1]
           | Pmty_typeof x0 ->
             let x0 = self#module_expr x0 in
-            self#constr "Pmty_typeof" [x0]
+            self#constr (Some ("module_type_desc", 0)) "Pmty_typeof" [x0]
           | Pmty_extension x0 ->
             let x0 = self#extension x0 in
-            self#constr "Pmty_extension" [x0]
+            self#constr (Some ("module_type_desc", 0)) "Pmty_extension" [x0]
           | Pmty_alias x0 ->
             let x0 = self#longident_loc x0 in
-            self#constr "Pmty_alias" [x0]
+            self#constr (Some ("module_type_desc", 0)) "Pmty_alias" [x0]
       method signature : Signature.t -> 'res  =
         fun signature ->
           let concrete =
@@ -16129,7 +16129,7 @@ module V4_07 = struct
           let { psig_desc; psig_loc } : Signature_item.concrete = concrete in
           let psig_desc = self#signature_item_desc psig_desc in
           let psig_loc = self#location psig_loc in
-          self#record [("psig_desc", psig_desc); ("psig_loc", psig_loc)]
+          self#record (Some ("signature_item", 0)) [("psig_desc", psig_desc); ("psig_loc", psig_loc)]
       method signature_item_desc : Signature_item_desc.t -> 'res  =
         fun signature_item_desc ->
           let concrete =
@@ -16140,45 +16140,45 @@ module V4_07 = struct
           match (concrete : Signature_item_desc.concrete) with
           | Psig_value x0 ->
             let x0 = self#value_description x0 in
-            self#constr "Psig_value" [x0]
+            self#constr (Some ("signature_item_desc", 0)) "Psig_value" [x0]
           | Psig_type (x0, x1) ->
             let x0 = self#rec_flag x0 in
             let x1 = self#list self#type_declaration x1 in
-            self#constr "Psig_type" [x0; x1]
+            self#constr (Some ("signature_item_desc", 0)) "Psig_type" [x0; x1]
           | Psig_typext x0 ->
             let x0 = self#type_extension x0 in
-            self#constr "Psig_typext" [x0]
+            self#constr (Some ("signature_item_desc", 0)) "Psig_typext" [x0]
           | Psig_exception x0 ->
             let x0 = self#extension_constructor x0 in
-            self#constr "Psig_exception" [x0]
+            self#constr (Some ("signature_item_desc", 0)) "Psig_exception" [x0]
           | Psig_module x0 ->
             let x0 = self#module_declaration x0 in
-            self#constr "Psig_module" [x0]
+            self#constr (Some ("signature_item_desc", 0)) "Psig_module" [x0]
           | Psig_recmodule x0 ->
             let x0 = self#list self#module_declaration x0 in
-            self#constr "Psig_recmodule" [x0]
+            self#constr (Some ("signature_item_desc", 0)) "Psig_recmodule" [x0]
           | Psig_modtype x0 ->
             let x0 = self#module_type_declaration x0 in
-            self#constr "Psig_modtype" [x0]
+            self#constr (Some ("signature_item_desc", 0)) "Psig_modtype" [x0]
           | Psig_open x0 ->
             let x0 = self#open_description x0 in
-            self#constr "Psig_open" [x0]
+            self#constr (Some ("signature_item_desc", 0)) "Psig_open" [x0]
           | Psig_include x0 ->
             let x0 = self#include_description x0 in
-            self#constr "Psig_include" [x0]
+            self#constr (Some ("signature_item_desc", 0)) "Psig_include" [x0]
           | Psig_class x0 ->
             let x0 = self#list self#class_description x0 in
-            self#constr "Psig_class" [x0]
+            self#constr (Some ("signature_item_desc", 0)) "Psig_class" [x0]
           | Psig_class_type x0 ->
             let x0 = self#list self#class_type_declaration x0 in
-            self#constr "Psig_class_type" [x0]
+            self#constr (Some ("signature_item_desc", 0)) "Psig_class_type" [x0]
           | Psig_attribute x0 ->
             let x0 = self#attribute x0 in
-            self#constr "Psig_attribute" [x0]
+            self#constr (Some ("signature_item_desc", 0)) "Psig_attribute" [x0]
           | Psig_extension (x0, x1) ->
             let x0 = self#extension x0 in
             let x1 = self#attributes x1 in
-            self#constr "Psig_extension" [x0; x1]
+            self#constr (Some ("signature_item_desc", 0)) "Psig_extension" [x0; x1]
       method module_declaration : Module_declaration.t -> 'res  =
         fun module_declaration ->
           let concrete =
@@ -16191,7 +16191,7 @@ module V4_07 = struct
           let pmd_type = self#module_type pmd_type in
           let pmd_attributes = self#attributes pmd_attributes in
           let pmd_loc = self#location pmd_loc in
-          self#record [("pmd_name", pmd_name); ("pmd_type", pmd_type); ("pmd_attributes", pmd_attributes); ("pmd_loc", pmd_loc)]
+          self#record (Some ("module_declaration", 0)) [("pmd_name", pmd_name); ("pmd_type", pmd_type); ("pmd_attributes", pmd_attributes); ("pmd_loc", pmd_loc)]
       method module_type_declaration : Module_type_declaration.t -> 'res  =
         fun module_type_declaration ->
           let concrete =
@@ -16204,7 +16204,7 @@ module V4_07 = struct
           let pmtd_type = self#option self#module_type pmtd_type in
           let pmtd_attributes = self#attributes pmtd_attributes in
           let pmtd_loc = self#location pmtd_loc in
-          self#record [("pmtd_name", pmtd_name); ("pmtd_type", pmtd_type); ("pmtd_attributes", pmtd_attributes); ("pmtd_loc", pmtd_loc)]
+          self#record (Some ("module_type_declaration", 0)) [("pmtd_name", pmtd_name); ("pmtd_type", pmtd_type); ("pmtd_attributes", pmtd_attributes); ("pmtd_loc", pmtd_loc)]
       method open_description : Open_description.t -> 'res  =
         fun open_description ->
           let concrete =
@@ -16217,7 +16217,7 @@ module V4_07 = struct
           let popen_override = self#override_flag popen_override in
           let popen_loc = self#location popen_loc in
           let popen_attributes = self#attributes popen_attributes in
-          self#record [("popen_lid", popen_lid); ("popen_override", popen_override); ("popen_loc", popen_loc); ("popen_attributes", popen_attributes)]
+          self#record (Some ("open_description", 0)) [("popen_lid", popen_lid); ("popen_override", popen_override); ("popen_loc", popen_loc); ("popen_attributes", popen_attributes)]
       method include_infos_module_expr : Module_expr.t Include_infos.t -> 'res  =
         fun include_infos ->
           let concrete =
@@ -16229,7 +16229,7 @@ module V4_07 = struct
           let pincl_mod = self#module_expr pincl_mod in
           let pincl_loc = self#location pincl_loc in
           let pincl_attributes = self#attributes pincl_attributes in
-          self#record [("pincl_mod", pincl_mod); ("pincl_loc", pincl_loc); ("pincl_attributes", pincl_attributes)]
+          self#record (Some ("include_infos", 1)) [("pincl_mod", pincl_mod); ("pincl_loc", pincl_loc); ("pincl_attributes", pincl_attributes)]
       method include_infos_module_type : Module_type.t Include_infos.t -> 'res  =
         fun include_infos ->
           let concrete =
@@ -16241,7 +16241,7 @@ module V4_07 = struct
           let pincl_mod = self#module_type pincl_mod in
           let pincl_loc = self#location pincl_loc in
           let pincl_attributes = self#attributes pincl_attributes in
-          self#record [("pincl_mod", pincl_mod); ("pincl_loc", pincl_loc); ("pincl_attributes", pincl_attributes)]
+          self#record (Some ("include_infos", 1)) [("pincl_mod", pincl_mod); ("pincl_loc", pincl_loc); ("pincl_attributes", pincl_attributes)]
       method include_description : Include_description.t -> 'res  =
         fun include_description ->
           let concrete =
@@ -16271,19 +16271,19 @@ module V4_07 = struct
           | Pwith_type (x0, x1) ->
             let x0 = self#longident_loc x0 in
             let x1 = self#type_declaration x1 in
-            self#constr "Pwith_type" [x0; x1]
+            self#constr (Some ("with_constraint", 0)) "Pwith_type" [x0; x1]
           | Pwith_module (x0, x1) ->
             let x0 = self#longident_loc x0 in
             let x1 = self#longident_loc x1 in
-            self#constr "Pwith_module" [x0; x1]
+            self#constr (Some ("with_constraint", 0)) "Pwith_module" [x0; x1]
           | Pwith_typesubst (x0, x1) ->
             let x0 = self#longident_loc x0 in
             let x1 = self#type_declaration x1 in
-            self#constr "Pwith_typesubst" [x0; x1]
+            self#constr (Some ("with_constraint", 0)) "Pwith_typesubst" [x0; x1]
           | Pwith_modsubst (x0, x1) ->
             let x0 = self#longident_loc x0 in
             let x1 = self#longident_loc x1 in
-            self#constr "Pwith_modsubst" [x0; x1]
+            self#constr (Some ("with_constraint", 0)) "Pwith_modsubst" [x0; x1]
       method module_expr : Module_expr.t -> 'res  =
         fun module_expr ->
           let concrete =
@@ -16295,7 +16295,7 @@ module V4_07 = struct
           let pmod_desc = self#module_expr_desc pmod_desc in
           let pmod_loc = self#location pmod_loc in
           let pmod_attributes = self#attributes pmod_attributes in
-          self#record [("pmod_desc", pmod_desc); ("pmod_loc", pmod_loc); ("pmod_attributes", pmod_attributes)]
+          self#record (Some ("module_expr", 0)) [("pmod_desc", pmod_desc); ("pmod_loc", pmod_loc); ("pmod_attributes", pmod_attributes)]
       method module_expr_desc : Module_expr_desc.t -> 'res  =
         fun module_expr_desc ->
           let concrete =
@@ -16306,29 +16306,29 @@ module V4_07 = struct
           match (concrete : Module_expr_desc.concrete) with
           | Pmod_ident x0 ->
             let x0 = self#longident_loc x0 in
-            self#constr "Pmod_ident" [x0]
+            self#constr (Some ("module_expr_desc", 0)) "Pmod_ident" [x0]
           | Pmod_structure x0 ->
             let x0 = self#structure x0 in
-            self#constr "Pmod_structure" [x0]
+            self#constr (Some ("module_expr_desc", 0)) "Pmod_structure" [x0]
           | Pmod_functor (x0, x1, x2) ->
             let x0 = self#loc self#string x0 in
             let x1 = self#option self#module_type x1 in
             let x2 = self#module_expr x2 in
-            self#constr "Pmod_functor" [x0; x1; x2]
+            self#constr (Some ("module_expr_desc", 0)) "Pmod_functor" [x0; x1; x2]
           | Pmod_apply (x0, x1) ->
             let x0 = self#module_expr x0 in
             let x1 = self#module_expr x1 in
-            self#constr "Pmod_apply" [x0; x1]
+            self#constr (Some ("module_expr_desc", 0)) "Pmod_apply" [x0; x1]
           | Pmod_constraint (x0, x1) ->
             let x0 = self#module_expr x0 in
             let x1 = self#module_type x1 in
-            self#constr "Pmod_constraint" [x0; x1]
+            self#constr (Some ("module_expr_desc", 0)) "Pmod_constraint" [x0; x1]
           | Pmod_unpack x0 ->
             let x0 = self#expression x0 in
-            self#constr "Pmod_unpack" [x0]
+            self#constr (Some ("module_expr_desc", 0)) "Pmod_unpack" [x0]
           | Pmod_extension x0 ->
             let x0 = self#extension x0 in
-            self#constr "Pmod_extension" [x0]
+            self#constr (Some ("module_expr_desc", 0)) "Pmod_extension" [x0]
       method structure : Structure.t -> 'res  =
         fun structure ->
           let concrete =
@@ -16348,7 +16348,7 @@ module V4_07 = struct
           let { pstr_desc; pstr_loc } : Structure_item.concrete = concrete in
           let pstr_desc = self#structure_item_desc pstr_desc in
           let pstr_loc = self#location pstr_loc in
-          self#record [("pstr_desc", pstr_desc); ("pstr_loc", pstr_loc)]
+          self#record (Some ("structure_item", 0)) [("pstr_desc", pstr_desc); ("pstr_loc", pstr_loc)]
       method structure_item_desc : Structure_item_desc.t -> 'res  =
         fun structure_item_desc ->
           let concrete =
@@ -16360,52 +16360,52 @@ module V4_07 = struct
           | Pstr_eval (x0, x1) ->
             let x0 = self#expression x0 in
             let x1 = self#attributes x1 in
-            self#constr "Pstr_eval" [x0; x1]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_eval" [x0; x1]
           | Pstr_value (x0, x1) ->
             let x0 = self#rec_flag x0 in
             let x1 = self#list self#value_binding x1 in
-            self#constr "Pstr_value" [x0; x1]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_value" [x0; x1]
           | Pstr_primitive x0 ->
             let x0 = self#value_description x0 in
-            self#constr "Pstr_primitive" [x0]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_primitive" [x0]
           | Pstr_type (x0, x1) ->
             let x0 = self#rec_flag x0 in
             let x1 = self#list self#type_declaration x1 in
-            self#constr "Pstr_type" [x0; x1]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_type" [x0; x1]
           | Pstr_typext x0 ->
             let x0 = self#type_extension x0 in
-            self#constr "Pstr_typext" [x0]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_typext" [x0]
           | Pstr_exception x0 ->
             let x0 = self#extension_constructor x0 in
-            self#constr "Pstr_exception" [x0]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_exception" [x0]
           | Pstr_module x0 ->
             let x0 = self#module_binding x0 in
-            self#constr "Pstr_module" [x0]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_module" [x0]
           | Pstr_recmodule x0 ->
             let x0 = self#list self#module_binding x0 in
-            self#constr "Pstr_recmodule" [x0]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_recmodule" [x0]
           | Pstr_modtype x0 ->
             let x0 = self#module_type_declaration x0 in
-            self#constr "Pstr_modtype" [x0]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_modtype" [x0]
           | Pstr_open x0 ->
             let x0 = self#open_description x0 in
-            self#constr "Pstr_open" [x0]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_open" [x0]
           | Pstr_class x0 ->
             let x0 = self#list self#class_declaration x0 in
-            self#constr "Pstr_class" [x0]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_class" [x0]
           | Pstr_class_type x0 ->
             let x0 = self#list self#class_type_declaration x0 in
-            self#constr "Pstr_class_type" [x0]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_class_type" [x0]
           | Pstr_include x0 ->
             let x0 = self#include_declaration x0 in
-            self#constr "Pstr_include" [x0]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_include" [x0]
           | Pstr_attribute x0 ->
             let x0 = self#attribute x0 in
-            self#constr "Pstr_attribute" [x0]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_attribute" [x0]
           | Pstr_extension (x0, x1) ->
             let x0 = self#extension x0 in
             let x1 = self#attributes x1 in
-            self#constr "Pstr_extension" [x0; x1]
+            self#constr (Some ("structure_item_desc", 0)) "Pstr_extension" [x0; x1]
       method value_binding : Value_binding.t -> 'res  =
         fun value_binding ->
           let concrete =
@@ -16418,7 +16418,7 @@ module V4_07 = struct
           let pvb_expr = self#expression pvb_expr in
           let pvb_attributes = self#attributes pvb_attributes in
           let pvb_loc = self#location pvb_loc in
-          self#record [("pvb_pat", pvb_pat); ("pvb_expr", pvb_expr); ("pvb_attributes", pvb_attributes); ("pvb_loc", pvb_loc)]
+          self#record (Some ("value_binding", 0)) [("pvb_pat", pvb_pat); ("pvb_expr", pvb_expr); ("pvb_attributes", pvb_attributes); ("pvb_loc", pvb_loc)]
       method module_binding : Module_binding.t -> 'res  =
         fun module_binding ->
           let concrete =
@@ -16431,7 +16431,7 @@ module V4_07 = struct
           let pmb_expr = self#module_expr pmb_expr in
           let pmb_attributes = self#attributes pmb_attributes in
           let pmb_loc = self#location pmb_loc in
-          self#record [("pmb_name", pmb_name); ("pmb_expr", pmb_expr); ("pmb_attributes", pmb_attributes); ("pmb_loc", pmb_loc)]
+          self#record (Some ("module_binding", 0)) [("pmb_name", pmb_name); ("pmb_expr", pmb_expr); ("pmb_attributes", pmb_attributes); ("pmb_loc", pmb_loc)]
       method toplevel_phrase : Toplevel_phrase.t -> 'res  =
         fun toplevel_phrase ->
           let concrete =
@@ -16442,11 +16442,11 @@ module V4_07 = struct
           match (concrete : Toplevel_phrase.concrete) with
           | Ptop_def x0 ->
             let x0 = self#structure x0 in
-            self#constr "Ptop_def" [x0]
+            self#constr (Some ("toplevel_phrase", 0)) "Ptop_def" [x0]
           | Ptop_dir (x0, x1) ->
             let x0 = self#string x0 in
             let x1 = self#directive_argument x1 in
-            self#constr "Ptop_dir" [x0; x1]
+            self#constr (Some ("toplevel_phrase", 0)) "Ptop_dir" [x0; x1]
       method directive_argument : Directive_argument.t -> 'res  =
         fun directive_argument ->
           let concrete =
@@ -16456,20 +16456,20 @@ module V4_07 = struct
           in
           match (concrete : Directive_argument.concrete) with
           | Pdir_none ->
-            self#constr "Pdir_none" []
+            self#constr (Some ("directive_argument", 0)) "Pdir_none" []
           | Pdir_string x0 ->
             let x0 = self#string x0 in
-            self#constr "Pdir_string" [x0]
+            self#constr (Some ("directive_argument", 0)) "Pdir_string" [x0]
           | Pdir_int (x0, x1) ->
             let x0 = self#string x0 in
             let x1 = self#option self#char x1 in
-            self#constr "Pdir_int" [x0; x1]
+            self#constr (Some ("directive_argument", 0)) "Pdir_int" [x0; x1]
           | Pdir_ident x0 ->
             let x0 = self#longident x0 in
-            self#constr "Pdir_ident" [x0]
+            self#constr (Some ("directive_argument", 0)) "Pdir_ident" [x0]
           | Pdir_bool x0 ->
             let x0 = self#bool x0 in
-            self#constr "Pdir_bool" [x0]
+            self#constr (Some ("directive_argument", 0)) "Pdir_bool" [x0]
     end
 end
 (*$*)

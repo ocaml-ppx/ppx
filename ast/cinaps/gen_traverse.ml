@@ -394,8 +394,8 @@ module Lift = struct
   let res_type = Ml.tvar "res"
 
   let extra_methods () =
-    Ml.declare_method ~virtual_:true ~name:"record" ~signature:"(string * 'res) list -> 'res" ();
-    Ml.declare_method ~virtual_:true ~name:"constr" ~signature:"string -> 'res list -> 'res" ();
+    Ml.declare_method ~virtual_:true ~name:"record" ~signature:"(string * int) option -> (string * 'res) list -> 'res" ();
+    Ml.declare_method ~virtual_:true ~name:"constr" ~signature:"(string * int) option -> string -> 'res list -> 'res" ();
     Ml.declare_method ~virtual_:true ~name:"tuple" ~signature:"'res list -> 'res" ()
 
   let signature node_type = Ml.arrow_type [node_type; res_type]
@@ -413,7 +413,13 @@ module Lift = struct
     let name_and_val var_name = Printf.sprintf "(%S, %s)" var_name var_name in
     Ml.list_lit (List.map ~f:name_and_val var_names)
 
-  let recurse ~value_kind:_ ~deconstructed =
+  let typ_arg ~value_kind =
+    match value_kind with
+    | Abstract -> "None"
+    | Ast_type { node_name; targs } ->
+      sprintf "(Some (%S, %d))" node_name (List.length targs)
+
+  let recurse ~value_kind ~deconstructed =
     let {kind; vars; pattern} = deconstructed in
     let recurse =
       List.map vars
@@ -424,8 +430,10 @@ module Lift = struct
       match kind with
       | Kalias -> pattern
       | Ktuple -> Printf.sprintf "self#tuple %s" (tuple_arg vars)
-      | Krecord -> Printf.sprintf "self#record %s" (record_arg vars)
-      | Kconstr name -> Printf.sprintf "self#constr %S %s" name (tuple_arg vars)
+      | Krecord ->
+        Printf.sprintf "self#record %s %s" (typ_arg ~value_kind) (record_arg vars)
+      | Kconstr name ->
+        Printf.sprintf "self#constr %s %S %s" (typ_arg ~value_kind) name (tuple_arg vars)
     in
     recurse @ [result]
 
@@ -536,11 +544,7 @@ let print_virtual_traverse_mli () =
     declare_virtual_traversal_classes grammar)
 
 let inherits ~params ~class_name ~version =
-  let params =
-    match params with
-    | [] -> ""
-    | l -> Ml.list_lit l ^ " "
-  in
+  let params = Ml.class_params params in
   Ml.declare_object (fun () ->
     Print.println "inherit %sTraverse_builtins.%s" params class_name;
     Print.println "inherit %sVirtual_traverse.%s.%s"
