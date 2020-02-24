@@ -253,19 +253,19 @@ class virtual ['res] lift =
     method virtual nativeint :     (nativeint, 'res) T.lift
     method virtual unit      :     (unit,      'res) T.lift
 
-    method virtual record : (string * 'res) list -> 'res
-    method virtual constr : string -> 'res list -> 'res
+    method virtual record : (string * int) option -> (string * 'res) list -> 'res
+    method virtual constr : (string * int) option -> string -> 'res list -> 'res
     method virtual tuple : 'res list -> 'res
 
     method option : 'a. ('a, 'res) T.lift -> ('a option, 'res) T.lift = fun f x ->
       match x with
-      | None -> self#constr "None" []
-      | Some x -> self#constr "Some" [f x]
+      | None -> self#constr None "None" []
+      | Some x -> self#constr None "Some" [f x]
 
     method list : 'a. ('a, 'res) T.lift -> ('a list, 'res) T.lift = fun f l ->
       match l with
-      | [] -> self#constr "[]" []
-      | x :: l -> self#constr "::" [f x; self#list f l]
+      | [] -> self#constr None "[]" []
+      | x :: l -> self#constr None "::" [f x; self#list f l]
 
     method position : (Astlib.Position.t, 'res) T.lift = fun x ->
       let open Astlib.Position in
@@ -274,6 +274,7 @@ class virtual ['res] lift =
       let bol = self#int (bol x) in
       let cnum = self#int (cnum x) in
       self#record
+        None
         [("fname", fname); ("lnum", lnum); ("bol", bol); ("cnum", cnum)]
 
     method location : (Astlib.Location.t, 'res) T.lift = fun x ->
@@ -281,14 +282,14 @@ class virtual ['res] lift =
       let start = self#position (start x) in
       let end_ = self#position (end_ x) in
       let ghost = self#bool (ghost x) in
-      self#record [("start", start); ("end_", end_); ("ghost", ghost)]
+      self#record None [("start", start); ("end_", end_); ("ghost", ghost)]
 
     method loc : 'a. ('a, 'res) T.lift -> ('a Astlib.Loc.t, 'res) T.lift
       = fun f x ->
       let open Astlib.Loc in
       let txt = f (txt x) in
       let loc = self#location (loc x) in
-      self#record [("txt", txt); ("loc", loc)]
+      self#record None [("txt", txt); ("loc", loc)]
   end
 
 class type ['res] std_lifters =
@@ -299,8 +300,8 @@ class type ['res] std_lifters =
     method bool      : (bool ,     'res) T.lift
     method char      : (char ,     'res) T.lift
     method array     : 'a. ('a,    'res) T.lift -> ('a array, 'res) T.lift
-    method record    : (string *   'res) list -> 'res
-    method constr    : string ->   'res  list -> 'res
+    method record    : (string * int) option -> (string *   'res) list -> 'res
+    method constr    : (string * int) option -> string ->   'res  list -> 'res
     method tuple     : 'res list   ->    'res
     method float     : (float,     'res) T.lift
     method int32     : (int32,     'res) T.lift

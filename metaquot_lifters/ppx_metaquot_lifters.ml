@@ -7,21 +7,39 @@ module Pat = Pattern_desc
 open Ppx_ast.Builder.Common
 open Ppx_ast.Builder.V4_07
 
+let ppx_type ~loc ~arity name =
+  (ptyp_constr ~loc
+     (Longident_loc.create
+        (Astlib.Loc.create ~loc ~txt:(Longident.ldot (Longident.lident "Ppx") name) ()))
+     (List.init arity ~f:(fun _ -> ptyp_any ~loc)))
+
+let econstraint ~loc typ expr =
+  match typ with
+  | None -> expr
+  | Some (name, arity) -> pexp_constraint ~loc expr (ppx_type ~loc ~arity name)
+
+let pconstraint ~loc typ pat =
+  match typ with
+  | None -> pat
+  | Some (name, arity) -> ppat_constraint ~loc pat (ppx_type ~loc ~arity name)
+
 class expression_lifters loc =
   object
     inherit [Expression.t] Traverse_builtins.lift
-    method record flds =
+    method record typ flds =
       pexp_record ~loc
         (List.map flds ~f:(fun (lab, e) ->
            (Longident_loc.create
               (Astlib.Loc.create ~loc ~txt:(Longident.lident lab) ()), e)))
         None
-    method constr id args =
+      |> econstraint ~loc typ
+    method constr typ id args =
       pexp_construct ~loc
         (Longident_loc.create (Astlib.Loc.create ~loc ~txt:(Longident.lident id) ()))
         (match args with
          | [] -> None
          | l  -> Some (etuple ~loc l))
+      |> econstraint ~loc typ
     method tuple     l = etuple ~loc l
     method int       i = eint ~loc i
     method int32     i = eint32 ~loc i
@@ -40,18 +58,20 @@ class expression_lifters loc =
 class pattern_lifters loc =
   object
     inherit [Pattern.t] Traverse_builtins.lift
-    method record flds =
+    method record typ flds =
       ppat_record ~loc
         (List.map flds ~f:(fun (lab, e) ->
            (Longident_loc.create
               (Astlib.Loc.create ~loc ~txt:(Longident.lident lab) ()), e)))
         Closed_flag.closed
-    method constr id args =
+      |> pconstraint ~loc typ
+    method constr typ id args =
       ppat_construct ~loc
         (Longident_loc.create (Astlib.Loc.create ~loc ~txt:(Longident.lident id) ()))
         (match args with
          | [] -> None
          | l  -> Some (ptuple ~loc l))
+      |> pconstraint ~loc typ
     method tuple     l = ptuple ~loc l
     method int       i = pint ~loc i
     method int32     i = pint32 ~loc i

@@ -434,8 +434,8 @@ module Unstable_for_testing : sig
 
   class virtual ['res] lift :
     object
-      method virtual record : (string * 'res) list -> 'res
-      method virtual constr : string -> 'res list -> 'res
+      method virtual record : (string * int) option -> (string * 'res) list -> 'res
+      method virtual constr : (string * int) option -> string -> 'res list -> 'res
       method virtual tuple : 'res list -> 'res
       method virtual bool : bool -> 'res
       method virtual char : char -> 'res
@@ -957,8 +957,8 @@ module V4_07 : sig
 
   class virtual ['res] lift :
     object
-      method virtual record : (string * 'res) list -> 'res
-      method virtual constr : string -> 'res list -> 'res
+      method virtual record : (string * int) option -> (string * 'res) list -> 'res
+      method virtual constr : (string * int) option -> string -> 'res list -> 'res
       method virtual tuple : 'res list -> 'res
       method virtual bool : bool -> 'res
       method virtual char : char -> 'res

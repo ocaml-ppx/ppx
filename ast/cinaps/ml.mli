@@ -11,6 +11,7 @@ val tuple_type : string list -> string
 
 val poly_type : string -> tvars:string list -> string
 val poly_inst : string -> args:string list -> string
+val class_params : string list -> string
 
 val define_module : string -> (unit -> unit) -> unit
 val declare_module : string -> (unit -> unit) -> unit

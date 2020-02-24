@@ -94,8 +94,8 @@ class virtual ['res] lift :
     method virtual int64     :     (int64,     'res) T.lift
     method virtual nativeint :     (nativeint, 'res) T.lift
     method virtual unit      :     (unit,      'res) T.lift
-    method virtual record : (string * 'res) list -> 'res
-    method virtual constr : string -> 'res list -> 'res
+    method virtual record : (string * int) option -> (string * 'res) list -> 'res
+    method virtual constr : (string * int) option -> string -> 'res list -> 'res
     method virtual tuple : 'res list -> 'res
     method option : 'a. ('a, 'res) T.lift -> ('a option, 'res) T.lift
     method list : 'a. ('a, 'res) T.lift -> ('a list, 'res) T.lift
@@ -112,8 +112,8 @@ class type ['res] std_lifters =
     method bool      : (bool ,     'res) T.lift
     method char      : (char ,     'res) T.lift
     method array     : 'a. ('a,    'res) T.lift -> ('a array, 'res) T.lift
-    method record    : (string *   'res) list -> 'res
-    method constr    : string ->   'res  list -> 'res
+    method record    : (string * int) option -> (string *   'res) list -> 'res
+    method constr    : (string * int) option -> string ->   'res  list -> 'res
     method tuple     : 'res list   ->    'res
     method float     : (float,     'res) T.lift
     method int32     : (int32,     'res) T.lift
