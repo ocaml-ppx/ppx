@@ -1405,6 +1405,7 @@ module Common : sig
   val ebool : loc: Astlib.Location.t -> bool -> Versions.expression
   val enil : loc: Astlib.Location.t -> Versions.expression
   val elist : loc: Astlib.Location.t -> Versions.expression list -> Versions.expression
+  val etuple : loc: Astlib.Location.t -> Versions.expression list -> Versions.expression
   val eapply :
     loc : Astlib.Location.t ->
     Versions.expression ->
@@ -1422,6 +1423,7 @@ module Common : sig
   val punit : loc: Astlib.Location.t -> Versions.pattern
   val pbool : loc: Astlib.Location.t -> bool -> Versions.pattern
   val pnil : loc: Astlib.Location.t -> Versions.pattern
+  val ptuple : loc: Astlib.Location.t -> Versions.pattern list -> Versions.pattern
   val plist : loc: Astlib.Location.t -> Versions.pattern list -> Versions.pattern
 
   module Error_ext : sig

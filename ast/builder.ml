@@ -639,6 +639,12 @@ module Common = struct
 
   let enil ~loc = pexp_construct ~loc (Located.lident ~loc "[]") None
 
+  let etuple ~loc list =
+    match list with
+    | [] -> eunit ~loc
+    | [e] -> e
+    | _ -> pexp_tuple ~loc list
+
   let elist ~loc exprs =
     let nil = enil ~loc in
     let cons expr list_expr =
@@ -679,6 +685,12 @@ module Common = struct
   let pnil ~loc = ppat_construct ~loc (Located.lident ~loc "[]") None
 
   let pvar ~loc x = ppat_var ~loc (Astlib.Loc.create ~loc ~txt:x ())
+
+  let ptuple ~loc list =
+    match list with
+    | [] -> punit ~loc
+    | [e] -> e
+    | _ -> ppat_tuple ~loc list
 
   let plist ~loc exprs =
     let nil = pnil ~loc in
