@@ -1,5 +1,3 @@
-open! Ppx
-
 let loc = Location.none
 
 (* AST expressions *)
