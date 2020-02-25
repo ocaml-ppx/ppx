@@ -58,11 +58,16 @@ type clause =
 
 type variant = (string * clause) list
 
-(** A declaration may be an alias for a structural type, or a record or variant type. *)
-type decl =
-  | Alias of ty
+(** A nominal type may contain a structural type, a record type, or a variant type. *)
+type nominal =
+  | Wrapper of ty
   | Record of record
   | Variant of variant
+
+(** A declaration may be a structural type or a nominal type. *)
+type decl =
+  | Structural of ty
+  | Nominal of nominal
 
 (** The "kind" of a type determines its type arguments. [Mono]morphic types have no type
     arguments; [Poly]morphic types have one or more type arguments. *)

@@ -5,8 +5,6 @@ type arg_label_
 type attribute_
 type attributes_
 type case_
-type class_declaration_
-type class_description_
 type class_expr_
 type class_expr_desc_
 type class_field_
@@ -16,7 +14,6 @@ type 'a class_infos_
 type class_signature_
 type class_structure_
 type class_type_
-type class_type_declaration_
 type class_type_desc_
 type class_type_field_
 type class_type_field_desc_
@@ -33,13 +30,9 @@ type expression_desc_
 type extension_
 type extension_constructor_
 type extension_constructor_kind_
-type include_declaration_
-type include_description_
 type 'a include_infos_
-type label_
 type label_declaration_
 type longident_
-type longident_loc_
 type module_binding_
 type module_declaration_
 type module_expr_
@@ -78,8 +71,6 @@ type arg_label = arg_label_ node
 type attribute = attribute_ node
 type attributes = attributes_ node
 type case = case_ node
-type class_declaration = class_declaration_ node
-type class_description = class_description_ node
 type class_expr = class_expr_ node
 type class_expr_desc = class_expr_desc_ node
 type class_field = class_field_ node
@@ -89,7 +80,6 @@ type 'a class_infos = 'a class_infos_ node
 type class_signature = class_signature_ node
 type class_structure = class_structure_ node
 type class_type = class_type_ node
-type class_type_declaration = class_type_declaration_ node
 type class_type_desc = class_type_desc_ node
 type class_type_field = class_type_field_ node
 type class_type_field_desc = class_type_field_desc_ node
@@ -106,13 +96,9 @@ type expression_desc = expression_desc_ node
 type extension = extension_ node
 type extension_constructor = extension_constructor_ node
 type extension_constructor_kind = extension_constructor_kind_ node
-type include_declaration = include_declaration_ node
-type include_description = include_description_ node
 type 'a include_infos = 'a include_infos_ node
-type label = label_ node
 type label_declaration = label_declaration_ node
 type longident = longident_ node
-type longident_loc = longident_loc_ node
 type module_binding = module_binding_ node
 type module_declaration = module_declaration_ node
 type module_expr = module_expr_ node
@@ -146,6 +132,14 @@ type value_description = value_description_ node
 type variance = variance_ node
 type virtual_flag = virtual_flag_ node
 type with_constraint = with_constraint_ node
+
+type class_declaration = class_expr class_infos
+type class_description = class_type class_infos
+type class_type_declaration = class_type class_infos
+type include_declaration = module_expr include_infos
+type include_description = module_type include_infos
+type label = string
+type longident_loc = longident Astlib.Loc.t
 
 module Unstable_for_testing : sig
   module rec Directive_argument : sig
@@ -432,25 +426,11 @@ module Unstable_for_testing : sig
   end
 
   and Include_declaration : sig
-    type t = include_declaration
-
-    type concrete = Module_expr.t Include_infos.t
-
-    val of_concrete : concrete -> t
-    val to_concrete : t -> concrete option
-
-    val create : Module_expr.t Include_infos.t -> t
+    type t = Module_expr.t Include_infos.t
   end
 
   and Include_description : sig
-    type t = include_description
-
-    type concrete = Module_type.t Include_infos.t
-
-    val of_concrete : concrete -> t
-    val to_concrete : t -> concrete option
-
-    val create : Module_type.t Include_infos.t -> t
+    type t = Module_type.t Include_infos.t
   end
 
   and Include_infos : sig
@@ -688,14 +668,7 @@ module Unstable_for_testing : sig
   end
 
   and Class_declaration : sig
-    type t = class_declaration
-
-    type concrete = Class_expr.t Class_infos.t
-
-    val of_concrete : concrete -> t
-    val to_concrete : t -> concrete option
-
-    val create : Class_expr.t Class_infos.t -> t
+    type t = Class_expr.t Class_infos.t
   end
 
   and Class_field_kind : sig
@@ -865,25 +838,11 @@ module Unstable_for_testing : sig
   end
 
   and Class_type_declaration : sig
-    type t = class_type_declaration
-
-    type concrete = Class_type.t Class_infos.t
-
-    val of_concrete : concrete -> t
-    val to_concrete : t -> concrete option
-
-    val create : Class_type.t Class_infos.t -> t
+    type t = Class_type.t Class_infos.t
   end
 
   and Class_description : sig
-    type t = class_description
-
-    type concrete = Class_type.t Class_infos.t
-
-    val of_concrete : concrete -> t
-    val to_concrete : t -> concrete option
-
-    val create : Class_type.t Class_infos.t -> t
+    type t = Class_type.t Class_infos.t
   end
 
   and Class_infos : sig
@@ -1829,14 +1788,7 @@ module Unstable_for_testing : sig
   end
 
   and Label : sig
-    type t = label
-
-    type concrete = string
-
-    val of_concrete : concrete -> t
-    val to_concrete : t -> concrete option
-
-    val create : string -> t
+    type t = string
   end
 
   and Closed_flag : sig
@@ -1938,14 +1890,7 @@ module Unstable_for_testing : sig
   end
 
   and Longident_loc : sig
-    type t = longident_loc
-
-    type concrete = Longident.t Astlib.Loc.t
-
-    val of_concrete : concrete -> t
-    val to_concrete : t -> concrete option
-
-    val create : Longident.t Astlib.Loc.t -> t
+    type t = Longident.t Astlib.Loc.t
   end
 
   and Longident : sig
@@ -1999,14 +1944,7 @@ module V4_07 : sig
   end
 
   and Longident_loc : sig
-    type t = longident_loc
-
-    type concrete = Longident.t Astlib.Loc.t
-
-    val of_concrete : concrete -> t
-    val to_concrete : t -> concrete option
-
-    val create : Longident.t Astlib.Loc.t -> t
+    type t = Longident.t Astlib.Loc.t
   end
 
   and Rec_flag : sig
@@ -2108,14 +2046,7 @@ module V4_07 : sig
   end
 
   and Label : sig
-    type t = label
-
-    type concrete = string
-
-    val of_concrete : concrete -> t
-    val to_concrete : t -> concrete option
-
-    val create : string -> t
+    type t = string
   end
 
   and Arg_label : sig
@@ -3061,25 +2992,11 @@ module V4_07 : sig
   end
 
   and Class_description : sig
-    type t = class_description
-
-    type concrete = Class_type.t Class_infos.t
-
-    val of_concrete : concrete -> t
-    val to_concrete : t -> concrete option
-
-    val create : Class_type.t Class_infos.t -> t
+    type t = Class_type.t Class_infos.t
   end
 
   and Class_type_declaration : sig
-    type t = class_type_declaration
-
-    type concrete = Class_type.t Class_infos.t
-
-    val of_concrete : concrete -> t
-    val to_concrete : t -> concrete option
-
-    val create : Class_type.t Class_infos.t -> t
+    type t = Class_type.t Class_infos.t
   end
 
   and Class_expr : sig
@@ -3249,14 +3166,7 @@ module V4_07 : sig
   end
 
   and Class_declaration : sig
-    type t = class_declaration
-
-    type concrete = Class_expr.t Class_infos.t
-
-    val of_concrete : concrete -> t
-    val to_concrete : t -> concrete option
-
-    val create : Class_expr.t Class_infos.t -> t
+    type t = Class_expr.t Class_infos.t
   end
 
   and Module_type : sig
@@ -3494,25 +3404,11 @@ module V4_07 : sig
   end
 
   and Include_description : sig
-    type t = include_description
-
-    type concrete = Module_type.t Include_infos.t
-
-    val of_concrete : concrete -> t
-    val to_concrete : t -> concrete option
-
-    val create : Module_type.t Include_infos.t -> t
+    type t = Module_type.t Include_infos.t
   end
 
   and Include_declaration : sig
-    type t = include_declaration
-
-    type concrete = Module_expr.t Include_infos.t
-
-    val of_concrete : concrete -> t
-    val to_concrete : t -> concrete option
-
-    val create : Module_expr.t Include_infos.t -> t
+    type t = Module_expr.t Include_infos.t
   end
 
   and With_constraint : sig

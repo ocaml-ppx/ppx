@@ -18,6 +18,9 @@ val concat_map : 'a t -> f:('a -> 'b t) -> 'b t
 val     partition_map : 'a t -> f:('a -> ('b, 'c) Either.t) -> 'b t * 'c t
 val rev_partition_map : 'a t -> f:('a -> ('b, 'c) Either.t) -> 'b t * 'c t
 
+val zip_exn : 'a t -> 'b t -> ('a * 'b) t
+val unzip : ('a * 'b) t -> 'a t * 'b t
+
 type ('a, 'b) skip_or_either =
   | Skip
   | Left  of 'a

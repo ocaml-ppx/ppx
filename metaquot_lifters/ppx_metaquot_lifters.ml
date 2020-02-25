@@ -9,8 +9,7 @@ open Ppx_ast.Builder.V4_07
 
 let ppx_type ~loc ~arity name =
   (ptyp_constr ~loc
-     (Longident_loc.create
-        (Astlib.Loc.create ~loc ~txt:(Longident.ldot (Longident.lident "Ppx") name) ()))
+     (Astlib.Loc.create ~loc ~txt:(Longident.ldot (Longident.lident "Ppx") name) ())
      (List.init arity ~f:(fun _ -> ptyp_any ~loc)))
 
 let econstraint ~loc typ expr =
@@ -29,13 +28,12 @@ class expression_lifters loc =
     method record typ flds =
       pexp_record ~loc
         (List.map flds ~f:(fun (lab, e) ->
-           (Longident_loc.create
-              (Astlib.Loc.create ~loc ~txt:(Longident.lident lab) ()), e)))
+           (Astlib.Loc.create ~loc ~txt:(Longident.lident lab) ()), e))
         None
       |> econstraint ~loc typ
     method constr typ id args =
       pexp_construct ~loc
-        (Longident_loc.create (Astlib.Loc.create ~loc ~txt:(Longident.lident id) ()))
+        (Astlib.Loc.create ~loc ~txt:(Longident.lident id) ())
         (match args with
          | [] -> None
          | l  -> Some (etuple ~loc l))
@@ -61,13 +59,12 @@ class pattern_lifters loc =
     method record typ flds =
       ppat_record ~loc
         (List.map flds ~f:(fun (lab, e) ->
-           (Longident_loc.create
-              (Astlib.Loc.create ~loc ~txt:(Longident.lident lab) ()), e)))
+           (Astlib.Loc.create ~loc ~txt:(Longident.lident lab) ()), e))
         Closed_flag.closed
       |> pconstraint ~loc typ
     method constr typ id args =
       ppat_construct ~loc
-        (Longident_loc.create (Astlib.Loc.create ~loc ~txt:(Longident.lident id) ()))
+        (Astlib.Loc.create ~loc ~txt:(Longident.lident id) ())
         (match args with
          | [] -> None
          | l  -> Some (ptuple ~loc l))

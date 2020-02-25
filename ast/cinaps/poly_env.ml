@@ -1,11 +1,11 @@
-open StdLabels
+open Stdppx
 
 module Helpers = struct
   module Hashtbl = struct
     let mapi table ~f =
       let mapped = Hashtbl.create (Hashtbl.length table) in
       Hashtbl.iter
-        (fun key data -> Hashtbl.add mapped key (f key data))
+        ~f:(fun ~key ~data -> Hashtbl.add mapped key (f key data))
         table;
       mapped
 
@@ -14,12 +14,12 @@ module Helpers = struct
     let of_alist_multi alist =
       let table = Hashtbl.create (List.length alist) in
       List.iter (List.rev alist) ~f:(fun (key, data) ->
-        let list =
-          match Hashtbl.find_opt table key with
+        let data =
+          match Hashtbl.find table key with
           | None -> [data]
           | Some rest -> data :: rest
         in
-        Hashtbl.replace table key list);
+        Hashtbl.replace table ~key ~data);
       table
 
     let of_alist_exn alist =
@@ -37,11 +37,13 @@ type env_table = (string, env list) Hashtbl.t
 let empty_env = []
 
 let find env_table name =
-  match Hashtbl.find_opt env_table name with
+  match Hashtbl.find env_table name with
   | Some list -> list
   | None -> failwith (Printf.sprintf "no monomorphic instances found for %s" name)
 
 let args env = List.map env ~f:snd
+
+let create ~vars ~args = List.zip_exn vars args
 
 let env_is_empty = function
   | [] -> true
@@ -53,7 +55,7 @@ let nodify_targs targs =
 
 let rec subst_ty ty ~env : Astlib.Grammar.ty =
   match (ty : Astlib.Grammar.ty) with
-  | Var string -> List.assoc string env
+  | Var string -> Option.value_exn (List.assoc env string)
   | Name _ | Bool | Char | Int | String | Location -> ty
   | Loc ty -> Loc (subst_ty ty ~env)
   | List ty -> List (subst_ty ty ~env)
@@ -76,12 +78,18 @@ let subst_clause ~env clause =
 let subst_variants variants ~env =
   List.map variants ~f:(fun (cname, clause) -> (cname, subst_clause ~env clause))
 
+let subst_nominal nominal ~env =
+  let open Astlib.Grammar in
+  match nominal with
+  | Wrapper ty -> Wrapper (subst_ty ~env ty)
+  | Record fields -> Record (subst_fields ~env fields)
+  | Variant variants -> Variant (subst_variants ~env variants)
+
 let subst_decl decl ~env =
   let open Astlib.Grammar in
   match decl with
-  | Alias ty -> Alias (subst_ty ~env ty)
-  | Record fields -> Record (subst_fields ~env fields)
-  | Variant variants -> Variant (subst_variants ~env variants)
+  | Structural ty -> Structural (subst_ty ~env ty)
+  | Nominal nominal -> Nominal (subst_nominal ~env nominal)
 
 let rec ty_instances ty =
   match (ty : Astlib.Grammar.ty) with
@@ -105,17 +113,22 @@ let clause_instances clause =
 let variant_instances variant =
   List.concat (List.map variant ~f:(fun (_, clause) -> clause_instances clause))
 
-let decl_instances decl =
-  match (decl : Astlib.Grammar.decl) with
-  | Alias ty -> ty_instances ty
+let nominal_instances nominal =
+  match (nominal : Astlib.Grammar.nominal) with
+  | Wrapper ty -> ty_instances ty
   | Record record -> record_instances record
   | Variant variant -> variant_instances variant
+
+let decl_instances decl =
+  match (decl : Astlib.Grammar.decl) with
+  | Structural ty -> ty_instances ty
+  | Nominal nominal -> nominal_instances nominal
 
 let rec transitive_instances decl ~grammar_table =
   let instances = decl_instances decl in
   let transitive =
     List.map instances ~f:(fun (poly, args) ->
-      match (Hashtbl.find grammar_table poly : Astlib.Grammar.kind) with
+      match (Hashtbl.find_exn grammar_table poly : Astlib.Grammar.kind) with
       | Mono _ -> assert false
       | Poly (vars, decl) ->
         let instances = transitive_instances decl ~grammar_table in
@@ -135,7 +148,7 @@ let grammar_instances grammar ~grammar_table =
 let grammar_envs grammar ~grammar_table =
   List.map (grammar_instances grammar ~grammar_table) ~f:(fun (poly, args) ->
     let vars =
-      match (Hashtbl.find grammar_table poly : Astlib.Grammar.kind) with
+      match (Hashtbl.find_exn grammar_table poly : Astlib.Grammar.kind) with
       | Mono _ -> []
       | Poly (vars, _) -> vars
     in
@@ -143,6 +156,6 @@ let grammar_envs grammar ~grammar_table =
 
 let env_table grammar =
   let grammar_table = Helpers.Hashtbl.of_alist_exn grammar in
-  Helpers.Hashtbl.map ~f:(List.sort_uniq ~cmp:compare)
+  Helpers.Hashtbl.map ~f:(List.sort_uniq ~compare)
     (Helpers.Hashtbl.of_alist_multi
        (grammar_envs grammar ~grammar_table))

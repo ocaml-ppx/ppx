@@ -113,12 +113,8 @@ let%expect_test "match with alias" =
 
 let%expect_test "match with record" =
   let match_ident = function%view
-    | Pexp_ident longident_loc ->
-      (match%view Longident_loc.to_concrete longident_loc with
-       | Some { txt = Lident id; _} -> print_string id
-       | _ -> print_string "KO")
-    | _ ->
-      print_string "KO"
+    | Pexp_ident { txt = Lident id; _} -> print_string id
+    | _ -> print_string "KO"
   in
   begin
     match_ident (ident "x");

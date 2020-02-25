@@ -6,7 +6,7 @@ type field = Longident_loc.t * Pattern.t
 let fields_from_pattern ~loc pattern =
   let ppat_loc, ppat_desc = Deconstructor.pattern ~loc pattern in
   match ppat_desc with
-  | Ppat_record (fields, _closed) -> (ppat_loc, fields)
+  | Ppat_record (fields, _closed) -> fields
   | _ -> Error.invalid_attribute_payload ~loc:ppat_loc
 
 let fields_from_payload ~loc payload =

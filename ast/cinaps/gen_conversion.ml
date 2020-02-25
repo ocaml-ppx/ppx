@@ -160,11 +160,11 @@ let output_ty ty ~conv =
 
 let tuple_var i = Ml.id (Printf.sprintf "x%d" (i + 1))
 
-let define_conversion decl ~node_name ~env ~conv =
+let define_conversion nominal ~node_name ~env ~conv =
   let name = Name.make [concrete_prefix ~conv; node_name] (Poly_env.args env) in
   let node_ty = node_ty ~node_name ~env in
-  match (decl : Astlib.Grammar.decl) with
-  | Alias ty ->
+  match (nominal : Astlib.Grammar.nominal) with
+  | Wrapper ty ->
     Print.println "and %s x =" name;
     Print.indented (fun () ->
       Print.println "%s x" (fn_value (ty_conversion ~conv (Poly_env.subst_ty ty ~env))))
@@ -222,37 +222,54 @@ let define_conversion decl ~node_name ~env ~conv =
                  (List.map record ~f:(fun (field, _) -> Ml.id field))))))
 
 let print_conversion_impl decl ~node_name ~env ~is_initial =
-  Print.println
-    "%s %s x ="
-    (if is_initial then "let rec" else "and")
-    (Name.make ["ast_of"; node_name] (Poly_env.args env));
-  Print.indented (fun () ->
-    Print.println "Versions.%s.%s.%s (%s x)"
-      (Ml.module_name version)
-      (Ml.module_name node_name)
-      "of_concrete"
-      (Name.make ["concrete_of"; node_name] (Poly_env.args env)));
-  Print.newline ();
-  define_conversion decl ~node_name ~env ~conv:`concrete_of;
-  Print.newline ();
-  Print.println "and %s x =" (Name.make ["ast_to"; node_name] (Poly_env.args env));
-  Print.indented (fun () ->
-    Print.println "let option = Versions.%s.%s.%s x in"
-      (Ml.module_name version)
-      (Ml.module_name node_name)
-      "to_concrete";
-    Print.println "let concrete =";
+  match (decl : Astlib.Grammar.decl) with
+  | Structural ty ->
+    Print.println
+      "%s %s x ="
+      (if is_initial then "let rec" else "and")
+      (Name.make ["ast_of"; node_name] (Poly_env.args env));
     Print.indented (fun () ->
-      Print.println "Helpers.Option.value_exn option";
+      Print.println "%s x"
+        (fn_value (ty_conversion ~conv:`concrete_of (Poly_env.subst_ty ty ~env))));
+    Print.newline ();
+    Print.println
+      "and %s x ="
+      (Name.make ["ast_to"; node_name] (Poly_env.args env));
+    Print.indented (fun () ->
+      Print.println "%s x"
+        (fn_value (ty_conversion ~conv:`concrete_to (Poly_env.subst_ty ty ~env))))
+  | Nominal nominal ->
+    Print.println
+      "%s %s x ="
+      (if is_initial then "let rec" else "and")
+      (Name.make ["ast_of"; node_name] (Poly_env.args env));
+    Print.indented (fun () ->
+      Print.println "Versions.%s.%s.%s (%s x)"
+        (Ml.module_name version)
+        (Ml.module_name node_name)
+        "of_concrete"
+        (Name.make ["concrete_of"; node_name] (Poly_env.args env)));
+    Print.newline ();
+    define_conversion nominal ~node_name ~env ~conv:`concrete_of;
+    Print.newline ();
+    Print.println "and %s x =" (Name.make ["ast_to"; node_name] (Poly_env.args env));
+    Print.indented (fun () ->
+      Print.println "let option = Versions.%s.%s.%s x in"
+        (Ml.module_name version)
+        (Ml.module_name node_name)
+        "to_concrete";
+      Print.println "let concrete =";
       Print.indented (fun () ->
-        Print.println "~message:%S"
-          (Printf.sprintf "%s: conversion failed"
-             (Name.make ["concrete_to"; node_name] (Poly_env.args env)))));
-    Print.println "in";
-    Print.println "%s concrete"
-      (Name.make ["concrete_to"; node_name] (Poly_env.args env)));
-  Print.newline ();
-  define_conversion decl ~node_name ~env ~conv:`concrete_to
+        Print.println "Helpers.Option.value_exn option";
+        Print.indented (fun () ->
+          Print.println "~message:%S"
+            (Printf.sprintf "%s: conversion failed"
+               (Name.make ["concrete_to"; node_name] (Poly_env.args env)))));
+      Print.println "in";
+      Print.println "%s concrete"
+        (Name.make ["concrete_to"; node_name] (Poly_env.args env)));
+    Print.newline ();
+    define_conversion nominal ~node_name ~env ~conv:`concrete_to
 
 let print_conversion_mli () =
   let grammar = Astlib.History.find_grammar Astlib.history ~version in

@@ -65,9 +65,8 @@ module Map = struct
         | Poly (_, _) -> acc
         | Mono decl ->
           match decl with
-          | Alias _
-          | Variant _ -> acc
-          | Record record ->
+          | Structural _ | Nominal (Wrapper _ | Variant _) -> acc
+          | Nominal (Record record) ->
             match from_record ~name record with
             | None -> acc
             | Some ({outter_record; inner_variant; _} as shortcut) ->
