@@ -1,4 +1,4 @@
-let version = "v4.07"
+let version = "v4_07"
 
 let conversions : History.conversion list = []
 

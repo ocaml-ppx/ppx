@@ -1393,6 +1393,7 @@ module Common : sig
     val longident
       : loc: Astlib.Location.t -> Versions.longident -> Versions.longident Astlib.Loc.t
     val lident : loc: Astlib.Location.t -> string -> Versions.longident Astlib.Loc.t
+    val dotted : loc: Astlib.Location.t -> string list -> Versions.longident Astlib.Loc.t
   end
 
   val echar : loc: Astlib.Location.t -> char -> Versions.expression
@@ -1402,11 +1403,17 @@ module Common : sig
   val eint64 : loc: Astlib.Location.t -> int64 -> Versions.expression
   val enativeint : loc: Astlib.Location.t -> nativeint -> Versions.expression
   val efloat : loc: Astlib.Location.t -> float -> Versions.expression
+  val evar : loc: Astlib.Location.t -> string -> Versions.expression
   val eunit : loc: Astlib.Location.t -> Versions.expression
   val ebool : loc: Astlib.Location.t -> bool -> Versions.expression
   val enil : loc: Astlib.Location.t -> Versions.expression
   val elist : loc: Astlib.Location.t -> Versions.expression list -> Versions.expression
   val etuple : loc: Astlib.Location.t -> Versions.expression list -> Versions.expression
+  val eabstract
+    :  loc:Astlib.Location.t
+    -> Versions.pattern list
+    -> Versions.expression
+    -> Versions.expression
   val eapply :
     loc : Astlib.Location.t ->
     Versions.expression ->

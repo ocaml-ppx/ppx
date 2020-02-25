@@ -1,4 +1,5 @@
 (library
- (name ppx_ast_cinaps)
+ (name        ppx_ast_cinaps)
+ (public_name ppx.ast_cinaps)
  (libraries astlib stdppx ocaml-compiler-libs.shadow)
  (flags (:standard -open Ocaml_shadow -safe-string)))
