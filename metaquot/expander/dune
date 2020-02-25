@@ -6,4 +6,4 @@
   stdppx
   ppx.ast
   ppx.bootstrap
-  ppx.metaquot_lifters))
+  ppx_metaquot_lifters))

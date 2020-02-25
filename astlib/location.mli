@@ -39,6 +39,8 @@ val update
   -> t
   -> t
 
+val none : t
+
 type location = t
 
 module Error : sig

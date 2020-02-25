@@ -609,6 +609,13 @@ module Common = struct
   module Located = struct
     let longident ~loc longident = Astlib.Loc.create ~loc ~txt:longident ()
     let lident ~loc x = longident ~loc (Longident.lident x)
+
+    let dotted ~loc list =
+      match list with
+      | [] -> invalid_arg "Located.dotted: empty list"
+      | head :: tail ->
+        longident ~loc
+          (List.fold_left ~init:(Longident.lident head) tail ~f:Longident.ldot)
   end
 
   let echar ~loc x = pexp_constant ~loc (Constant.pconst_char x)
@@ -629,6 +636,8 @@ module Common = struct
 
   let efloat ~loc x =
     pexp_constant ~loc (Constant.pconst_float (Float.to_string x) None)
+
+  let evar ~loc x = pexp_ident ~loc (Located.lident ~loc x)
 
   let eunit ~loc =
     pexp_construct ~loc (Located.lident ~loc "()") None
@@ -656,6 +665,10 @@ module Common = struct
     pexp_apply ~loc
       fun_expr
       (List.map args ~f:(fun expr -> (Arg_label.nolabel, expr)))
+
+  let eabstract ~loc pats body =
+    List.fold_right pats ~init:body ~f:(fun pat body ->
+      pexp_fun ~loc Arg_label.nolabel None pat body)
 
   let pchar ~loc x = ppat_constant ~loc (Constant.pconst_char x)
 

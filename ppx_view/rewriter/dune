@@ -6,4 +6,4 @@
   ppx
   ppx_view_lib_deprecated)
  (flags :standard -open Ocaml_shadow)
- (ppx_runtime_libraries viewlib))
+ (ppx_runtime_libraries ppx.ast viewlib))

@@ -17,6 +17,8 @@ let create ~start ~end_ ?(ghost = false) () =
   ; loc_ghost = ghost
   }
 
+let none = of_location Ocaml_common.Location.none
+
 let update_internal t ?(start = start t) ?(end_ = end_ t) ?(ghost = ghost t) () =
   create ~start ~end_ ~ghost ()
 

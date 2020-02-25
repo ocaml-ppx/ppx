@@ -403,6 +403,11 @@ module Lift = struct
   let extra_methods () =
     Ml.declare_method
       ~virtual_:true
+      ~name:"node"
+      ~signature:"(string * int) option -> 'res -> 'res"
+      ();
+    Ml.declare_method
+      ~virtual_:true
       ~name:"record"
       ~signature:"(string * int) option -> (string * 'res) list -> 'res"
       ();
@@ -432,7 +437,7 @@ module Lift = struct
     let name_and_val var_name = Printf.sprintf "(%S, %s)" var_name var_name in
     Ml.list_lit (List.map ~f:name_and_val var_names)
 
-  let typ_arg ~value_kind =
+  let make_node_arg ~value_kind =
     match value_kind with
     | Abstract -> "None"
     | Ast_type { node_name; targs } ->
@@ -445,14 +450,17 @@ module Lift = struct
         ~f:(fun {var; recursive_call} ->
           Printf.sprintf "let %s = %s %s in" var recursive_call var)
     in
+    let node_arg = make_node_arg ~value_kind in
     let result =
       match kind with
-      | Kalias -> pattern
-      | Ktuple -> Printf.sprintf "self#tuple %s" (tuple_arg vars)
+      | Kalias ->
+        Printf.sprintf "self#node %s %s" node_arg pattern
+      | Ktuple ->
+        Printf.sprintf "self#node %s (self#tuple %s)" node_arg (tuple_arg vars)
       | Krecord ->
-        Printf.sprintf "self#record %s %s" (typ_arg ~value_kind) (record_arg vars)
+        Printf.sprintf "self#record %s %s" node_arg (record_arg vars)
       | Kconstr name ->
-        Printf.sprintf "self#constr %s %S %s" (typ_arg ~value_kind) name (tuple_arg vars)
+        Printf.sprintf "self#constr %s %S %s" node_arg name (tuple_arg vars)
     in
     recurse @ [result]
 

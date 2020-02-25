@@ -253,6 +253,7 @@ class virtual ['res] lift =
     method virtual nativeint :     (nativeint, 'res) T.lift
     method virtual unit      :     (unit,      'res) T.lift
 
+    method virtual node : (string * int) option -> 'res -> 'res
     method virtual record : (string * int) option -> (string * 'res) list -> 'res
     method virtual constr : (string * int) option -> string -> 'res list -> 'res
     method virtual tuple : 'res list -> 'res
@@ -300,6 +301,7 @@ class type ['res] std_lifters =
     method bool      : (bool ,     'res) T.lift
     method char      : (char ,     'res) T.lift
     method array     : 'a. ('a,    'res) T.lift -> ('a array, 'res) T.lift
+    method node      : (string * int) option ->             'res       -> 'res
     method record    : (string * int) option -> (string *   'res) list -> 'res
     method constr    : (string * int) option -> string ->   'res  list -> 'res
     method tuple     : 'res list   ->    'res

@@ -6,24 +6,10 @@ let is_keyword s =
 let map_keyword s =
   if is_keyword s then s ^ "_" else s
 
-let is_id_char = function
-  | 'A' .. 'Z' -> true
-  | 'a' .. 'z' -> true
-  | '0' .. '9' -> true
-  | '_' | '\'' -> true
-  | _ -> false
-
-let to_id_char char =
-  if is_id_char char
-  then char
-  else '_'
-
-let raw_id string = String.map string ~f:to_id_char
-
-let id string = map_keyword (String.lowercase_ascii (raw_id string))
+let id string = map_keyword (String.lowercase_ascii string)
 let tvar string = "'" ^ id string
-let module_name string = String.capitalize_ascii (raw_id string)
-let tag string = String.capitalize_ascii (raw_id string)
+let module_name string = String.capitalize_ascii string
+let tag string = String.capitalize_ascii string
 
 let list_lit elms =
   Printf.sprintf "[%s]" (String.concat ~sep:"; " elms)

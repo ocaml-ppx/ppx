@@ -1,5 +1,7 @@
 open! Stdppx
 open Ppx_ast.V4_07
+open Ppx_ast.Builder.V4_07
+open Ppx_ast.Builder.Common
 module Conversion = Ppx_ast.Conversion
 module Traverse = Ppx_ast.Traverse.V4_07
 module Traverse_builtins = Ppx_ast.Traverse_builtins
@@ -173,26 +175,10 @@ let expr_payload_of ext =
      | Some _ | None -> None)
   | Some _ | None -> None
 
-let pattern_payload_of ext =
-  match payload_of ext with
-  | Some (PPat (pat, option)) -> Some (pat, option)
-  | Some _ | None -> None
-
 let loc_of_extension attr =
   match Extension.to_concrete attr with
   | Some (x, _) -> Some (Astlib.Location.to_location (Astlib.Loc.loc x))
   | None -> None
-
-let loc_of_expression attr =
-  match Expression.to_concrete attr with
-  | Some e -> Some (Astlib.Location.to_location e.pexp_loc)
-  | None -> None
-
-let ppat_any ~loc =
-  Pattern.create
-    ~ppat_loc:loc
-    ~ppat_attributes:(Attributes.create [])
-    ~ppat_desc:Pattern_desc.ppat_any
 
 module Expr (Driver : Driver) = struct
   type t = Expression.t
@@ -203,7 +189,36 @@ module Expr (Driver : Driver) = struct
       ~pexp_desc:(Expression_desc.pexp_ident
                     (Astlib.Loc.create ~loc ~txt:(Longident.lident "loc") ()))
   let attributes = None
-  class std_lifters = Ppx_metaquot_lifters.expression_lifters
+  class std_lifters loc = object (self)
+    inherit Ppx_metaquot_lifters.expression_lifters loc
+
+    method! position pos =
+      pexp_apply ~loc
+        (pexp_ident ~loc (Located.dotted ~loc ["Astlib"; "Position"; "create"]))
+        [ Arg_label.labelled "fname", estring ~loc (Astlib.Position.fname pos)
+        ; Arg_label.labelled "lnum", eint ~loc (Astlib.Position.lnum pos)
+        ; Arg_label.labelled "bol", eint ~loc (Astlib.Position.bol pos)
+        ; Arg_label.labelled "cnum", eint ~loc (Astlib.Position.cnum pos)
+        ; Arg_label.nolabel, eunit ~loc
+        ]
+
+    method! location loc =
+      pexp_apply ~loc
+        (pexp_ident ~loc (Located.dotted ~loc ["Astlib"; "Location"; "create"]))
+        [ Arg_label.labelled "start", self#position (Astlib.Location.start loc)
+        ; Arg_label.labelled "end_", self#position (Astlib.Location.end_ loc)
+        ; Arg_label.labelled "ghost", self#bool (Astlib.Location.ghost loc)
+        ; Arg_label.nolabel, eunit ~loc
+        ]
+
+    method! loc : 'a. ('a -> t) -> 'a Astlib.Loc.t -> t = fun f loc_ ->
+      pexp_apply ~loc
+        (pexp_ident ~loc (Located.dotted ~loc ["Astlib"; "Loc"; "create"]))
+        [ Arg_label.labelled "txt", f (Astlib.Loc.txt loc_)
+        ; Arg_label.labelled "loc", self#location (Astlib.Loc.loc loc_)
+        ; Arg_label.nolabel, eunit ~loc
+        ]
+  end
   let cast ext =
     match expr_payload_of ext with
     | Some (e, attrs) ->
@@ -213,23 +228,6 @@ module Expr (Driver : Driver) = struct
       Location.raise_errorf ?loc:(loc_of_extension ext)
         "expression expected"
   let extension entry = Ppx_bootstrap.Extension.Expr entry
-end
-
-module Patt = struct
-  type t = Pattern.t
-  let location loc = ppat_any ~loc
-  let attributes = Some (fun loc -> ppat_any ~loc)
-  class std_lifters = Ppx_metaquot_lifters.pattern_lifters
-  let cast ext =
-    match pattern_payload_of ext with
-    | Some (p, None) -> p
-    | Some (_, Some e) ->
-      Location.raise_errorf ?loc:(loc_of_expression e)
-        "guard not expected here"
-    | _ ->
-      Location.raise_errorf ?loc:(loc_of_extension ext)
-        "pattern expected"
-  let extension entry = Ppx_bootstrap.Extension.Patt entry
 end
 
 module Extensions_for_nt (Driver : Driver) (Non_terminal : Non_terminal) = struct
@@ -273,7 +271,6 @@ end
 
 module Extensions (Driver : Driver) = struct
   module Expr_extensions = Extensions_for_nt (Driver) (Expr (Driver))
-  module Patt_extensions = Extensions_for_nt (Driver) (Patt)
 
-  let extensions = Expr_extensions.extensions @ Patt_extensions.extensions
+  let extensions = Expr_extensions.extensions
 end

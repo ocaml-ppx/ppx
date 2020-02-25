@@ -150,7 +150,7 @@ type label = string
 type longident_loc = longident Astlib.Loc.t
 
 module Unstable_for_testing = struct
-  let version = "unstable-for-testing"
+  let version = "unstable_for_testing"
   let node name data = Node.of_node ~version { name; data }
 
   module Directive_argument = struct
@@ -4675,7 +4675,7 @@ module Unstable_for_testing = struct
 end
 
 module V4_07 = struct
-  let version = "v4.07"
+  let version = "v4_07"
   let node name data = Node.of_node ~version { name; data }
 
   module Longident = struct

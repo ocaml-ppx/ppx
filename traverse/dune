@@ -4,4 +4,4 @@
  (kind ppx_rewriter)
  (flags (:standard -safe-string))
  (libraries  ppx ppx._stdppx)
- (preprocess (pps ppx.metaquot ppx.runner)))
+ (preprocess (pps ppx.metaquot ppx.ppx_view ppx.runner)))
