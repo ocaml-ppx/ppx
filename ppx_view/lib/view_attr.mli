@@ -11,4 +11,4 @@ type field = Longident_loc.t * Pattern.t
 val extract_fields :
   err_loc: Astlib.Location.t ->
   Attributes.t ->
-  (Astlib.Location.t * field list) option
+  (field list) option

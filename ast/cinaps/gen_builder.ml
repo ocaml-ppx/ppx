@@ -263,13 +263,16 @@ let builders name (grammar : Astlib.Grammar.kind) shortcut =
   | Poly (_, _) -> []
   | Mono decl ->
     match decl with
-    | Alias _ -> []
-    | Record r ->
-      begin match Builder.of_record name r shortcut with
-      | None -> []
-      | Some r -> [r]
-      end
-    | Variant v -> Builder.of_variant name v shortcut
+    | Structural _ -> []
+    | Nominal nominal ->
+      match nominal with
+      | Wrapper _ -> []
+      | Record r ->
+        begin match Builder.of_record name r shortcut with
+        | None -> []
+        | Some r -> [r]
+        end
+      | Variant v -> Builder.of_variant name v shortcut
 
 let print_builder_ml () =
   Print.newline ();

@@ -226,22 +226,12 @@ module Unstable_for_testing = struct
             With_constraint.of_concrete (Pwith_type (x0, x1))
       method include_declaration : Include_declaration.t -> Include_declaration.t  =
         fun include_declaration ->
-          let concrete =
-            match Include_declaration.to_concrete include_declaration with
-            | None -> conversion_failed "include_declaration"
-            | Some n -> n
-          in
-          let concrete = self#include_infos_module_expr concrete in
-          Include_declaration.of_concrete concrete
+          let include_declaration = self#include_infos_module_expr include_declaration in
+          include_declaration
       method include_description : Include_description.t -> Include_description.t  =
         fun include_description ->
-          let concrete =
-            match Include_description.to_concrete include_description with
-            | None -> conversion_failed "include_description"
-            | Some n -> n
-          in
-          let concrete = self#include_infos_module_type concrete in
-          Include_description.of_concrete concrete
+          let include_description = self#include_infos_module_type include_description in
+          include_description
       method include_infos_module_expr : Module_expr.t Include_infos.t -> Module_expr.t Include_infos.t  =
         fun include_infos ->
           let concrete =
@@ -420,13 +410,8 @@ module Unstable_for_testing = struct
           Module_type.of_concrete { pmty_attributes; pmty_loc; pmty_desc }
       method class_declaration : Class_declaration.t -> Class_declaration.t  =
         fun class_declaration ->
-          let concrete =
-            match Class_declaration.to_concrete class_declaration with
-            | None -> conversion_failed "class_declaration"
-            | Some n -> n
-          in
-          let concrete = self#class_infos_class_expr concrete in
-          Class_declaration.of_concrete concrete
+          let class_declaration = self#class_infos_class_expr class_declaration in
+          class_declaration
       method class_field_kind : Class_field_kind.t -> Class_field_kind.t  =
         fun class_field_kind ->
           let concrete =
@@ -552,22 +537,12 @@ module Unstable_for_testing = struct
           Class_expr.of_concrete { pcl_attributes; pcl_loc; pcl_desc }
       method class_type_declaration : Class_type_declaration.t -> Class_type_declaration.t  =
         fun class_type_declaration ->
-          let concrete =
-            match Class_type_declaration.to_concrete class_type_declaration with
-            | None -> conversion_failed "class_type_declaration"
-            | Some n -> n
-          in
-          let concrete = self#class_infos_class_type concrete in
-          Class_type_declaration.of_concrete concrete
+          let class_type_declaration = self#class_infos_class_type class_type_declaration in
+          class_type_declaration
       method class_description : Class_description.t -> Class_description.t  =
         fun class_description ->
-          let concrete =
-            match Class_description.to_concrete class_description with
-            | None -> conversion_failed "class_description"
-            | Some n -> n
-          in
-          let concrete = self#class_infos_class_type concrete in
-          Class_description.of_concrete concrete
+          let class_description = self#class_infos_class_type class_description in
+          class_description
       method class_infos_class_expr : Class_expr.t Class_infos.t -> Class_expr.t Class_infos.t  =
         fun class_infos ->
           let concrete =
@@ -1289,13 +1264,8 @@ module Unstable_for_testing = struct
             Arg_label.of_concrete Nolabel
       method label : Label.t -> Label.t  =
         fun label ->
-          let concrete =
-            match Label.to_concrete label with
-            | None -> conversion_failed "label"
-            | Some n -> n
-          in
-          let concrete = self#string concrete in
-          Label.of_concrete concrete
+          let label = self#string label in
+          label
       method closed_flag : Closed_flag.t -> Closed_flag.t  =
         fun closed_flag ->
           let concrete =
@@ -1382,13 +1352,8 @@ module Unstable_for_testing = struct
             Rec_flag.of_concrete Nonrecursive
       method longident_loc : Longident_loc.t -> Longident_loc.t  =
         fun longident_loc ->
-          let concrete =
-            match Longident_loc.to_concrete longident_loc with
-            | None -> conversion_failed "longident_loc"
-            | Some n -> n
-          in
-          let concrete = self#loc self#longident concrete in
-          Longident_loc.of_concrete concrete
+          let longident_loc = self#loc self#longident longident_loc in
+          longident_loc
       method longident : Longident.t -> Longident.t  =
         fun longident ->
           let concrete =
@@ -1595,20 +1560,10 @@ module Unstable_for_testing = struct
             self#longident_loc x1
       method include_declaration : Include_declaration.t -> unit  =
         fun include_declaration ->
-          let concrete =
-            match Include_declaration.to_concrete include_declaration with
-            | None -> conversion_failed "include_declaration"
-            | Some n -> n
-          in
-          self#include_infos_module_expr concrete
+          self#include_infos_module_expr include_declaration
       method include_description : Include_description.t -> unit  =
         fun include_description ->
-          let concrete =
-            match Include_description.to_concrete include_description with
-            | None -> conversion_failed "include_description"
-            | Some n -> n
-          in
-          self#include_infos_module_type concrete
+          self#include_infos_module_type include_description
       method include_infos_module_expr : Module_expr.t Include_infos.t -> unit  =
         fun include_infos ->
           let concrete =
@@ -1759,12 +1714,7 @@ module Unstable_for_testing = struct
           self#module_type_desc pmty_desc
       method class_declaration : Class_declaration.t -> unit  =
         fun class_declaration ->
-          let concrete =
-            match Class_declaration.to_concrete class_declaration with
-            | None -> conversion_failed "class_declaration"
-            | Some n -> n
-          in
-          self#class_infos_class_expr concrete
+          self#class_infos_class_expr class_declaration
       method class_field_kind : Class_field_kind.t -> unit  =
         fun class_field_kind ->
           let concrete =
@@ -1870,20 +1820,10 @@ module Unstable_for_testing = struct
           self#class_expr_desc pcl_desc
       method class_type_declaration : Class_type_declaration.t -> unit  =
         fun class_type_declaration ->
-          let concrete =
-            match Class_type_declaration.to_concrete class_type_declaration with
-            | None -> conversion_failed "class_type_declaration"
-            | Some n -> n
-          in
-          self#class_infos_class_type concrete
+          self#class_infos_class_type class_type_declaration
       method class_description : Class_description.t -> unit  =
         fun class_description ->
-          let concrete =
-            match Class_description.to_concrete class_description with
-            | None -> conversion_failed "class_description"
-            | Some n -> n
-          in
-          self#class_infos_class_type concrete
+          self#class_infos_class_type class_description
       method class_infos_class_expr : Class_expr.t Class_infos.t -> unit  =
         fun class_infos ->
           let concrete =
@@ -2492,12 +2432,7 @@ module Unstable_for_testing = struct
             ()
       method label : Label.t -> unit  =
         fun label ->
-          let concrete =
-            match Label.to_concrete label with
-            | None -> conversion_failed "label"
-            | Some n -> n
-          in
-          self#string concrete
+          self#string label
       method closed_flag : Closed_flag.t -> unit  =
         fun closed_flag ->
           let concrete =
@@ -2584,12 +2519,7 @@ module Unstable_for_testing = struct
             ()
       method longident_loc : Longident_loc.t -> unit  =
         fun longident_loc ->
-          let concrete =
-            match Longident_loc.to_concrete longident_loc with
-            | None -> conversion_failed "longident_loc"
-            | Some n -> n
-          in
-          self#loc self#longident concrete
+          self#loc self#longident longident_loc
       method longident : Longident.t -> unit  =
         fun longident ->
           let concrete =
@@ -2830,21 +2760,11 @@ module Unstable_for_testing = struct
             acc
       method include_declaration : Include_declaration.t -> 'acc -> 'acc  =
         fun include_declaration acc ->
-          let concrete =
-            match Include_declaration.to_concrete include_declaration with
-            | None -> conversion_failed "include_declaration"
-            | Some n -> n
-          in
-          let acc = self#include_infos_module_expr concrete acc in
+          let acc = self#include_infos_module_expr include_declaration acc in
           acc
       method include_description : Include_description.t -> 'acc -> 'acc  =
         fun include_description acc ->
-          let concrete =
-            match Include_description.to_concrete include_description with
-            | None -> conversion_failed "include_description"
-            | Some n -> n
-          in
-          let acc = self#include_infos_module_type concrete acc in
+          let acc = self#include_infos_module_type include_description acc in
           acc
       method include_infos_module_expr : Module_expr.t Include_infos.t -> 'acc -> 'acc  =
         fun include_infos acc ->
@@ -3024,12 +2944,7 @@ module Unstable_for_testing = struct
           acc
       method class_declaration : Class_declaration.t -> 'acc -> 'acc  =
         fun class_declaration acc ->
-          let concrete =
-            match Class_declaration.to_concrete class_declaration with
-            | None -> conversion_failed "class_declaration"
-            | Some n -> n
-          in
-          let acc = self#class_infos_class_expr concrete acc in
+          let acc = self#class_infos_class_expr class_declaration acc in
           acc
       method class_field_kind : Class_field_kind.t -> 'acc -> 'acc  =
         fun class_field_kind acc ->
@@ -3156,21 +3071,11 @@ module Unstable_for_testing = struct
           acc
       method class_type_declaration : Class_type_declaration.t -> 'acc -> 'acc  =
         fun class_type_declaration acc ->
-          let concrete =
-            match Class_type_declaration.to_concrete class_type_declaration with
-            | None -> conversion_failed "class_type_declaration"
-            | Some n -> n
-          in
-          let acc = self#class_infos_class_type concrete acc in
+          let acc = self#class_infos_class_type class_type_declaration acc in
           acc
       method class_description : Class_description.t -> 'acc -> 'acc  =
         fun class_description acc ->
-          let concrete =
-            match Class_description.to_concrete class_description with
-            | None -> conversion_failed "class_description"
-            | Some n -> n
-          in
-          let acc = self#class_infos_class_type concrete acc in
+          let acc = self#class_infos_class_type class_description acc in
           acc
       method class_infos_class_expr : Class_expr.t Class_infos.t -> 'acc -> 'acc  =
         fun class_infos acc ->
@@ -3893,12 +3798,7 @@ module Unstable_for_testing = struct
             acc
       method label : Label.t -> 'acc -> 'acc  =
         fun label acc ->
-          let concrete =
-            match Label.to_concrete label with
-            | None -> conversion_failed "label"
-            | Some n -> n
-          in
-          let acc = self#string concrete acc in
+          let acc = self#string label acc in
           acc
       method closed_flag : Closed_flag.t -> 'acc -> 'acc  =
         fun closed_flag acc ->
@@ -3986,12 +3886,7 @@ module Unstable_for_testing = struct
             acc
       method longident_loc : Longident_loc.t -> 'acc -> 'acc  =
         fun longident_loc acc ->
-          let concrete =
-            match Longident_loc.to_concrete longident_loc with
-            | None -> conversion_failed "longident_loc"
-            | Some n -> n
-          in
-          let acc = self#loc self#longident concrete acc in
+          let acc = self#loc self#longident longident_loc acc in
           acc
       method longident : Longident.t -> 'acc -> 'acc  =
         fun longident acc ->
@@ -4236,22 +4131,12 @@ module Unstable_for_testing = struct
             (With_constraint.of_concrete (Pwith_type (x0, x1)), acc)
       method include_declaration : Include_declaration.t -> 'acc -> (Include_declaration.t * 'acc)  =
         fun include_declaration acc ->
-          let concrete =
-            match Include_declaration.to_concrete include_declaration with
-            | None -> conversion_failed "include_declaration"
-            | Some n -> n
-          in
-          let (concrete, acc) = self#include_infos_module_expr concrete acc in
-          (Include_declaration.of_concrete concrete, acc)
+          let (include_declaration, acc) = self#include_infos_module_expr include_declaration acc in
+          (include_declaration, acc)
       method include_description : Include_description.t -> 'acc -> (Include_description.t * 'acc)  =
         fun include_description acc ->
-          let concrete =
-            match Include_description.to_concrete include_description with
-            | None -> conversion_failed "include_description"
-            | Some n -> n
-          in
-          let (concrete, acc) = self#include_infos_module_type concrete acc in
-          (Include_description.of_concrete concrete, acc)
+          let (include_description, acc) = self#include_infos_module_type include_description acc in
+          (include_description, acc)
       method include_infos_module_expr : Module_expr.t Include_infos.t -> 'acc -> (Module_expr.t Include_infos.t * 'acc)  =
         fun include_infos acc ->
           let concrete =
@@ -4430,13 +4315,8 @@ module Unstable_for_testing = struct
           (Module_type.of_concrete { pmty_attributes; pmty_loc; pmty_desc }, acc)
       method class_declaration : Class_declaration.t -> 'acc -> (Class_declaration.t * 'acc)  =
         fun class_declaration acc ->
-          let concrete =
-            match Class_declaration.to_concrete class_declaration with
-            | None -> conversion_failed "class_declaration"
-            | Some n -> n
-          in
-          let (concrete, acc) = self#class_infos_class_expr concrete acc in
-          (Class_declaration.of_concrete concrete, acc)
+          let (class_declaration, acc) = self#class_infos_class_expr class_declaration acc in
+          (class_declaration, acc)
       method class_field_kind : Class_field_kind.t -> 'acc -> (Class_field_kind.t * 'acc)  =
         fun class_field_kind acc ->
           let concrete =
@@ -4562,22 +4442,12 @@ module Unstable_for_testing = struct
           (Class_expr.of_concrete { pcl_attributes; pcl_loc; pcl_desc }, acc)
       method class_type_declaration : Class_type_declaration.t -> 'acc -> (Class_type_declaration.t * 'acc)  =
         fun class_type_declaration acc ->
-          let concrete =
-            match Class_type_declaration.to_concrete class_type_declaration with
-            | None -> conversion_failed "class_type_declaration"
-            | Some n -> n
-          in
-          let (concrete, acc) = self#class_infos_class_type concrete acc in
-          (Class_type_declaration.of_concrete concrete, acc)
+          let (class_type_declaration, acc) = self#class_infos_class_type class_type_declaration acc in
+          (class_type_declaration, acc)
       method class_description : Class_description.t -> 'acc -> (Class_description.t * 'acc)  =
         fun class_description acc ->
-          let concrete =
-            match Class_description.to_concrete class_description with
-            | None -> conversion_failed "class_description"
-            | Some n -> n
-          in
-          let (concrete, acc) = self#class_infos_class_type concrete acc in
-          (Class_description.of_concrete concrete, acc)
+          let (class_description, acc) = self#class_infos_class_type class_description acc in
+          (class_description, acc)
       method class_infos_class_expr : Class_expr.t Class_infos.t -> 'acc -> (Class_expr.t Class_infos.t * 'acc)  =
         fun class_infos acc ->
           let concrete =
@@ -5299,13 +5169,8 @@ module Unstable_for_testing = struct
             (Arg_label.of_concrete Nolabel, acc)
       method label : Label.t -> 'acc -> (Label.t * 'acc)  =
         fun label acc ->
-          let concrete =
-            match Label.to_concrete label with
-            | None -> conversion_failed "label"
-            | Some n -> n
-          in
-          let (concrete, acc) = self#string concrete acc in
-          (Label.of_concrete concrete, acc)
+          let (label, acc) = self#string label acc in
+          (label, acc)
       method closed_flag : Closed_flag.t -> 'acc -> (Closed_flag.t * 'acc)  =
         fun closed_flag acc ->
           let concrete =
@@ -5392,13 +5257,8 @@ module Unstable_for_testing = struct
             (Rec_flag.of_concrete Nonrecursive, acc)
       method longident_loc : Longident_loc.t -> 'acc -> (Longident_loc.t * 'acc)  =
         fun longident_loc acc ->
-          let concrete =
-            match Longident_loc.to_concrete longident_loc with
-            | None -> conversion_failed "longident_loc"
-            | Some n -> n
-          in
-          let (concrete, acc) = self#loc self#longident concrete acc in
-          (Longident_loc.of_concrete concrete, acc)
+          let (longident_loc, acc) = self#loc self#longident longident_loc acc in
+          (longident_loc, acc)
       method longident : Longident.t -> 'acc -> (Longident.t * 'acc)  =
         fun longident acc ->
           let concrete =
@@ -5642,22 +5502,12 @@ module Unstable_for_testing = struct
             With_constraint.of_concrete (Pwith_type (x0, x1))
       method include_declaration : 'ctx -> Include_declaration.t -> Include_declaration.t  =
         fun _ctx include_declaration ->
-          let concrete =
-            match Include_declaration.to_concrete include_declaration with
-            | None -> conversion_failed "include_declaration"
-            | Some n -> n
-          in
-          let concrete = self#include_infos_module_expr _ctx concrete in
-          Include_declaration.of_concrete concrete
+          let include_declaration = self#include_infos_module_expr _ctx include_declaration in
+          include_declaration
       method include_description : 'ctx -> Include_description.t -> Include_description.t  =
         fun _ctx include_description ->
-          let concrete =
-            match Include_description.to_concrete include_description with
-            | None -> conversion_failed "include_description"
-            | Some n -> n
-          in
-          let concrete = self#include_infos_module_type _ctx concrete in
-          Include_description.of_concrete concrete
+          let include_description = self#include_infos_module_type _ctx include_description in
+          include_description
       method include_infos_module_expr : 'ctx -> Module_expr.t Include_infos.t -> Module_expr.t Include_infos.t  =
         fun _ctx include_infos ->
           let concrete =
@@ -5836,13 +5686,8 @@ module Unstable_for_testing = struct
           Module_type.of_concrete { pmty_attributes; pmty_loc; pmty_desc }
       method class_declaration : 'ctx -> Class_declaration.t -> Class_declaration.t  =
         fun _ctx class_declaration ->
-          let concrete =
-            match Class_declaration.to_concrete class_declaration with
-            | None -> conversion_failed "class_declaration"
-            | Some n -> n
-          in
-          let concrete = self#class_infos_class_expr _ctx concrete in
-          Class_declaration.of_concrete concrete
+          let class_declaration = self#class_infos_class_expr _ctx class_declaration in
+          class_declaration
       method class_field_kind : 'ctx -> Class_field_kind.t -> Class_field_kind.t  =
         fun _ctx class_field_kind ->
           let concrete =
@@ -5968,22 +5813,12 @@ module Unstable_for_testing = struct
           Class_expr.of_concrete { pcl_attributes; pcl_loc; pcl_desc }
       method class_type_declaration : 'ctx -> Class_type_declaration.t -> Class_type_declaration.t  =
         fun _ctx class_type_declaration ->
-          let concrete =
-            match Class_type_declaration.to_concrete class_type_declaration with
-            | None -> conversion_failed "class_type_declaration"
-            | Some n -> n
-          in
-          let concrete = self#class_infos_class_type _ctx concrete in
-          Class_type_declaration.of_concrete concrete
+          let class_type_declaration = self#class_infos_class_type _ctx class_type_declaration in
+          class_type_declaration
       method class_description : 'ctx -> Class_description.t -> Class_description.t  =
         fun _ctx class_description ->
-          let concrete =
-            match Class_description.to_concrete class_description with
-            | None -> conversion_failed "class_description"
-            | Some n -> n
-          in
-          let concrete = self#class_infos_class_type _ctx concrete in
-          Class_description.of_concrete concrete
+          let class_description = self#class_infos_class_type _ctx class_description in
+          class_description
       method class_infos_class_expr : 'ctx -> Class_expr.t Class_infos.t -> Class_expr.t Class_infos.t  =
         fun _ctx class_infos ->
           let concrete =
@@ -6705,13 +6540,8 @@ module Unstable_for_testing = struct
             Arg_label.of_concrete Nolabel
       method label : 'ctx -> Label.t -> Label.t  =
         fun _ctx label ->
-          let concrete =
-            match Label.to_concrete label with
-            | None -> conversion_failed "label"
-            | Some n -> n
-          in
-          let concrete = self#string _ctx concrete in
-          Label.of_concrete concrete
+          let label = self#string _ctx label in
+          label
       method closed_flag : 'ctx -> Closed_flag.t -> Closed_flag.t  =
         fun _ctx closed_flag ->
           let concrete =
@@ -6798,13 +6628,8 @@ module Unstable_for_testing = struct
             Rec_flag.of_concrete Nonrecursive
       method longident_loc : 'ctx -> Longident_loc.t -> Longident_loc.t  =
         fun _ctx longident_loc ->
-          let concrete =
-            match Longident_loc.to_concrete longident_loc with
-            | None -> conversion_failed "longident_loc"
-            | Some n -> n
-          in
-          let concrete = self#loc self#longident _ctx concrete in
-          Longident_loc.of_concrete concrete
+          let longident_loc = self#loc self#longident _ctx longident_loc in
+          longident_loc
       method longident : 'ctx -> Longident.t -> Longident.t  =
         fun _ctx longident ->
           let concrete =
@@ -7051,22 +6876,12 @@ module Unstable_for_testing = struct
             self#constr (Some ("with_constraint", 0)) "Pwith_type" [x0; x1]
       method include_declaration : Include_declaration.t -> 'res  =
         fun include_declaration ->
-          let concrete =
-            match Include_declaration.to_concrete include_declaration with
-            | None -> conversion_failed "include_declaration"
-            | Some n -> n
-          in
-          let concrete = self#include_infos_module_expr concrete in
-          concrete
+          let include_declaration = self#include_infos_module_expr include_declaration in
+          include_declaration
       method include_description : Include_description.t -> 'res  =
         fun include_description ->
-          let concrete =
-            match Include_description.to_concrete include_description with
-            | None -> conversion_failed "include_description"
-            | Some n -> n
-          in
-          let concrete = self#include_infos_module_type concrete in
-          concrete
+          let include_description = self#include_infos_module_type include_description in
+          include_description
       method include_infos_module_expr : Module_expr.t Include_infos.t -> 'res  =
         fun include_infos ->
           let concrete =
@@ -7245,13 +7060,8 @@ module Unstable_for_testing = struct
           self#record (Some ("module_type", 0)) [("pmty_attributes", pmty_attributes); ("pmty_loc", pmty_loc); ("pmty_desc", pmty_desc)]
       method class_declaration : Class_declaration.t -> 'res  =
         fun class_declaration ->
-          let concrete =
-            match Class_declaration.to_concrete class_declaration with
-            | None -> conversion_failed "class_declaration"
-            | Some n -> n
-          in
-          let concrete = self#class_infos_class_expr concrete in
-          concrete
+          let class_declaration = self#class_infos_class_expr class_declaration in
+          class_declaration
       method class_field_kind : Class_field_kind.t -> 'res  =
         fun class_field_kind ->
           let concrete =
@@ -7377,22 +7187,12 @@ module Unstable_for_testing = struct
           self#record (Some ("class_expr", 0)) [("pcl_attributes", pcl_attributes); ("pcl_loc", pcl_loc); ("pcl_desc", pcl_desc)]
       method class_type_declaration : Class_type_declaration.t -> 'res  =
         fun class_type_declaration ->
-          let concrete =
-            match Class_type_declaration.to_concrete class_type_declaration with
-            | None -> conversion_failed "class_type_declaration"
-            | Some n -> n
-          in
-          let concrete = self#class_infos_class_type concrete in
-          concrete
+          let class_type_declaration = self#class_infos_class_type class_type_declaration in
+          class_type_declaration
       method class_description : Class_description.t -> 'res  =
         fun class_description ->
-          let concrete =
-            match Class_description.to_concrete class_description with
-            | None -> conversion_failed "class_description"
-            | Some n -> n
-          in
-          let concrete = self#class_infos_class_type concrete in
-          concrete
+          let class_description = self#class_infos_class_type class_description in
+          class_description
       method class_infos_class_expr : Class_expr.t Class_infos.t -> 'res  =
         fun class_infos ->
           let concrete =
@@ -8114,13 +7914,8 @@ module Unstable_for_testing = struct
             self#constr (Some ("arg_label", 0)) "Nolabel" []
       method label : Label.t -> 'res  =
         fun label ->
-          let concrete =
-            match Label.to_concrete label with
-            | None -> conversion_failed "label"
-            | Some n -> n
-          in
-          let concrete = self#string concrete in
-          concrete
+          let label = self#string label in
+          label
       method closed_flag : Closed_flag.t -> 'res  =
         fun closed_flag ->
           let concrete =
@@ -8207,13 +8002,8 @@ module Unstable_for_testing = struct
             self#constr (Some ("rec_flag", 0)) "Nonrecursive" []
       method longident_loc : Longident_loc.t -> 'res  =
         fun longident_loc ->
-          let concrete =
-            match Longident_loc.to_concrete longident_loc with
-            | None -> conversion_failed "longident_loc"
-            | Some n -> n
-          in
-          let concrete = self#loc self#longident concrete in
-          concrete
+          let longident_loc = self#loc self#longident longident_loc in
+          longident_loc
       method longident : Longident.t -> 'res  =
         fun longident ->
           let concrete =
@@ -8272,13 +8062,8 @@ module V4_07 = struct
             Longident.of_concrete (Lapply (x0, x1))
       method longident_loc : Longident_loc.t -> Longident_loc.t  =
         fun longident_loc ->
-          let concrete =
-            match Longident_loc.to_concrete longident_loc with
-            | None -> conversion_failed "longident_loc"
-            | Some n -> n
-          in
-          let concrete = self#loc self#longident concrete in
-          Longident_loc.of_concrete concrete
+          let longident_loc = self#loc self#longident longident_loc in
+          longident_loc
       method rec_flag : Rec_flag.t -> Rec_flag.t  =
         fun rec_flag ->
           let concrete =
@@ -8365,13 +8150,8 @@ module V4_07 = struct
             Closed_flag.of_concrete Open
       method label : Label.t -> Label.t  =
         fun label ->
-          let concrete =
-            match Label.to_concrete label with
-            | None -> conversion_failed "label"
-            | Some n -> n
-          in
-          let concrete = self#string concrete in
-          Label.of_concrete concrete
+          let label = self#string label in
+          label
       method arg_label : Arg_label.t -> Arg_label.t  =
         fun arg_label ->
           let concrete =
@@ -9093,22 +8873,12 @@ module V4_07 = struct
           Class_infos.of_concrete { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }
       method class_description : Class_description.t -> Class_description.t  =
         fun class_description ->
-          let concrete =
-            match Class_description.to_concrete class_description with
-            | None -> conversion_failed "class_description"
-            | Some n -> n
-          in
-          let concrete = self#class_infos_class_type concrete in
-          Class_description.of_concrete concrete
+          let class_description = self#class_infos_class_type class_description in
+          class_description
       method class_type_declaration : Class_type_declaration.t -> Class_type_declaration.t  =
         fun class_type_declaration ->
-          let concrete =
-            match Class_type_declaration.to_concrete class_type_declaration with
-            | None -> conversion_failed "class_type_declaration"
-            | Some n -> n
-          in
-          let concrete = self#class_infos_class_type concrete in
-          Class_type_declaration.of_concrete concrete
+          let class_type_declaration = self#class_infos_class_type class_type_declaration in
+          class_type_declaration
       method class_expr : Class_expr.t -> Class_expr.t  =
         fun class_expr ->
           let concrete =
@@ -9234,13 +9004,8 @@ module V4_07 = struct
             Class_field_kind.of_concrete (Cfk_concrete (x0, x1))
       method class_declaration : Class_declaration.t -> Class_declaration.t  =
         fun class_declaration ->
-          let concrete =
-            match Class_declaration.to_concrete class_declaration with
-            | None -> conversion_failed "class_declaration"
-            | Some n -> n
-          in
-          let concrete = self#class_infos_class_expr concrete in
-          Class_declaration.of_concrete concrete
+          let class_declaration = self#class_infos_class_expr class_declaration in
+          class_declaration
       method module_type : Module_type.t -> Module_type.t  =
         fun module_type ->
           let concrete =
@@ -9419,22 +9184,12 @@ module V4_07 = struct
           Include_infos.of_concrete { pincl_mod; pincl_loc; pincl_attributes }
       method include_description : Include_description.t -> Include_description.t  =
         fun include_description ->
-          let concrete =
-            match Include_description.to_concrete include_description with
-            | None -> conversion_failed "include_description"
-            | Some n -> n
-          in
-          let concrete = self#include_infos_module_type concrete in
-          Include_description.of_concrete concrete
+          let include_description = self#include_infos_module_type include_description in
+          include_description
       method include_declaration : Include_declaration.t -> Include_declaration.t  =
         fun include_declaration ->
-          let concrete =
-            match Include_declaration.to_concrete include_declaration with
-            | None -> conversion_failed "include_declaration"
-            | Some n -> n
-          in
-          let concrete = self#include_infos_module_expr concrete in
-          Include_declaration.of_concrete concrete
+          let include_declaration = self#include_infos_module_expr include_declaration in
+          include_declaration
       method with_constraint : With_constraint.t -> With_constraint.t  =
         fun with_constraint ->
           let concrete =
@@ -9675,12 +9430,7 @@ module V4_07 = struct
             self#longident x1
       method longident_loc : Longident_loc.t -> unit  =
         fun longident_loc ->
-          let concrete =
-            match Longident_loc.to_concrete longident_loc with
-            | None -> conversion_failed "longident_loc"
-            | Some n -> n
-          in
-          self#loc self#longident concrete
+          self#loc self#longident longident_loc
       method rec_flag : Rec_flag.t -> unit  =
         fun rec_flag ->
           let concrete =
@@ -9767,12 +9517,7 @@ module V4_07 = struct
             ()
       method label : Label.t -> unit  =
         fun label ->
-          let concrete =
-            match Label.to_concrete label with
-            | None -> conversion_failed "label"
-            | Some n -> n
-          in
-          self#string concrete
+          self#string label
       method arg_label : Arg_label.t -> unit  =
         fun arg_label ->
           let concrete =
@@ -10381,20 +10126,10 @@ module V4_07 = struct
           self#attributes pci_attributes
       method class_description : Class_description.t -> unit  =
         fun class_description ->
-          let concrete =
-            match Class_description.to_concrete class_description with
-            | None -> conversion_failed "class_description"
-            | Some n -> n
-          in
-          self#class_infos_class_type concrete
+          self#class_infos_class_type class_description
       method class_type_declaration : Class_type_declaration.t -> unit  =
         fun class_type_declaration ->
-          let concrete =
-            match Class_type_declaration.to_concrete class_type_declaration with
-            | None -> conversion_failed "class_type_declaration"
-            | Some n -> n
-          in
-          self#class_infos_class_type concrete
+          self#class_infos_class_type class_type_declaration
       method class_expr : Class_expr.t -> unit  =
         fun class_expr ->
           let concrete =
@@ -10500,12 +10235,7 @@ module V4_07 = struct
             self#expression x1
       method class_declaration : Class_declaration.t -> unit  =
         fun class_declaration ->
-          let concrete =
-            match Class_declaration.to_concrete class_declaration with
-            | None -> conversion_failed "class_declaration"
-            | Some n -> n
-          in
-          self#class_infos_class_expr concrete
+          self#class_infos_class_expr class_declaration
       method module_type : Module_type.t -> unit  =
         fun module_type ->
           let concrete =
@@ -10656,20 +10386,10 @@ module V4_07 = struct
           self#attributes pincl_attributes
       method include_description : Include_description.t -> unit  =
         fun include_description ->
-          let concrete =
-            match Include_description.to_concrete include_description with
-            | None -> conversion_failed "include_description"
-            | Some n -> n
-          in
-          self#include_infos_module_type concrete
+          self#include_infos_module_type include_description
       method include_declaration : Include_declaration.t -> unit  =
         fun include_declaration ->
-          let concrete =
-            match Include_declaration.to_concrete include_declaration with
-            | None -> conversion_failed "include_declaration"
-            | Some n -> n
-          in
-          self#include_infos_module_expr concrete
+          self#include_infos_module_expr include_declaration
       method with_constraint : With_constraint.t -> unit  =
         fun with_constraint ->
           let concrete =
@@ -10876,12 +10596,7 @@ module V4_07 = struct
             acc
       method longident_loc : Longident_loc.t -> 'acc -> 'acc  =
         fun longident_loc acc ->
-          let concrete =
-            match Longident_loc.to_concrete longident_loc with
-            | None -> conversion_failed "longident_loc"
-            | Some n -> n
-          in
-          let acc = self#loc self#longident concrete acc in
+          let acc = self#loc self#longident longident_loc acc in
           acc
       method rec_flag : Rec_flag.t -> 'acc -> 'acc  =
         fun rec_flag acc ->
@@ -10969,12 +10684,7 @@ module V4_07 = struct
             acc
       method label : Label.t -> 'acc -> 'acc  =
         fun label acc ->
-          let concrete =
-            match Label.to_concrete label with
-            | None -> conversion_failed "label"
-            | Some n -> n
-          in
-          let acc = self#string concrete acc in
+          let acc = self#string label acc in
           acc
       method arg_label : Arg_label.t -> 'acc -> 'acc  =
         fun arg_label acc ->
@@ -11697,21 +11407,11 @@ module V4_07 = struct
           acc
       method class_description : Class_description.t -> 'acc -> 'acc  =
         fun class_description acc ->
-          let concrete =
-            match Class_description.to_concrete class_description with
-            | None -> conversion_failed "class_description"
-            | Some n -> n
-          in
-          let acc = self#class_infos_class_type concrete acc in
+          let acc = self#class_infos_class_type class_description acc in
           acc
       method class_type_declaration : Class_type_declaration.t -> 'acc -> 'acc  =
         fun class_type_declaration acc ->
-          let concrete =
-            match Class_type_declaration.to_concrete class_type_declaration with
-            | None -> conversion_failed "class_type_declaration"
-            | Some n -> n
-          in
-          let acc = self#class_infos_class_type concrete acc in
+          let acc = self#class_infos_class_type class_type_declaration acc in
           acc
       method class_expr : Class_expr.t -> 'acc -> 'acc  =
         fun class_expr acc ->
@@ -11838,12 +11538,7 @@ module V4_07 = struct
             acc
       method class_declaration : Class_declaration.t -> 'acc -> 'acc  =
         fun class_declaration acc ->
-          let concrete =
-            match Class_declaration.to_concrete class_declaration with
-            | None -> conversion_failed "class_declaration"
-            | Some n -> n
-          in
-          let acc = self#class_infos_class_expr concrete acc in
+          let acc = self#class_infos_class_expr class_declaration acc in
           acc
       method module_type : Module_type.t -> 'acc -> 'acc  =
         fun module_type acc ->
@@ -12023,21 +11718,11 @@ module V4_07 = struct
           acc
       method include_description : Include_description.t -> 'acc -> 'acc  =
         fun include_description acc ->
-          let concrete =
-            match Include_description.to_concrete include_description with
-            | None -> conversion_failed "include_description"
-            | Some n -> n
-          in
-          let acc = self#include_infos_module_type concrete acc in
+          let acc = self#include_infos_module_type include_description acc in
           acc
       method include_declaration : Include_declaration.t -> 'acc -> 'acc  =
         fun include_declaration acc ->
-          let concrete =
-            match Include_declaration.to_concrete include_declaration with
-            | None -> conversion_failed "include_declaration"
-            | Some n -> n
-          in
-          let acc = self#include_infos_module_expr concrete acc in
+          let acc = self#include_infos_module_expr include_declaration acc in
           acc
       method with_constraint : With_constraint.t -> 'acc -> 'acc  =
         fun with_constraint acc ->
@@ -12282,13 +11967,8 @@ module V4_07 = struct
             (Longident.of_concrete (Lapply (x0, x1)), acc)
       method longident_loc : Longident_loc.t -> 'acc -> (Longident_loc.t * 'acc)  =
         fun longident_loc acc ->
-          let concrete =
-            match Longident_loc.to_concrete longident_loc with
-            | None -> conversion_failed "longident_loc"
-            | Some n -> n
-          in
-          let (concrete, acc) = self#loc self#longident concrete acc in
-          (Longident_loc.of_concrete concrete, acc)
+          let (longident_loc, acc) = self#loc self#longident longident_loc acc in
+          (longident_loc, acc)
       method rec_flag : Rec_flag.t -> 'acc -> (Rec_flag.t * 'acc)  =
         fun rec_flag acc ->
           let concrete =
@@ -12375,13 +12055,8 @@ module V4_07 = struct
             (Closed_flag.of_concrete Open, acc)
       method label : Label.t -> 'acc -> (Label.t * 'acc)  =
         fun label acc ->
-          let concrete =
-            match Label.to_concrete label with
-            | None -> conversion_failed "label"
-            | Some n -> n
-          in
-          let (concrete, acc) = self#string concrete acc in
-          (Label.of_concrete concrete, acc)
+          let (label, acc) = self#string label acc in
+          (label, acc)
       method arg_label : Arg_label.t -> 'acc -> (Arg_label.t * 'acc)  =
         fun arg_label acc ->
           let concrete =
@@ -13103,22 +12778,12 @@ module V4_07 = struct
           (Class_infos.of_concrete { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }, acc)
       method class_description : Class_description.t -> 'acc -> (Class_description.t * 'acc)  =
         fun class_description acc ->
-          let concrete =
-            match Class_description.to_concrete class_description with
-            | None -> conversion_failed "class_description"
-            | Some n -> n
-          in
-          let (concrete, acc) = self#class_infos_class_type concrete acc in
-          (Class_description.of_concrete concrete, acc)
+          let (class_description, acc) = self#class_infos_class_type class_description acc in
+          (class_description, acc)
       method class_type_declaration : Class_type_declaration.t -> 'acc -> (Class_type_declaration.t * 'acc)  =
         fun class_type_declaration acc ->
-          let concrete =
-            match Class_type_declaration.to_concrete class_type_declaration with
-            | None -> conversion_failed "class_type_declaration"
-            | Some n -> n
-          in
-          let (concrete, acc) = self#class_infos_class_type concrete acc in
-          (Class_type_declaration.of_concrete concrete, acc)
+          let (class_type_declaration, acc) = self#class_infos_class_type class_type_declaration acc in
+          (class_type_declaration, acc)
       method class_expr : Class_expr.t -> 'acc -> (Class_expr.t * 'acc)  =
         fun class_expr acc ->
           let concrete =
@@ -13244,13 +12909,8 @@ module V4_07 = struct
             (Class_field_kind.of_concrete (Cfk_concrete (x0, x1)), acc)
       method class_declaration : Class_declaration.t -> 'acc -> (Class_declaration.t * 'acc)  =
         fun class_declaration acc ->
-          let concrete =
-            match Class_declaration.to_concrete class_declaration with
-            | None -> conversion_failed "class_declaration"
-            | Some n -> n
-          in
-          let (concrete, acc) = self#class_infos_class_expr concrete acc in
-          (Class_declaration.of_concrete concrete, acc)
+          let (class_declaration, acc) = self#class_infos_class_expr class_declaration acc in
+          (class_declaration, acc)
       method module_type : Module_type.t -> 'acc -> (Module_type.t * 'acc)  =
         fun module_type acc ->
           let concrete =
@@ -13429,22 +13089,12 @@ module V4_07 = struct
           (Include_infos.of_concrete { pincl_mod; pincl_loc; pincl_attributes }, acc)
       method include_description : Include_description.t -> 'acc -> (Include_description.t * 'acc)  =
         fun include_description acc ->
-          let concrete =
-            match Include_description.to_concrete include_description with
-            | None -> conversion_failed "include_description"
-            | Some n -> n
-          in
-          let (concrete, acc) = self#include_infos_module_type concrete acc in
-          (Include_description.of_concrete concrete, acc)
+          let (include_description, acc) = self#include_infos_module_type include_description acc in
+          (include_description, acc)
       method include_declaration : Include_declaration.t -> 'acc -> (Include_declaration.t * 'acc)  =
         fun include_declaration acc ->
-          let concrete =
-            match Include_declaration.to_concrete include_declaration with
-            | None -> conversion_failed "include_declaration"
-            | Some n -> n
-          in
-          let (concrete, acc) = self#include_infos_module_expr concrete acc in
-          (Include_declaration.of_concrete concrete, acc)
+          let (include_declaration, acc) = self#include_infos_module_expr include_declaration acc in
+          (include_declaration, acc)
       method with_constraint : With_constraint.t -> 'acc -> (With_constraint.t * 'acc)  =
         fun with_constraint acc ->
           let concrete =
@@ -13688,13 +13338,8 @@ module V4_07 = struct
             Longident.of_concrete (Lapply (x0, x1))
       method longident_loc : 'ctx -> Longident_loc.t -> Longident_loc.t  =
         fun _ctx longident_loc ->
-          let concrete =
-            match Longident_loc.to_concrete longident_loc with
-            | None -> conversion_failed "longident_loc"
-            | Some n -> n
-          in
-          let concrete = self#loc self#longident _ctx concrete in
-          Longident_loc.of_concrete concrete
+          let longident_loc = self#loc self#longident _ctx longident_loc in
+          longident_loc
       method rec_flag : 'ctx -> Rec_flag.t -> Rec_flag.t  =
         fun _ctx rec_flag ->
           let concrete =
@@ -13781,13 +13426,8 @@ module V4_07 = struct
             Closed_flag.of_concrete Open
       method label : 'ctx -> Label.t -> Label.t  =
         fun _ctx label ->
-          let concrete =
-            match Label.to_concrete label with
-            | None -> conversion_failed "label"
-            | Some n -> n
-          in
-          let concrete = self#string _ctx concrete in
-          Label.of_concrete concrete
+          let label = self#string _ctx label in
+          label
       method arg_label : 'ctx -> Arg_label.t -> Arg_label.t  =
         fun _ctx arg_label ->
           let concrete =
@@ -14509,22 +14149,12 @@ module V4_07 = struct
           Class_infos.of_concrete { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }
       method class_description : 'ctx -> Class_description.t -> Class_description.t  =
         fun _ctx class_description ->
-          let concrete =
-            match Class_description.to_concrete class_description with
-            | None -> conversion_failed "class_description"
-            | Some n -> n
-          in
-          let concrete = self#class_infos_class_type _ctx concrete in
-          Class_description.of_concrete concrete
+          let class_description = self#class_infos_class_type _ctx class_description in
+          class_description
       method class_type_declaration : 'ctx -> Class_type_declaration.t -> Class_type_declaration.t  =
         fun _ctx class_type_declaration ->
-          let concrete =
-            match Class_type_declaration.to_concrete class_type_declaration with
-            | None -> conversion_failed "class_type_declaration"
-            | Some n -> n
-          in
-          let concrete = self#class_infos_class_type _ctx concrete in
-          Class_type_declaration.of_concrete concrete
+          let class_type_declaration = self#class_infos_class_type _ctx class_type_declaration in
+          class_type_declaration
       method class_expr : 'ctx -> Class_expr.t -> Class_expr.t  =
         fun _ctx class_expr ->
           let concrete =
@@ -14650,13 +14280,8 @@ module V4_07 = struct
             Class_field_kind.of_concrete (Cfk_concrete (x0, x1))
       method class_declaration : 'ctx -> Class_declaration.t -> Class_declaration.t  =
         fun _ctx class_declaration ->
-          let concrete =
-            match Class_declaration.to_concrete class_declaration with
-            | None -> conversion_failed "class_declaration"
-            | Some n -> n
-          in
-          let concrete = self#class_infos_class_expr _ctx concrete in
-          Class_declaration.of_concrete concrete
+          let class_declaration = self#class_infos_class_expr _ctx class_declaration in
+          class_declaration
       method module_type : 'ctx -> Module_type.t -> Module_type.t  =
         fun _ctx module_type ->
           let concrete =
@@ -14835,22 +14460,12 @@ module V4_07 = struct
           Include_infos.of_concrete { pincl_mod; pincl_loc; pincl_attributes }
       method include_description : 'ctx -> Include_description.t -> Include_description.t  =
         fun _ctx include_description ->
-          let concrete =
-            match Include_description.to_concrete include_description with
-            | None -> conversion_failed "include_description"
-            | Some n -> n
-          in
-          let concrete = self#include_infos_module_type _ctx concrete in
-          Include_description.of_concrete concrete
+          let include_description = self#include_infos_module_type _ctx include_description in
+          include_description
       method include_declaration : 'ctx -> Include_declaration.t -> Include_declaration.t  =
         fun _ctx include_declaration ->
-          let concrete =
-            match Include_declaration.to_concrete include_declaration with
-            | None -> conversion_failed "include_declaration"
-            | Some n -> n
-          in
-          let concrete = self#include_infos_module_expr _ctx concrete in
-          Include_declaration.of_concrete concrete
+          let include_declaration = self#include_infos_module_expr _ctx include_declaration in
+          include_declaration
       method with_constraint : 'ctx -> With_constraint.t -> With_constraint.t  =
         fun _ctx with_constraint ->
           let concrete =
@@ -15097,13 +14712,8 @@ module V4_07 = struct
             self#constr (Some ("longident", 0)) "Lapply" [x0; x1]
       method longident_loc : Longident_loc.t -> 'res  =
         fun longident_loc ->
-          let concrete =
-            match Longident_loc.to_concrete longident_loc with
-            | None -> conversion_failed "longident_loc"
-            | Some n -> n
-          in
-          let concrete = self#loc self#longident concrete in
-          concrete
+          let longident_loc = self#loc self#longident longident_loc in
+          longident_loc
       method rec_flag : Rec_flag.t -> 'res  =
         fun rec_flag ->
           let concrete =
@@ -15190,13 +14800,8 @@ module V4_07 = struct
             self#constr (Some ("closed_flag", 0)) "Open" []
       method label : Label.t -> 'res  =
         fun label ->
-          let concrete =
-            match Label.to_concrete label with
-            | None -> conversion_failed "label"
-            | Some n -> n
-          in
-          let concrete = self#string concrete in
-          concrete
+          let label = self#string label in
+          label
       method arg_label : Arg_label.t -> 'res  =
         fun arg_label ->
           let concrete =
@@ -15918,22 +15523,12 @@ module V4_07 = struct
           self#record (Some ("class_infos", 1)) [("pci_virt", pci_virt); ("pci_params", pci_params); ("pci_name", pci_name); ("pci_expr", pci_expr); ("pci_loc", pci_loc); ("pci_attributes", pci_attributes)]
       method class_description : Class_description.t -> 'res  =
         fun class_description ->
-          let concrete =
-            match Class_description.to_concrete class_description with
-            | None -> conversion_failed "class_description"
-            | Some n -> n
-          in
-          let concrete = self#class_infos_class_type concrete in
-          concrete
+          let class_description = self#class_infos_class_type class_description in
+          class_description
       method class_type_declaration : Class_type_declaration.t -> 'res  =
         fun class_type_declaration ->
-          let concrete =
-            match Class_type_declaration.to_concrete class_type_declaration with
-            | None -> conversion_failed "class_type_declaration"
-            | Some n -> n
-          in
-          let concrete = self#class_infos_class_type concrete in
-          concrete
+          let class_type_declaration = self#class_infos_class_type class_type_declaration in
+          class_type_declaration
       method class_expr : Class_expr.t -> 'res  =
         fun class_expr ->
           let concrete =
@@ -16059,13 +15654,8 @@ module V4_07 = struct
             self#constr (Some ("class_field_kind", 0)) "Cfk_concrete" [x0; x1]
       method class_declaration : Class_declaration.t -> 'res  =
         fun class_declaration ->
-          let concrete =
-            match Class_declaration.to_concrete class_declaration with
-            | None -> conversion_failed "class_declaration"
-            | Some n -> n
-          in
-          let concrete = self#class_infos_class_expr concrete in
-          concrete
+          let class_declaration = self#class_infos_class_expr class_declaration in
+          class_declaration
       method module_type : Module_type.t -> 'res  =
         fun module_type ->
           let concrete =
@@ -16244,22 +15834,12 @@ module V4_07 = struct
           self#record (Some ("include_infos", 1)) [("pincl_mod", pincl_mod); ("pincl_loc", pincl_loc); ("pincl_attributes", pincl_attributes)]
       method include_description : Include_description.t -> 'res  =
         fun include_description ->
-          let concrete =
-            match Include_description.to_concrete include_description with
-            | None -> conversion_failed "include_description"
-            | Some n -> n
-          in
-          let concrete = self#include_infos_module_type concrete in
-          concrete
+          let include_description = self#include_infos_module_type include_description in
+          include_description
       method include_declaration : Include_declaration.t -> 'res  =
         fun include_declaration ->
-          let concrete =
-            match Include_declaration.to_concrete include_declaration with
-            | None -> conversion_failed "include_declaration"
-            | Some n -> n
-          in
-          let concrete = self#include_infos_module_expr concrete in
-          concrete
+          let include_declaration = self#include_infos_module_expr include_declaration in
+          include_declaration
       method with_constraint : With_constraint.t -> 'res  =
         fun with_constraint ->
           let concrete =

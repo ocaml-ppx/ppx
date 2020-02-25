@@ -33,11 +33,16 @@ let update_variant variant =
   List.rev_map variant ~f:(fun (name, clause) ->
     name, update_clause clause)
 
-let update_decl decl : Grammar.decl =
-  match (decl : Grammar.decl) with
-  | Alias ty -> Alias (update_ty ty)
+let update_nominal nominal : Grammar.nominal =
+  match (nominal : Grammar.nominal) with
+  | Wrapper ty -> Wrapper (update_ty ty)
   | Record record -> Record (update_record record)
   | Variant variant -> Variant (update_variant variant)
+
+let update_decl decl : Grammar.decl =
+  match (decl : Grammar.decl) with
+  | Structural ty -> Structural (update_ty ty)
+  | Nominal nominal -> Nominal (update_nominal nominal)
 
 let update_kind kind : Grammar.kind =
   match (kind : Grammar.kind) with

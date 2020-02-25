@@ -182,38 +182,45 @@ and recursive_call ?(nested=false) ~traversal (ty : Astlib.Grammar.ty) =
   | Loc ty -> parens (Printf.sprintf "self#loc %s" (recursive_call ~nested:true ty))
   | Location -> "self#location"
 
-let print_method_body ~traversal ~targs ~node_name (decl : Astlib.Grammar.decl) =
-  match decl with
-  | Alias (Tuple tyl) ->
+let print_method_for_alias ~traversal ~value_kind ~var ty =
+  match (ty : Astlib.Grammar.ty) with
+  | Tuple tyl ->
     let deconstructed = deconstruct_tuple ~traversal tyl in
     let exprs =
-      traversal.recurse ~value_kind:(Ast_type {node_name; targs}) ~deconstructed
+      traversal.recurse ~value_kind ~deconstructed
     in
-    Print.println "let %s = concrete in" deconstructed.pattern;
+    Print.println "let %s = %s in" deconstructed.pattern var;
     List.iter exprs ~f:(Print.println "%s")
-  | Alias ty ->
-    let deconstructed = deconstruct_alias ~traversal ~var:"concrete" ty in
+  | _ ->
+    let deconstructed = deconstruct_alias ~traversal ~var ty in
     let exprs =
-      traversal.recurse ~value_kind:(Ast_type {node_name; targs}) ~deconstructed
+      traversal.recurse ~value_kind ~deconstructed
     in
     List.iter exprs ~f:(Print.println "%s")
+
+let print_method_body
+      ~traversal
+      ~targs
+      ~node_name
+      ~var
+      (nominal : Astlib.Grammar.nominal)
+  =
+  let value_kind = Ast_type {node_name; targs} in
+  match nominal with
+  | Wrapper ty -> print_method_for_alias ~traversal ~value_kind ~var ty
   | Record fields ->
     let deconstructed = deconstruct_record ~traversal fields in
     let concrete_type = (node_type ~type_:Concrete ~args:targs node_name) in
-    let exprs =
-      traversal.recurse ~value_kind:(Ast_type {node_name; targs}) ~deconstructed
-    in
-    Print.println "let %s : %s = concrete in" deconstructed.pattern concrete_type;
+    let exprs = traversal.recurse ~value_kind ~deconstructed in
+    Print.println "let %s : %s = %s in" deconstructed.pattern concrete_type var;
     List.iter exprs ~f:(Print.println "%s")
   | Variant variants ->
     let concrete_type = (node_type ~type_:Concrete ~args:targs node_name) in
-    Print.println "match (concrete : %s) with" concrete_type;
+    Print.println "match (%s : %s) with" var concrete_type;
     List.iter variants
       ~f:(fun variant ->
         let deconstructed = deconstruct_variant ~traversal variant in
-        let exprs =
-          traversal.recurse ~value_kind:(Ast_type {node_name; targs}) ~deconstructed
-        in
+        let exprs = traversal.recurse ~value_kind ~deconstructed in
         Print.println "| %s ->" deconstructed.pattern;
         Print.indented (fun () -> List.iter exprs ~f:(Print.println "%s")))
 
@@ -394,9 +401,21 @@ module Lift = struct
   let res_type = Ml.tvar "res"
 
   let extra_methods () =
-    Ml.declare_method ~virtual_:true ~name:"record" ~signature:"(string * int) option -> (string * 'res) list -> 'res" ();
-    Ml.declare_method ~virtual_:true ~name:"constr" ~signature:"(string * int) option -> string -> 'res list -> 'res" ();
-    Ml.declare_method ~virtual_:true ~name:"tuple" ~signature:"'res list -> 'res" ()
+    Ml.declare_method
+      ~virtual_:true
+      ~name:"record"
+      ~signature:"(string * int) option -> (string * 'res) list -> 'res"
+      ();
+    Ml.declare_method
+      ~virtual_:true
+      ~name:"constr"
+      ~signature:"(string * int) option -> string -> 'res list -> 'res"
+      ();
+    Ml.declare_method
+      ~virtual_:true
+      ~name:"tuple"
+      ~signature:"'res list -> 'res"
+      ()
 
   let signature node_type = Ml.arrow_type [node_type; res_type]
 
@@ -462,9 +481,14 @@ let print_to_concrete node_name =
 
 let print_method_value ~traversal ~targs ~node_name decl =
   let args = traversal.args (Ml.id node_name) in
-  Ml.define_anon_fun ~args (fun () ->
-    print_to_concrete node_name;
-    print_method_body ~traversal ~targs ~node_name decl)
+  match (decl : Astlib.Grammar.decl) with
+  | Structural ty ->
+    Ml.define_anon_fun ~args (fun () ->
+      print_method_for_alias ~traversal ~value_kind:Abstract ~var:node_name ty)
+  | Nominal nominal ->
+    Ml.define_anon_fun ~args (fun () ->
+      print_to_concrete node_name;
+      print_method_body ~traversal ~targs ~node_name ~var:"concrete" nominal)
 
 let declare_node_methods ~env_table ~signature (node_name, kind) =
   match (kind : Astlib.Grammar.kind) with

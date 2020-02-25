@@ -63,20 +63,9 @@ and concrete_to_longident x : Compiler_types.longident =
     Lapply (x1, x2)
 
 and ast_of_longident_loc x =
-  Versions.V4_07.Longident_loc.of_concrete (concrete_of_longident_loc x)
-
-and concrete_of_longident_loc x =
   (Helpers.Fn.compose (Astlib.Loc.map ~f:ast_of_longident) Astlib.Loc.of_loc) x
 
 and ast_to_longident_loc x =
-  let option = Versions.V4_07.Longident_loc.to_concrete x in
-  let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_longident_loc: conversion failed"
-  in
-  concrete_to_longident_loc concrete
-
-and concrete_to_longident_loc x =
   (Helpers.Fn.compose Astlib.Loc.to_loc (Astlib.Loc.map ~f:ast_to_longident)) x
 
 and ast_of_rec_flag x =
@@ -227,20 +216,9 @@ and concrete_to_closed_flag x : Compiler_types.closed_flag =
   | Open -> Open
 
 and ast_of_label x =
-  Versions.V4_07.Label.of_concrete (concrete_of_label x)
-
-and concrete_of_label x =
   Helpers.Fn.id x
 
 and ast_to_label x =
-  let option = Versions.V4_07.Label.to_concrete x in
-  let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_label: conversion failed"
-  in
-  concrete_to_label concrete
-
-and concrete_to_label x =
   Helpers.Fn.id x
 
 and ast_of_arg_label x =
@@ -1681,37 +1659,15 @@ and concrete_to_class_infos_class_type
   ({ pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Compiler_types.class_type Compiler_types.class_infos)
 
 and ast_of_class_description x =
-  Versions.V4_07.Class_description.of_concrete (concrete_of_class_description x)
-
-and concrete_of_class_description x =
   ast_of_class_infos_class_type x
 
 and ast_to_class_description x =
-  let option = Versions.V4_07.Class_description.to_concrete x in
-  let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_class_description: conversion failed"
-  in
-  concrete_to_class_description concrete
-
-and concrete_to_class_description x =
   ast_to_class_infos_class_type x
 
 and ast_of_class_type_declaration x =
-  Versions.V4_07.Class_type_declaration.of_concrete (concrete_of_class_type_declaration x)
-
-and concrete_of_class_type_declaration x =
   ast_of_class_infos_class_type x
 
 and ast_to_class_type_declaration x =
-  let option = Versions.V4_07.Class_type_declaration.to_concrete x in
-  let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_class_type_declaration: conversion failed"
-  in
-  concrete_to_class_type_declaration concrete
-
-and concrete_to_class_type_declaration x =
   ast_to_class_infos_class_type x
 
 and ast_of_class_expr x =
@@ -1973,20 +1929,9 @@ and concrete_to_class_field_kind x : Compiler_types.class_field_kind =
     Cfk_concrete (x1, x2)
 
 and ast_of_class_declaration x =
-  Versions.V4_07.Class_declaration.of_concrete (concrete_of_class_declaration x)
-
-and concrete_of_class_declaration x =
   ast_of_class_infos_class_expr x
 
 and ast_to_class_declaration x =
-  let option = Versions.V4_07.Class_declaration.to_concrete x in
-  let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_class_declaration: conversion failed"
-  in
-  concrete_to_class_declaration concrete
-
-and concrete_to_class_declaration x =
   ast_to_class_infos_class_expr x
 
 and ast_of_module_type x =
@@ -2364,37 +2309,15 @@ and concrete_to_include_infos_module_type
   ({ pincl_mod; pincl_loc; pincl_attributes } : Compiler_types.module_type Compiler_types.include_infos)
 
 and ast_of_include_description x =
-  Versions.V4_07.Include_description.of_concrete (concrete_of_include_description x)
-
-and concrete_of_include_description x =
   ast_of_include_infos_module_type x
 
 and ast_to_include_description x =
-  let option = Versions.V4_07.Include_description.to_concrete x in
-  let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_include_description: conversion failed"
-  in
-  concrete_to_include_description concrete
-
-and concrete_to_include_description x =
   ast_to_include_infos_module_type x
 
 and ast_of_include_declaration x =
-  Versions.V4_07.Include_declaration.of_concrete (concrete_of_include_declaration x)
-
-and concrete_of_include_declaration x =
   ast_of_include_infos_module_expr x
 
 and ast_to_include_declaration x =
-  let option = Versions.V4_07.Include_declaration.to_concrete x in
-  let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_include_declaration: conversion failed"
-  in
-  concrete_to_include_declaration concrete
-
-and concrete_to_include_declaration x =
   ast_to_include_infos_module_expr x
 
 and ast_of_with_constraint x =

@@ -1390,8 +1390,9 @@ end
 
 module Common : sig
   module Located : sig
-    val longident : loc: Astlib.Location.t -> Versions.longident -> Versions.longident_loc
-    val lident : loc: Astlib.Location.t -> string -> Versions.longident_loc
+    val longident
+      : loc: Astlib.Location.t -> Versions.longident -> Versions.longident Astlib.Loc.t
+    val lident : loc: Astlib.Location.t -> string -> Versions.longident Astlib.Loc.t
   end
 
   val echar : loc: Astlib.Location.t -> char -> Versions.expression

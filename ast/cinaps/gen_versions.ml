@@ -1,4 +1,4 @@
-open StdLabels
+open Stdppx
 
 module Render (Config : sig val internal : bool end) = struct
   let string_of_ty ty = Grammar.string_of_ty ~internal:Config.internal ty
@@ -17,9 +17,9 @@ module Render (Config : sig val internal : bool end) = struct
   let print_variant_type variant =
     Ml.print_variant_type variant ~f:clause_type_element
 
-  let decl_type_element decl : Ml.element =
-    match (decl : Astlib.Grammar.decl) with
-    | Alias ty -> Line (string_of_ty ty)
+  let nominal_type_element nominal : Ml.element =
+    match (nominal : Astlib.Grammar.nominal) with
+    | Wrapper ty -> Line (string_of_ty ty)
     | Record record -> Block (fun () -> print_record_type record)
     | Variant variant -> Block (fun () -> print_variant_type variant)
 end
@@ -35,11 +35,11 @@ module Signature = struct
     Ml.poly_inst ty ~args:(List.map tvars ~f:(fun tvar ->
       Render.string_of_ty (Var tvar)))
 
-  let declare_constructors decl ~tvars =
+  let declare_constructors nominal ~tvars =
     let env = Poly_env.nodify_targs tvars in
     let string_of_ty ty = Render.string_of_ty (Poly_env.subst_ty ty ~env) in
-    match (decl : Astlib.Grammar.decl) with
-    | Alias ty ->
+    match (nominal : Astlib.Grammar.nominal) with
+    | Wrapper ty ->
       Ml.declare_val
         "create"
         (Line (Printf.sprintf "%s -> %s"
@@ -65,73 +65,107 @@ module Signature = struct
                  (inst_node "t" ~tvars))))
 
   let print decl ~name ~tvars =
-    Ml.declare_type "t" ~tvars (Line (Ml.poly_type name ~tvars));
-    Print.newline ();
-    Ml.declare_type "concrete" ~tvars (Render.decl_type_element decl);
-    Print.newline ();
-    Ml.declare_val
-      "of_concrete"
-      (Line
-         (Printf.sprintf "%s -> %s"
-            (inst_node "concrete" ~tvars)
-            (inst_node "t" ~tvars)));
-    Ml.declare_val
-      "to_concrete"
-      (Line
-         (Printf.sprintf "%s -> %s option"
-            (inst_node "t" ~tvars)
-            (inst_node "concrete" ~tvars)));
-    Print.newline ();
-    declare_constructors decl ~tvars
+    match (decl : Astlib.Grammar.decl) with
+    | Structural ty ->
+      Ml.declare_type "t" ~tvars (Line (Render.string_of_ty ty))
+    | Nominal nominal ->
+      Ml.declare_type "t" ~tvars (Line (Ml.poly_type name ~tvars));
+      Print.newline ();
+      Ml.declare_type "concrete" ~tvars (Render.nominal_type_element nominal);
+      Print.newline ();
+      Ml.declare_val
+        "of_concrete"
+        (Line
+           (Printf.sprintf "%s -> %s"
+              (inst_node "concrete" ~tvars)
+              (inst_node "t" ~tvars)));
+      Ml.declare_val
+        "to_concrete"
+        (Line
+           (Printf.sprintf "%s -> %s option"
+              (inst_node "t" ~tvars)
+              (inst_node "concrete" ~tvars)));
+      Print.newline ();
+      declare_constructors nominal ~tvars
 end
 
 module Structure = struct
   module Render = Render (struct let internal = true end)
 
-  let rec ast_of_ty ty =
+  let find_kind (grammar : Astlib.Grammar.t) name =
+    match List.assoc grammar name with
+    | None -> assert false
+    | Some kind -> kind
+
+  let find_mono grammar name =
+    match find_kind grammar name with
+    | Mono decl -> decl
+    | Poly _ -> assert false
+
+  let find_poly grammar name args =
+    match find_kind grammar name with
+    | Mono _ -> assert false
+    | Poly (vars, decl) ->
+      Poly_env.subst_decl decl ~env:(Poly_env.create ~vars ~args)
+
+  let rec ast_of_ty ~grammar ty =
     match (ty : Astlib.Grammar.ty) with
-    | Var _ | Name _ | Instance _ -> "Data.of_node"
+    | Var _ -> "Data.of_node"
+    | Name name -> ast_of_decl ~grammar (find_mono grammar name)
+    | Instance (name, args) -> ast_of_decl ~grammar (find_poly grammar name args)
     | Bool -> "Data.of_bool"
     | Char -> "Data.of_char"
     | Int -> "Data.of_int"
     | String -> "Data.of_string"
     | Location -> "Data.of_location"
-    | Loc ty -> Printf.sprintf "(Data.of_loc ~f:%s)" (ast_of_ty ty)
-    | List ty -> Printf.sprintf "(Data.of_list ~f:%s)" (ast_of_ty ty)
-    | Option ty -> Printf.sprintf "(Data.of_option ~f:%s)" (ast_of_ty ty)
+    | Loc ty -> Printf.sprintf "(Data.of_loc ~f:%s)" (ast_of_ty ~grammar ty)
+    | List ty -> Printf.sprintf "(Data.of_list ~f:%s)" (ast_of_ty ~grammar ty)
+    | Option ty -> Printf.sprintf "(Data.of_option ~f:%s)" (ast_of_ty ~grammar ty)
     | Tuple tuple ->
       Printf.sprintf "(Data.of_tuple%d %s)"
         (List.length tuple)
         (String.concat ~sep:" "
            (List.mapi tuple ~f:(fun i ty ->
-              Printf.sprintf "~f%d:%s" (i + 1) (ast_of_ty ty))))
+              Printf.sprintf "~f%d:%s" (i + 1) (ast_of_ty ~grammar ty))))
 
-  let rec ast_to_ty ty =
+  and ast_of_decl ~grammar decl =
+    match (decl : Astlib.Grammar.decl) with
+    | Structural ty -> ast_of_ty ~grammar ty
+    | Nominal _ -> "Data.of_node"
+
+  let rec ast_to_ty ~grammar ty =
     match (ty : Astlib.Grammar.ty) with
-    | Var _ | Name _ | Instance _ -> "Data.to_node"
+    | Var _ -> "Data.to_node"
+    | Name name -> ast_to_decl ~grammar (find_mono grammar name)
+    | Instance (name, args) -> ast_to_decl ~grammar (find_poly grammar name args)
     | Bool -> "Data.to_bool"
     | Char -> "Data.to_char"
     | Int -> "Data.to_int"
     | String -> "Data.to_string"
     | Location -> "Data.to_location"
-    | Loc ty -> Printf.sprintf "(Data.to_loc ~f:%s)" (ast_to_ty ty)
-    | List ty -> Printf.sprintf "(Data.to_list ~f:%s)" (ast_to_ty ty)
-    | Option ty -> Printf.sprintf "(Data.to_option ~f:%s)" (ast_to_ty ty)
+    | Loc ty -> Printf.sprintf "(Data.to_loc ~f:%s)" (ast_to_ty ~grammar ty)
+    | List ty -> Printf.sprintf "(Data.to_list ~f:%s)" (ast_to_ty ~grammar ty)
+    | Option ty -> Printf.sprintf "(Data.to_option ~f:%s)" (ast_to_ty ~grammar ty)
     | Tuple tuple ->
       Printf.sprintf "(Data.to_tuple%d %s)"
         (List.length tuple)
         (String.concat ~sep:" "
            (List.mapi tuple ~f:(fun i ty ->
-              Printf.sprintf "~f%d:%s" (i + 1) (ast_to_ty ty))))
+              Printf.sprintf "~f%d:%s" (i + 1) (ast_to_ty ~grammar ty))))
+
+  and ast_to_decl ~grammar decl =
+    match (decl : Astlib.Grammar.decl) with
+    | Structural ty -> ast_to_ty ~grammar ty
+    | Nominal _ -> "Data.to_node"
 
   let tuple_var i = Ml.id (Printf.sprintf "x%d" (i + 1))
 
-  let define_constructors decl ~node_name =
-    match (decl : Astlib.Grammar.decl) with
-    | Alias ty ->
+  let define_constructors nominal ~node_name ~grammar =
+    match (nominal : Astlib.Grammar.nominal) with
+    | Wrapper ty ->
       Print.println "let create =";
       Print.indented (fun () ->
-        Print.println "let data = %s in" (ast_of_ty ty);
+        Print.println "let data = %s in" (ast_of_ty ~grammar ty);
         Print.println "fun x -> node %S (data x)" node_name)
     | Record record ->
       Print.println "let create %s ="
@@ -142,7 +176,7 @@ module Structure = struct
         Print.println "let fields =";
         Print.indented (fun () ->
           Ml.print_array record ~f:(fun _ (field, ty) ->
-            Printf.sprintf "%s %s" (ast_of_ty ty) (Ml.id field)));
+            Printf.sprintf "%s %s" (ast_of_ty ~grammar ty) (Ml.id field)));
         Print.println "in";
         Print.println "node %S (Record fields)" node_name)
     | Variant variant ->
@@ -165,7 +199,7 @@ module Structure = struct
                 Print.println "; args =";
                 Print.indented (fun () ->
                   Ml.print_array tuple ~f:(fun i ty ->
-                    Printf.sprintf "%s %s" (ast_of_ty ty) (tuple_var i)));
+                    Printf.sprintf "%s %s" (ast_of_ty ~grammar ty) (tuple_var i)));
                 Print.println "})")))
         | Record record ->
           Print.println "let %s %s ="
@@ -182,12 +216,12 @@ module Structure = struct
                 Print.println "; args =";
                 Print.indented (fun () ->
                   Ml.print_array record ~f:(fun _ (field, ty) ->
-                    Printf.sprintf "%s %s" (ast_of_ty ty) (Ml.id field)));
+                    Printf.sprintf "%s %s" (ast_of_ty ~grammar ty) (Ml.id field)));
                 Print.println "})"))))
 
-  let define_of_concrete decl =
-    match (decl : Astlib.Grammar.decl) with
-    | Alias _ -> Print.println "let of_concrete = create"
+  let define_of_concrete nominal =
+    match (nominal : Astlib.Grammar.nominal) with
+    | Wrapper _ -> Print.println "let of_concrete = create"
     | Record record ->
       Print.println "let of_concrete { %s } ="
         (String.concat ~sep:"; "
@@ -221,7 +255,7 @@ module Structure = struct
                 (String.concat ~sep:" "
                    (List.map record ~f:(fun (field, _) -> "~" ^ Ml.id field))))))
 
-  let with_ast_to_ty_bindings alist ~f =
+  let with_ast_to_ty_bindings alist ~grammar ~f =
     match alist with
     | [] -> f ()
     | _ ->
@@ -230,7 +264,7 @@ module Structure = struct
         | [] -> f ()
         | (var, ty) :: rest ->
           Print.println "Helpers.Option.bind (%s %s) ~f:(fun %s ->"
-            (ast_to_ty ty)
+            (ast_to_ty ~grammar ty)
             (Ml.id var)
             (Ml.id var);
           Print.indented (fun () ->
@@ -239,13 +273,15 @@ module Structure = struct
       loop alist;
       Print.println "%s" (String.make (List.length alist) ')')
 
-  let define_to_concrete decl ~node_name =
-    match (decl : Astlib.Grammar.decl) with
-    | Alias ty ->
+  let define_to_concrete nominal ~node_name ~grammar =
+    match (nominal : Astlib.Grammar.nominal) with
+    | Wrapper ty ->
       Print.println "let to_concrete t =";
       Print.indented (fun () ->
         Print.println "match Node.to_node t ~version with";
-        Print.println "| { name = %S; data } -> %s data" node_name (ast_to_ty ty);
+        Print.println "| { name = %S; data } -> %s data"
+          node_name
+          (ast_to_ty ~grammar ty);
         Print.println "| _ -> None")
     | Record record ->
       Print.println "let to_concrete t =";
@@ -258,7 +294,7 @@ module Structure = struct
                (List.map record ~f:(fun (field, _) -> Ml.id field)));
           Print.println "} ->";
           Print.indented (fun () ->
-            with_ast_to_ty_bindings record ~f:(fun () ->
+            with_ast_to_ty_bindings record ~grammar ~f:(fun () ->
               Print.println "Some { %s }"
                 (String.concat ~sep:"; "
                    (List.map record ~f:(fun (field, _) -> Ml.id field))))));
@@ -283,7 +319,7 @@ module Structure = struct
                   tag
                   (String.concat ~sep:"; " (List.mapi tuple ~f:(fun i _ -> tuple_var i)));
                 Print.indented (fun () ->
-                  with_ast_to_ty_bindings
+                  with_ast_to_ty_bindings ~grammar
                     (List.mapi tuple ~f:(fun i ty -> tuple_var i, ty))
                     ~f:(fun () ->
                       Print.println "Some (%s (%s))"
@@ -296,7 +332,7 @@ module Structure = struct
                   (String.concat ~sep:"; "
                      (List.map record ~f:(fun (field, _) -> Ml.id field)));
                 Print.indented (fun () ->
-                  with_ast_to_ty_bindings
+                  with_ast_to_ty_bindings ~grammar
                     record
                     ~f:(fun () ->
                       Print.println "Some (%s { %s })"
@@ -307,54 +343,64 @@ module Structure = struct
           Print.println "end");
         Print.println "| _ -> None")
 
-  let print decl ~node_name ~tvars =
-    Ml.declare_type "t" ~tvars (Line (Ml.poly_type node_name ~tvars));
-    Print.newline ();
-    Ml.declare_type "concrete" ~tvars (Render.decl_type_element decl);
-    Print.newline ();
-    define_constructors decl ~node_name;
-    Print.newline ();
-    define_of_concrete decl;
-    Print.newline ();
-    define_to_concrete decl ~node_name
+  let print decl ~node_name ~tvars ~grammar =
+    match (decl : Astlib.Grammar.decl) with
+    | Structural ty ->
+      Ml.declare_type "t" ~tvars (Line (Render.string_of_ty ty))
+    | Nominal nominal ->
+      Ml.declare_type "t" ~tvars (Line (Ml.poly_type node_name ~tvars));
+      Print.newline ();
+      Ml.declare_type "concrete" ~tvars (Render.nominal_type_element nominal);
+      Print.newline ();
+      define_constructors nominal ~node_name ~grammar;
+      Print.newline ();
+      define_of_concrete nominal;
+      Print.newline ();
+      define_to_concrete nominal ~node_name ~grammar
 end
 
 module Unversioned = struct
   let types_of_grammar grammar =
-    List.map grammar ~f:(fun (type_name, kind) ->
-      let tvars =
+    List.partition_map grammar ~f:(fun (type_name, kind) ->
+      let tvars, decl =
         match (kind : Astlib.Grammar.kind) with
-        | Mono _ -> []
-        | Poly (tvars, _) -> tvars
+        | Mono decl -> [], decl
+        | Poly (tvars, decl) -> tvars, decl
       in
-      type_name, tvars)
+      match decl with
+      | Structural ty -> Left (type_name, tvars, ty)
+      | Nominal _ -> Right (type_name, tvars))
+
+  let combine_types types =
+    List.sort_uniq (List.concat types) ~compare
 
   let all_types grammars =
-    grammars
-    |> List.map ~f:(fun (_, grammar) -> types_of_grammar grammar)
-    |> List.concat
-    |> List.sort_uniq ~cmp:(fun (a, avars) (b, bvars) ->
-      (* If two declarations have the same name and arity, we can consider them the same.
-         If two have the same name and different arity, we might as well keep both and
-         cause a type error. *)
-      match String.compare a b with
-      | 0 -> compare (List.length avars) (List.length bvars)
-      | n -> n)
+    let structural, nominal =
+      List.map grammars ~f:(fun (_, grammar) -> types_of_grammar grammar)
+      |> List.unzip
+    in
+    combine_types structural, combine_types nominal
 end
 
 let print_ast_types grammars =
-  List.iter (Unversioned.all_types grammars) ~f:(fun (type_name, tvars) ->
+  let structural_types, nominal_types = Unversioned.all_types grammars in
+  List.iter nominal_types ~f:(fun (type_name, tvars) ->
     let type_name_ = type_name ^ "_" in
     Ml.declare_type type_name_ ~tvars Empty);
   Print.newline ();
-  List.iter (Unversioned.all_types grammars) ~f:(fun (type_name, tvars) ->
+  List.iter nominal_types ~f:(fun (type_name, tvars) ->
     let type_name_ = type_name ^ "_" in
     Ml.declare_type type_name ~tvars
-      (Line (Grammar.string_of_ty ~internal:true
-               (Instance ("node",
-                          [Instance (type_name_,
-                                     List.map tvars ~f:(fun v ->
-                                       Astlib.Grammar.Var v))])))))
+      (Line
+         (Grammar.string_of_ty ~internal:true
+            (Instance
+               ("node",
+                [Instance
+                   (type_name_, List.map tvars ~f:(fun v -> Astlib.Grammar.Var v))])))));
+  Print.newline ();
+  List.iter structural_types ~f:(fun (type_name, tvars, ty) ->
+    Ml.declare_type type_name ~tvars
+      (Line (Grammar.string_of_ty ~internal:true ty)))
 
 let print_versions_mli () =
   Print.newline ();
@@ -380,6 +426,6 @@ let print_versions_ml () =
     Print.newline ();
     Ml.define_modules grammar ~f:(fun node_name kind ->
       match (kind : Astlib.Grammar.kind) with
-      | Mono decl -> Structure.print decl ~node_name ~tvars:[]
+      | Mono decl -> Structure.print decl ~node_name ~tvars:[] ~grammar
       | Poly (tvars, decl) ->
-        Structure.print decl ~node_name ~tvars))
+        Structure.print decl ~node_name ~tvars ~grammar))

@@ -142,18 +142,18 @@ let print_viewer ~what ~shortcuts (name, kind) =
     | Poly (targs, decl) -> (targs, decl)
   in
   match targs, decl with
-  | [], Variant variants ->
+  | [], Nominal (Variant variants) ->
     let shortcut = Shortcut.Map.find shortcuts name in
     List.iter variants ~f:(M.print_variant_viewer ~name ~shortcut)
-  | _, Variant _ ->
+  | _, Nominal (Variant _) ->
     (* There are no polymorphic variant types in the AST atm. If some are
        added we'll need to handle a few things, including properly generating
        fresh type variables for the input and output type varibales in the
        [View.t] types for empty variants. *)
     assert false
-  | _, Record fields ->
+  | _, Nominal (Record fields) ->
     List.iter fields ~f:(M.print_field_viewer ~targs ~name)
-  | _, Alias _ ->
+  | _, (Structural _ | Nominal (Wrapper _)) ->
     ()
 
 let print_viewer_ml () =

@@ -177,3 +177,16 @@ let rec mem_sorted ~compare elm l =
      | Lt -> mem_sorted ~compare elm tl
      | Eq -> true
      | Gt -> false)
+
+let unzip t =
+  fold_right t ~init:([], []) ~f:(fun (fst, snd) (fsts, snds) ->
+    (fst :: fsts), (snd :: snds))
+
+let rec rev_zip_exn xs ys ~acc =
+  match xs, ys with
+  | [], [] -> rev acc
+  | x :: xs, y :: ys -> rev_zip_exn xs ys ~acc:((x, y) :: acc)
+  | [], _ :: _
+  | _ :: _, [] -> failwith "List.zip_exn: mismatch lengths"
+
+let zip_exn xs ys = rev_zip_exn xs ys ~acc:[]
