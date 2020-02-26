@@ -263,9 +263,9 @@ let builders name (grammar : Astlib.Grammar.kind) shortcut =
   | Poly (_, _) -> []
   | Mono decl ->
     match decl with
-    | Structural _ -> []
-    | Nominal nominal ->
-      match nominal with
+    | Unversioned _ -> []
+    | Versioned versioned ->
+      match versioned with
       | Wrapper _ -> []
       | Record r ->
         begin match Builder.of_record name r shortcut with

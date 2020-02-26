@@ -5,56 +5,59 @@ let conversions : History.conversion list = []
 let grammar : Grammar.t =
   [ ( "longident"
     , Mono
-        (Nominal
+        (Versioned
            (Variant
               [ ("Lident", Tuple [String])
               ; ("Ldot", Tuple [Name "longident"; String])
               ; ("Lapply", Tuple [Name "longident"; Name "longident"]) ])) )
-  ; ("longident_loc", Mono (Structural (Loc (Name "longident"))))
+  ; ("longident_loc", Mono (Unversioned (Loc (Name "longident"))))
   ; ( "rec_flag"
-    , Mono (Nominal (Variant [("Nonrecursive", Empty); ("Recursive", Empty)]))
+    , Mono
+        (Versioned (Variant [("Nonrecursive", Empty); ("Recursive", Empty)]))
     )
   ; ( "direction_flag"
-    , Mono (Nominal (Variant [("Upto", Empty); ("Downto", Empty)])) )
+    , Mono (Versioned (Variant [("Upto", Empty); ("Downto", Empty)])) )
   ; ( "private_flag"
-    , Mono (Nominal (Variant [("Private", Empty); ("Public", Empty)])) )
+    , Mono (Versioned (Variant [("Private", Empty); ("Public", Empty)])) )
   ; ( "mutable_flag"
-    , Mono (Nominal (Variant [("Immutable", Empty); ("Mutable", Empty)])) )
+    , Mono (Versioned (Variant [("Immutable", Empty); ("Mutable", Empty)])) )
   ; ( "virtual_flag"
-    , Mono (Nominal (Variant [("Virtual", Empty); ("Concrete", Empty)])) )
+    , Mono (Versioned (Variant [("Virtual", Empty); ("Concrete", Empty)])) )
   ; ( "override_flag"
-    , Mono (Nominal (Variant [("Override", Empty); ("Fresh", Empty)])) )
+    , Mono (Versioned (Variant [("Override", Empty); ("Fresh", Empty)])) )
   ; ( "closed_flag"
-    , Mono (Nominal (Variant [("Closed", Empty); ("Open", Empty)])) )
-  ; ("label", Mono (Structural String))
+    , Mono (Versioned (Variant [("Closed", Empty); ("Open", Empty)])) )
+  ; ("label", Mono (Unversioned String))
   ; ( "arg_label"
     , Mono
-        (Nominal
+        (Versioned
            (Variant
               [ ("Nolabel", Empty)
               ; ("Labelled", Tuple [String])
               ; ("Optional", Tuple [String]) ])) )
   ; ( "variance"
     , Mono
-        (Nominal
+        (Versioned
            (Variant
               [ ("Covariant", Empty)
               ; ("Contravariant", Empty)
               ; ("Invariant", Empty) ])) )
   ; ( "constant"
     , Mono
-        (Nominal
+        (Versioned
            (Variant
               [ ("Pconst_integer", Tuple [String; Option Char])
               ; ("Pconst_char", Tuple [Char])
               ; ("Pconst_string", Tuple [String; Option String])
               ; ("Pconst_float", Tuple [String; Option Char]) ])) )
-  ; ("attribute", Mono (Nominal (Wrapper (Tuple [Loc String; Name "payload"]))))
-  ; ("extension", Mono (Nominal (Wrapper (Tuple [Loc String; Name "payload"]))))
-  ; ("attributes", Mono (Nominal (Wrapper (List (Name "attribute")))))
+  ; ( "attribute"
+    , Mono (Versioned (Wrapper (Tuple [Loc String; Name "payload"]))) )
+  ; ( "extension"
+    , Mono (Versioned (Wrapper (Tuple [Loc String; Name "payload"]))) )
+  ; ("attributes", Mono (Versioned (Wrapper (List (Name "attribute")))))
   ; ( "payload"
     , Mono
-        (Nominal
+        (Versioned
            (Variant
               [ ("PStr", Tuple [Name "structure"])
               ; ("PSig", Tuple [Name "signature"])
@@ -63,14 +66,14 @@ let grammar : Grammar.t =
     )
   ; ( "core_type"
     , Mono
-        (Nominal
+        (Versioned
            (Record
               [ ("ptyp_desc", Name "core_type_desc")
               ; ("ptyp_loc", Location)
               ; ("ptyp_attributes", Name "attributes") ])) )
   ; ( "core_type_desc"
     , Mono
-        (Nominal
+        (Versioned
            (Variant
               [ ("Ptyp_any", Empty)
               ; ("Ptyp_var", Tuple [String])
@@ -95,7 +98,7 @@ let grammar : Grammar.t =
               ; ("Ptyp_extension", Tuple [Name "extension"]) ])) )
   ; ( "package_type"
     , Mono
-        (Nominal
+        (Versioned
            (Wrapper
               (Tuple
                  [ Name "longident_loc"
@@ -103,7 +106,7 @@ let grammar : Grammar.t =
     )
   ; ( "row_field"
     , Mono
-        (Nominal
+        (Versioned
            (Variant
               [ ( "Rtag"
                 , Tuple
@@ -114,7 +117,7 @@ let grammar : Grammar.t =
               ; ("Rinherit", Tuple [Name "core_type"]) ])) )
   ; ( "object_field"
     , Mono
-        (Nominal
+        (Versioned
            (Variant
               [ ( "Otag"
                 , Tuple
@@ -123,14 +126,14 @@ let grammar : Grammar.t =
               ; ("Oinherit", Tuple [Name "core_type"]) ])) )
   ; ( "pattern"
     , Mono
-        (Nominal
+        (Versioned
            (Record
               [ ("ppat_desc", Name "pattern_desc")
               ; ("ppat_loc", Location)
               ; ("ppat_attributes", Name "attributes") ])) )
   ; ( "pattern_desc"
     , Mono
-        (Nominal
+        (Versioned
            (Variant
               [ ("Ppat_any", Empty)
               ; ("Ppat_var", Tuple [Loc String])
@@ -157,14 +160,14 @@ let grammar : Grammar.t =
     )
   ; ( "expression"
     , Mono
-        (Nominal
+        (Versioned
            (Record
               [ ("pexp_desc", Name "expression_desc")
               ; ("pexp_loc", Location)
               ; ("pexp_attributes", Name "attributes") ])) )
   ; ( "expression_desc"
     , Mono
-        (Nominal
+        (Versioned
            (Variant
               [ ("Pexp_ident", Tuple [Name "longident_loc"])
               ; ("Pexp_constant", Tuple [Name "constant"])
@@ -248,14 +251,14 @@ let grammar : Grammar.t =
               ; ("Pexp_unreachable", Empty) ])) )
   ; ( "case"
     , Mono
-        (Nominal
+        (Versioned
            (Record
               [ ("pc_lhs", Name "pattern")
               ; ("pc_guard", Option (Name "expression"))
               ; ("pc_rhs", Name "expression") ])) )
   ; ( "value_description"
     , Mono
-        (Nominal
+        (Versioned
            (Record
               [ ("pval_name", Loc String)
               ; ("pval_type", Name "core_type")
@@ -264,7 +267,7 @@ let grammar : Grammar.t =
               ; ("pval_loc", Location) ])) )
   ; ( "type_declaration"
     , Mono
-        (Nominal
+        (Versioned
            (Record
               [ ("ptype_name", Loc String)
               ; ( "ptype_params"
@@ -279,7 +282,7 @@ let grammar : Grammar.t =
               ; ("ptype_loc", Location) ])) )
   ; ( "type_kind"
     , Mono
-        (Nominal
+        (Versioned
            (Variant
               [ ("Ptype_abstract", Empty)
               ; ("Ptype_variant", Tuple [List (Name "constructor_declaration")])
@@ -287,7 +290,7 @@ let grammar : Grammar.t =
               ; ("Ptype_open", Empty) ])) )
   ; ( "label_declaration"
     , Mono
-        (Nominal
+        (Versioned
            (Record
               [ ("pld_name", Loc String)
               ; ("pld_mutable", Name "mutable_flag")
@@ -296,7 +299,7 @@ let grammar : Grammar.t =
               ; ("pld_attributes", Name "attributes") ])) )
   ; ( "constructor_declaration"
     , Mono
-        (Nominal
+        (Versioned
            (Record
               [ ("pcd_name", Loc String)
               ; ("pcd_args", Name "constructor_arguments")
@@ -305,14 +308,14 @@ let grammar : Grammar.t =
               ; ("pcd_attributes", Name "attributes") ])) )
   ; ( "constructor_arguments"
     , Mono
-        (Nominal
+        (Versioned
            (Variant
               [ ("Pcstr_tuple", Tuple [List (Name "core_type")])
               ; ("Pcstr_record", Tuple [List (Name "label_declaration")]) ]))
     )
   ; ( "type_extension"
     , Mono
-        (Nominal
+        (Versioned
            (Record
               [ ("ptyext_path", Name "longident_loc")
               ; ( "ptyext_params"
@@ -322,7 +325,7 @@ let grammar : Grammar.t =
               ; ("ptyext_attributes", Name "attributes") ])) )
   ; ( "extension_constructor"
     , Mono
-        (Nominal
+        (Versioned
            (Record
               [ ("pext_name", Loc String)
               ; ("pext_kind", Name "extension_constructor_kind")
@@ -330,7 +333,7 @@ let grammar : Grammar.t =
               ; ("pext_attributes", Name "attributes") ])) )
   ; ( "extension_constructor_kind"
     , Mono
-        (Nominal
+        (Versioned
            (Variant
               [ ( "Pext_decl"
                 , Tuple
@@ -339,14 +342,14 @@ let grammar : Grammar.t =
               ; ("Pext_rebind", Tuple [Name "longident_loc"]) ])) )
   ; ( "class_type"
     , Mono
-        (Nominal
+        (Versioned
            (Record
               [ ("pcty_desc", Name "class_type_desc")
               ; ("pcty_loc", Location)
               ; ("pcty_attributes", Name "attributes") ])) )
   ; ( "class_type_desc"
     , Mono
-        (Nominal
+        (Versioned
            (Variant
               [ ( "Pcty_constr"
                 , Tuple [Name "longident_loc"; List (Name "core_type")] )
@@ -362,20 +365,20 @@ let grammar : Grammar.t =
                     ; Name "class_type" ] ) ])) )
   ; ( "class_signature"
     , Mono
-        (Nominal
+        (Versioned
            (Record
               [ ("pcsig_self", Name "core_type")
               ; ("pcsig_fields", List (Name "class_type_field")) ])) )
   ; ( "class_type_field"
     , Mono
-        (Nominal
+        (Versioned
            (Record
               [ ("pctf_desc", Name "class_type_field_desc")
               ; ("pctf_loc", Location)
               ; ("pctf_attributes", Name "attributes") ])) )
   ; ( "class_type_field_desc"
     , Mono
-        (Nominal
+        (Versioned
            (Variant
               [ ("Pctf_inherit", Tuple [Name "class_type"])
               ; ( "Pctf_val"
@@ -399,7 +402,7 @@ let grammar : Grammar.t =
   ; ( "class_infos"
     , Poly
         ( ["a"]
-        , Nominal
+        , Versioned
             (Record
                [ ("pci_virt", Name "virtual_flag")
                ; ( "pci_params"
@@ -409,19 +412,19 @@ let grammar : Grammar.t =
                ; ("pci_loc", Location)
                ; ("pci_attributes", Name "attributes") ]) ) )
   ; ( "class_description"
-    , Mono (Structural (Instance ("class_infos", [Name "class_type"]))) )
+    , Mono (Unversioned (Instance ("class_infos", [Name "class_type"]))) )
   ; ( "class_type_declaration"
-    , Mono (Structural (Instance ("class_infos", [Name "class_type"]))) )
+    , Mono (Unversioned (Instance ("class_infos", [Name "class_type"]))) )
   ; ( "class_expr"
     , Mono
-        (Nominal
+        (Versioned
            (Record
               [ ("pcl_desc", Name "class_expr_desc")
               ; ("pcl_loc", Location)
               ; ("pcl_attributes", Name "attributes") ])) )
   ; ( "class_expr_desc"
     , Mono
-        (Nominal
+        (Versioned
            (Variant
               [ ( "Pcl_constr"
                 , Tuple [Name "longident_loc"; List (Name "core_type")] )
@@ -450,20 +453,20 @@ let grammar : Grammar.t =
                     ; Name "class_expr" ] ) ])) )
   ; ( "class_structure"
     , Mono
-        (Nominal
+        (Versioned
            (Record
               [ ("pcstr_self", Name "pattern")
               ; ("pcstr_fields", List (Name "class_field")) ])) )
   ; ( "class_field"
     , Mono
-        (Nominal
+        (Versioned
            (Record
               [ ("pcf_desc", Name "class_field_desc")
               ; ("pcf_loc", Location)
               ; ("pcf_attributes", Name "attributes") ])) )
   ; ( "class_field_desc"
     , Mono
-        (Nominal
+        (Versioned
            (Variant
               [ ( "Pcf_inherit"
                 , Tuple
@@ -489,23 +492,23 @@ let grammar : Grammar.t =
               ; ("Pcf_extension", Tuple [Name "extension"]) ])) )
   ; ( "class_field_kind"
     , Mono
-        (Nominal
+        (Versioned
            (Variant
               [ ("Cfk_virtual", Tuple [Name "core_type"])
               ; ( "Cfk_concrete"
                 , Tuple [Name "override_flag"; Name "expression"] ) ])) )
   ; ( "class_declaration"
-    , Mono (Structural (Instance ("class_infos", [Name "class_expr"]))) )
+    , Mono (Unversioned (Instance ("class_infos", [Name "class_expr"]))) )
   ; ( "module_type"
     , Mono
-        (Nominal
+        (Versioned
            (Record
               [ ("pmty_desc", Name "module_type_desc")
               ; ("pmty_loc", Location)
               ; ("pmty_attributes", Name "attributes") ])) )
   ; ( "module_type_desc"
     , Mono
-        (Nominal
+        (Versioned
            (Variant
               [ ("Pmty_ident", Tuple [Name "longident_loc"])
               ; ("Pmty_signature", Tuple [Name "signature"])
@@ -519,16 +522,16 @@ let grammar : Grammar.t =
               ; ("Pmty_typeof", Tuple [Name "module_expr"])
               ; ("Pmty_extension", Tuple [Name "extension"])
               ; ("Pmty_alias", Tuple [Name "longident_loc"]) ])) )
-  ; ("signature", Mono (Nominal (Wrapper (List (Name "signature_item")))))
+  ; ("signature", Mono (Versioned (Wrapper (List (Name "signature_item")))))
   ; ( "signature_item"
     , Mono
-        (Nominal
+        (Versioned
            (Record
               [ ("psig_desc", Name "signature_item_desc")
               ; ("psig_loc", Location) ])) )
   ; ( "signature_item_desc"
     , Mono
-        (Nominal
+        (Versioned
            (Variant
               [ ("Psig_value", Tuple [Name "value_description"])
               ; ( "Psig_type"
@@ -548,7 +551,7 @@ let grammar : Grammar.t =
               ])) )
   ; ( "module_declaration"
     , Mono
-        (Nominal
+        (Versioned
            (Record
               [ ("pmd_name", Loc String)
               ; ("pmd_type", Name "module_type")
@@ -556,7 +559,7 @@ let grammar : Grammar.t =
               ; ("pmd_loc", Location) ])) )
   ; ( "module_type_declaration"
     , Mono
-        (Nominal
+        (Versioned
            (Record
               [ ("pmtd_name", Loc String)
               ; ("pmtd_type", Option (Name "module_type"))
@@ -564,7 +567,7 @@ let grammar : Grammar.t =
               ; ("pmtd_loc", Location) ])) )
   ; ( "open_description"
     , Mono
-        (Nominal
+        (Versioned
            (Record
               [ ("popen_lid", Name "longident_loc")
               ; ("popen_override", Name "override_flag")
@@ -573,18 +576,18 @@ let grammar : Grammar.t =
   ; ( "include_infos"
     , Poly
         ( ["a"]
-        , Nominal
+        , Versioned
             (Record
                [ ("pincl_mod", Var "a")
                ; ("pincl_loc", Location)
                ; ("pincl_attributes", Name "attributes") ]) ) )
   ; ( "include_description"
-    , Mono (Structural (Instance ("include_infos", [Name "module_type"]))) )
+    , Mono (Unversioned (Instance ("include_infos", [Name "module_type"]))) )
   ; ( "include_declaration"
-    , Mono (Structural (Instance ("include_infos", [Name "module_expr"]))) )
+    , Mono (Unversioned (Instance ("include_infos", [Name "module_expr"]))) )
   ; ( "with_constraint"
     , Mono
-        (Nominal
+        (Versioned
            (Variant
               [ ( "Pwith_type"
                 , Tuple [Name "longident_loc"; Name "type_declaration"] )
@@ -596,14 +599,14 @@ let grammar : Grammar.t =
                 , Tuple [Name "longident_loc"; Name "longident_loc"] ) ])) )
   ; ( "module_expr"
     , Mono
-        (Nominal
+        (Versioned
            (Record
               [ ("pmod_desc", Name "module_expr_desc")
               ; ("pmod_loc", Location)
               ; ("pmod_attributes", Name "attributes") ])) )
   ; ( "module_expr_desc"
     , Mono
-        (Nominal
+        (Versioned
            (Variant
               [ ("Pmod_ident", Tuple [Name "longident_loc"])
               ; ("Pmod_structure", Tuple [Name "structure"])
@@ -617,16 +620,16 @@ let grammar : Grammar.t =
                 , Tuple [Name "module_expr"; Name "module_type"] )
               ; ("Pmod_unpack", Tuple [Name "expression"])
               ; ("Pmod_extension", Tuple [Name "extension"]) ])) )
-  ; ("structure", Mono (Nominal (Wrapper (List (Name "structure_item")))))
+  ; ("structure", Mono (Versioned (Wrapper (List (Name "structure_item")))))
   ; ( "structure_item"
     , Mono
-        (Nominal
+        (Versioned
            (Record
               [ ("pstr_desc", Name "structure_item_desc")
               ; ("pstr_loc", Location) ])) )
   ; ( "structure_item_desc"
     , Mono
-        (Nominal
+        (Versioned
            (Variant
               [ ("Pstr_eval", Tuple [Name "expression"; Name "attributes"])
               ; ( "Pstr_value"
@@ -649,7 +652,7 @@ let grammar : Grammar.t =
               ])) )
   ; ( "value_binding"
     , Mono
-        (Nominal
+        (Versioned
            (Record
               [ ("pvb_pat", Name "pattern")
               ; ("pvb_expr", Name "expression")
@@ -657,7 +660,7 @@ let grammar : Grammar.t =
               ; ("pvb_loc", Location) ])) )
   ; ( "module_binding"
     , Mono
-        (Nominal
+        (Versioned
            (Record
               [ ("pmb_name", Loc String)
               ; ("pmb_expr", Name "module_expr")
@@ -665,13 +668,13 @@ let grammar : Grammar.t =
               ; ("pmb_loc", Location) ])) )
   ; ( "toplevel_phrase"
     , Mono
-        (Nominal
+        (Versioned
            (Variant
               [ ("Ptop_def", Tuple [Name "structure"])
               ; ("Ptop_dir", Tuple [String; Name "directive_argument"]) ])) )
   ; ( "directive_argument"
     , Mono
-        (Nominal
+        (Versioned
            (Variant
               [ ("Pdir_none", Empty)
               ; ("Pdir_string", Tuple [String])

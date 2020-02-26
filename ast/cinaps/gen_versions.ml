@@ -17,8 +17,8 @@ module Render (Config : sig val internal : bool end) = struct
   let print_variant_type variant =
     Ml.print_variant_type variant ~f:clause_type_element
 
-  let nominal_type_element nominal : Ml.element =
-    match (nominal : Astlib.Grammar.nominal) with
+  let versioned_type_element versioned : Ml.element =
+    match (versioned : Astlib.Grammar.versioned) with
     | Wrapper ty -> Line (string_of_ty ty)
     | Record record -> Block (fun () -> print_record_type record)
     | Variant variant -> Block (fun () -> print_variant_type variant)
@@ -35,10 +35,10 @@ module Signature = struct
     Ml.poly_inst ty ~args:(List.map tvars ~f:(fun tvar ->
       Render.string_of_ty (Var tvar)))
 
-  let declare_constructors nominal ~tvars =
+  let declare_constructors versioned ~tvars =
     let env = Poly_env.nodify_targs tvars in
     let string_of_ty ty = Render.string_of_ty (Poly_env.subst_ty ty ~env) in
-    match (nominal : Astlib.Grammar.nominal) with
+    match (versioned : Astlib.Grammar.versioned) with
     | Wrapper ty ->
       Ml.declare_val
         "create"
@@ -66,12 +66,12 @@ module Signature = struct
 
   let print decl ~name ~tvars =
     match (decl : Astlib.Grammar.decl) with
-    | Structural ty ->
+    | Unversioned ty ->
       Ml.declare_type "t" ~tvars (Line (Render.string_of_ty ty))
-    | Nominal nominal ->
+    | Versioned versioned ->
       Ml.declare_type "t" ~tvars (Line (Ml.poly_type name ~tvars));
       Print.newline ();
-      Ml.declare_type "concrete" ~tvars (Render.nominal_type_element nominal);
+      Ml.declare_type "concrete" ~tvars (Render.versioned_type_element versioned);
       Print.newline ();
       Ml.declare_val
         "of_concrete"
@@ -86,7 +86,7 @@ module Signature = struct
               (inst_node "t" ~tvars)
               (inst_node "concrete" ~tvars)));
       Print.newline ();
-      declare_constructors nominal ~tvars
+      declare_constructors versioned ~tvars
 end
 
 module Structure = struct
@@ -130,8 +130,8 @@ module Structure = struct
 
   and ast_of_decl ~grammar decl =
     match (decl : Astlib.Grammar.decl) with
-    | Structural ty -> ast_of_ty ~grammar ty
-    | Nominal _ -> "Data.of_node"
+    | Unversioned ty -> ast_of_ty ~grammar ty
+    | Versioned _ -> "Data.of_node"
 
   let rec ast_to_ty ~grammar ty =
     match (ty : Astlib.Grammar.ty) with
@@ -155,13 +155,13 @@ module Structure = struct
 
   and ast_to_decl ~grammar decl =
     match (decl : Astlib.Grammar.decl) with
-    | Structural ty -> ast_to_ty ~grammar ty
-    | Nominal _ -> "Data.to_node"
+    | Unversioned ty -> ast_to_ty ~grammar ty
+    | Versioned _ -> "Data.to_node"
 
   let tuple_var i = Ml.id (Printf.sprintf "x%d" (i + 1))
 
-  let define_constructors nominal ~node_name ~grammar =
-    match (nominal : Astlib.Grammar.nominal) with
+  let define_constructors versioned ~node_name ~grammar =
+    match (versioned : Astlib.Grammar.versioned) with
     | Wrapper ty ->
       Print.println "let create =";
       Print.indented (fun () ->
@@ -219,8 +219,8 @@ module Structure = struct
                     Printf.sprintf "%s %s" (ast_of_ty ~grammar ty) (Ml.id field)));
                 Print.println "})"))))
 
-  let define_of_concrete nominal =
-    match (nominal : Astlib.Grammar.nominal) with
+  let define_of_concrete versioned =
+    match (versioned : Astlib.Grammar.versioned) with
     | Wrapper _ -> Print.println "let of_concrete = create"
     | Record record ->
       Print.println "let of_concrete { %s } ="
@@ -273,8 +273,8 @@ module Structure = struct
       loop alist;
       Print.println "%s" (String.make (List.length alist) ')')
 
-  let define_to_concrete nominal ~node_name ~grammar =
-    match (nominal : Astlib.Grammar.nominal) with
+  let define_to_concrete versioned ~node_name ~grammar =
+    match (versioned : Astlib.Grammar.versioned) with
     | Wrapper ty ->
       Print.println "let to_concrete t =";
       Print.indented (fun () ->
@@ -345,18 +345,18 @@ module Structure = struct
 
   let print decl ~node_name ~tvars ~grammar =
     match (decl : Astlib.Grammar.decl) with
-    | Structural ty ->
+    | Unversioned ty ->
       Ml.declare_type "t" ~tvars (Line (Render.string_of_ty ty))
-    | Nominal nominal ->
+    | Versioned versioned ->
       Ml.declare_type "t" ~tvars (Line (Ml.poly_type node_name ~tvars));
       Print.newline ();
-      Ml.declare_type "concrete" ~tvars (Render.nominal_type_element nominal);
+      Ml.declare_type "concrete" ~tvars (Render.versioned_type_element versioned);
       Print.newline ();
-      define_constructors nominal ~node_name ~grammar;
+      define_constructors versioned ~node_name ~grammar;
       Print.newline ();
-      define_of_concrete nominal;
+      define_of_concrete versioned;
       Print.newline ();
-      define_to_concrete nominal ~node_name ~grammar
+      define_to_concrete versioned ~node_name ~grammar
 end
 
 module Unversioned = struct
@@ -368,27 +368,27 @@ module Unversioned = struct
         | Poly (tvars, decl) -> tvars, decl
       in
       match decl with
-      | Structural ty -> Left (type_name, tvars, ty)
-      | Nominal _ -> Right (type_name, tvars))
+      | Unversioned ty -> Left (type_name, tvars, ty)
+      | Versioned _ -> Right (type_name, tvars))
 
   let combine_types types =
     List.sort_uniq (List.concat types) ~compare
 
   let all_types grammars =
-    let structural, nominal =
+    let structural, versioned =
       List.map grammars ~f:(fun (_, grammar) -> types_of_grammar grammar)
       |> List.unzip
     in
-    combine_types structural, combine_types nominal
+    combine_types structural, combine_types versioned
 end
 
 let print_ast_types grammars =
-  let structural_types, nominal_types = Unversioned.all_types grammars in
-  List.iter nominal_types ~f:(fun (type_name, tvars) ->
+  let structural_types, versioned_types = Unversioned.all_types grammars in
+  List.iter versioned_types ~f:(fun (type_name, tvars) ->
     let type_name_ = type_name ^ "_" in
     Ml.declare_type type_name_ ~tvars Empty);
   Print.newline ();
-  List.iter nominal_types ~f:(fun (type_name, tvars) ->
+  List.iter versioned_types ~f:(fun (type_name, tvars) ->
     let type_name_ = type_name ^ "_" in
     Ml.declare_type type_name ~tvars
       (Line

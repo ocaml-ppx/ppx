@@ -203,10 +203,10 @@ let print_method_body
       ~targs
       ~node_name
       ~var
-      (nominal : Astlib.Grammar.nominal)
+      (versioned : Astlib.Grammar.versioned)
   =
   let value_kind = Ast_type {node_name; targs} in
-  match nominal with
+  match versioned with
   | Wrapper ty -> print_method_for_alias ~traversal ~value_kind ~var ty
   | Record fields ->
     let deconstructed = deconstruct_record ~traversal fields in
@@ -482,13 +482,13 @@ let print_to_concrete node_name =
 let print_method_value ~traversal ~targs ~node_name decl =
   let args = traversal.args (Ml.id node_name) in
   match (decl : Astlib.Grammar.decl) with
-  | Structural ty ->
+  | Unversioned ty ->
     Ml.define_anon_fun ~args (fun () ->
       print_method_for_alias ~traversal ~value_kind:Abstract ~var:node_name ty)
-  | Nominal nominal ->
+  | Versioned versioned ->
     Ml.define_anon_fun ~args (fun () ->
       print_to_concrete node_name;
-      print_method_body ~traversal ~targs ~node_name ~var:"concrete" nominal)
+      print_method_body ~traversal ~targs ~node_name ~var:"concrete" versioned)
 
 let declare_node_methods ~env_table ~signature (node_name, kind) =
   match (kind : Astlib.Grammar.kind) with
