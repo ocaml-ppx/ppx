@@ -169,8 +169,8 @@ module Builder = struct
          we'll need do deal with them.
          Note that a [xxx_loc_stack] has been added in recent OCaml versions. *)
       assert false
-    | Some {outter_record; desc_field; loc_field; attr_field; other_fields = []; _} ->
-      let type_ = Astlib.Grammar.Name outter_record in
+    | Some {outer_record; desc_field; loc_field; attr_field; other_fields = []; _} ->
+      let type_ = Astlib.Grammar.Name outer_record in
       List.map v ~f:(fun (cname, (constr : Astlib.Grammar.clause)) ->
         let arr =
           match constr with
@@ -199,7 +199,7 @@ module Builder = struct
             Expr.App (fun_name, args)
           in
           let constructor_function =
-            Printf.sprintf "%s.create" (Ml.module_name outter_record)
+            Printf.sprintf "%s.create" (Ml.module_name outer_record)
           in
           let args =
             let open Option.O in

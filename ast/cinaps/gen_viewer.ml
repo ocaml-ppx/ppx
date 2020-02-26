@@ -21,11 +21,11 @@ module Structure : VIEWER_PRINTER = struct
     match (shortcut : Shortcut.t option) with
     | None ->
       To_concrete.print_to_concrete_exn ~node_name expr
-    | Some {outter_record; desc_field; _} ->
+    | Some {outer_record; desc_field; _} ->
       To_concrete.print_to_concrete_exn
-        ~var_name:"parent_concrete" ~node_name:outter_record expr;
+        ~var_name:"parent_concrete" ~node_name:outer_record expr;
       Print.println "let desc = parent_concrete.%s.%s in"
-        (Ml.module_name outter_record) desc_field;
+        (Ml.module_name outer_record) desc_field;
       To_concrete.print_to_concrete_exn ~node_name "desc"
 
   let tuple tyl =
@@ -84,11 +84,11 @@ module Signature : VIEWER_PRINTER = struct
       let args = List.map ~f:Ml.tvar targs in
       let node_type = Ml.poly_inst ~args "node" in
       Printf.sprintf "%s %s" node_type (t_type name)
-    | [], Some {outter_record; _} -> (t_type outter_record)
+    | [], Some {outer_record; _} -> (t_type outer_record)
     | _, Some _ ->
       (* If we ever have shortcuts to polymorphic types we'll need to explicitly
          deal with it.
-         In particular we'll need to know if [outter_record] is polymorphic
+         In particular we'll need to know if [outer_record] is polymorphic
          over the the same type argument or if it expects a specific instance
          of [inner_variant]. *)
       assert false

@@ -1,5 +1,5 @@
 (** Type for shortcuts from description types to their parent record types:
-    - [outter_record] is the parent type name
+    - [outer_record] is the parent type name
     - [inner_variant] is the description type name
     - [desc_field] is the name of the field in the parent pointing to the
     description
@@ -9,7 +9,7 @@
     attributes, if any
     - [other_fields] is the list of the remaining fields of the parent *)
 type t =
-  { outter_record : string
+  { outer_record : string
   ; inner_variant : string
   ; desc_field : string
   ; attr_field : string option

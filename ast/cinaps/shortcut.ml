@@ -1,7 +1,7 @@
 open Stdppx
 
 type t =
-  { outter_record : string
+  { outer_record : string
   ; inner_variant : string
   ; desc_field : string
   ; attr_field : string option
@@ -49,7 +49,7 @@ let from_record ~name record =
     let attr_field = attr_field record in
     let other_fields = other_fields record in
     Some
-      { outter_record = name; inner_variant
+      { outer_record = name; inner_variant
       ; desc_field; loc_field; attr_field; other_fields }
   | Some (_, _) ->
     assert false
@@ -69,8 +69,8 @@ module Map = struct
           | Versioned (Record record) ->
             match from_record ~name record with
             | None -> acc
-            | Some ({outter_record; inner_variant; _} as shortcut) ->
-              let acc = String.Map.add acc outter_record shortcut in
+            | Some ({outer_record; inner_variant; _} as shortcut) ->
+              let acc = String.Map.add acc outer_record shortcut in
               String.Map.add acc inner_variant shortcut)
 
   let find t type_name =
