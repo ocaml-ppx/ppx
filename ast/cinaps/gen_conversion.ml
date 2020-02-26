@@ -160,10 +160,10 @@ let output_ty ty ~conv =
 
 let tuple_var i = Ml.id (Printf.sprintf "x%d" (i + 1))
 
-let define_conversion nominal ~node_name ~env ~conv =
+let define_conversion versioned ~node_name ~env ~conv =
   let name = Name.make [concrete_prefix ~conv; node_name] (Poly_env.args env) in
   let node_ty = node_ty ~node_name ~env in
-  match (nominal : Astlib.Grammar.nominal) with
+  match (versioned : Astlib.Grammar.versioned) with
   | Wrapper ty ->
     Print.println "and %s x =" name;
     Print.indented (fun () ->
@@ -223,7 +223,7 @@ let define_conversion nominal ~node_name ~env ~conv =
 
 let print_conversion_impl decl ~node_name ~env ~is_initial =
   match (decl : Astlib.Grammar.decl) with
-  | Structural ty ->
+  | Unversioned ty ->
     Print.println
       "%s %s x ="
       (if is_initial then "let rec" else "and")
@@ -238,7 +238,7 @@ let print_conversion_impl decl ~node_name ~env ~is_initial =
     Print.indented (fun () ->
       Print.println "%s x"
         (fn_value (ty_conversion ~conv:`concrete_to (Poly_env.subst_ty ty ~env))))
-  | Nominal nominal ->
+  | Versioned versioned ->
     Print.println
       "%s %s x ="
       (if is_initial then "let rec" else "and")
@@ -250,7 +250,7 @@ let print_conversion_impl decl ~node_name ~env ~is_initial =
         "of_concrete"
         (Name.make ["concrete_of"; node_name] (Poly_env.args env)));
     Print.newline ();
-    define_conversion nominal ~node_name ~env ~conv:`concrete_of;
+    define_conversion versioned ~node_name ~env ~conv:`concrete_of;
     Print.newline ();
     Print.println "and %s x =" (Name.make ["ast_to"; node_name] (Poly_env.args env));
     Print.indented (fun () ->
@@ -269,7 +269,7 @@ let print_conversion_impl decl ~node_name ~env ~is_initial =
       Print.println "%s concrete"
         (Name.make ["concrete_to"; node_name] (Poly_env.args env)));
     Print.newline ();
-    define_conversion nominal ~node_name ~env ~conv:`concrete_to
+    define_conversion versioned ~node_name ~env ~conv:`concrete_to
 
 let print_conversion_mli () =
   let grammar = Astlib.History.find_grammar Astlib.history ~version in

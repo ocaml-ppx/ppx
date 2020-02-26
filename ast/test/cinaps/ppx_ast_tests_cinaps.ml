@@ -46,11 +46,11 @@ let print_deriving_type decl ~index ~name ~tvars =
     (Ml.poly_type name ~tvars);
   Print.indented (fun () ->
     match (decl : Astlib.Grammar.decl) with
-    | Structural ty | Nominal (Wrapper ty) -> Print.println "%s" (string_of_ty ty)
-    | Nominal (Record record) ->
+    | Unversioned ty | Versioned (Wrapper ty) -> Print.println "%s" (string_of_ty ty)
+    | Versioned (Record record) ->
       Print.println "%s =" (Ml.poly_type ("Compiler_types." ^ name) ~tvars);
       Ml.print_record_type record ~f:string_of_ty
-    | Nominal (Variant variant) ->
+    | Versioned (Variant variant) ->
       Print.println "%s =" (Ml.poly_type ("Compiler_types." ^ name) ~tvars);
       Ml.print_variant_type variant ~f:(fun clause ->
         match (clause : Astlib.Grammar.clause) with
@@ -135,10 +135,10 @@ let print_quickcheck_generator decl ~index ~name ~tvars =
   Print.indented (fun () ->
     let gen_id name = Ml.id ("gen_" ^ name) in
     match (decl : Astlib.Grammar.decl) with
-    | Structural ty | Nominal (Wrapper ty) ->
+    | Unversioned ty | Versioned (Wrapper ty) ->
       Print.println "let gen = %s in" (generator_string ty);
       Print.println "Generator.generate gen ~size ~random"
-    | Nominal (Record record) ->
+    | Versioned (Record record) ->
       List.iteri record ~f:(fun index (field, ty) ->
         Print.println "%s %s = %s"
           (if index = 0 then "let" else "and")
@@ -151,7 +151,7 @@ let print_quickcheck_generator decl ~index ~name ~tvars =
           (Ml.id field)
           (Ml.id field));
       Print.println "}"
-    | Nominal (Variant variant) ->
+    | Versioned (Variant variant) ->
       List.iteri variant ~f:(fun index (tag, clause) ->
         Print.println "%s %s =" (if index = 0 then "let" else "and") (gen_id tag);
         Print.indented (fun () ->
