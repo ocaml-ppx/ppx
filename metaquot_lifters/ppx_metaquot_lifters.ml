@@ -23,6 +23,7 @@ let pconstraint ~loc typ pat =
   | Some (name, arity) -> ppat_constraint ~loc pat (ppx_type ~loc ~arity name)
 
 class expression_lifters loc =
+  let loc = Astlib.Location.update ~ghost:true loc in
   object
     inherit [Expression.t] Traverse_builtins.lift
     method record typ flds =
@@ -54,6 +55,7 @@ class expression_lifters loc =
   end
 
 class pattern_lifters loc =
+  let loc = Astlib.Location.update ~ghost:true loc in
   object
     inherit [Pattern.t] Traverse_builtins.lift
     method record typ flds =

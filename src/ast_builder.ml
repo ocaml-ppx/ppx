@@ -128,6 +128,7 @@ let unapplied_type_constr_conv_without_apply ~loc (ident : Longident.t) ~f =
   | Lapply _ -> Location.raise_errorf ~loc "unexpected applicative functor type"
 
 let type_constr_conv ~loc:apply_loc { Loc.loc; txt = longident } ~f args =
+  let loc = { loc with loc_ghost = true } in
   match (longident : Longident.t) with
   | Lident _
     | Ldot ((Lident _ | Ldot _), _)

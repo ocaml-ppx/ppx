@@ -194,9 +194,12 @@ let ppat_any ~loc =
     ~ppat_attributes:(Attributes.create [])
     ~ppat_desc:Pattern_desc.ppat_any
 
+let ghost loc = Astlib.Location.update ~ghost:true loc
+
 module Expr (Driver : Driver) = struct
   type t = Expression.t
   let location loc =
+    let loc = ghost loc in
     Expression.create
       ~pexp_loc:loc
       ~pexp_attributes:(Attributes.create [])
@@ -217,8 +220,8 @@ end
 
 module Patt = struct
   type t = Pattern.t
-  let location loc = ppat_any ~loc
-  let attributes = Some (fun loc -> ppat_any ~loc)
+  let location loc = ppat_any ~loc:(ghost loc)
+  let attributes = Some (fun loc -> ppat_any ~loc:(ghost loc))
   class std_lifters = Ppx_metaquot_lifters.pattern_lifters
   let cast ext =
     match pattern_payload_of ext with
