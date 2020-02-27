@@ -44,28 +44,35 @@ type nonrec 'a loc = 'a loc =
   ; loc : t
   }
 
-let compare_pos p1 p2 =
-  let open Lexing in
-  let column p =
-    (* Manual extract:
-       The difference between pos_cnum and pos_bol is the character offset
-       within the line (i.e. the column number, assuming each character is
-       one column wide). *)
-    p.pos_cnum - p.pos_bol
-  in
-  match Int.compare p1.pos_lnum p2.pos_lnum with
-  | 0 -> Int.compare (column p1) (column p2)
-  | n -> n
+module Pos = struct
+  let compare p1 p2 =
+    let open Lexing in
+    let column p =
+      (* Manual extract:
+         The difference between pos_cnum and pos_bol is the character offset
+         within the line (i.e. the column number, assuming each character is
+         one column wide). *)
+      p.pos_cnum - p.pos_bol
+    in
+    match Int.compare p1.pos_lnum p2.pos_lnum with
+    | Eq -> Int.compare (column p1) (column p2)
+    | n -> n
 
-let min_pos p1 p2 =
-  if compare_pos p1 p2 <= 0 then p1 else p2
+  module O = struct
+    let (>) p1 p2 = compare p1 p2 = Gt
+    let (>=) p1 p2 = Ordering.geq (compare p1 p2)
+    let (<=) p1 p2 = Ordering.leq (compare p1 p2)
+    let (<) p1 p2 = compare p1 p2 = Lt
+  end
 
-let max_pos p1 p2 =
-  if compare_pos p1 p2 >= 0 then p1 else p2
+  let min p1 p2 = if O.(p1 <= p2) then p1 else p2
+
+  let max p1 p2 = if O.(p1 >= p2) then p1 else p2
+end
 
 let compare loc1 loc2 =
-  match compare_pos loc1.loc_start loc2.loc_start with
-  | 0 -> compare_pos loc1.loc_end loc2.loc_end
+  match Pos.compare loc1.loc_start loc2.loc_start with
+  | Eq -> Pos.compare loc1.loc_end loc2.loc_end
   | n -> n
 
 module Error = struct

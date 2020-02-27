@@ -25,6 +25,14 @@ let neq = function
   | Eq -> false
   | Lt | Gt -> true
 
+let leq = function
+  | Lt | Eq -> true
+  | Gt -> false
+
+let geq = function
+  | Gt | Eq -> true
+  | Lt -> false
+
 let is_eq = function
   | Eq -> true
   | Lt | Gt -> false
