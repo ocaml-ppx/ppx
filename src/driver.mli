@@ -63,9 +63,10 @@ end
     backward compatibility.
 
     [enclose_impl] and [enclose_intf] produces a header and footer for
-    implementation/interface files. They are a special case of [impl] and [intf]. Both
-    functions receive a location that denotes the whole file, or [None] if the file
-    contains nothing.
+    implementation/interface files. They are a special case of [impl] and [intf]. The
+    header is placed after any initial module-level attributes; the footer is placed after
+    everything else. Both functions receive a location that denotes all of the items
+    between header and footer, or [None] if the that list of items is empty.
 
     [impl] is an optional function that is applied on implementation files and [intf] is
     an optional function that is applied on interface files. These two functions are
@@ -81,8 +82,11 @@ end
     [lint_impl] and [lint_intf] are applied to the unprocessed source. Errors they return
     will be reported to the user as preprocessor warnings.
 
-    [preprocess_impl] and [preprocess_intf] are applied after linters,
-    but before other transformations.
+    Rewritings are applied in the following order:
+    - linters ([lint_impl], [lint_intf])
+    - preprocessing ([preprocess_impl], [preprocess_intf])
+    - context-independent rules ([rules], [extensions])
+    - whole-file transformations ([impl], [intf], [enclose_impl], [enclose_intf])
 *)
 val register_transformation
   :  ?extensions       : Extension.t list (* deprecated, use ~rules instead *)

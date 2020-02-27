@@ -1,4 +1,4 @@
-(*$ #use "cinaps_helpers" $*)
+(*$ open Ppxlib_cinaps_helpers $*)
 open! Import
 
 (* TODO: make the "deriving." depend on the matching attribute name. *)

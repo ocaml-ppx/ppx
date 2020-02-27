@@ -67,3 +67,5 @@ val hd_opt : 'a t -> 'a option
 val equal : ('a -> 'a -> bool) -> 'a t -> 'a t -> bool
 
 val hash : ('a -> int) -> 'a list -> int
+
+val split_while : 'a list -> f: ('a -> bool) -> 'a list * 'a list
