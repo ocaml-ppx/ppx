@@ -49,15 +49,9 @@ let predefined_ident ~loc = function
   | "Not" -> Some (Builder.view_lib_ident ~loc "not")
   | _ -> None
 
-let is_keyword s =
-  List.mem_sorted ~compare:String.compare s Astlib.Syntax.keywords
-
 let ctor_viewer s =
   let lowercase = String.uncapitalize_ascii s in
-  if is_keyword lowercase then
-    lowercase ^ "_"
-  else
-    lowercase
+  lowercase ^ "'const"
 
 let translate_ctor_ident ~loc (ident : Longident.concrete) =
   match ident with

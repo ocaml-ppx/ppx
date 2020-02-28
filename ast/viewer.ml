@@ -35,7 +35,7 @@ module Unstable_for_testing = struct
 
   let conversion_failed name = Raise.conversion_failed ~version:"Unstable_for_testing" name
 
-  let pdir_bool view value =
+  let pdir_bool'const view value =
     let concrete =
       match Directive_argument.to_concrete value with
       | None -> conversion_failed "directive_argument"
@@ -45,7 +45,7 @@ module Unstable_for_testing = struct
     | Directive_argument.Pdir_bool arg -> view arg
     | _ -> View.error
 
-  let pdir_ident view value =
+  let pdir_ident'const view value =
     let concrete =
       match Directive_argument.to_concrete value with
       | None -> conversion_failed "directive_argument"
@@ -55,7 +55,7 @@ module Unstable_for_testing = struct
     | Directive_argument.Pdir_ident arg -> view arg
     | _ -> View.error
 
-  let pdir_int view value =
+  let pdir_int'const view value =
     let concrete =
       match Directive_argument.to_concrete value with
       | None -> conversion_failed "directive_argument"
@@ -65,7 +65,7 @@ module Unstable_for_testing = struct
     | Directive_argument.Pdir_int (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pdir_string view value =
+  let pdir_string'const view value =
     let concrete =
       match Directive_argument.to_concrete value with
       | None -> conversion_failed "directive_argument"
@@ -75,7 +75,7 @@ module Unstable_for_testing = struct
     | Directive_argument.Pdir_string arg -> view arg
     | _ -> View.error
 
-  let pdir_none value =
+  let pdir_none'const value =
     let concrete =
       match Directive_argument.to_concrete value with
       | None -> conversion_failed "directive_argument"
@@ -85,7 +85,7 @@ module Unstable_for_testing = struct
     | Directive_argument.Pdir_none -> View.ok
     | _ -> View.error
 
-  let ptop_dir view value =
+  let ptop_dir'const view value =
     let concrete =
       match Toplevel_phrase.to_concrete value with
       | None -> conversion_failed "toplevel_phrase"
@@ -95,7 +95,7 @@ module Unstable_for_testing = struct
     | Toplevel_phrase.Ptop_dir (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ptop_def view value =
+  let ptop_def'const view value =
     let concrete =
       match Toplevel_phrase.to_concrete value with
       | None -> conversion_failed "toplevel_phrase"
@@ -169,7 +169,7 @@ module Unstable_for_testing = struct
     in
     view concrete.Value_binding.pvb_pat
 
-  let pstr_extension view value =
+  let pstr_extension'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -185,7 +185,7 @@ module Unstable_for_testing = struct
     | Structure_item_desc.Pstr_extension (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pstr_attribute view value =
+  let pstr_attribute'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -201,7 +201,7 @@ module Unstable_for_testing = struct
     | Structure_item_desc.Pstr_attribute arg -> view arg
     | _ -> View.error
 
-  let pstr_include view value =
+  let pstr_include'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -217,7 +217,7 @@ module Unstable_for_testing = struct
     | Structure_item_desc.Pstr_include arg -> view arg
     | _ -> View.error
 
-  let pstr_class_type view value =
+  let pstr_class_type'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -233,7 +233,7 @@ module Unstable_for_testing = struct
     | Structure_item_desc.Pstr_class_type arg -> view arg
     | _ -> View.error
 
-  let pstr_class view value =
+  let pstr_class'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -249,7 +249,7 @@ module Unstable_for_testing = struct
     | Structure_item_desc.Pstr_class arg -> view arg
     | _ -> View.error
 
-  let pstr_open view value =
+  let pstr_open'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -265,7 +265,7 @@ module Unstable_for_testing = struct
     | Structure_item_desc.Pstr_open arg -> view arg
     | _ -> View.error
 
-  let pstr_modtype view value =
+  let pstr_modtype'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -281,7 +281,7 @@ module Unstable_for_testing = struct
     | Structure_item_desc.Pstr_modtype arg -> view arg
     | _ -> View.error
 
-  let pstr_recmodule view value =
+  let pstr_recmodule'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -297,7 +297,7 @@ module Unstable_for_testing = struct
     | Structure_item_desc.Pstr_recmodule arg -> view arg
     | _ -> View.error
 
-  let pstr_module view value =
+  let pstr_module'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -313,7 +313,7 @@ module Unstable_for_testing = struct
     | Structure_item_desc.Pstr_module arg -> view arg
     | _ -> View.error
 
-  let pstr_exception view value =
+  let pstr_exception'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -329,7 +329,7 @@ module Unstable_for_testing = struct
     | Structure_item_desc.Pstr_exception arg -> view arg
     | _ -> View.error
 
-  let pstr_typext view value =
+  let pstr_typext'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -345,7 +345,7 @@ module Unstable_for_testing = struct
     | Structure_item_desc.Pstr_typext arg -> view arg
     | _ -> View.error
 
-  let pstr_type view value =
+  let pstr_type'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -361,7 +361,7 @@ module Unstable_for_testing = struct
     | Structure_item_desc.Pstr_type (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pstr_primitive view value =
+  let pstr_primitive'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -377,7 +377,7 @@ module Unstable_for_testing = struct
     | Structure_item_desc.Pstr_primitive arg -> view arg
     | _ -> View.error
 
-  let pstr_value view value =
+  let pstr_value'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -393,7 +393,7 @@ module Unstable_for_testing = struct
     | Structure_item_desc.Pstr_value (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pstr_eval view value =
+  let pstr_eval'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -425,7 +425,7 @@ module Unstable_for_testing = struct
     in
     view concrete.Structure_item.pstr_desc
 
-  let pmod_extension view value =
+  let pmod_extension'const view value =
     let parent_concrete =
       match Module_expr.to_concrete value with
       | None -> conversion_failed "module_expr"
@@ -441,7 +441,7 @@ module Unstable_for_testing = struct
     | Module_expr_desc.Pmod_extension arg -> view arg
     | _ -> View.error
 
-  let pmod_unpack view value =
+  let pmod_unpack'const view value =
     let parent_concrete =
       match Module_expr.to_concrete value with
       | None -> conversion_failed "module_expr"
@@ -457,7 +457,7 @@ module Unstable_for_testing = struct
     | Module_expr_desc.Pmod_unpack arg -> view arg
     | _ -> View.error
 
-  let pmod_constraint view value =
+  let pmod_constraint'const view value =
     let parent_concrete =
       match Module_expr.to_concrete value with
       | None -> conversion_failed "module_expr"
@@ -473,7 +473,7 @@ module Unstable_for_testing = struct
     | Module_expr_desc.Pmod_constraint (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pmod_apply view value =
+  let pmod_apply'const view value =
     let parent_concrete =
       match Module_expr.to_concrete value with
       | None -> conversion_failed "module_expr"
@@ -489,7 +489,7 @@ module Unstable_for_testing = struct
     | Module_expr_desc.Pmod_apply (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pmod_functor view value =
+  let pmod_functor'const view value =
     let parent_concrete =
       match Module_expr.to_concrete value with
       | None -> conversion_failed "module_expr"
@@ -505,7 +505,7 @@ module Unstable_for_testing = struct
     | Module_expr_desc.Pmod_functor (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let pmod_structure view value =
+  let pmod_structure'const view value =
     let parent_concrete =
       match Module_expr.to_concrete value with
       | None -> conversion_failed "module_expr"
@@ -521,7 +521,7 @@ module Unstable_for_testing = struct
     | Module_expr_desc.Pmod_structure arg -> view arg
     | _ -> View.error
 
-  let pmod_ident view value =
+  let pmod_ident'const view value =
     let parent_concrete =
       match Module_expr.to_concrete value with
       | None -> conversion_failed "module_expr"
@@ -561,7 +561,7 @@ module Unstable_for_testing = struct
     in
     view concrete.Module_expr.pmod_desc
 
-  let pwith_modsubst view value =
+  let pwith_modsubst'const view value =
     let concrete =
       match With_constraint.to_concrete value with
       | None -> conversion_failed "with_constraint"
@@ -571,7 +571,7 @@ module Unstable_for_testing = struct
     | With_constraint.Pwith_modsubst (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pwith_typesubst view value =
+  let pwith_typesubst'const view value =
     let concrete =
       match With_constraint.to_concrete value with
       | None -> conversion_failed "with_constraint"
@@ -581,7 +581,7 @@ module Unstable_for_testing = struct
     | With_constraint.Pwith_typesubst (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pwith_module view value =
+  let pwith_module'const view value =
     let concrete =
       match With_constraint.to_concrete value with
       | None -> conversion_failed "with_constraint"
@@ -591,7 +591,7 @@ module Unstable_for_testing = struct
     | With_constraint.Pwith_module (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pwith_type view value =
+  let pwith_type'const view value =
     let concrete =
       match With_constraint.to_concrete value with
       | None -> conversion_failed "with_constraint"
@@ -721,7 +721,7 @@ module Unstable_for_testing = struct
     in
     view concrete.Module_declaration.pmd_name
 
-  let psig_extension view value =
+  let psig_extension'const view value =
     let parent_concrete =
       match Signature_item.to_concrete value with
       | None -> conversion_failed "signature_item"
@@ -737,7 +737,7 @@ module Unstable_for_testing = struct
     | Signature_item_desc.Psig_extension (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let psig_attribute view value =
+  let psig_attribute'const view value =
     let parent_concrete =
       match Signature_item.to_concrete value with
       | None -> conversion_failed "signature_item"
@@ -753,7 +753,7 @@ module Unstable_for_testing = struct
     | Signature_item_desc.Psig_attribute arg -> view arg
     | _ -> View.error
 
-  let psig_class_type view value =
+  let psig_class_type'const view value =
     let parent_concrete =
       match Signature_item.to_concrete value with
       | None -> conversion_failed "signature_item"
@@ -769,7 +769,7 @@ module Unstable_for_testing = struct
     | Signature_item_desc.Psig_class_type arg -> view arg
     | _ -> View.error
 
-  let psig_class view value =
+  let psig_class'const view value =
     let parent_concrete =
       match Signature_item.to_concrete value with
       | None -> conversion_failed "signature_item"
@@ -785,7 +785,7 @@ module Unstable_for_testing = struct
     | Signature_item_desc.Psig_class arg -> view arg
     | _ -> View.error
 
-  let psig_include view value =
+  let psig_include'const view value =
     let parent_concrete =
       match Signature_item.to_concrete value with
       | None -> conversion_failed "signature_item"
@@ -801,7 +801,7 @@ module Unstable_for_testing = struct
     | Signature_item_desc.Psig_include arg -> view arg
     | _ -> View.error
 
-  let psig_open view value =
+  let psig_open'const view value =
     let parent_concrete =
       match Signature_item.to_concrete value with
       | None -> conversion_failed "signature_item"
@@ -817,7 +817,7 @@ module Unstable_for_testing = struct
     | Signature_item_desc.Psig_open arg -> view arg
     | _ -> View.error
 
-  let psig_modtype view value =
+  let psig_modtype'const view value =
     let parent_concrete =
       match Signature_item.to_concrete value with
       | None -> conversion_failed "signature_item"
@@ -833,7 +833,7 @@ module Unstable_for_testing = struct
     | Signature_item_desc.Psig_modtype arg -> view arg
     | _ -> View.error
 
-  let psig_recmodule view value =
+  let psig_recmodule'const view value =
     let parent_concrete =
       match Signature_item.to_concrete value with
       | None -> conversion_failed "signature_item"
@@ -849,7 +849,7 @@ module Unstable_for_testing = struct
     | Signature_item_desc.Psig_recmodule arg -> view arg
     | _ -> View.error
 
-  let psig_module view value =
+  let psig_module'const view value =
     let parent_concrete =
       match Signature_item.to_concrete value with
       | None -> conversion_failed "signature_item"
@@ -865,7 +865,7 @@ module Unstable_for_testing = struct
     | Signature_item_desc.Psig_module arg -> view arg
     | _ -> View.error
 
-  let psig_exception view value =
+  let psig_exception'const view value =
     let parent_concrete =
       match Signature_item.to_concrete value with
       | None -> conversion_failed "signature_item"
@@ -881,7 +881,7 @@ module Unstable_for_testing = struct
     | Signature_item_desc.Psig_exception arg -> view arg
     | _ -> View.error
 
-  let psig_typext view value =
+  let psig_typext'const view value =
     let parent_concrete =
       match Signature_item.to_concrete value with
       | None -> conversion_failed "signature_item"
@@ -897,7 +897,7 @@ module Unstable_for_testing = struct
     | Signature_item_desc.Psig_typext arg -> view arg
     | _ -> View.error
 
-  let psig_type view value =
+  let psig_type'const view value =
     let parent_concrete =
       match Signature_item.to_concrete value with
       | None -> conversion_failed "signature_item"
@@ -913,7 +913,7 @@ module Unstable_for_testing = struct
     | Signature_item_desc.Psig_type (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let psig_value view value =
+  let psig_value'const view value =
     let parent_concrete =
       match Signature_item.to_concrete value with
       | None -> conversion_failed "signature_item"
@@ -945,7 +945,7 @@ module Unstable_for_testing = struct
     in
     view concrete.Signature_item.psig_desc
 
-  let pmty_alias view value =
+  let pmty_alias'const view value =
     let parent_concrete =
       match Module_type.to_concrete value with
       | None -> conversion_failed "module_type"
@@ -961,7 +961,7 @@ module Unstable_for_testing = struct
     | Module_type_desc.Pmty_alias arg -> view arg
     | _ -> View.error
 
-  let pmty_extension view value =
+  let pmty_extension'const view value =
     let parent_concrete =
       match Module_type.to_concrete value with
       | None -> conversion_failed "module_type"
@@ -977,7 +977,7 @@ module Unstable_for_testing = struct
     | Module_type_desc.Pmty_extension arg -> view arg
     | _ -> View.error
 
-  let pmty_typeof view value =
+  let pmty_typeof'const view value =
     let parent_concrete =
       match Module_type.to_concrete value with
       | None -> conversion_failed "module_type"
@@ -993,7 +993,7 @@ module Unstable_for_testing = struct
     | Module_type_desc.Pmty_typeof arg -> view arg
     | _ -> View.error
 
-  let pmty_with view value =
+  let pmty_with'const view value =
     let parent_concrete =
       match Module_type.to_concrete value with
       | None -> conversion_failed "module_type"
@@ -1009,7 +1009,7 @@ module Unstable_for_testing = struct
     | Module_type_desc.Pmty_with (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pmty_functor view value =
+  let pmty_functor'const view value =
     let parent_concrete =
       match Module_type.to_concrete value with
       | None -> conversion_failed "module_type"
@@ -1025,7 +1025,7 @@ module Unstable_for_testing = struct
     | Module_type_desc.Pmty_functor (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let pmty_signature view value =
+  let pmty_signature'const view value =
     let parent_concrete =
       match Module_type.to_concrete value with
       | None -> conversion_failed "module_type"
@@ -1041,7 +1041,7 @@ module Unstable_for_testing = struct
     | Module_type_desc.Pmty_signature arg -> view arg
     | _ -> View.error
 
-  let pmty_ident view value =
+  let pmty_ident'const view value =
     let parent_concrete =
       match Module_type.to_concrete value with
       | None -> conversion_failed "module_type"
@@ -1081,7 +1081,7 @@ module Unstable_for_testing = struct
     in
     view concrete.Module_type.pmty_desc
 
-  let cfk_concrete view value =
+  let cfk_concrete'const view value =
     let concrete =
       match Class_field_kind.to_concrete value with
       | None -> conversion_failed "class_field_kind"
@@ -1091,7 +1091,7 @@ module Unstable_for_testing = struct
     | Class_field_kind.Cfk_concrete (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let cfk_virtual view value =
+  let cfk_virtual'const view value =
     let concrete =
       match Class_field_kind.to_concrete value with
       | None -> conversion_failed "class_field_kind"
@@ -1101,7 +1101,7 @@ module Unstable_for_testing = struct
     | Class_field_kind.Cfk_virtual arg -> view arg
     | _ -> View.error
 
-  let pcf_extension view value =
+  let pcf_extension'const view value =
     let parent_concrete =
       match Class_field.to_concrete value with
       | None -> conversion_failed "class_field"
@@ -1117,7 +1117,7 @@ module Unstable_for_testing = struct
     | Class_field_desc.Pcf_extension arg -> view arg
     | _ -> View.error
 
-  let pcf_attribute view value =
+  let pcf_attribute'const view value =
     let parent_concrete =
       match Class_field.to_concrete value with
       | None -> conversion_failed "class_field"
@@ -1133,7 +1133,7 @@ module Unstable_for_testing = struct
     | Class_field_desc.Pcf_attribute arg -> view arg
     | _ -> View.error
 
-  let pcf_initializer view value =
+  let pcf_initializer'const view value =
     let parent_concrete =
       match Class_field.to_concrete value with
       | None -> conversion_failed "class_field"
@@ -1149,7 +1149,7 @@ module Unstable_for_testing = struct
     | Class_field_desc.Pcf_initializer arg -> view arg
     | _ -> View.error
 
-  let pcf_constraint view value =
+  let pcf_constraint'const view value =
     let parent_concrete =
       match Class_field.to_concrete value with
       | None -> conversion_failed "class_field"
@@ -1165,7 +1165,7 @@ module Unstable_for_testing = struct
     | Class_field_desc.Pcf_constraint arg -> view arg
     | _ -> View.error
 
-  let pcf_method view value =
+  let pcf_method'const view value =
     let parent_concrete =
       match Class_field.to_concrete value with
       | None -> conversion_failed "class_field"
@@ -1181,7 +1181,7 @@ module Unstable_for_testing = struct
     | Class_field_desc.Pcf_method arg -> view arg
     | _ -> View.error
 
-  let pcf_val view value =
+  let pcf_val'const view value =
     let parent_concrete =
       match Class_field.to_concrete value with
       | None -> conversion_failed "class_field"
@@ -1197,7 +1197,7 @@ module Unstable_for_testing = struct
     | Class_field_desc.Pcf_val arg -> view arg
     | _ -> View.error
 
-  let pcf_inherit view value =
+  let pcf_inherit'const view value =
     let parent_concrete =
       match Class_field.to_concrete value with
       | None -> conversion_failed "class_field"
@@ -1253,7 +1253,7 @@ module Unstable_for_testing = struct
     in
     view concrete.Class_structure.pcstr_self
 
-  let pcl_open view value =
+  let pcl_open'const view value =
     let parent_concrete =
       match Class_expr.to_concrete value with
       | None -> conversion_failed "class_expr"
@@ -1269,7 +1269,7 @@ module Unstable_for_testing = struct
     | Class_expr_desc.Pcl_open (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let pcl_extension view value =
+  let pcl_extension'const view value =
     let parent_concrete =
       match Class_expr.to_concrete value with
       | None -> conversion_failed "class_expr"
@@ -1285,7 +1285,7 @@ module Unstable_for_testing = struct
     | Class_expr_desc.Pcl_extension arg -> view arg
     | _ -> View.error
 
-  let pcl_constraint view value =
+  let pcl_constraint'const view value =
     let parent_concrete =
       match Class_expr.to_concrete value with
       | None -> conversion_failed "class_expr"
@@ -1301,7 +1301,7 @@ module Unstable_for_testing = struct
     | Class_expr_desc.Pcl_constraint (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pcl_let view value =
+  let pcl_let'const view value =
     let parent_concrete =
       match Class_expr.to_concrete value with
       | None -> conversion_failed "class_expr"
@@ -1317,7 +1317,7 @@ module Unstable_for_testing = struct
     | Class_expr_desc.Pcl_let (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let pcl_apply view value =
+  let pcl_apply'const view value =
     let parent_concrete =
       match Class_expr.to_concrete value with
       | None -> conversion_failed "class_expr"
@@ -1333,7 +1333,7 @@ module Unstable_for_testing = struct
     | Class_expr_desc.Pcl_apply (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pcl_fun view value =
+  let pcl_fun'const view value =
     let parent_concrete =
       match Class_expr.to_concrete value with
       | None -> conversion_failed "class_expr"
@@ -1349,7 +1349,7 @@ module Unstable_for_testing = struct
     | Class_expr_desc.Pcl_fun (arg0, arg1, arg2, arg3) -> view (arg0, arg1, arg2, arg3)
     | _ -> View.error
 
-  let pcl_structure view value =
+  let pcl_structure'const view value =
     let parent_concrete =
       match Class_expr.to_concrete value with
       | None -> conversion_failed "class_expr"
@@ -1365,7 +1365,7 @@ module Unstable_for_testing = struct
     | Class_expr_desc.Pcl_structure arg -> view arg
     | _ -> View.error
 
-  let pcl_constr view value =
+  let pcl_constr'const view value =
     let parent_concrete =
       match Class_expr.to_concrete value with
       | None -> conversion_failed "class_expr"
@@ -1453,7 +1453,7 @@ module Unstable_for_testing = struct
     in
     view concrete.Class_infos.pci_virt
 
-  let pctf_extension view value =
+  let pctf_extension'const view value =
     let parent_concrete =
       match Class_type_field.to_concrete value with
       | None -> conversion_failed "class_type_field"
@@ -1469,7 +1469,7 @@ module Unstable_for_testing = struct
     | Class_type_field_desc.Pctf_extension arg -> view arg
     | _ -> View.error
 
-  let pctf_attribute view value =
+  let pctf_attribute'const view value =
     let parent_concrete =
       match Class_type_field.to_concrete value with
       | None -> conversion_failed "class_type_field"
@@ -1485,7 +1485,7 @@ module Unstable_for_testing = struct
     | Class_type_field_desc.Pctf_attribute arg -> view arg
     | _ -> View.error
 
-  let pctf_constraint view value =
+  let pctf_constraint'const view value =
     let parent_concrete =
       match Class_type_field.to_concrete value with
       | None -> conversion_failed "class_type_field"
@@ -1501,7 +1501,7 @@ module Unstable_for_testing = struct
     | Class_type_field_desc.Pctf_constraint arg -> view arg
     | _ -> View.error
 
-  let pctf_method view value =
+  let pctf_method'const view value =
     let parent_concrete =
       match Class_type_field.to_concrete value with
       | None -> conversion_failed "class_type_field"
@@ -1517,7 +1517,7 @@ module Unstable_for_testing = struct
     | Class_type_field_desc.Pctf_method arg -> view arg
     | _ -> View.error
 
-  let pctf_val view value =
+  let pctf_val'const view value =
     let parent_concrete =
       match Class_type_field.to_concrete value with
       | None -> conversion_failed "class_type_field"
@@ -1533,7 +1533,7 @@ module Unstable_for_testing = struct
     | Class_type_field_desc.Pctf_val arg -> view arg
     | _ -> View.error
 
-  let pctf_inherit view value =
+  let pctf_inherit'const view value =
     let parent_concrete =
       match Class_type_field.to_concrete value with
       | None -> conversion_failed "class_type_field"
@@ -1589,7 +1589,7 @@ module Unstable_for_testing = struct
     in
     view concrete.Class_signature.pcsig_self
 
-  let pcty_open view value =
+  let pcty_open'const view value =
     let parent_concrete =
       match Class_type.to_concrete value with
       | None -> conversion_failed "class_type"
@@ -1605,7 +1605,7 @@ module Unstable_for_testing = struct
     | Class_type_desc.Pcty_open (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let pcty_extension view value =
+  let pcty_extension'const view value =
     let parent_concrete =
       match Class_type.to_concrete value with
       | None -> conversion_failed "class_type"
@@ -1621,7 +1621,7 @@ module Unstable_for_testing = struct
     | Class_type_desc.Pcty_extension arg -> view arg
     | _ -> View.error
 
-  let pcty_arrow view value =
+  let pcty_arrow'const view value =
     let parent_concrete =
       match Class_type.to_concrete value with
       | None -> conversion_failed "class_type"
@@ -1637,7 +1637,7 @@ module Unstable_for_testing = struct
     | Class_type_desc.Pcty_arrow (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let pcty_signature view value =
+  let pcty_signature'const view value =
     let parent_concrete =
       match Class_type.to_concrete value with
       | None -> conversion_failed "class_type"
@@ -1653,7 +1653,7 @@ module Unstable_for_testing = struct
     | Class_type_desc.Pcty_signature arg -> view arg
     | _ -> View.error
 
-  let pcty_constr view value =
+  let pcty_constr'const view value =
     let parent_concrete =
       match Class_type.to_concrete value with
       | None -> conversion_failed "class_type"
@@ -1693,7 +1693,7 @@ module Unstable_for_testing = struct
     in
     view concrete.Class_type.pcty_desc
 
-  let pext_rebind view value =
+  let pext_rebind'const view value =
     let concrete =
       match Extension_constructor_kind.to_concrete value with
       | None -> conversion_failed "extension_constructor_kind"
@@ -1703,7 +1703,7 @@ module Unstable_for_testing = struct
     | Extension_constructor_kind.Pext_rebind arg -> view arg
     | _ -> View.error
 
-  let pext_decl view value =
+  let pext_decl'const view value =
     let concrete =
       match Extension_constructor_kind.to_concrete value with
       | None -> conversion_failed "extension_constructor_kind"
@@ -1785,7 +1785,7 @@ module Unstable_for_testing = struct
     in
     view concrete.Type_extension.ptyext_path
 
-  let pcstr_record view value =
+  let pcstr_record'const view value =
     let concrete =
       match Constructor_arguments.to_concrete value with
       | None -> conversion_failed "constructor_arguments"
@@ -1795,7 +1795,7 @@ module Unstable_for_testing = struct
     | Constructor_arguments.Pcstr_record arg -> view arg
     | _ -> View.error
 
-  let pcstr_tuple view value =
+  let pcstr_tuple'const view value =
     let concrete =
       match Constructor_arguments.to_concrete value with
       | None -> conversion_failed "constructor_arguments"
@@ -1885,7 +1885,7 @@ module Unstable_for_testing = struct
     in
     view concrete.Label_declaration.pld_name
 
-  let ptype_open value =
+  let ptype_open'const value =
     let concrete =
       match Type_kind.to_concrete value with
       | None -> conversion_failed "type_kind"
@@ -1895,7 +1895,7 @@ module Unstable_for_testing = struct
     | Type_kind.Ptype_open -> View.ok
     | _ -> View.error
 
-  let ptype_record view value =
+  let ptype_record'const view value =
     let concrete =
       match Type_kind.to_concrete value with
       | None -> conversion_failed "type_kind"
@@ -1905,7 +1905,7 @@ module Unstable_for_testing = struct
     | Type_kind.Ptype_record arg -> view arg
     | _ -> View.error
 
-  let ptype_variant view value =
+  let ptype_variant'const view value =
     let concrete =
       match Type_kind.to_concrete value with
       | None -> conversion_failed "type_kind"
@@ -1915,7 +1915,7 @@ module Unstable_for_testing = struct
     | Type_kind.Ptype_variant arg -> view arg
     | _ -> View.error
 
-  let ptype_abstract value =
+  let ptype_abstract'const value =
     let concrete =
       match Type_kind.to_concrete value with
       | None -> conversion_failed "type_kind"
@@ -2053,7 +2053,7 @@ module Unstable_for_testing = struct
     in
     view concrete.Case.pc_lhs
 
-  let pexp_unreachable value =
+  let pexp_unreachable'const value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2069,7 +2069,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_unreachable -> View.ok
     | _ -> View.error
 
-  let pexp_extension view value =
+  let pexp_extension'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2085,7 +2085,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_extension arg -> view arg
     | _ -> View.error
 
-  let pexp_open view value =
+  let pexp_open'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2101,7 +2101,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_open (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let pexp_pack view value =
+  let pexp_pack'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2117,7 +2117,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_pack arg -> view arg
     | _ -> View.error
 
-  let pexp_newtype view value =
+  let pexp_newtype'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2133,7 +2133,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_newtype (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_object view value =
+  let pexp_object'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2149,7 +2149,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_object arg -> view arg
     | _ -> View.error
 
-  let pexp_poly view value =
+  let pexp_poly'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2165,7 +2165,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_poly (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_lazy view value =
+  let pexp_lazy'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2181,7 +2181,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_lazy arg -> view arg
     | _ -> View.error
 
-  let pexp_assert view value =
+  let pexp_assert'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2197,7 +2197,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_assert arg -> view arg
     | _ -> View.error
 
-  let pexp_letexception view value =
+  let pexp_letexception'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2213,7 +2213,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_letexception (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_letmodule view value =
+  let pexp_letmodule'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2229,7 +2229,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_letmodule (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let pexp_override view value =
+  let pexp_override'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2245,7 +2245,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_override arg -> view arg
     | _ -> View.error
 
-  let pexp_setinstvar view value =
+  let pexp_setinstvar'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2261,7 +2261,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_setinstvar (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_new view value =
+  let pexp_new'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2277,7 +2277,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_new arg -> view arg
     | _ -> View.error
 
-  let pexp_send view value =
+  let pexp_send'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2293,7 +2293,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_send (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_coerce view value =
+  let pexp_coerce'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2309,7 +2309,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_coerce (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let pexp_constraint view value =
+  let pexp_constraint'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2325,7 +2325,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_constraint (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_for view value =
+  let pexp_for'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2341,7 +2341,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_for (arg0, arg1, arg2, arg3, arg4) -> view (arg0, arg1, arg2, arg3, arg4)
     | _ -> View.error
 
-  let pexp_while view value =
+  let pexp_while'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2357,7 +2357,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_while (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_sequence view value =
+  let pexp_sequence'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2373,7 +2373,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_sequence (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_ifthenelse view value =
+  let pexp_ifthenelse'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2389,7 +2389,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_ifthenelse (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let pexp_array view value =
+  let pexp_array'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2405,7 +2405,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_array arg -> view arg
     | _ -> View.error
 
-  let pexp_setfield view value =
+  let pexp_setfield'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2421,7 +2421,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_setfield (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let pexp_field view value =
+  let pexp_field'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2437,7 +2437,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_field (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_record view value =
+  let pexp_record'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2453,7 +2453,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_record (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_variant view value =
+  let pexp_variant'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2469,7 +2469,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_variant (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_construct view value =
+  let pexp_construct'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2485,7 +2485,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_construct (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_tuple view value =
+  let pexp_tuple'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2501,7 +2501,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_tuple arg -> view arg
     | _ -> View.error
 
-  let pexp_try view value =
+  let pexp_try'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2517,7 +2517,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_try (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_match view value =
+  let pexp_match'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2533,7 +2533,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_match (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_apply view value =
+  let pexp_apply'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2549,7 +2549,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_apply (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_fun view value =
+  let pexp_fun'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2565,7 +2565,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_fun (arg0, arg1, arg2, arg3) -> view (arg0, arg1, arg2, arg3)
     | _ -> View.error
 
-  let pexp_function view value =
+  let pexp_function'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2581,7 +2581,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_function arg -> view arg
     | _ -> View.error
 
-  let pexp_let view value =
+  let pexp_let'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2597,7 +2597,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_let (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let pexp_constant view value =
+  let pexp_constant'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2613,7 +2613,7 @@ module Unstable_for_testing = struct
     | Expression_desc.Pexp_constant arg -> view arg
     | _ -> View.error
 
-  let pexp_ident view value =
+  let pexp_ident'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -2653,7 +2653,7 @@ module Unstable_for_testing = struct
     in
     view concrete.Expression.pexp_desc
 
-  let ppat_open view value =
+  let ppat_open'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -2669,7 +2669,7 @@ module Unstable_for_testing = struct
     | Pattern_desc.Ppat_open (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ppat_extension view value =
+  let ppat_extension'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -2685,7 +2685,7 @@ module Unstable_for_testing = struct
     | Pattern_desc.Ppat_extension arg -> view arg
     | _ -> View.error
 
-  let ppat_exception view value =
+  let ppat_exception'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -2701,7 +2701,7 @@ module Unstable_for_testing = struct
     | Pattern_desc.Ppat_exception arg -> view arg
     | _ -> View.error
 
-  let ppat_unpack view value =
+  let ppat_unpack'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -2717,7 +2717,7 @@ module Unstable_for_testing = struct
     | Pattern_desc.Ppat_unpack arg -> view arg
     | _ -> View.error
 
-  let ppat_lazy view value =
+  let ppat_lazy'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -2733,7 +2733,7 @@ module Unstable_for_testing = struct
     | Pattern_desc.Ppat_lazy arg -> view arg
     | _ -> View.error
 
-  let ppat_type view value =
+  let ppat_type'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -2749,7 +2749,7 @@ module Unstable_for_testing = struct
     | Pattern_desc.Ppat_type arg -> view arg
     | _ -> View.error
 
-  let ppat_constraint view value =
+  let ppat_constraint'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -2765,7 +2765,7 @@ module Unstable_for_testing = struct
     | Pattern_desc.Ppat_constraint (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ppat_or view value =
+  let ppat_or'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -2781,7 +2781,7 @@ module Unstable_for_testing = struct
     | Pattern_desc.Ppat_or (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ppat_array view value =
+  let ppat_array'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -2797,7 +2797,7 @@ module Unstable_for_testing = struct
     | Pattern_desc.Ppat_array arg -> view arg
     | _ -> View.error
 
-  let ppat_record view value =
+  let ppat_record'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -2813,7 +2813,7 @@ module Unstable_for_testing = struct
     | Pattern_desc.Ppat_record (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ppat_variant view value =
+  let ppat_variant'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -2829,7 +2829,7 @@ module Unstable_for_testing = struct
     | Pattern_desc.Ppat_variant (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ppat_construct view value =
+  let ppat_construct'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -2845,7 +2845,7 @@ module Unstable_for_testing = struct
     | Pattern_desc.Ppat_construct (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ppat_tuple view value =
+  let ppat_tuple'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -2861,7 +2861,7 @@ module Unstable_for_testing = struct
     | Pattern_desc.Ppat_tuple arg -> view arg
     | _ -> View.error
 
-  let ppat_interval view value =
+  let ppat_interval'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -2877,7 +2877,7 @@ module Unstable_for_testing = struct
     | Pattern_desc.Ppat_interval (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ppat_constant view value =
+  let ppat_constant'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -2893,7 +2893,7 @@ module Unstable_for_testing = struct
     | Pattern_desc.Ppat_constant arg -> view arg
     | _ -> View.error
 
-  let ppat_alias view value =
+  let ppat_alias'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -2909,7 +2909,7 @@ module Unstable_for_testing = struct
     | Pattern_desc.Ppat_alias (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ppat_var view value =
+  let ppat_var'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -2925,7 +2925,7 @@ module Unstable_for_testing = struct
     | Pattern_desc.Ppat_var arg -> view arg
     | _ -> View.error
 
-  let ppat_any value =
+  let ppat_any'const value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -2965,7 +2965,7 @@ module Unstable_for_testing = struct
     in
     view concrete.Pattern.ppat_desc
 
-  let oinherit view value =
+  let oinherit'const view value =
     let concrete =
       match Object_field.to_concrete value with
       | None -> conversion_failed "object_field"
@@ -2975,7 +2975,7 @@ module Unstable_for_testing = struct
     | Object_field.Oinherit arg -> view arg
     | _ -> View.error
 
-  let otag view value =
+  let otag'const view value =
     let concrete =
       match Object_field.to_concrete value with
       | None -> conversion_failed "object_field"
@@ -2985,7 +2985,7 @@ module Unstable_for_testing = struct
     | Object_field.Otag (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let rinherit view value =
+  let rinherit'const view value =
     let concrete =
       match Row_field.to_concrete value with
       | None -> conversion_failed "row_field"
@@ -2995,7 +2995,7 @@ module Unstable_for_testing = struct
     | Row_field.Rinherit arg -> view arg
     | _ -> View.error
 
-  let rtag view value =
+  let rtag'const view value =
     let concrete =
       match Row_field.to_concrete value with
       | None -> conversion_failed "row_field"
@@ -3005,7 +3005,7 @@ module Unstable_for_testing = struct
     | Row_field.Rtag (arg0, arg1, arg2, arg3) -> view (arg0, arg1, arg2, arg3)
     | _ -> View.error
 
-  let ptyp_extension view value =
+  let ptyp_extension'const view value =
     let parent_concrete =
       match Core_type.to_concrete value with
       | None -> conversion_failed "core_type"
@@ -3021,7 +3021,7 @@ module Unstable_for_testing = struct
     | Core_type_desc.Ptyp_extension arg -> view arg
     | _ -> View.error
 
-  let ptyp_package view value =
+  let ptyp_package'const view value =
     let parent_concrete =
       match Core_type.to_concrete value with
       | None -> conversion_failed "core_type"
@@ -3037,7 +3037,7 @@ module Unstable_for_testing = struct
     | Core_type_desc.Ptyp_package arg -> view arg
     | _ -> View.error
 
-  let ptyp_poly view value =
+  let ptyp_poly'const view value =
     let parent_concrete =
       match Core_type.to_concrete value with
       | None -> conversion_failed "core_type"
@@ -3053,7 +3053,7 @@ module Unstable_for_testing = struct
     | Core_type_desc.Ptyp_poly (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ptyp_variant view value =
+  let ptyp_variant'const view value =
     let parent_concrete =
       match Core_type.to_concrete value with
       | None -> conversion_failed "core_type"
@@ -3069,7 +3069,7 @@ module Unstable_for_testing = struct
     | Core_type_desc.Ptyp_variant (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let ptyp_alias view value =
+  let ptyp_alias'const view value =
     let parent_concrete =
       match Core_type.to_concrete value with
       | None -> conversion_failed "core_type"
@@ -3085,7 +3085,7 @@ module Unstable_for_testing = struct
     | Core_type_desc.Ptyp_alias (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ptyp_class view value =
+  let ptyp_class'const view value =
     let parent_concrete =
       match Core_type.to_concrete value with
       | None -> conversion_failed "core_type"
@@ -3101,7 +3101,7 @@ module Unstable_for_testing = struct
     | Core_type_desc.Ptyp_class (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ptyp_object view value =
+  let ptyp_object'const view value =
     let parent_concrete =
       match Core_type.to_concrete value with
       | None -> conversion_failed "core_type"
@@ -3117,7 +3117,7 @@ module Unstable_for_testing = struct
     | Core_type_desc.Ptyp_object (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ptyp_constr view value =
+  let ptyp_constr'const view value =
     let parent_concrete =
       match Core_type.to_concrete value with
       | None -> conversion_failed "core_type"
@@ -3133,7 +3133,7 @@ module Unstable_for_testing = struct
     | Core_type_desc.Ptyp_constr (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ptyp_tuple view value =
+  let ptyp_tuple'const view value =
     let parent_concrete =
       match Core_type.to_concrete value with
       | None -> conversion_failed "core_type"
@@ -3149,7 +3149,7 @@ module Unstable_for_testing = struct
     | Core_type_desc.Ptyp_tuple arg -> view arg
     | _ -> View.error
 
-  let ptyp_arrow view value =
+  let ptyp_arrow'const view value =
     let parent_concrete =
       match Core_type.to_concrete value with
       | None -> conversion_failed "core_type"
@@ -3165,7 +3165,7 @@ module Unstable_for_testing = struct
     | Core_type_desc.Ptyp_arrow (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let ptyp_var view value =
+  let ptyp_var'const view value =
     let parent_concrete =
       match Core_type.to_concrete value with
       | None -> conversion_failed "core_type"
@@ -3181,7 +3181,7 @@ module Unstable_for_testing = struct
     | Core_type_desc.Ptyp_var arg -> view arg
     | _ -> View.error
 
-  let ptyp_any value =
+  let ptyp_any'const value =
     let parent_concrete =
       match Core_type.to_concrete value with
       | None -> conversion_failed "core_type"
@@ -3221,7 +3221,7 @@ module Unstable_for_testing = struct
     in
     view concrete.Core_type.ptyp_desc
 
-  let ppat view value =
+  let ppat'const view value =
     let concrete =
       match Payload.to_concrete value with
       | None -> conversion_failed "payload"
@@ -3231,7 +3231,7 @@ module Unstable_for_testing = struct
     | Payload.PPat (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ptyp view value =
+  let ptyp'const view value =
     let concrete =
       match Payload.to_concrete value with
       | None -> conversion_failed "payload"
@@ -3241,7 +3241,7 @@ module Unstable_for_testing = struct
     | Payload.PTyp arg -> view arg
     | _ -> View.error
 
-  let psig view value =
+  let psig'const view value =
     let concrete =
       match Payload.to_concrete value with
       | None -> conversion_failed "payload"
@@ -3251,7 +3251,7 @@ module Unstable_for_testing = struct
     | Payload.PSig arg -> view arg
     | _ -> View.error
 
-  let pstr view value =
+  let pstr'const view value =
     let concrete =
       match Payload.to_concrete value with
       | None -> conversion_failed "payload"
@@ -3261,7 +3261,7 @@ module Unstable_for_testing = struct
     | Payload.PStr arg -> view arg
     | _ -> View.error
 
-  let pconst_float view value =
+  let pconst_float'const view value =
     let concrete =
       match Constant.to_concrete value with
       | None -> conversion_failed "constant"
@@ -3271,7 +3271,7 @@ module Unstable_for_testing = struct
     | Constant.Pconst_float (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pconst_string view value =
+  let pconst_string'const view value =
     let concrete =
       match Constant.to_concrete value with
       | None -> conversion_failed "constant"
@@ -3281,7 +3281,7 @@ module Unstable_for_testing = struct
     | Constant.Pconst_string (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pconst_char view value =
+  let pconst_char'const view value =
     let concrete =
       match Constant.to_concrete value with
       | None -> conversion_failed "constant"
@@ -3291,7 +3291,7 @@ module Unstable_for_testing = struct
     | Constant.Pconst_char arg -> view arg
     | _ -> View.error
 
-  let pconst_integer view value =
+  let pconst_integer'const view value =
     let concrete =
       match Constant.to_concrete value with
       | None -> conversion_failed "constant"
@@ -3301,7 +3301,7 @@ module Unstable_for_testing = struct
     | Constant.Pconst_integer (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let invariant value =
+  let invariant'const value =
     let concrete =
       match Variance.to_concrete value with
       | None -> conversion_failed "variance"
@@ -3311,7 +3311,7 @@ module Unstable_for_testing = struct
     | Variance.Invariant -> View.ok
     | _ -> View.error
 
-  let contravariant value =
+  let contravariant'const value =
     let concrete =
       match Variance.to_concrete value with
       | None -> conversion_failed "variance"
@@ -3321,7 +3321,7 @@ module Unstable_for_testing = struct
     | Variance.Contravariant -> View.ok
     | _ -> View.error
 
-  let covariant value =
+  let covariant'const value =
     let concrete =
       match Variance.to_concrete value with
       | None -> conversion_failed "variance"
@@ -3331,7 +3331,7 @@ module Unstable_for_testing = struct
     | Variance.Covariant -> View.ok
     | _ -> View.error
 
-  let optional view value =
+  let optional'const view value =
     let concrete =
       match Arg_label.to_concrete value with
       | None -> conversion_failed "arg_label"
@@ -3341,7 +3341,7 @@ module Unstable_for_testing = struct
     | Arg_label.Optional arg -> view arg
     | _ -> View.error
 
-  let labelled view value =
+  let labelled'const view value =
     let concrete =
       match Arg_label.to_concrete value with
       | None -> conversion_failed "arg_label"
@@ -3351,7 +3351,7 @@ module Unstable_for_testing = struct
     | Arg_label.Labelled arg -> view arg
     | _ -> View.error
 
-  let nolabel value =
+  let nolabel'const value =
     let concrete =
       match Arg_label.to_concrete value with
       | None -> conversion_failed "arg_label"
@@ -3361,7 +3361,7 @@ module Unstable_for_testing = struct
     | Arg_label.Nolabel -> View.ok
     | _ -> View.error
 
-  let open_ value =
+  let open'const value =
     let concrete =
       match Closed_flag.to_concrete value with
       | None -> conversion_failed "closed_flag"
@@ -3371,7 +3371,7 @@ module Unstable_for_testing = struct
     | Closed_flag.Open -> View.ok
     | _ -> View.error
 
-  let closed value =
+  let closed'const value =
     let concrete =
       match Closed_flag.to_concrete value with
       | None -> conversion_failed "closed_flag"
@@ -3381,7 +3381,7 @@ module Unstable_for_testing = struct
     | Closed_flag.Closed -> View.ok
     | _ -> View.error
 
-  let fresh value =
+  let fresh'const value =
     let concrete =
       match Override_flag.to_concrete value with
       | None -> conversion_failed "override_flag"
@@ -3391,7 +3391,7 @@ module Unstable_for_testing = struct
     | Override_flag.Fresh -> View.ok
     | _ -> View.error
 
-  let override value =
+  let override'const value =
     let concrete =
       match Override_flag.to_concrete value with
       | None -> conversion_failed "override_flag"
@@ -3401,7 +3401,7 @@ module Unstable_for_testing = struct
     | Override_flag.Override -> View.ok
     | _ -> View.error
 
-  let concrete value =
+  let concrete'const value =
     let concrete =
       match Virtual_flag.to_concrete value with
       | None -> conversion_failed "virtual_flag"
@@ -3411,7 +3411,7 @@ module Unstable_for_testing = struct
     | Virtual_flag.Concrete -> View.ok
     | _ -> View.error
 
-  let virtual_ value =
+  let virtual'const value =
     let concrete =
       match Virtual_flag.to_concrete value with
       | None -> conversion_failed "virtual_flag"
@@ -3421,7 +3421,7 @@ module Unstable_for_testing = struct
     | Virtual_flag.Virtual -> View.ok
     | _ -> View.error
 
-  let mutable_ value =
+  let mutable'const value =
     let concrete =
       match Mutable_flag.to_concrete value with
       | None -> conversion_failed "mutable_flag"
@@ -3431,7 +3431,7 @@ module Unstable_for_testing = struct
     | Mutable_flag.Mutable -> View.ok
     | _ -> View.error
 
-  let immutable value =
+  let immutable'const value =
     let concrete =
       match Mutable_flag.to_concrete value with
       | None -> conversion_failed "mutable_flag"
@@ -3441,7 +3441,7 @@ module Unstable_for_testing = struct
     | Mutable_flag.Immutable -> View.ok
     | _ -> View.error
 
-  let public value =
+  let public'const value =
     let concrete =
       match Private_flag.to_concrete value with
       | None -> conversion_failed "private_flag"
@@ -3451,7 +3451,7 @@ module Unstable_for_testing = struct
     | Private_flag.Public -> View.ok
     | _ -> View.error
 
-  let private_ value =
+  let private'const value =
     let concrete =
       match Private_flag.to_concrete value with
       | None -> conversion_failed "private_flag"
@@ -3461,7 +3461,7 @@ module Unstable_for_testing = struct
     | Private_flag.Private -> View.ok
     | _ -> View.error
 
-  let downto_ value =
+  let downto'const value =
     let concrete =
       match Direction_flag.to_concrete value with
       | None -> conversion_failed "direction_flag"
@@ -3471,7 +3471,7 @@ module Unstable_for_testing = struct
     | Direction_flag.Downto -> View.ok
     | _ -> View.error
 
-  let upto value =
+  let upto'const value =
     let concrete =
       match Direction_flag.to_concrete value with
       | None -> conversion_failed "direction_flag"
@@ -3481,7 +3481,7 @@ module Unstable_for_testing = struct
     | Direction_flag.Upto -> View.ok
     | _ -> View.error
 
-  let recursive value =
+  let recursive'const value =
     let concrete =
       match Rec_flag.to_concrete value with
       | None -> conversion_failed "rec_flag"
@@ -3491,7 +3491,7 @@ module Unstable_for_testing = struct
     | Rec_flag.Recursive -> View.ok
     | _ -> View.error
 
-  let nonrecursive value =
+  let nonrecursive'const value =
     let concrete =
       match Rec_flag.to_concrete value with
       | None -> conversion_failed "rec_flag"
@@ -3501,7 +3501,7 @@ module Unstable_for_testing = struct
     | Rec_flag.Nonrecursive -> View.ok
     | _ -> View.error
 
-  let lapply view value =
+  let lapply'const view value =
     let concrete =
       match Longident.to_concrete value with
       | None -> conversion_failed "longident"
@@ -3511,7 +3511,7 @@ module Unstable_for_testing = struct
     | Longident.Lapply (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ldot view value =
+  let ldot'const view value =
     let concrete =
       match Longident.to_concrete value with
       | None -> conversion_failed "longident"
@@ -3521,7 +3521,7 @@ module Unstable_for_testing = struct
     | Longident.Ldot (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let lident view value =
+  let lident'const view value =
     let concrete =
       match Longident.to_concrete value with
       | None -> conversion_failed "longident"
@@ -3538,7 +3538,7 @@ module V4_07 = struct
 
   let conversion_failed name = Raise.conversion_failed ~version:"V4_07" name
 
-  let lident view value =
+  let lident'const view value =
     let concrete =
       match Longident.to_concrete value with
       | None -> conversion_failed "longident"
@@ -3548,7 +3548,7 @@ module V4_07 = struct
     | Longident.Lident arg -> view arg
     | _ -> View.error
 
-  let ldot view value =
+  let ldot'const view value =
     let concrete =
       match Longident.to_concrete value with
       | None -> conversion_failed "longident"
@@ -3558,7 +3558,7 @@ module V4_07 = struct
     | Longident.Ldot (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let lapply view value =
+  let lapply'const view value =
     let concrete =
       match Longident.to_concrete value with
       | None -> conversion_failed "longident"
@@ -3568,7 +3568,7 @@ module V4_07 = struct
     | Longident.Lapply (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let nonrecursive value =
+  let nonrecursive'const value =
     let concrete =
       match Rec_flag.to_concrete value with
       | None -> conversion_failed "rec_flag"
@@ -3578,7 +3578,7 @@ module V4_07 = struct
     | Rec_flag.Nonrecursive -> View.ok
     | _ -> View.error
 
-  let recursive value =
+  let recursive'const value =
     let concrete =
       match Rec_flag.to_concrete value with
       | None -> conversion_failed "rec_flag"
@@ -3588,7 +3588,7 @@ module V4_07 = struct
     | Rec_flag.Recursive -> View.ok
     | _ -> View.error
 
-  let upto value =
+  let upto'const value =
     let concrete =
       match Direction_flag.to_concrete value with
       | None -> conversion_failed "direction_flag"
@@ -3598,7 +3598,7 @@ module V4_07 = struct
     | Direction_flag.Upto -> View.ok
     | _ -> View.error
 
-  let downto_ value =
+  let downto'const value =
     let concrete =
       match Direction_flag.to_concrete value with
       | None -> conversion_failed "direction_flag"
@@ -3608,7 +3608,7 @@ module V4_07 = struct
     | Direction_flag.Downto -> View.ok
     | _ -> View.error
 
-  let private_ value =
+  let private'const value =
     let concrete =
       match Private_flag.to_concrete value with
       | None -> conversion_failed "private_flag"
@@ -3618,7 +3618,7 @@ module V4_07 = struct
     | Private_flag.Private -> View.ok
     | _ -> View.error
 
-  let public value =
+  let public'const value =
     let concrete =
       match Private_flag.to_concrete value with
       | None -> conversion_failed "private_flag"
@@ -3628,7 +3628,7 @@ module V4_07 = struct
     | Private_flag.Public -> View.ok
     | _ -> View.error
 
-  let immutable value =
+  let immutable'const value =
     let concrete =
       match Mutable_flag.to_concrete value with
       | None -> conversion_failed "mutable_flag"
@@ -3638,7 +3638,7 @@ module V4_07 = struct
     | Mutable_flag.Immutable -> View.ok
     | _ -> View.error
 
-  let mutable_ value =
+  let mutable'const value =
     let concrete =
       match Mutable_flag.to_concrete value with
       | None -> conversion_failed "mutable_flag"
@@ -3648,7 +3648,7 @@ module V4_07 = struct
     | Mutable_flag.Mutable -> View.ok
     | _ -> View.error
 
-  let virtual_ value =
+  let virtual'const value =
     let concrete =
       match Virtual_flag.to_concrete value with
       | None -> conversion_failed "virtual_flag"
@@ -3658,7 +3658,7 @@ module V4_07 = struct
     | Virtual_flag.Virtual -> View.ok
     | _ -> View.error
 
-  let concrete value =
+  let concrete'const value =
     let concrete =
       match Virtual_flag.to_concrete value with
       | None -> conversion_failed "virtual_flag"
@@ -3668,7 +3668,7 @@ module V4_07 = struct
     | Virtual_flag.Concrete -> View.ok
     | _ -> View.error
 
-  let override value =
+  let override'const value =
     let concrete =
       match Override_flag.to_concrete value with
       | None -> conversion_failed "override_flag"
@@ -3678,7 +3678,7 @@ module V4_07 = struct
     | Override_flag.Override -> View.ok
     | _ -> View.error
 
-  let fresh value =
+  let fresh'const value =
     let concrete =
       match Override_flag.to_concrete value with
       | None -> conversion_failed "override_flag"
@@ -3688,7 +3688,7 @@ module V4_07 = struct
     | Override_flag.Fresh -> View.ok
     | _ -> View.error
 
-  let closed value =
+  let closed'const value =
     let concrete =
       match Closed_flag.to_concrete value with
       | None -> conversion_failed "closed_flag"
@@ -3698,7 +3698,7 @@ module V4_07 = struct
     | Closed_flag.Closed -> View.ok
     | _ -> View.error
 
-  let open_ value =
+  let open'const value =
     let concrete =
       match Closed_flag.to_concrete value with
       | None -> conversion_failed "closed_flag"
@@ -3708,7 +3708,7 @@ module V4_07 = struct
     | Closed_flag.Open -> View.ok
     | _ -> View.error
 
-  let nolabel value =
+  let nolabel'const value =
     let concrete =
       match Arg_label.to_concrete value with
       | None -> conversion_failed "arg_label"
@@ -3718,7 +3718,7 @@ module V4_07 = struct
     | Arg_label.Nolabel -> View.ok
     | _ -> View.error
 
-  let labelled view value =
+  let labelled'const view value =
     let concrete =
       match Arg_label.to_concrete value with
       | None -> conversion_failed "arg_label"
@@ -3728,7 +3728,7 @@ module V4_07 = struct
     | Arg_label.Labelled arg -> view arg
     | _ -> View.error
 
-  let optional view value =
+  let optional'const view value =
     let concrete =
       match Arg_label.to_concrete value with
       | None -> conversion_failed "arg_label"
@@ -3738,7 +3738,7 @@ module V4_07 = struct
     | Arg_label.Optional arg -> view arg
     | _ -> View.error
 
-  let covariant value =
+  let covariant'const value =
     let concrete =
       match Variance.to_concrete value with
       | None -> conversion_failed "variance"
@@ -3748,7 +3748,7 @@ module V4_07 = struct
     | Variance.Covariant -> View.ok
     | _ -> View.error
 
-  let contravariant value =
+  let contravariant'const value =
     let concrete =
       match Variance.to_concrete value with
       | None -> conversion_failed "variance"
@@ -3758,7 +3758,7 @@ module V4_07 = struct
     | Variance.Contravariant -> View.ok
     | _ -> View.error
 
-  let invariant value =
+  let invariant'const value =
     let concrete =
       match Variance.to_concrete value with
       | None -> conversion_failed "variance"
@@ -3768,7 +3768,7 @@ module V4_07 = struct
     | Variance.Invariant -> View.ok
     | _ -> View.error
 
-  let pconst_integer view value =
+  let pconst_integer'const view value =
     let concrete =
       match Constant.to_concrete value with
       | None -> conversion_failed "constant"
@@ -3778,7 +3778,7 @@ module V4_07 = struct
     | Constant.Pconst_integer (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pconst_char view value =
+  let pconst_char'const view value =
     let concrete =
       match Constant.to_concrete value with
       | None -> conversion_failed "constant"
@@ -3788,7 +3788,7 @@ module V4_07 = struct
     | Constant.Pconst_char arg -> view arg
     | _ -> View.error
 
-  let pconst_string view value =
+  let pconst_string'const view value =
     let concrete =
       match Constant.to_concrete value with
       | None -> conversion_failed "constant"
@@ -3798,7 +3798,7 @@ module V4_07 = struct
     | Constant.Pconst_string (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pconst_float view value =
+  let pconst_float'const view value =
     let concrete =
       match Constant.to_concrete value with
       | None -> conversion_failed "constant"
@@ -3808,7 +3808,7 @@ module V4_07 = struct
     | Constant.Pconst_float (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pstr view value =
+  let pstr'const view value =
     let concrete =
       match Payload.to_concrete value with
       | None -> conversion_failed "payload"
@@ -3818,7 +3818,7 @@ module V4_07 = struct
     | Payload.PStr arg -> view arg
     | _ -> View.error
 
-  let psig view value =
+  let psig'const view value =
     let concrete =
       match Payload.to_concrete value with
       | None -> conversion_failed "payload"
@@ -3828,7 +3828,7 @@ module V4_07 = struct
     | Payload.PSig arg -> view arg
     | _ -> View.error
 
-  let ptyp view value =
+  let ptyp'const view value =
     let concrete =
       match Payload.to_concrete value with
       | None -> conversion_failed "payload"
@@ -3838,7 +3838,7 @@ module V4_07 = struct
     | Payload.PTyp arg -> view arg
     | _ -> View.error
 
-  let ppat view value =
+  let ppat'const view value =
     let concrete =
       match Payload.to_concrete value with
       | None -> conversion_failed "payload"
@@ -3872,7 +3872,7 @@ module V4_07 = struct
     in
     view concrete.Core_type.ptyp_attributes
 
-  let ptyp_any value =
+  let ptyp_any'const value =
     let parent_concrete =
       match Core_type.to_concrete value with
       | None -> conversion_failed "core_type"
@@ -3888,7 +3888,7 @@ module V4_07 = struct
     | Core_type_desc.Ptyp_any -> View.ok
     | _ -> View.error
 
-  let ptyp_var view value =
+  let ptyp_var'const view value =
     let parent_concrete =
       match Core_type.to_concrete value with
       | None -> conversion_failed "core_type"
@@ -3904,7 +3904,7 @@ module V4_07 = struct
     | Core_type_desc.Ptyp_var arg -> view arg
     | _ -> View.error
 
-  let ptyp_arrow view value =
+  let ptyp_arrow'const view value =
     let parent_concrete =
       match Core_type.to_concrete value with
       | None -> conversion_failed "core_type"
@@ -3920,7 +3920,7 @@ module V4_07 = struct
     | Core_type_desc.Ptyp_arrow (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let ptyp_tuple view value =
+  let ptyp_tuple'const view value =
     let parent_concrete =
       match Core_type.to_concrete value with
       | None -> conversion_failed "core_type"
@@ -3936,7 +3936,7 @@ module V4_07 = struct
     | Core_type_desc.Ptyp_tuple arg -> view arg
     | _ -> View.error
 
-  let ptyp_constr view value =
+  let ptyp_constr'const view value =
     let parent_concrete =
       match Core_type.to_concrete value with
       | None -> conversion_failed "core_type"
@@ -3952,7 +3952,7 @@ module V4_07 = struct
     | Core_type_desc.Ptyp_constr (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ptyp_object view value =
+  let ptyp_object'const view value =
     let parent_concrete =
       match Core_type.to_concrete value with
       | None -> conversion_failed "core_type"
@@ -3968,7 +3968,7 @@ module V4_07 = struct
     | Core_type_desc.Ptyp_object (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ptyp_class view value =
+  let ptyp_class'const view value =
     let parent_concrete =
       match Core_type.to_concrete value with
       | None -> conversion_failed "core_type"
@@ -3984,7 +3984,7 @@ module V4_07 = struct
     | Core_type_desc.Ptyp_class (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ptyp_alias view value =
+  let ptyp_alias'const view value =
     let parent_concrete =
       match Core_type.to_concrete value with
       | None -> conversion_failed "core_type"
@@ -4000,7 +4000,7 @@ module V4_07 = struct
     | Core_type_desc.Ptyp_alias (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ptyp_variant view value =
+  let ptyp_variant'const view value =
     let parent_concrete =
       match Core_type.to_concrete value with
       | None -> conversion_failed "core_type"
@@ -4016,7 +4016,7 @@ module V4_07 = struct
     | Core_type_desc.Ptyp_variant (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let ptyp_poly view value =
+  let ptyp_poly'const view value =
     let parent_concrete =
       match Core_type.to_concrete value with
       | None -> conversion_failed "core_type"
@@ -4032,7 +4032,7 @@ module V4_07 = struct
     | Core_type_desc.Ptyp_poly (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ptyp_package view value =
+  let ptyp_package'const view value =
     let parent_concrete =
       match Core_type.to_concrete value with
       | None -> conversion_failed "core_type"
@@ -4048,7 +4048,7 @@ module V4_07 = struct
     | Core_type_desc.Ptyp_package arg -> view arg
     | _ -> View.error
 
-  let ptyp_extension view value =
+  let ptyp_extension'const view value =
     let parent_concrete =
       match Core_type.to_concrete value with
       | None -> conversion_failed "core_type"
@@ -4064,7 +4064,7 @@ module V4_07 = struct
     | Core_type_desc.Ptyp_extension arg -> view arg
     | _ -> View.error
 
-  let rtag view value =
+  let rtag'const view value =
     let concrete =
       match Row_field.to_concrete value with
       | None -> conversion_failed "row_field"
@@ -4074,7 +4074,7 @@ module V4_07 = struct
     | Row_field.Rtag (arg0, arg1, arg2, arg3) -> view (arg0, arg1, arg2, arg3)
     | _ -> View.error
 
-  let rinherit view value =
+  let rinherit'const view value =
     let concrete =
       match Row_field.to_concrete value with
       | None -> conversion_failed "row_field"
@@ -4084,7 +4084,7 @@ module V4_07 = struct
     | Row_field.Rinherit arg -> view arg
     | _ -> View.error
 
-  let otag view value =
+  let otag'const view value =
     let concrete =
       match Object_field.to_concrete value with
       | None -> conversion_failed "object_field"
@@ -4094,7 +4094,7 @@ module V4_07 = struct
     | Object_field.Otag (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let oinherit view value =
+  let oinherit'const view value =
     let concrete =
       match Object_field.to_concrete value with
       | None -> conversion_failed "object_field"
@@ -4128,7 +4128,7 @@ module V4_07 = struct
     in
     view concrete.Pattern.ppat_attributes
 
-  let ppat_any value =
+  let ppat_any'const value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -4144,7 +4144,7 @@ module V4_07 = struct
     | Pattern_desc.Ppat_any -> View.ok
     | _ -> View.error
 
-  let ppat_var view value =
+  let ppat_var'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -4160,7 +4160,7 @@ module V4_07 = struct
     | Pattern_desc.Ppat_var arg -> view arg
     | _ -> View.error
 
-  let ppat_alias view value =
+  let ppat_alias'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -4176,7 +4176,7 @@ module V4_07 = struct
     | Pattern_desc.Ppat_alias (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ppat_constant view value =
+  let ppat_constant'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -4192,7 +4192,7 @@ module V4_07 = struct
     | Pattern_desc.Ppat_constant arg -> view arg
     | _ -> View.error
 
-  let ppat_interval view value =
+  let ppat_interval'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -4208,7 +4208,7 @@ module V4_07 = struct
     | Pattern_desc.Ppat_interval (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ppat_tuple view value =
+  let ppat_tuple'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -4224,7 +4224,7 @@ module V4_07 = struct
     | Pattern_desc.Ppat_tuple arg -> view arg
     | _ -> View.error
 
-  let ppat_construct view value =
+  let ppat_construct'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -4240,7 +4240,7 @@ module V4_07 = struct
     | Pattern_desc.Ppat_construct (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ppat_variant view value =
+  let ppat_variant'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -4256,7 +4256,7 @@ module V4_07 = struct
     | Pattern_desc.Ppat_variant (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ppat_record view value =
+  let ppat_record'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -4272,7 +4272,7 @@ module V4_07 = struct
     | Pattern_desc.Ppat_record (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ppat_array view value =
+  let ppat_array'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -4288,7 +4288,7 @@ module V4_07 = struct
     | Pattern_desc.Ppat_array arg -> view arg
     | _ -> View.error
 
-  let ppat_or view value =
+  let ppat_or'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -4304,7 +4304,7 @@ module V4_07 = struct
     | Pattern_desc.Ppat_or (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ppat_constraint view value =
+  let ppat_constraint'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -4320,7 +4320,7 @@ module V4_07 = struct
     | Pattern_desc.Ppat_constraint (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let ppat_type view value =
+  let ppat_type'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -4336,7 +4336,7 @@ module V4_07 = struct
     | Pattern_desc.Ppat_type arg -> view arg
     | _ -> View.error
 
-  let ppat_lazy view value =
+  let ppat_lazy'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -4352,7 +4352,7 @@ module V4_07 = struct
     | Pattern_desc.Ppat_lazy arg -> view arg
     | _ -> View.error
 
-  let ppat_unpack view value =
+  let ppat_unpack'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -4368,7 +4368,7 @@ module V4_07 = struct
     | Pattern_desc.Ppat_unpack arg -> view arg
     | _ -> View.error
 
-  let ppat_exception view value =
+  let ppat_exception'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -4384,7 +4384,7 @@ module V4_07 = struct
     | Pattern_desc.Ppat_exception arg -> view arg
     | _ -> View.error
 
-  let ppat_extension view value =
+  let ppat_extension'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -4400,7 +4400,7 @@ module V4_07 = struct
     | Pattern_desc.Ppat_extension arg -> view arg
     | _ -> View.error
 
-  let ppat_open view value =
+  let ppat_open'const view value =
     let parent_concrete =
       match Pattern.to_concrete value with
       | None -> conversion_failed "pattern"
@@ -4440,7 +4440,7 @@ module V4_07 = struct
     in
     view concrete.Expression.pexp_attributes
 
-  let pexp_ident view value =
+  let pexp_ident'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4456,7 +4456,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_ident arg -> view arg
     | _ -> View.error
 
-  let pexp_constant view value =
+  let pexp_constant'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4472,7 +4472,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_constant arg -> view arg
     | _ -> View.error
 
-  let pexp_let view value =
+  let pexp_let'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4488,7 +4488,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_let (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let pexp_function view value =
+  let pexp_function'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4504,7 +4504,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_function arg -> view arg
     | _ -> View.error
 
-  let pexp_fun view value =
+  let pexp_fun'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4520,7 +4520,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_fun (arg0, arg1, arg2, arg3) -> view (arg0, arg1, arg2, arg3)
     | _ -> View.error
 
-  let pexp_apply view value =
+  let pexp_apply'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4536,7 +4536,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_apply (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_match view value =
+  let pexp_match'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4552,7 +4552,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_match (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_try view value =
+  let pexp_try'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4568,7 +4568,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_try (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_tuple view value =
+  let pexp_tuple'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4584,7 +4584,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_tuple arg -> view arg
     | _ -> View.error
 
-  let pexp_construct view value =
+  let pexp_construct'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4600,7 +4600,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_construct (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_variant view value =
+  let pexp_variant'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4616,7 +4616,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_variant (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_record view value =
+  let pexp_record'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4632,7 +4632,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_record (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_field view value =
+  let pexp_field'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4648,7 +4648,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_field (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_setfield view value =
+  let pexp_setfield'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4664,7 +4664,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_setfield (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let pexp_array view value =
+  let pexp_array'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4680,7 +4680,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_array arg -> view arg
     | _ -> View.error
 
-  let pexp_ifthenelse view value =
+  let pexp_ifthenelse'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4696,7 +4696,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_ifthenelse (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let pexp_sequence view value =
+  let pexp_sequence'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4712,7 +4712,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_sequence (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_while view value =
+  let pexp_while'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4728,7 +4728,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_while (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_for view value =
+  let pexp_for'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4744,7 +4744,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_for (arg0, arg1, arg2, arg3, arg4) -> view (arg0, arg1, arg2, arg3, arg4)
     | _ -> View.error
 
-  let pexp_constraint view value =
+  let pexp_constraint'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4760,7 +4760,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_constraint (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_coerce view value =
+  let pexp_coerce'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4776,7 +4776,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_coerce (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let pexp_send view value =
+  let pexp_send'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4792,7 +4792,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_send (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_new view value =
+  let pexp_new'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4808,7 +4808,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_new arg -> view arg
     | _ -> View.error
 
-  let pexp_setinstvar view value =
+  let pexp_setinstvar'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4824,7 +4824,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_setinstvar (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_override view value =
+  let pexp_override'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4840,7 +4840,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_override arg -> view arg
     | _ -> View.error
 
-  let pexp_letmodule view value =
+  let pexp_letmodule'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4856,7 +4856,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_letmodule (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let pexp_letexception view value =
+  let pexp_letexception'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4872,7 +4872,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_letexception (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_assert view value =
+  let pexp_assert'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4888,7 +4888,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_assert arg -> view arg
     | _ -> View.error
 
-  let pexp_lazy view value =
+  let pexp_lazy'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4904,7 +4904,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_lazy arg -> view arg
     | _ -> View.error
 
-  let pexp_poly view value =
+  let pexp_poly'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4920,7 +4920,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_poly (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_object view value =
+  let pexp_object'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4936,7 +4936,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_object arg -> view arg
     | _ -> View.error
 
-  let pexp_newtype view value =
+  let pexp_newtype'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4952,7 +4952,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_newtype (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pexp_pack view value =
+  let pexp_pack'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4968,7 +4968,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_pack arg -> view arg
     | _ -> View.error
 
-  let pexp_open view value =
+  let pexp_open'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -4984,7 +4984,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_open (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let pexp_extension view value =
+  let pexp_extension'const view value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -5000,7 +5000,7 @@ module V4_07 = struct
     | Expression_desc.Pexp_extension arg -> view arg
     | _ -> View.error
 
-  let pexp_unreachable value =
+  let pexp_unreachable'const value =
     let parent_concrete =
       match Expression.to_concrete value with
       | None -> conversion_failed "expression"
@@ -5144,7 +5144,7 @@ module V4_07 = struct
     in
     view concrete.Type_declaration.ptype_loc
 
-  let ptype_abstract value =
+  let ptype_abstract'const value =
     let concrete =
       match Type_kind.to_concrete value with
       | None -> conversion_failed "type_kind"
@@ -5154,7 +5154,7 @@ module V4_07 = struct
     | Type_kind.Ptype_abstract -> View.ok
     | _ -> View.error
 
-  let ptype_variant view value =
+  let ptype_variant'const view value =
     let concrete =
       match Type_kind.to_concrete value with
       | None -> conversion_failed "type_kind"
@@ -5164,7 +5164,7 @@ module V4_07 = struct
     | Type_kind.Ptype_variant arg -> view arg
     | _ -> View.error
 
-  let ptype_record view value =
+  let ptype_record'const view value =
     let concrete =
       match Type_kind.to_concrete value with
       | None -> conversion_failed "type_kind"
@@ -5174,7 +5174,7 @@ module V4_07 = struct
     | Type_kind.Ptype_record arg -> view arg
     | _ -> View.error
 
-  let ptype_open value =
+  let ptype_open'const value =
     let concrete =
       match Type_kind.to_concrete value with
       | None -> conversion_failed "type_kind"
@@ -5264,7 +5264,7 @@ module V4_07 = struct
     in
     view concrete.Constructor_declaration.pcd_attributes
 
-  let pcstr_tuple view value =
+  let pcstr_tuple'const view value =
     let concrete =
       match Constructor_arguments.to_concrete value with
       | None -> conversion_failed "constructor_arguments"
@@ -5274,7 +5274,7 @@ module V4_07 = struct
     | Constructor_arguments.Pcstr_tuple arg -> view arg
     | _ -> View.error
 
-  let pcstr_record view value =
+  let pcstr_record'const view value =
     let concrete =
       match Constructor_arguments.to_concrete value with
       | None -> conversion_failed "constructor_arguments"
@@ -5356,7 +5356,7 @@ module V4_07 = struct
     in
     view concrete.Extension_constructor.pext_attributes
 
-  let pext_decl view value =
+  let pext_decl'const view value =
     let concrete =
       match Extension_constructor_kind.to_concrete value with
       | None -> conversion_failed "extension_constructor_kind"
@@ -5366,7 +5366,7 @@ module V4_07 = struct
     | Extension_constructor_kind.Pext_decl (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pext_rebind view value =
+  let pext_rebind'const view value =
     let concrete =
       match Extension_constructor_kind.to_concrete value with
       | None -> conversion_failed "extension_constructor_kind"
@@ -5400,7 +5400,7 @@ module V4_07 = struct
     in
     view concrete.Class_type.pcty_attributes
 
-  let pcty_constr view value =
+  let pcty_constr'const view value =
     let parent_concrete =
       match Class_type.to_concrete value with
       | None -> conversion_failed "class_type"
@@ -5416,7 +5416,7 @@ module V4_07 = struct
     | Class_type_desc.Pcty_constr (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pcty_signature view value =
+  let pcty_signature'const view value =
     let parent_concrete =
       match Class_type.to_concrete value with
       | None -> conversion_failed "class_type"
@@ -5432,7 +5432,7 @@ module V4_07 = struct
     | Class_type_desc.Pcty_signature arg -> view arg
     | _ -> View.error
 
-  let pcty_arrow view value =
+  let pcty_arrow'const view value =
     let parent_concrete =
       match Class_type.to_concrete value with
       | None -> conversion_failed "class_type"
@@ -5448,7 +5448,7 @@ module V4_07 = struct
     | Class_type_desc.Pcty_arrow (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let pcty_extension view value =
+  let pcty_extension'const view value =
     let parent_concrete =
       match Class_type.to_concrete value with
       | None -> conversion_failed "class_type"
@@ -5464,7 +5464,7 @@ module V4_07 = struct
     | Class_type_desc.Pcty_extension arg -> view arg
     | _ -> View.error
 
-  let pcty_open view value =
+  let pcty_open'const view value =
     let parent_concrete =
       match Class_type.to_concrete value with
       | None -> conversion_failed "class_type"
@@ -5520,7 +5520,7 @@ module V4_07 = struct
     in
     view concrete.Class_type_field.pctf_attributes
 
-  let pctf_inherit view value =
+  let pctf_inherit'const view value =
     let parent_concrete =
       match Class_type_field.to_concrete value with
       | None -> conversion_failed "class_type_field"
@@ -5536,7 +5536,7 @@ module V4_07 = struct
     | Class_type_field_desc.Pctf_inherit arg -> view arg
     | _ -> View.error
 
-  let pctf_val view value =
+  let pctf_val'const view value =
     let parent_concrete =
       match Class_type_field.to_concrete value with
       | None -> conversion_failed "class_type_field"
@@ -5552,7 +5552,7 @@ module V4_07 = struct
     | Class_type_field_desc.Pctf_val arg -> view arg
     | _ -> View.error
 
-  let pctf_method view value =
+  let pctf_method'const view value =
     let parent_concrete =
       match Class_type_field.to_concrete value with
       | None -> conversion_failed "class_type_field"
@@ -5568,7 +5568,7 @@ module V4_07 = struct
     | Class_type_field_desc.Pctf_method arg -> view arg
     | _ -> View.error
 
-  let pctf_constraint view value =
+  let pctf_constraint'const view value =
     let parent_concrete =
       match Class_type_field.to_concrete value with
       | None -> conversion_failed "class_type_field"
@@ -5584,7 +5584,7 @@ module V4_07 = struct
     | Class_type_field_desc.Pctf_constraint arg -> view arg
     | _ -> View.error
 
-  let pctf_attribute view value =
+  let pctf_attribute'const view value =
     let parent_concrete =
       match Class_type_field.to_concrete value with
       | None -> conversion_failed "class_type_field"
@@ -5600,7 +5600,7 @@ module V4_07 = struct
     | Class_type_field_desc.Pctf_attribute arg -> view arg
     | _ -> View.error
 
-  let pctf_extension view value =
+  let pctf_extension'const view value =
     let parent_concrete =
       match Class_type_field.to_concrete value with
       | None -> conversion_failed "class_type_field"
@@ -5688,7 +5688,7 @@ module V4_07 = struct
     in
     view concrete.Class_expr.pcl_attributes
 
-  let pcl_constr view value =
+  let pcl_constr'const view value =
     let parent_concrete =
       match Class_expr.to_concrete value with
       | None -> conversion_failed "class_expr"
@@ -5704,7 +5704,7 @@ module V4_07 = struct
     | Class_expr_desc.Pcl_constr (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pcl_structure view value =
+  let pcl_structure'const view value =
     let parent_concrete =
       match Class_expr.to_concrete value with
       | None -> conversion_failed "class_expr"
@@ -5720,7 +5720,7 @@ module V4_07 = struct
     | Class_expr_desc.Pcl_structure arg -> view arg
     | _ -> View.error
 
-  let pcl_fun view value =
+  let pcl_fun'const view value =
     let parent_concrete =
       match Class_expr.to_concrete value with
       | None -> conversion_failed "class_expr"
@@ -5736,7 +5736,7 @@ module V4_07 = struct
     | Class_expr_desc.Pcl_fun (arg0, arg1, arg2, arg3) -> view (arg0, arg1, arg2, arg3)
     | _ -> View.error
 
-  let pcl_apply view value =
+  let pcl_apply'const view value =
     let parent_concrete =
       match Class_expr.to_concrete value with
       | None -> conversion_failed "class_expr"
@@ -5752,7 +5752,7 @@ module V4_07 = struct
     | Class_expr_desc.Pcl_apply (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pcl_let view value =
+  let pcl_let'const view value =
     let parent_concrete =
       match Class_expr.to_concrete value with
       | None -> conversion_failed "class_expr"
@@ -5768,7 +5768,7 @@ module V4_07 = struct
     | Class_expr_desc.Pcl_let (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let pcl_constraint view value =
+  let pcl_constraint'const view value =
     let parent_concrete =
       match Class_expr.to_concrete value with
       | None -> conversion_failed "class_expr"
@@ -5784,7 +5784,7 @@ module V4_07 = struct
     | Class_expr_desc.Pcl_constraint (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pcl_extension view value =
+  let pcl_extension'const view value =
     let parent_concrete =
       match Class_expr.to_concrete value with
       | None -> conversion_failed "class_expr"
@@ -5800,7 +5800,7 @@ module V4_07 = struct
     | Class_expr_desc.Pcl_extension arg -> view arg
     | _ -> View.error
 
-  let pcl_open view value =
+  let pcl_open'const view value =
     let parent_concrete =
       match Class_expr.to_concrete value with
       | None -> conversion_failed "class_expr"
@@ -5856,7 +5856,7 @@ module V4_07 = struct
     in
     view concrete.Class_field.pcf_attributes
 
-  let pcf_inherit view value =
+  let pcf_inherit'const view value =
     let parent_concrete =
       match Class_field.to_concrete value with
       | None -> conversion_failed "class_field"
@@ -5872,7 +5872,7 @@ module V4_07 = struct
     | Class_field_desc.Pcf_inherit (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let pcf_val view value =
+  let pcf_val'const view value =
     let parent_concrete =
       match Class_field.to_concrete value with
       | None -> conversion_failed "class_field"
@@ -5888,7 +5888,7 @@ module V4_07 = struct
     | Class_field_desc.Pcf_val arg -> view arg
     | _ -> View.error
 
-  let pcf_method view value =
+  let pcf_method'const view value =
     let parent_concrete =
       match Class_field.to_concrete value with
       | None -> conversion_failed "class_field"
@@ -5904,7 +5904,7 @@ module V4_07 = struct
     | Class_field_desc.Pcf_method arg -> view arg
     | _ -> View.error
 
-  let pcf_constraint view value =
+  let pcf_constraint'const view value =
     let parent_concrete =
       match Class_field.to_concrete value with
       | None -> conversion_failed "class_field"
@@ -5920,7 +5920,7 @@ module V4_07 = struct
     | Class_field_desc.Pcf_constraint arg -> view arg
     | _ -> View.error
 
-  let pcf_initializer view value =
+  let pcf_initializer'const view value =
     let parent_concrete =
       match Class_field.to_concrete value with
       | None -> conversion_failed "class_field"
@@ -5936,7 +5936,7 @@ module V4_07 = struct
     | Class_field_desc.Pcf_initializer arg -> view arg
     | _ -> View.error
 
-  let pcf_attribute view value =
+  let pcf_attribute'const view value =
     let parent_concrete =
       match Class_field.to_concrete value with
       | None -> conversion_failed "class_field"
@@ -5952,7 +5952,7 @@ module V4_07 = struct
     | Class_field_desc.Pcf_attribute arg -> view arg
     | _ -> View.error
 
-  let pcf_extension view value =
+  let pcf_extension'const view value =
     let parent_concrete =
       match Class_field.to_concrete value with
       | None -> conversion_failed "class_field"
@@ -5968,7 +5968,7 @@ module V4_07 = struct
     | Class_field_desc.Pcf_extension arg -> view arg
     | _ -> View.error
 
-  let cfk_virtual view value =
+  let cfk_virtual'const view value =
     let concrete =
       match Class_field_kind.to_concrete value with
       | None -> conversion_failed "class_field_kind"
@@ -5978,7 +5978,7 @@ module V4_07 = struct
     | Class_field_kind.Cfk_virtual arg -> view arg
     | _ -> View.error
 
-  let cfk_concrete view value =
+  let cfk_concrete'const view value =
     let concrete =
       match Class_field_kind.to_concrete value with
       | None -> conversion_failed "class_field_kind"
@@ -6012,7 +6012,7 @@ module V4_07 = struct
     in
     view concrete.Module_type.pmty_attributes
 
-  let pmty_ident view value =
+  let pmty_ident'const view value =
     let parent_concrete =
       match Module_type.to_concrete value with
       | None -> conversion_failed "module_type"
@@ -6028,7 +6028,7 @@ module V4_07 = struct
     | Module_type_desc.Pmty_ident arg -> view arg
     | _ -> View.error
 
-  let pmty_signature view value =
+  let pmty_signature'const view value =
     let parent_concrete =
       match Module_type.to_concrete value with
       | None -> conversion_failed "module_type"
@@ -6044,7 +6044,7 @@ module V4_07 = struct
     | Module_type_desc.Pmty_signature arg -> view arg
     | _ -> View.error
 
-  let pmty_functor view value =
+  let pmty_functor'const view value =
     let parent_concrete =
       match Module_type.to_concrete value with
       | None -> conversion_failed "module_type"
@@ -6060,7 +6060,7 @@ module V4_07 = struct
     | Module_type_desc.Pmty_functor (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let pmty_with view value =
+  let pmty_with'const view value =
     let parent_concrete =
       match Module_type.to_concrete value with
       | None -> conversion_failed "module_type"
@@ -6076,7 +6076,7 @@ module V4_07 = struct
     | Module_type_desc.Pmty_with (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pmty_typeof view value =
+  let pmty_typeof'const view value =
     let parent_concrete =
       match Module_type.to_concrete value with
       | None -> conversion_failed "module_type"
@@ -6092,7 +6092,7 @@ module V4_07 = struct
     | Module_type_desc.Pmty_typeof arg -> view arg
     | _ -> View.error
 
-  let pmty_extension view value =
+  let pmty_extension'const view value =
     let parent_concrete =
       match Module_type.to_concrete value with
       | None -> conversion_failed "module_type"
@@ -6108,7 +6108,7 @@ module V4_07 = struct
     | Module_type_desc.Pmty_extension arg -> view arg
     | _ -> View.error
 
-  let pmty_alias view value =
+  let pmty_alias'const view value =
     let parent_concrete =
       match Module_type.to_concrete value with
       | None -> conversion_failed "module_type"
@@ -6140,7 +6140,7 @@ module V4_07 = struct
     in
     view concrete.Signature_item.psig_loc
 
-  let psig_value view value =
+  let psig_value'const view value =
     let parent_concrete =
       match Signature_item.to_concrete value with
       | None -> conversion_failed "signature_item"
@@ -6156,7 +6156,7 @@ module V4_07 = struct
     | Signature_item_desc.Psig_value arg -> view arg
     | _ -> View.error
 
-  let psig_type view value =
+  let psig_type'const view value =
     let parent_concrete =
       match Signature_item.to_concrete value with
       | None -> conversion_failed "signature_item"
@@ -6172,7 +6172,7 @@ module V4_07 = struct
     | Signature_item_desc.Psig_type (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let psig_typext view value =
+  let psig_typext'const view value =
     let parent_concrete =
       match Signature_item.to_concrete value with
       | None -> conversion_failed "signature_item"
@@ -6188,7 +6188,7 @@ module V4_07 = struct
     | Signature_item_desc.Psig_typext arg -> view arg
     | _ -> View.error
 
-  let psig_exception view value =
+  let psig_exception'const view value =
     let parent_concrete =
       match Signature_item.to_concrete value with
       | None -> conversion_failed "signature_item"
@@ -6204,7 +6204,7 @@ module V4_07 = struct
     | Signature_item_desc.Psig_exception arg -> view arg
     | _ -> View.error
 
-  let psig_module view value =
+  let psig_module'const view value =
     let parent_concrete =
       match Signature_item.to_concrete value with
       | None -> conversion_failed "signature_item"
@@ -6220,7 +6220,7 @@ module V4_07 = struct
     | Signature_item_desc.Psig_module arg -> view arg
     | _ -> View.error
 
-  let psig_recmodule view value =
+  let psig_recmodule'const view value =
     let parent_concrete =
       match Signature_item.to_concrete value with
       | None -> conversion_failed "signature_item"
@@ -6236,7 +6236,7 @@ module V4_07 = struct
     | Signature_item_desc.Psig_recmodule arg -> view arg
     | _ -> View.error
 
-  let psig_modtype view value =
+  let psig_modtype'const view value =
     let parent_concrete =
       match Signature_item.to_concrete value with
       | None -> conversion_failed "signature_item"
@@ -6252,7 +6252,7 @@ module V4_07 = struct
     | Signature_item_desc.Psig_modtype arg -> view arg
     | _ -> View.error
 
-  let psig_open view value =
+  let psig_open'const view value =
     let parent_concrete =
       match Signature_item.to_concrete value with
       | None -> conversion_failed "signature_item"
@@ -6268,7 +6268,7 @@ module V4_07 = struct
     | Signature_item_desc.Psig_open arg -> view arg
     | _ -> View.error
 
-  let psig_include view value =
+  let psig_include'const view value =
     let parent_concrete =
       match Signature_item.to_concrete value with
       | None -> conversion_failed "signature_item"
@@ -6284,7 +6284,7 @@ module V4_07 = struct
     | Signature_item_desc.Psig_include arg -> view arg
     | _ -> View.error
 
-  let psig_class view value =
+  let psig_class'const view value =
     let parent_concrete =
       match Signature_item.to_concrete value with
       | None -> conversion_failed "signature_item"
@@ -6300,7 +6300,7 @@ module V4_07 = struct
     | Signature_item_desc.Psig_class arg -> view arg
     | _ -> View.error
 
-  let psig_class_type view value =
+  let psig_class_type'const view value =
     let parent_concrete =
       match Signature_item.to_concrete value with
       | None -> conversion_failed "signature_item"
@@ -6316,7 +6316,7 @@ module V4_07 = struct
     | Signature_item_desc.Psig_class_type arg -> view arg
     | _ -> View.error
 
-  let psig_attribute view value =
+  let psig_attribute'const view value =
     let parent_concrete =
       match Signature_item.to_concrete value with
       | None -> conversion_failed "signature_item"
@@ -6332,7 +6332,7 @@ module V4_07 = struct
     | Signature_item_desc.Psig_attribute arg -> view arg
     | _ -> View.error
 
-  let psig_extension view value =
+  let psig_extension'const view value =
     let parent_concrete =
       match Signature_item.to_concrete value with
       | None -> conversion_failed "signature_item"
@@ -6468,7 +6468,7 @@ module V4_07 = struct
     in
     view concrete.Include_infos.pincl_attributes
 
-  let pwith_type view value =
+  let pwith_type'const view value =
     let concrete =
       match With_constraint.to_concrete value with
       | None -> conversion_failed "with_constraint"
@@ -6478,7 +6478,7 @@ module V4_07 = struct
     | With_constraint.Pwith_type (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pwith_module view value =
+  let pwith_module'const view value =
     let concrete =
       match With_constraint.to_concrete value with
       | None -> conversion_failed "with_constraint"
@@ -6488,7 +6488,7 @@ module V4_07 = struct
     | With_constraint.Pwith_module (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pwith_typesubst view value =
+  let pwith_typesubst'const view value =
     let concrete =
       match With_constraint.to_concrete value with
       | None -> conversion_failed "with_constraint"
@@ -6498,7 +6498,7 @@ module V4_07 = struct
     | With_constraint.Pwith_typesubst (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pwith_modsubst view value =
+  let pwith_modsubst'const view value =
     let concrete =
       match With_constraint.to_concrete value with
       | None -> conversion_failed "with_constraint"
@@ -6532,7 +6532,7 @@ module V4_07 = struct
     in
     view concrete.Module_expr.pmod_attributes
 
-  let pmod_ident view value =
+  let pmod_ident'const view value =
     let parent_concrete =
       match Module_expr.to_concrete value with
       | None -> conversion_failed "module_expr"
@@ -6548,7 +6548,7 @@ module V4_07 = struct
     | Module_expr_desc.Pmod_ident arg -> view arg
     | _ -> View.error
 
-  let pmod_structure view value =
+  let pmod_structure'const view value =
     let parent_concrete =
       match Module_expr.to_concrete value with
       | None -> conversion_failed "module_expr"
@@ -6564,7 +6564,7 @@ module V4_07 = struct
     | Module_expr_desc.Pmod_structure arg -> view arg
     | _ -> View.error
 
-  let pmod_functor view value =
+  let pmod_functor'const view value =
     let parent_concrete =
       match Module_expr.to_concrete value with
       | None -> conversion_failed "module_expr"
@@ -6580,7 +6580,7 @@ module V4_07 = struct
     | Module_expr_desc.Pmod_functor (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
     | _ -> View.error
 
-  let pmod_apply view value =
+  let pmod_apply'const view value =
     let parent_concrete =
       match Module_expr.to_concrete value with
       | None -> conversion_failed "module_expr"
@@ -6596,7 +6596,7 @@ module V4_07 = struct
     | Module_expr_desc.Pmod_apply (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pmod_constraint view value =
+  let pmod_constraint'const view value =
     let parent_concrete =
       match Module_expr.to_concrete value with
       | None -> conversion_failed "module_expr"
@@ -6612,7 +6612,7 @@ module V4_07 = struct
     | Module_expr_desc.Pmod_constraint (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pmod_unpack view value =
+  let pmod_unpack'const view value =
     let parent_concrete =
       match Module_expr.to_concrete value with
       | None -> conversion_failed "module_expr"
@@ -6628,7 +6628,7 @@ module V4_07 = struct
     | Module_expr_desc.Pmod_unpack arg -> view arg
     | _ -> View.error
 
-  let pmod_extension view value =
+  let pmod_extension'const view value =
     let parent_concrete =
       match Module_expr.to_concrete value with
       | None -> conversion_failed "module_expr"
@@ -6660,7 +6660,7 @@ module V4_07 = struct
     in
     view concrete.Structure_item.pstr_loc
 
-  let pstr_eval view value =
+  let pstr_eval'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -6676,7 +6676,7 @@ module V4_07 = struct
     | Structure_item_desc.Pstr_eval (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pstr_value view value =
+  let pstr_value'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -6692,7 +6692,7 @@ module V4_07 = struct
     | Structure_item_desc.Pstr_value (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pstr_primitive view value =
+  let pstr_primitive'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -6708,7 +6708,7 @@ module V4_07 = struct
     | Structure_item_desc.Pstr_primitive arg -> view arg
     | _ -> View.error
 
-  let pstr_type view value =
+  let pstr_type'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -6724,7 +6724,7 @@ module V4_07 = struct
     | Structure_item_desc.Pstr_type (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pstr_typext view value =
+  let pstr_typext'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -6740,7 +6740,7 @@ module V4_07 = struct
     | Structure_item_desc.Pstr_typext arg -> view arg
     | _ -> View.error
 
-  let pstr_exception view value =
+  let pstr_exception'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -6756,7 +6756,7 @@ module V4_07 = struct
     | Structure_item_desc.Pstr_exception arg -> view arg
     | _ -> View.error
 
-  let pstr_module view value =
+  let pstr_module'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -6772,7 +6772,7 @@ module V4_07 = struct
     | Structure_item_desc.Pstr_module arg -> view arg
     | _ -> View.error
 
-  let pstr_recmodule view value =
+  let pstr_recmodule'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -6788,7 +6788,7 @@ module V4_07 = struct
     | Structure_item_desc.Pstr_recmodule arg -> view arg
     | _ -> View.error
 
-  let pstr_modtype view value =
+  let pstr_modtype'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -6804,7 +6804,7 @@ module V4_07 = struct
     | Structure_item_desc.Pstr_modtype arg -> view arg
     | _ -> View.error
 
-  let pstr_open view value =
+  let pstr_open'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -6820,7 +6820,7 @@ module V4_07 = struct
     | Structure_item_desc.Pstr_open arg -> view arg
     | _ -> View.error
 
-  let pstr_class view value =
+  let pstr_class'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -6836,7 +6836,7 @@ module V4_07 = struct
     | Structure_item_desc.Pstr_class arg -> view arg
     | _ -> View.error
 
-  let pstr_class_type view value =
+  let pstr_class_type'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -6852,7 +6852,7 @@ module V4_07 = struct
     | Structure_item_desc.Pstr_class_type arg -> view arg
     | _ -> View.error
 
-  let pstr_include view value =
+  let pstr_include'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -6868,7 +6868,7 @@ module V4_07 = struct
     | Structure_item_desc.Pstr_include arg -> view arg
     | _ -> View.error
 
-  let pstr_attribute view value =
+  let pstr_attribute'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -6884,7 +6884,7 @@ module V4_07 = struct
     | Structure_item_desc.Pstr_attribute arg -> view arg
     | _ -> View.error
 
-  let pstr_extension view value =
+  let pstr_extension'const view value =
     let parent_concrete =
       match Structure_item.to_concrete value with
       | None -> conversion_failed "structure_item"
@@ -6964,7 +6964,7 @@ module V4_07 = struct
     in
     view concrete.Module_binding.pmb_loc
 
-  let ptop_def view value =
+  let ptop_def'const view value =
     let concrete =
       match Toplevel_phrase.to_concrete value with
       | None -> conversion_failed "toplevel_phrase"
@@ -6974,7 +6974,7 @@ module V4_07 = struct
     | Toplevel_phrase.Ptop_def arg -> view arg
     | _ -> View.error
 
-  let ptop_dir view value =
+  let ptop_dir'const view value =
     let concrete =
       match Toplevel_phrase.to_concrete value with
       | None -> conversion_failed "toplevel_phrase"
@@ -6984,7 +6984,7 @@ module V4_07 = struct
     | Toplevel_phrase.Ptop_dir (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pdir_none value =
+  let pdir_none'const value =
     let concrete =
       match Directive_argument.to_concrete value with
       | None -> conversion_failed "directive_argument"
@@ -6994,7 +6994,7 @@ module V4_07 = struct
     | Directive_argument.Pdir_none -> View.ok
     | _ -> View.error
 
-  let pdir_string view value =
+  let pdir_string'const view value =
     let concrete =
       match Directive_argument.to_concrete value with
       | None -> conversion_failed "directive_argument"
@@ -7004,7 +7004,7 @@ module V4_07 = struct
     | Directive_argument.Pdir_string arg -> view arg
     | _ -> View.error
 
-  let pdir_int view value =
+  let pdir_int'const view value =
     let concrete =
       match Directive_argument.to_concrete value with
       | None -> conversion_failed "directive_argument"
@@ -7014,7 +7014,7 @@ module V4_07 = struct
     | Directive_argument.Pdir_int (arg0, arg1) -> view (arg0, arg1)
     | _ -> View.error
 
-  let pdir_ident view value =
+  let pdir_ident'const view value =
     let concrete =
       match Directive_argument.to_concrete value with
       | None -> conversion_failed "directive_argument"
@@ -7024,7 +7024,7 @@ module V4_07 = struct
     | Directive_argument.Pdir_ident arg -> view arg
     | _ -> View.error
 
-  let pdir_bool view value =
+  let pdir_bool'const view value =
     let concrete =
       match Directive_argument.to_concrete value with
       | None -> conversion_failed "directive_argument"

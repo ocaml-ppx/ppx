@@ -136,28 +136,28 @@ type custom = Int of int | Unit of unit | Nothing
 
 let%expect_test "match with custom constructor" =
   let open Viewlib in
-  let int : (int, 'i, 'o) View.t -> (custom, 'i, 'o) View.t =
+  let int'const : (int, 'i, 'o) View.t -> (custom, 'i, 'o) View.t =
     fun view value ->
       match value with
       | Int   i -> view i
       | Unit  _ -> View.error
       | Nothing -> View.error
   in
-  let unit : (unit, 'i, 'i) View.t -> (custom, 'i, 'i) View.t =
+  let unit'const : (unit, 'i, 'i) View.t -> (custom, 'i, 'i) View.t =
     fun view value ->
       match value with
       | Int   _ -> View.error
       | Unit () -> view ()
       | Nothing -> View.error
   in
-  let nothing : (custom, 'i, 'i) View.t =
+  let nothing'const : (custom, 'i, 'i) View.t =
     fun value ->
       match value with
       | Int   _ -> View.error
       | Unit () -> View.error
       | Nothing -> View.unit ()
   in
-  let useless : (custom, 'i, 'i) View.t =
+  let useless'const : (custom, 'i, 'i) View.t =
     fun value ->
       match value with
       | Int _            -> View.error
@@ -192,25 +192,25 @@ let%expect_test "match with custom constructor" =
 
 let%expect_test "match with polymorphic variant" =
   let open Viewlib in
-  let int : (int, 'i, 'o) View.t -> ([> `Int of int], 'i, 'o) View.t =
+  let int'const : (int, 'i, 'o) View.t -> ([> `Int of int], 'i, 'o) View.t =
     fun view value ->
       match value with
       | `Int i -> view i
       | _      -> View.error
   in
-  let unit : (unit, 'i, 'i) View.t -> ([> `Unit of unit], 'i, 'i) View.t =
+  let unit'const : (unit, 'i, 'i) View.t -> ([> `Unit of unit], 'i, 'i) View.t =
     fun view value ->
       match value with
       | `Unit () -> view ()
       | _        -> View.error
   in
-  let nothing : ([> `Nothing], 'i, 'i) View.t =
+  let nothing'const : ([> `Nothing], 'i, 'i) View.t =
     fun value ->
       match value with
       | `Nothing -> View.unit ()
       | _        -> View.error
   in
-  let useless : ([`Int of int | `Unit of unit | `Nothing], 'i, 'i) View.t =
+  let useless'const : ([`Int of int | `Unit of unit | `Nothing], 'i, 'i) View.t =
     fun value ->
       match value with
       | `Int _             -> View.error
@@ -245,11 +245,11 @@ let%expect_test "match with polymorphic variant" =
 
 let%expect_test "match with object" =
   let open Viewlib in
-  let int : (int, 'i, 'o) View.t -> (< int: int; .. >, 'i, 'o) View.t =
+  let int'const : (int, 'i, 'o) View.t -> (< int: int; .. >, 'i, 'o) View.t =
     fun view value ->
       view value#int
   in
-  let unit : (unit, 'i, 'i) View.t -> (< unit: unit; .. >, 'i, 'i) View.t =
+  let unit'const : (unit, 'i, 'i) View.t -> (< unit: unit; .. >, 'i, 'i) View.t =
     fun view value ->
       view value#unit
   in
@@ -272,12 +272,12 @@ module M = struct
     | Pair of int * int
     | Record of {fst : int; snd : int}
 
-  let pair view value =
+  let pair'const view value =
     match value with
     | Pair (x, y) -> view (x, y)
     | Record _ -> Viewlib.View.error
 
-  let record view value =
+  let record'const view value =
     match value with
     | Pair _ -> Viewlib.View.error
     | Record {fst; snd} -> view (fst, snd)
@@ -315,12 +315,12 @@ module Shortcut = struct
     ; c : int
     }
 
-  let an_int view value =
+  let an_int'const view value =
     match value.a with
     | An_int i -> view i
     | _ -> Viewlib.View.error
 
-  let a_float view value =
+  let a_float'const view value =
     match value.a with
     | A_float f -> view f
     | _ -> Viewlib.View.error
@@ -354,7 +354,7 @@ let%expect_test "shortcut fields pattern" =
 
 let%expect_test "constructor translated to keyword" =
   let open Viewlib in
-  let virtual_ _ = View.ok in
+  let virtual'const _ = View.ok in
   (match%view 1 with
    | Virtual -> print_string "OK"
    | _ -> print_string "KO");
