@@ -2,6 +2,9 @@ open Stdppx
 
 let string_of_ty ty = Grammar.string_of_ty ~internal:false ty
 
+let variant_viewer_name cname =
+  Ml.id (cname ^ "'const")
+
 module type VIEWER_PRINTER = sig
   val print_field_viewer :
     targs: string list ->
@@ -46,7 +49,7 @@ module Structure : VIEWER_PRINTER = struct
     match (clause : Astlib.Grammar.clause) with
     | Empty ->
       Print.newline ();
-      Print.println "let %s value =" (Ml.id cname);
+      Print.println "let %s value =" (variant_viewer_name cname);
       Print.indented (fun () ->
         print_to_concrete ~shortcut name "value";
         Print.println "match concrete with";
@@ -54,7 +57,7 @@ module Structure : VIEWER_PRINTER = struct
         Print.println "| _ -> View.error")
     | Tuple tyl ->
       Print.newline ();
-      Print.println "let %s view value =" (Ml.id cname);
+      Print.println "let %s view value =" (variant_viewer_name cname);
       Print.indented (fun () ->
         let args = tuple tyl in
         print_to_concrete ~shortcut name "value";
@@ -115,7 +118,9 @@ module Signature : VIEWER_PRINTER = struct
     | Empty ->
       Print.newline ();
       let in_, out = "'a", "'a" in
-      Print.println "val %s : %s" (Ml.id cname) (view_t value_type ~in_ ~out)
+      Print.println "val %s : %s"
+        (variant_viewer_name cname)
+        (view_t value_type ~in_ ~out)
     | Tuple tyl ->
       let in_, out = "'i", "'o" in
       let arg_type : Astlib.Grammar.ty =
@@ -124,7 +129,7 @@ module Signature : VIEWER_PRINTER = struct
         | _ -> Tuple tyl
       in
       Print.println "val %s : %s -> %s"
-        (Ml.id cname)
+        (variant_viewer_name cname)
         (view_t (string_of_ty arg_type) ~in_ ~out)
         (view_t value_type ~in_ ~out)
     | Record _fields -> ()
