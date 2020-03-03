@@ -1,5 +1,5 @@
-#use "topfind";;
 #require "base";;
+#require "ppx.ast_deprecated";;
 
 open Base
 open Ppx

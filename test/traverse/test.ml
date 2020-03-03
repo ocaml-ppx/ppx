@@ -1,4 +1,4 @@
-#load "ppx_traverse.cmo";;
+#require "ppx.traverse";;
 
 type t =
   { x : int
