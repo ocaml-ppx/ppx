@@ -2,10 +2,9 @@
  (name runtest)
  (deps
   (:test test.ml)
-  (glob_files %{project_root}/src/.ppx.objs/byte/*.cmi))
- (action
-  (chdir %{project_root}
-   (progn
-    (ignore-outputs
-     (run %{project_root}/test/expect/expect_test.exe %{test}))
-    (diff? %{test} %{test}.corrected)))))
+  (package ppx))
+ (action (chdir %{project_root}
+          (progn
+           (ignore-outputs
+            (run expect-test %{test}))
+           (diff? %{test} %{test}.corrected)))))

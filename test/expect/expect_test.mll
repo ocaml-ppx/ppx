@@ -108,14 +108,19 @@ let main () =
     Warnings.parse_options false "@a-4-29-40-41-42-44-45-48-58";
     Clflags.real_paths := false;
     Toploop.initialize_toplevel_env ();
-    List.iter
-      [ "ast_deprecated/.ppx_ast_deprecated.objs"
-      ; "src/.ppx.objs"
-      ; "metaquot_lifters/.ppx_metaquot_lifters.objs"
-      ; "traverse/.ppx_traverse.objs"
-      ; "metaquot/.ppx_metaquot.objs"
-      ]
-      ~f:(fun d -> Topdirs.dir_directory (d ^ "/byte"));
+
+    (* Findlib stuff *)
+    let preds = ["toploop"] in
+    let preds =
+      match Sys.backend_type with
+      | Native -> "native" :: preds
+      | Bytecode -> "byte" :: preds
+      | Other _ -> preds
+    in
+    Topfind.add_predicates preds;
+    (* This just adds the include directories since the [ppx] library
+       is statically linked in *)
+    Topfind.load ["ppx"];
 
     let buf = Buffer.create (String.length file_contents + 1024) in
     let ppf = Format.formatter_of_buffer buf in
