@@ -1,8 +1,20 @@
 (library
  (name ppx_metaquot_test)
+ (modules test_ppx_metaquot)
  (libraries ppx)
  (preprocess (pps ppx.metaquot)))
 
 (alias
  (name runtest)
  (deps (alias check)))
+
+(alias
+ (name runtest)
+ (deps
+  (:test test.ml)
+  (package ppx))
+ (action (chdir %{project_root}
+          (progn
+           (ignore-outputs
+            (run expect-test %{test}))
+           (diff? %{test} %{test}.corrected)))))
