@@ -132,11 +132,16 @@ let main () =
       let lexbuf = Lexing.from_string s in
       lexbuf.lex_curr_p <- { pos with pos_lnum = 1; };
       let phrases = !Toploop.parse_use_file lexbuf in
-      List.iter phrases ~f:(fun phr ->
-        try
-          ignore (Toploop.execute_phrase true ppf (apply_rewriters phr) : bool)
-        with exn ->
-          Location.report_exception ppf exn
+      List.iter phrases ~f:(function
+        | Parsetree.Ptop_def [] -> ()
+        | phr ->
+          try
+            let phr = apply_rewriters phr in
+            if !Clflags.dump_source then
+              Format.fprintf ppf "%a@?" Pprintast.top_phrase phr;
+            ignore (Toploop.execute_phrase true ppf phr : bool)
+          with exn ->
+            Location.report_exception ppf exn
       );
       Format.fprintf ppf "@?|}]@.");
     Buffer.contents buf)
