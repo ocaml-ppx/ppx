@@ -274,30 +274,28 @@ let builders name (grammar : Astlib.Grammar.kind) shortcut =
         end
       | Variant v -> Builder.of_variant name v shortcut
 
-let print_builder_ml () =
+let print_builder_ml version =
   Print.newline ();
-  let grammars = Astlib.History.versioned_grammars Astlib.history in
-  Ml.define_modules' (module Astlib.Version) grammars ~f:(fun version grammar ->
-    let version = Ml.module_name (Astlib.Version.to_string version) in
-    Print.println "open Versions.%s" version;
-    let shortcut =
-      let m = lazy (Shortcut.Map.from_grammar grammar) in
-      fun name -> Shortcut.Map.find (Lazy.force m) name
-    in
-    List.iter grammar ~f:(fun (node_name, (kind : Astlib.Grammar.kind)) ->
-      let builders = builders node_name kind shortcut in
-      List.iter ~f:Builder.print_impl builders))
+  let grammar = Astlib.History.find_grammar Astlib.history ~version in
+  let version = Ml.module_name (Astlib.Version.to_string version) in
+  Print.println "open Versions.%s" version;
+  let shortcut =
+    let m = lazy (Shortcut.Map.from_grammar grammar) in
+    fun name -> Shortcut.Map.find (Lazy.force m) name
+  in
+  List.iter grammar ~f:(fun (node_name, (kind : Astlib.Grammar.kind)) ->
+    let builders = builders node_name kind shortcut in
+    List.iter ~f:Builder.print_impl builders)
 
-let print_builder_mli () =
+let print_builder_mli version =
   Print.newline ();
-  let grammars = Astlib.History.versioned_grammars Astlib.history in
-  Ml.declare_modules' (module Astlib.Version) grammars ~f:(fun version grammar ->
-    let version = Ml.module_name (Astlib.Version.to_string version) in
-    let shortcut =
-      let m = lazy (Shortcut.Map.from_grammar grammar) in
-      fun name -> Shortcut.Map.find (Lazy.force m) name
-    in
-    Print.println "open Versions.%s" version;
-    List.iter grammar ~f:(fun (node_name, (kind : Astlib.Grammar.kind)) ->
-      let builders = builders node_name kind shortcut in
-      List.iter ~f:Builder.print_sig builders))
+  let grammar = Astlib.History.find_grammar Astlib.history ~version in
+  let version = Ml.module_name (Astlib.Version.to_string version) in
+  let shortcut =
+    let m = lazy (Shortcut.Map.from_grammar grammar) in
+    fun name -> Shortcut.Map.find (Lazy.force m) name
+  in
+  Print.println "open Versions.%s" version;
+  List.iter grammar ~f:(fun (node_name, (kind : Astlib.Grammar.kind)) ->
+    let builders = builders node_name kind shortcut in
+    List.iter ~f:Builder.print_sig builders)

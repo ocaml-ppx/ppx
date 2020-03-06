@@ -33,20 +33,7 @@ let dotted ~id string =
     (dotted_list ~id
        (String.split_on_char ~sep:'.' string))
 
-module type To_string = sig
-  type t
-
-  val to_string : t -> string
-end
-
-let print_modules
-      (type a)
-      (module Name : To_string with type t = a)
-      ?(recursive = false)
-      alist
-      ~signature
-      ~f
-  =
+let print_modules ?(recursive = false) alist ~signature ~f =
   List.iteri alist ~f:(fun i (name, x) ->
     if i > 0 then Print.newline ();
     Print.println "%s %s %s"
@@ -55,28 +42,16 @@ let print_modules
          then "module rec"
          else "and"
        else "module")
-      (module_name (Name.to_string name))
+      (module_name name)
       (if signature then ": sig" else "= struct");
     Print.indented (fun () -> f name x);
     Print.println "end")
 
-let declare_modules' m ?recursive alist ~f =
-  print_modules m ~signature:true ?recursive alist ~f
-
-let define_modules' m ?recursive alist ~f =
-  print_modules m ~signature:false ?recursive alist ~f
-
-module Str = struct
-  type t = string
-
-  let to_string (t : t) = t
-end
-
 let declare_modules ?recursive alist ~f =
-  declare_modules' (module Str) ?recursive alist ~f
+  print_modules ~signature:true ?recursive alist ~f
 
 let define_modules ?recursive alist ~f =
-  define_modules' (module Str) ?recursive alist ~f
+  print_modules ~signature:false ?recursive alist ~f
 
 let declare_module name print_body =
   declare_modules [(name, print_body)] ~f:(fun _ f -> f ())

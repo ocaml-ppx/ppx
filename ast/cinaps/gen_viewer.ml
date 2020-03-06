@@ -161,23 +161,21 @@ let print_viewer ~what ~shortcuts (name, kind) =
   | _, (Unversioned _ | Versioned (Wrapper _)) ->
     ()
 
-let print_viewer_ml () =
+let print_viewer_ml version =
   Print.newline ();
-  let grammars = Astlib.History.versioned_grammars Astlib.history in
-  Ml.define_modules' (module Astlib.Version) grammars ~f:(fun version grammar ->
-    let shortcuts = Shortcut.Map.from_grammar grammar in
-    let version = Ml.module_name (Astlib.Version.to_string version) in
-    Print.println "open Versions.%s" version;
-    Print.println "include Loc_types";
-    To_concrete.define_conversion_failed ~version;
-    List.iter grammar ~f:(print_viewer ~what:`Impl ~shortcuts))
+  let grammar = Astlib.History.find_grammar Astlib.history ~version in
+  let shortcuts = Shortcut.Map.from_grammar grammar in
+  let version = Ml.module_name (Astlib.Version.to_string version) in
+  Print.println "open Versions.%s" version;
+  Print.println "include Viewer_common";
+  To_concrete.define_conversion_failed ~version;
+  List.iter grammar ~f:(print_viewer ~what:`Impl ~shortcuts)
 
-let print_viewer_mli () =
+let print_viewer_mli version =
   Print.newline ();
-  let grammars = Astlib.History.versioned_grammars Astlib.history in
-  Ml.declare_modules' (module Astlib.Version) grammars ~f:(fun version grammar ->
-    let shortcuts = Shortcut.Map.from_grammar grammar in
-    Print.println "open Versions";
-    Print.println "open %s" (Ml.module_name (Astlib.Version.to_string version));
-    Print.println "include LOC_TYPES";
-    List.iter grammar ~f:(print_viewer ~what:`Intf ~shortcuts))
+  let grammar = Astlib.History.find_grammar Astlib.history ~version in
+  let shortcuts = Shortcut.Map.from_grammar grammar in
+  Print.println "open Versions";
+  Print.println "open %s" (Ml.module_name (Astlib.Version.to_string version));
+  Print.println "include module type of Viewer_common";
+  List.iter grammar ~f:(print_viewer ~what:`Intf ~shortcuts)

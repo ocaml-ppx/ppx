@@ -263,7 +263,7 @@ module Structure = struct
         match alist with
         | [] -> f ()
         | (var, ty) :: rest ->
-          Print.println "Helpers.Option.bind (%s %s) ~f:(fun %s ->"
+          Print.println "Option.bind (%s %s) ~f:(fun %s ->"
             (ast_to_ty ~grammar ty)
             (Ml.id var)
             (Ml.id var);
@@ -278,7 +278,8 @@ module Structure = struct
     | Wrapper ty ->
       Print.println "let to_concrete t =";
       Print.indented (fun () ->
-        Print.println "match Node.to_node t ~version with";
+        Print.println
+          "match Node.to_node (Unversioned.Private.transparent t) ~version with";
         Print.println "| { name = %S; data } -> %s data"
           node_name
           (ast_to_ty ~grammar ty);
@@ -286,7 +287,8 @@ module Structure = struct
     | Record record ->
       Print.println "let to_concrete t =";
       Print.indented (fun () ->
-        Print.println "match Node.to_node t ~version with";
+        Print.println
+          "match Node.to_node (Unversioned.Private.transparent t) ~version with";
         Print.println "| { name = %S" node_name;
         Print.indented (fun () ->
           Print.println "; data = Record [| %s |]"
@@ -302,7 +304,8 @@ module Structure = struct
     | Variant variant ->
       Print.println "let to_concrete t =";
       Print.indented (fun () ->
-        Print.println "match Node.to_node t ~version with";
+        Print.println
+          "match Node.to_node (Unversioned.Private.transparent t) ~version with";
         Print.println "| { name = %S; data } ->" node_name;
         Print.indented (fun () ->
           Print.println "begin";
@@ -402,32 +405,32 @@ let print_ast_types grammars =
     Ml.declare_type type_name ~tvars
       (Line (Grammar.string_of_ty ~internal:true ty)))
 
-let print_versions_mli () =
+let print_unversioned_types () =
   Print.newline ();
   let grammars = Astlib.History.versioned_grammars Astlib.history in
-  print_ast_types grammars;
-  Print.newline ();
-  Ml.declare_modules' (module Astlib.Version) grammars ~f:(fun _ grammar ->
-    Ml.declare_modules grammar ~recursive:true ~f:(fun node_name kind ->
-      match (kind : Astlib.Grammar.kind) with
-      | Mono decl ->
-        Signature.print decl ~name:node_name ~tvars:[]
-      | Poly (tvars, decl) ->
-        Signature.print decl ~name:node_name ~tvars))
+  print_ast_types grammars
 
-let print_versions_ml () =
+let print_version_mli version =
+  let grammar = Astlib.History.find_grammar Astlib.history ~version in
   Print.newline ();
-  let grammars = Astlib.History.versioned_grammars Astlib.history in
-  print_ast_types grammars;
+  Ml.declare_modules grammar ~recursive:true ~f:(fun node_name kind ->
+    match (kind : Astlib.Grammar.kind) with
+    | Mono decl ->
+      Signature.print decl ~name:node_name ~tvars:[]
+    | Poly (tvars, decl) ->
+      Signature.print decl ~name:node_name ~tvars)
+
+let print_version_ml version =
+  let grammar = Astlib.History.find_grammar Astlib.history ~version in
   Print.newline ();
-  Ml.define_modules' (module Astlib.Version) grammars ~f:(fun version grammar ->
-    Print.println
-      "let version = Astlib.Version.of_string %S"
-      (Astlib.Version.to_string version);
-    Print.println "let node name data = Node.of_node ~version { name; data }";
-    Print.newline ();
-    Ml.define_modules grammar ~f:(fun node_name kind ->
-      match (kind : Astlib.Grammar.kind) with
-      | Mono decl -> Structure.print decl ~node_name ~tvars:[] ~grammar
-      | Poly (tvars, decl) ->
-        Structure.print decl ~node_name ~tvars ~grammar))
+  Print.println
+    "let version = Astlib.Version.of_string %S"
+    (Astlib.Version.to_string version);
+  Print.println
+    "let node name data = Unversioned.Private.opaque (Node.of_node ~version { name; data })";
+  Print.newline ();
+  Ml.define_modules grammar ~f:(fun node_name kind ->
+    match (kind : Astlib.Grammar.kind) with
+    | Mono decl -> Structure.print decl ~node_name ~tvars:[] ~grammar
+    | Poly (tvars, decl) ->
+      Structure.print decl ~node_name ~tvars ~grammar)
