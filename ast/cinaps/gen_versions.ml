@@ -407,7 +407,7 @@ let print_versions_mli () =
   let grammars = Astlib.History.versioned_grammars Astlib.history in
   print_ast_types grammars;
   Print.newline ();
-  Ml.declare_modules grammars ~f:(fun _ grammar ->
+  Ml.declare_modules' (module Astlib.Version) grammars ~f:(fun _ grammar ->
     Ml.declare_modules grammar ~recursive:true ~f:(fun node_name kind ->
       match (kind : Astlib.Grammar.kind) with
       | Mono decl ->
@@ -420,8 +420,10 @@ let print_versions_ml () =
   let grammars = Astlib.History.versioned_grammars Astlib.history in
   print_ast_types grammars;
   Print.newline ();
-  Ml.define_modules grammars ~f:(fun version grammar ->
-    Print.println "let version = %S" version;
+  Ml.define_modules' (module Astlib.Version) grammars ~f:(fun version grammar ->
+    Print.println
+      "let version = Astlib.Version.of_string %S"
+      (Astlib.Version.to_string version);
     Print.println "let node name data = Node.of_node ~version { name; data }";
     Print.newline ();
     Ml.define_modules grammar ~f:(fun node_name kind ->

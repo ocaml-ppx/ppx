@@ -298,7 +298,7 @@ let print_test name ~version =
           Print.indented (fun () ->
             Print.println
               "((new Traverse.%s.map)#%s"
-              (Ml.module_name version)
+              (Ml.module_name (Astlib.Version.to_string version))
               (Ml.id name);
             Print.indented (fun () ->
               Print.println
@@ -312,7 +312,7 @@ let print_test_ml () =
   Print.println "let config = { Test.default_config with test_count = 1_000 }";
   List.iter alist ~f:(fun (version, grammar) ->
     Print.newline ();
-    Ml.define_module version (fun () ->
+    Ml.define_module (Astlib.Version.to_string version) (fun () ->
       let have_printed = ref false in
       List.iter grammar ~f:(fun (name, kind) ->
         match (kind : Astlib.Grammar.kind) with

@@ -277,8 +277,8 @@ let builders name (grammar : Astlib.Grammar.kind) shortcut =
 let print_builder_ml () =
   Print.newline ();
   let grammars = Astlib.History.versioned_grammars Astlib.history in
-  Ml.define_modules grammars ~f:(fun version grammar ->
-    let version = Ml.module_name version in
+  Ml.define_modules' (module Astlib.Version) grammars ~f:(fun version grammar ->
+    let version = Ml.module_name (Astlib.Version.to_string version) in
     Print.println "open Versions.%s" version;
     let shortcut =
       let m = lazy (Shortcut.Map.from_grammar grammar) in
@@ -291,8 +291,8 @@ let print_builder_ml () =
 let print_builder_mli () =
   Print.newline ();
   let grammars = Astlib.History.versioned_grammars Astlib.history in
-  Ml.declare_modules grammars ~f:(fun version grammar ->
-    let version = Ml.module_name version in
+  Ml.declare_modules' (module Astlib.Version) grammars ~f:(fun version grammar ->
+    let version = Ml.module_name (Astlib.Version.to_string version) in
     let shortcut =
       let m = lazy (Shortcut.Map.from_grammar grammar) in
       fun name -> Shortcut.Map.find (Lazy.force m) name
