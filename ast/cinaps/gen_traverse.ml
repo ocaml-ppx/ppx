@@ -562,8 +562,8 @@ let define_virtual_traversal_classes grammar =
 let print_virtual_traverse_ml () =
   Print.newline ();
   let grammars = Astlib.History.versioned_grammars Astlib.history in
-  Ml.define_modules grammars ~f:(fun version grammar ->
-    let version = Ml.module_name version in
+  Ml.define_modules' (module Astlib.Version) grammars ~f:(fun version grammar ->
+    let version = Ml.module_name (Astlib.Version.to_string version) in
     Print.println "open Versions.%s" version;
     To_concrete.define_conversion_failed ~version;
     define_virtual_traversal_classes grammar)
@@ -571,8 +571,8 @@ let print_virtual_traverse_ml () =
 let print_virtual_traverse_mli () =
   Print.newline ();
   let grammars = Astlib.History.versioned_grammars Astlib.history in
-  Ml.declare_modules grammars ~f:(fun version grammar ->
-    Print.println "open Versions.%s" (Ml.module_name version);
+  Ml.declare_modules' (module Astlib.Version) grammars ~f:(fun version grammar ->
+    Print.println "open Versions.%s" (Ml.module_name (Astlib.Version.to_string version));
     declare_virtual_traversal_classes grammar)
 
 let inherits ~params ~class_name ~version =
@@ -594,8 +594,8 @@ let traversal_class ~impl ~traversal:{params; class_name; complete; _} ~version 
 let print_traverse_ml () =
   Print.newline ();
   let grammars = Astlib.History.versioned_grammars Astlib.history in
-  Ml.define_modules grammars ~f:(fun version _ ->
-    let version = Ml.module_name version in
+  Ml.define_modules' (module Astlib.Version) grammars ~f:(fun version _ ->
+    let version = Ml.module_name (Astlib.Version.to_string version) in
     List.iteri traversal_classes ~f:(fun i traversal ->
       if i <> 0 then Print.newline ();
       traversal_class ~impl:true ~traversal ~version))
@@ -603,8 +603,8 @@ let print_traverse_ml () =
 let print_traverse_mli () =
   Print.newline ();
   let grammars = Astlib.History.versioned_grammars Astlib.history in
-  Ml.declare_modules grammars ~f:(fun version _ ->
-    let version = Ml.module_name version in
+  Ml.declare_modules' (module Astlib.Version) grammars ~f:(fun version _ ->
+    let version = Ml.module_name (Astlib.Version.to_string version) in
     List.iteri traversal_classes ~f:(fun i traversal ->
       if i <> 0 then Print.newline ();
       traversal_class ~impl:false ~traversal ~version))

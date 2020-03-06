@@ -2,19 +2,19 @@ open StdLabels
 
 type 'a conversion_function
   =  'a Ast.node
-  -> to_node:('a -> version:string -> 'a Ast.node)
-  -> of_node:('a Ast.node -> version:string -> 'a)
+  -> to_node:('a -> version:Version.t -> 'a Ast.node)
+  -> of_node:('a Ast.node -> version:Version.t -> 'a)
   -> 'a Ast.node
 
 type conversion =
-  { src_version : string
-  ; dst_version : string
+  { src_version : Version.t
+  ; dst_version : Version.t
   ; f : 'a . 'a conversion_function
   }
 
 type t =
-  { index_table : (string, int) Hashtbl.t
-  ; versions : string array
+  { index_table : (Version.t, int) Hashtbl.t
+  ; versions : Version.t array
   ; grammars : Grammar.t array
   ; of_nexts : conversion array
   ; to_nexts : conversion array
@@ -23,7 +23,8 @@ type t =
 let lookup_version_index index_table ~version =
   match Hashtbl.find_opt index_table version with
   | Some index -> index
-  | None -> failwith (Printf.sprintf "unknown AST version: %s" version)
+  | None ->
+    failwith (Printf.sprintf "unknown AST version: %s" (Version.to_string version))
 
 let version_index t ~version =
   lookup_version_index t.index_table ~version
@@ -50,8 +51,8 @@ let create ~versioned_grammars ~conversions =
        | Some _ ->
          failwith
            (Printf.sprintf "multiple conversions from %s to %s"
-              conversion.src_version
-              conversion.dst_version))
+              (Version.to_string conversion.src_version)
+              (Version.to_string conversion.dst_version)))
     else if dst_index + 1 = src_index
     then
       (match of_nexts.(dst_index) with
@@ -59,13 +60,13 @@ let create ~versioned_grammars ~conversions =
        | Some _ ->
          failwith
            (Printf.sprintf "multiple conversions from %s to %s"
-              conversion.src_version
-              conversion.dst_version))
+              (Version.to_string conversion.src_version)
+              (Version.to_string conversion.dst_version)))
     else
       failwith
         (Printf.sprintf "conversion between non-adjacent versions %s and %s"
-           conversion.src_version
-           conversion.dst_version));
+           (Version.to_string conversion.src_version)
+           (Version.to_string conversion.dst_version)));
   let of_nexts =
     Array.mapi of_nexts ~f:(fun dst_index option ->
       match option with
@@ -73,8 +74,8 @@ let create ~versioned_grammars ~conversions =
       | None ->
         failwith
           (Printf.sprintf "no conversion from %s to %s"
-             versions.(dst_index + 1)
-             versions.(dst_index)))
+             (Version.to_string versions.(dst_index + 1))
+             (Version.to_string versions.(dst_index))))
   in
   let to_nexts =
     Array.mapi to_nexts ~f:(fun src_index option ->
@@ -83,8 +84,8 @@ let create ~versioned_grammars ~conversions =
       | None ->
         failwith
           (Printf.sprintf "no conversion from %s to %s"
-             versions.(src_index)
-             versions.(src_index + 1)))
+             (Version.to_string versions.(src_index))
+             (Version.to_string versions.(src_index + 1))))
   in
   { index_table
   ; versions

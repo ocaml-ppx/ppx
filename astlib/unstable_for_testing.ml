@@ -1,6 +1,6 @@
 open StdLabels
 
-let version = "unstable_for_testing"
+let version = Version.of_string "unstable_for_testing"
 
 module Stable = Latest_version
 

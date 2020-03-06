@@ -19,11 +19,11 @@ let type_name name ~view =
   match view with
   | `ast ->
     Printf.sprintf "Versions.%s.%s.t"
-      (Ml.module_name version)
+      (Ml.module_name (Astlib.Version.to_string version))
       (Ml.module_name name)
   | `concrete ->
     Printf.sprintf "Versions.%s.%s.concrete"
-      (Ml.module_name version)
+      (Ml.module_name (Astlib.Version.to_string version))
       (Ml.module_name name)
   | `parsetree ->
     Printf.sprintf "Compiler_types.%s" (Ml.id name)
@@ -245,7 +245,7 @@ let print_conversion_impl decl ~node_name ~env ~is_initial =
       (Name.make ["ast_of"; node_name] (Poly_env.args env));
     Print.indented (fun () ->
       Print.println "Versions.%s.%s.%s (%s x)"
-        (Ml.module_name version)
+        (Ml.module_name (Astlib.Version.to_string version))
         (Ml.module_name node_name)
         "of_concrete"
         (Name.make ["concrete_of"; node_name] (Poly_env.args env)));
@@ -255,7 +255,7 @@ let print_conversion_impl decl ~node_name ~env ~is_initial =
     Print.println "and %s x =" (Name.make ["ast_to"; node_name] (Poly_env.args env));
     Print.indented (fun () ->
       Print.println "let option = Versions.%s.%s.%s x in"
-        (Ml.module_name version)
+        (Ml.module_name (Astlib.Version.to_string version))
         (Ml.module_name node_name)
         "to_concrete";
       Print.println "let concrete =";

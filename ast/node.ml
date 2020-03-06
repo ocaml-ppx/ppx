@@ -1,4 +1,4 @@
-type t = { version : string; node : t Astlib.Ast.node }
+type t = { version : Astlib.Version.t; node : t Astlib.Ast.node }
 
 let version t = t.version
 

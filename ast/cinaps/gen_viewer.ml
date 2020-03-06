@@ -164,9 +164,9 @@ let print_viewer ~what ~shortcuts (name, kind) =
 let print_viewer_ml () =
   Print.newline ();
   let grammars = Astlib.History.versioned_grammars Astlib.history in
-  Ml.define_modules grammars ~f:(fun version grammar ->
+  Ml.define_modules' (module Astlib.Version) grammars ~f:(fun version grammar ->
     let shortcuts = Shortcut.Map.from_grammar grammar in
-    let version = Ml.module_name version in
+    let version = Ml.module_name (Astlib.Version.to_string version) in
     Print.println "open Versions.%s" version;
     Print.println "include Loc_types";
     To_concrete.define_conversion_failed ~version;
@@ -175,9 +175,9 @@ let print_viewer_ml () =
 let print_viewer_mli () =
   Print.newline ();
   let grammars = Astlib.History.versioned_grammars Astlib.history in
-  Ml.declare_modules grammars ~f:(fun version grammar ->
+  Ml.declare_modules' (module Astlib.Version) grammars ~f:(fun version grammar ->
     let shortcuts = Shortcut.Map.from_grammar grammar in
     Print.println "open Versions";
-    Print.println "open %s" (Ml.module_name version);
+    Print.println "open %s" (Ml.module_name (Astlib.Version.to_string version));
     Print.println "include LOC_TYPES";
     List.iter grammar ~f:(print_viewer ~what:`Intf ~shortcuts))

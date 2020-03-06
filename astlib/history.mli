@@ -2,13 +2,13 @@ include Astlib_intf.History
 
 type 'a conversion_function
   = 'a Ast.node
-  -> to_node:('a -> version:string -> 'a Ast.node)
-  -> of_node:('a Ast.node -> version:string -> 'a)
+  -> to_node:('a -> version:Version.t -> 'a Ast.node)
+  -> of_node:('a Ast.node -> version:Version.t -> 'a)
   -> 'a Ast.node
 
 type conversion =
-  { src_version : string
-  ; dst_version : string
+  { src_version : Version.t
+  ; dst_version : Version.t
   ; f : 'a . 'a conversion_function
   }
 
@@ -16,6 +16,6 @@ type conversion =
     [conversions] contains exactly one up-conversion and one down-conversion for each
     consecutive pair of versions. Raises otherwise. *)
 val create
-  :  versioned_grammars : (string * Grammar.t) list
+  :  versioned_grammars : (Version.t * Grammar.t) list
   -> conversions : conversion list
   -> t
