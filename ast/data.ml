@@ -46,7 +46,7 @@ end
 
 type t = Node.t Astlib.Ast.data
 
-let of_node x : t = Node x
+let of_node x : t = Node (Unversioned.Private.transparent x)
 let of_bool x : t = Bool x
 let of_char x : t = Char x
 let of_int x : t = Int x
@@ -59,7 +59,7 @@ let of_tuple2 (x1, x2) ~f1 ~f2 : t = Tuple [|f1 x1; f2 x2|]
 let of_tuple3 (x1, x2, x3) ~f1 ~f2 ~f3 : t = Tuple [|f1 x1; f2 x2; f3 x3|]
 let of_tuple4 (x1, x2, x3, x4) ~f1 ~f2 ~f3 ~f4 : t = Tuple [|f1 x1; f2 x2; f3 x3; f4 x4|]
 
-let to_node : t -> _ = function Node x -> Some x | _ -> None
+let to_node : t -> _ = function Node x -> Some (Unversioned.Private.opaque x) | _ -> None
 let to_bool : t -> _ = function Bool x -> Some x | _ -> None
 let to_char : t -> _ = function Char x -> Some x | _ -> None
 let to_int : t -> _ = function Int x -> Some x | _ -> None

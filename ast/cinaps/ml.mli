@@ -28,26 +28,6 @@ val declare_modules
   -> f:(string -> 'a -> unit)
   -> unit
 
-module type To_string = sig
-  type t
-
-  val to_string : t -> string
-end
-
-val define_modules'
-  :  (module To_string with type t = 'a)
-  -> ?recursive:bool
-  -> ('a * 'b) list
-  -> f:('a -> 'b -> unit)
-  -> unit
-
-val declare_modules'
-  :  (module To_string with type t = 'a)
-  -> ?recursive:bool
-  -> ('a * 'b) list
-  -> f:('a -> 'b -> unit)
-  -> unit
-
 val print_record_type : (string * 'a) list -> f:('a -> string) -> unit
 
 val print_array : 'a list -> f:(int -> 'a -> string) -> unit
