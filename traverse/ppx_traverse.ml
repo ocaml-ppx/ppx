@@ -161,7 +161,7 @@ module Backends = struct
     let iter = object
       inherit iter as super
       method! expression = function%view
-        | Pexp_ident (Longident_loc { txt = Lident id; _ })
+        | Eident (Longident_loc { txt = Lident id; _ })
           when String.equal id var ->
           Exn.raise_notrace Found
         | e -> super#expression e
@@ -316,8 +316,8 @@ let method_name = function%view
 
 let rec type_expr_mapper ~(what:what) te =
   match%view te with
-  | { ptyp_loc=loc; _ } ->
-    match%view te with
+  | { ptyp_loc=loc; ptyp_desc; _ } ->
+    match%view ptyp_desc with
     | Ptyp_var s -> evar ~loc ("_" ^ s)
     | Ptyp_tuple tes ->
       let vars = vars_of_list tes ~get_loc:(function%view { ptyp_loc; _ } -> ptyp_loc) in
@@ -381,7 +381,7 @@ let erase_type_variables = object
 
   method! core_type core_type =
     match%view core_type with
-    | Ptyp_var _ [@view? {ptyp_loc = loc; _}] -> ptyp_any ~loc
+    | { ptyp_loc = loc; ptyp_desc = Ptyp_var _; _ } -> ptyp_any ~loc
     | x -> super#core_type x
 end
 
@@ -446,9 +446,9 @@ let gen_mapper ~(what:what) td =
     in
     List.fold_right ptype_params ~init:body ~f:(fun (ty, _) acc ->
       match%view ty with
-      | Ptyp_var s [@view? { ptyp_loc = loc }] ->
+      | { ptyp_loc = loc; ptyp_desc = Ptyp_var s; _ } ->
         pexp_fun ~loc Arg_label.nolabel None (pvar ~loc ("_" ^ s)) acc
-      | _ [@view? { ptyp_loc = loc }] ->
+      | { ptyp_loc = loc; _ } ->
         pexp_fun ~loc Arg_label.nolabel None (ppat_any ~loc) acc)
 ;;
 
@@ -464,8 +464,8 @@ let type_deps =
     method! core_type t acc =
       let acc =
         match%view t with
-        | Ptyp_constr (Longident_loc {txt; _}, vars) ->
-          Longident_map.add acc txt (List.length vars)
+        | Tconstr (Longident_loc id, vars) ->
+          Longident_map.add acc (Loc.txt id) (List.length vars)
         | _ -> acc
       in
       super#core_type t acc
@@ -495,7 +495,7 @@ let lift_virtual_methods ~loc methods =
 
     method! expression x acc =
       match%view x with
-      | Pexp_send (_, ({ txt = ("tuple"|"record"|"constr"|"other" as s); loc = _; })) ->
+      | Esend (_, ({ txt = "tuple"|"record"|"constr"|"other" as s; loc = _; })) ->
         String.Set.add acc s
       | _ -> super#expression x acc
   end in
@@ -511,15 +511,14 @@ let lift_virtual_methods ~loc methods =
         end
       ]
     with
-    | Pstr_class
-        [ Class_declaration
-            { pci_expr = Pcl_structure { pcstr_fields = l; _ } ; _ } ] ->
+    | Strclass
+        [ Class_declaration { pci_expr = Cestructure { pcstr_fields = l; _ } ; _ } ] ->
       l
     | _ -> assert false
   in
   List.filter all_virtual_methods ~f:(fun m ->
     match%view m with
-    | Pcf_method ({txt = s; _}, _, _) -> String.Set.mem used s
+    | Cfmethod (s, _, _) -> String.Set.mem used (Loc.txt s)
     | _ -> false)
 
 let map_lident id ~f =

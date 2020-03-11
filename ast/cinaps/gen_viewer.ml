@@ -14,6 +14,25 @@ let wrapper_types grammar =
       | Poly (targs, Wrapper ty) -> String.Map.add acc name (targs, ty)
       | _ -> acc)
 
+let shortcut_viewer_name ~shortcut cname =
+  let _, base_name = String.lsplit2_exn ~on:'_' cname in
+  let prefix =
+    match shortcut.Shortcut.outer_record with
+    | "expression" -> "e"
+    | "pattern" -> "p"
+    | "core_type" -> "t"
+    | "structure_item" -> "str"
+    | "signature_item" -> "sig"
+    | "module_expr" -> "me"
+    | "module_type" -> "mt"
+    | "class_field" -> "cf"
+    | "class_expr" -> "ce"
+    | "class_type" -> "ct"
+    | "class_type_field" -> "ctf"
+    | s -> failwith "No prefix for shortcut: " ^ s
+  in
+  variant_viewer_name (prefix ^ base_name)
+
 module type VIEWER_PRINTER = sig
   val print_wrapper_viewer :
     wrapper_types: (string list * Astlib.Grammar.ty) String.Map.t ->
@@ -98,33 +117,48 @@ module Structure : VIEWER_PRINTER = struct
       print_to_concrete ~shortcut:None name "value";
       Print.println "view concrete.%s.%s" (Ml.module_name name) (Ml.id fname))
 
+  let print_variant_view_body ~name ~cname cargs =
+    match cargs with
+    | None ->
+      Print.println "match concrete with";
+      Print.println "| %s.%s -> View.ok" (Ml.module_name name) (Ml.tag cname);
+      Print.println "| _ -> View.error"
+    | Some tyl ->
+      let args = tuple tyl in
+      Print.println "match concrete with";
+      Print.println "| %s.%s %s -> view %s"
+        (Ml.module_name name) (Ml.tag cname) args args;
+      Print.println "| _ -> View.error"
+
   let print_variant_viewer ~name ~shortcut (cname, clause) =
-    match (clause : Astlib.Grammar.clause) with
-    | Empty ->
+    let view_args, cargs =
+      match (clause : Astlib.Grammar.clause) with
+      | Empty -> "value", None
+      | Tuple tyl -> "view value", Some tyl
+      | Record _fields ->
+        (* There are no inline records atm in the AST so it's okay to skip this.
+           If some were added in the future, we'd need either:
+           1. no sharing of field names accross different variant types and
+           within a variant type, fields with the same name also have the same
+           type.
+           2. some deeper changes to ppx_view *)
+        assert false
+    in
+    (* The regular view function *)
+    Print.newline ();
+    Print.println "let %s %s =" (variant_viewer_name cname) view_args;
+    Print.indented (fun () ->
+      print_to_concrete ~shortcut:None name "value";
+      print_variant_view_body ~name ~cname cargs);
+    Option.iter shortcut ~f:(fun shortcut ->
+      (* The shortcut view *)
       Print.newline ();
-      Print.println "let %s value =" (variant_viewer_name cname);
-      Print.indented (fun () ->
-        print_to_concrete ~shortcut name "value";
-        Print.println "match concrete with";
-        Print.println "| %s.%s -> View.ok" (Ml.module_name name) (Ml.tag cname);
-        Print.println "| _ -> View.error")
-    | Tuple tyl ->
-      Print.newline ();
-      Print.println "let %s view value =" (variant_viewer_name cname);
-      Print.indented (fun () ->
-        let args = tuple tyl in
-        print_to_concrete ~shortcut name "value";
-        Print.println "match concrete with";
-        Print.println "| %s.%s %s -> view %s"
-          (Ml.module_name name) (Ml.tag cname) args args;
-        Print.println "| _ -> View.error")
-    | Record _fields ->
-      (* There are no inline records atm in the AST so it's okay to skip this.
-         If some were added in the future, we'd need either:
-         1. no sharing of field names accross different variant types and within
-         a variant type, fields with the same name also have the same type.
-         2. some deeper changes to ppx_view *)
-      assert false
+      Print.println "let %s %s ="
+        (shortcut_viewer_name ~shortcut cname)
+        view_args;
+        Print.indented (fun () ->
+          print_to_concrete ~shortcut:(Some shortcut) name "value";
+          print_variant_view_body ~name ~cname cargs))
 end
 
 module Signature : VIEWER_PRINTER = struct
@@ -133,19 +167,22 @@ module Signature : VIEWER_PRINTER = struct
 
   let t_type node_name = string_of_ty (Name node_name)
 
-  let value_type ~targs ~shortcut name =
-    match targs, (shortcut : Shortcut.t option) with
-    | [], None -> t_type name
-    | _, None ->
+  let value_type ~targs name =
+    match targs with
+    | [] -> t_type name
+    | _ ->
       let args = List.map ~f:Ml.tvar targs in
       let node_type = Ml.poly_inst ~args "node" in
       Printf.sprintf "%s %s" node_type (t_type name)
-    | [], Some {outer_record; _} -> (t_type outer_record)
-    | _, Some _ ->
+
+  let shortcut_value_type ~targs shortcut =
+    match targs with
+    | [] -> t_type shortcut.Shortcut.outer_record
+    | _ ->
       (* If we ever have shortcuts to polymorphic types we'll need to explicitly
          deal with it.
          In particular we'll need to know if [outer_record] is polymorphic
-         over the the same type argument or if it expects a specific instance
+         over the same type argument or if it expects a specific instance
          of [inner_variant]. *)
       assert false
 
@@ -199,7 +236,7 @@ module Signature : VIEWER_PRINTER = struct
 
   let print_wrapper_viewer ~wrapper_types ~targs ~name ty =
     let in_, out = "'i", "'o" in
-    let value_type = value_type ~targs ~shortcut:None name in
+    let value_type = value_type ~targs name in
     let view_type =
       let ty = unwrapped_view_type ~wrapper_types ~targs ty in
       view_type ~targs ty
@@ -210,7 +247,7 @@ module Signature : VIEWER_PRINTER = struct
       (view_t value_type ~in_ ~out)
 
   let print_field_viewer ~targs ~name (fname, ty) =
-    let value_type = value_type ~targs ~shortcut:None name in
+    let value_type = value_type ~targs name in
     let view_type = view_type ~targs ty in
     Print.newline ();
     let in_, out = "'i", "'o" in
@@ -219,16 +256,13 @@ module Signature : VIEWER_PRINTER = struct
       (view_t view_type ~in_ ~out)
       (view_t value_type ~in_ ~out)
 
-  let print_variant_viewer ~name ~shortcut (cname, clause) =
-    let value_type = value_type ~targs:[] ~shortcut name in
-    match (clause : Astlib.Grammar.clause) with
-    | Empty ->
-      Print.newline ();
+  let print_variant_view_sig ~name ~type_ cargs =
+    match cargs with
+    | [] ->
       let in_, out = "'a", "'a" in
       Print.println "val %s : %s"
-        (variant_viewer_name cname)
-        (view_t value_type ~in_ ~out)
-    | Tuple tyl ->
+        name (view_t type_ ~in_ ~out)
+    | tyl ->
       let in_, out = "'i", "'o" in
       let arg_type : Astlib.Grammar.ty =
         match tyl with
@@ -236,10 +270,31 @@ module Signature : VIEWER_PRINTER = struct
         | _ -> Tuple tyl
       in
       Print.println "val %s : %s -> %s"
-        (variant_viewer_name cname)
+        name
         (view_t (string_of_ty arg_type) ~in_ ~out)
-        (view_t value_type ~in_ ~out)
-    | Record _fields -> ()
+        (view_t type_ ~in_ ~out)
+
+  let print_variant_viewer ~name ~shortcut (cname, clause) =
+    let cargs =
+      match (clause : Astlib.Grammar.clause) with
+      | Empty -> []
+      | Tuple tyl -> tyl
+      | Record _ ->
+        (* We currently don't handle constructors with inline record arguments *)
+        assert false
+    in
+    Print.newline ();
+    print_variant_view_sig
+      ~name:(variant_viewer_name cname)
+      ~type_:(value_type ~targs:[] name)
+      cargs;
+    Option.iter shortcut ~f:(fun shortcut ->
+      Print.newline ();
+      print_variant_view_sig
+        ~name:(shortcut_viewer_name ~shortcut cname)
+        ~type_:(shortcut_value_type ~targs:[] shortcut)
+        cargs)
+
 end
 
 let print_viewer ~what ~shortcuts ~wrapper_types (name, kind) =

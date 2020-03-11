@@ -25,7 +25,7 @@ let class_infos =
 
 let%expect_test "match failure" =
   begin try match%view int 3 with
-    | Pexp_constant (Pconst_integer ("2", _)) ->
+    | Econstant (Pconst_integer ("2", _)) ->
       print_string "matched"
   with e ->
     print_string (Printexc.to_string e)
@@ -33,9 +33,9 @@ let%expect_test "match failure" =
 
 let%expect_test "match simple" =
   let match_3 = function%view
-    | Pexp_constant (Pconst_integer ("3", _)) ->
+    | Econstant (Pconst_integer ("3", _)) ->
       print_string "3"
-    | Pexp_tuple _ ->
+    | Etuple _ ->
       print_string "tuple"
     | _ ->
       print_string "KO"
@@ -46,7 +46,7 @@ let%expect_test "match simple" =
 
 let%expect_test "match with guard" =
   let match_3 = function%view
-    | Pexp_constant (Pconst_integer (s, _)) when s = "3" ->
+    | Econstant (Pconst_integer (s, _)) when s = "3" ->
       print_string "3"
     | _ ->
       print_string "KO"
@@ -57,8 +57,8 @@ let%expect_test "match with guard" =
 
 let%expect_test "match or-pattern" =
   let match_3 = function%view
-    | Pexp_constant (Pconst_integer ("3",  _))
-    | Pexp_constant (Pconst_float   ("3.", _)) ->
+    | Econstant (Pconst_integer ("3",  _))
+    | Econstant (Pconst_float   ("3.", _)) ->
       print_string "3"
     | _ ->
       print_string "KO"
@@ -71,8 +71,8 @@ let%expect_test "match or-pattern" =
 
 let%expect_test "match or-pattern with variable" =
   let match_3xyz = function%view
-    | Pexp_constant (Pconst_integer (s, _))
-    | Pexp_constant (Pconst_float   (s, _)) when s.[0] = '3' ->
+    | Econstant (Pconst_integer (s, _))
+    | Econstant (Pconst_float   (s, _)) when s.[0] = '3' ->
       print_string "3"
     | _ ->
       print_string "KO"
@@ -85,7 +85,7 @@ let%expect_test "match or-pattern with variable" =
 
 let%expect_test "match deep or-pattern" =
   let match_3_4 = function%view
-    | Pexp_constant (Pconst_integer (("3" | "4"),  _)) ->
+    | Econstant (Pconst_integer (("3" | "4"),  _)) ->
       print_string "34"
     | _ ->
       print_string "KO"
@@ -97,7 +97,7 @@ let%expect_test "match deep or-pattern" =
 
 let%expect_test "match with alias" =
   let match_3 = function%view
-    | Pexp_constant (Pconst_integer ("3" as s,  _)) ->
+    | Econstant (Pconst_integer ("3" as s,  _)) ->
       print_string s
     | _ ->
       print_string "KO"
@@ -108,7 +108,7 @@ let%expect_test "match with alias" =
 
 let%expect_test "match with record" =
   let match_ident = function%view
-    | Pexp_ident (Longident_loc { txt = Lident id; _}) -> print_string id
+    | Eident (Longident_loc { txt = Lident id; _}) -> print_string id
     | _ -> print_string "KO"
   in
   begin
@@ -120,11 +120,19 @@ let%expect_test "match with polymorphic AST type" =
    | { pci_virt = Virtual
      ; pci_params = []
      ; pci_name = {txt = "name"; _}
-     ; pci_expr = Pcty_extension _ext
+     ; pci_expr = Ctextension _ext
      ; _
      } ->
      print_string "OK"
    | _ -> print_string "KO");
+  [%expect {|OK|}]
+
+let%expect_test "non shortcut desc" =
+  (match%view (int 3) with
+   | {pexp_desc = Pexp_constant (Pconst_integer ("3", None)); _} ->
+     print_string "OK"
+   | _ ->
+     print_string "KO");
   [%expect {|OK|}]
 
 type custom = Int of int | Unit of unit | Nothing

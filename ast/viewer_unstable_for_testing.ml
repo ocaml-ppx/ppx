@@ -141,6 +141,16 @@ let pvb_pat'match view value =
   view concrete.Value_binding.pvb_pat
 
 let pstr_extension'const view value =
+  let concrete =
+    match Structure_item_desc.to_concrete value with
+    | None -> conversion_failed "structure_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Structure_item_desc.Pstr_extension (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let strextension'const view value =
   let parent_concrete =
     match Structure_item.to_concrete value with
     | None -> conversion_failed "structure_item"
@@ -157,6 +167,16 @@ let pstr_extension'const view value =
   | _ -> View.error
 
 let pstr_attribute'const view value =
+  let concrete =
+    match Structure_item_desc.to_concrete value with
+    | None -> conversion_failed "structure_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Structure_item_desc.Pstr_attribute arg -> view arg
+  | _ -> View.error
+
+let strattribute'const view value =
   let parent_concrete =
     match Structure_item.to_concrete value with
     | None -> conversion_failed "structure_item"
@@ -173,6 +193,16 @@ let pstr_attribute'const view value =
   | _ -> View.error
 
 let pstr_include'const view value =
+  let concrete =
+    match Structure_item_desc.to_concrete value with
+    | None -> conversion_failed "structure_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Structure_item_desc.Pstr_include arg -> view arg
+  | _ -> View.error
+
+let strinclude'const view value =
   let parent_concrete =
     match Structure_item.to_concrete value with
     | None -> conversion_failed "structure_item"
@@ -189,6 +219,16 @@ let pstr_include'const view value =
   | _ -> View.error
 
 let pstr_class_type'const view value =
+  let concrete =
+    match Structure_item_desc.to_concrete value with
+    | None -> conversion_failed "structure_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Structure_item_desc.Pstr_class_type arg -> view arg
+  | _ -> View.error
+
+let strclass_type'const view value =
   let parent_concrete =
     match Structure_item.to_concrete value with
     | None -> conversion_failed "structure_item"
@@ -205,6 +245,16 @@ let pstr_class_type'const view value =
   | _ -> View.error
 
 let pstr_class'const view value =
+  let concrete =
+    match Structure_item_desc.to_concrete value with
+    | None -> conversion_failed "structure_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Structure_item_desc.Pstr_class arg -> view arg
+  | _ -> View.error
+
+let strclass'const view value =
   let parent_concrete =
     match Structure_item.to_concrete value with
     | None -> conversion_failed "structure_item"
@@ -221,6 +271,16 @@ let pstr_class'const view value =
   | _ -> View.error
 
 let pstr_open'const view value =
+  let concrete =
+    match Structure_item_desc.to_concrete value with
+    | None -> conversion_failed "structure_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Structure_item_desc.Pstr_open arg -> view arg
+  | _ -> View.error
+
+let stropen'const view value =
   let parent_concrete =
     match Structure_item.to_concrete value with
     | None -> conversion_failed "structure_item"
@@ -237,6 +297,16 @@ let pstr_open'const view value =
   | _ -> View.error
 
 let pstr_modtype'const view value =
+  let concrete =
+    match Structure_item_desc.to_concrete value with
+    | None -> conversion_failed "structure_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Structure_item_desc.Pstr_modtype arg -> view arg
+  | _ -> View.error
+
+let strmodtype'const view value =
   let parent_concrete =
     match Structure_item.to_concrete value with
     | None -> conversion_failed "structure_item"
@@ -253,6 +323,16 @@ let pstr_modtype'const view value =
   | _ -> View.error
 
 let pstr_recmodule'const view value =
+  let concrete =
+    match Structure_item_desc.to_concrete value with
+    | None -> conversion_failed "structure_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Structure_item_desc.Pstr_recmodule arg -> view arg
+  | _ -> View.error
+
+let strrecmodule'const view value =
   let parent_concrete =
     match Structure_item.to_concrete value with
     | None -> conversion_failed "structure_item"
@@ -269,6 +349,16 @@ let pstr_recmodule'const view value =
   | _ -> View.error
 
 let pstr_module'const view value =
+  let concrete =
+    match Structure_item_desc.to_concrete value with
+    | None -> conversion_failed "structure_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Structure_item_desc.Pstr_module arg -> view arg
+  | _ -> View.error
+
+let strmodule'const view value =
   let parent_concrete =
     match Structure_item.to_concrete value with
     | None -> conversion_failed "structure_item"
@@ -285,6 +375,16 @@ let pstr_module'const view value =
   | _ -> View.error
 
 let pstr_exception'const view value =
+  let concrete =
+    match Structure_item_desc.to_concrete value with
+    | None -> conversion_failed "structure_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Structure_item_desc.Pstr_exception arg -> view arg
+  | _ -> View.error
+
+let strexception'const view value =
   let parent_concrete =
     match Structure_item.to_concrete value with
     | None -> conversion_failed "structure_item"
@@ -301,6 +401,16 @@ let pstr_exception'const view value =
   | _ -> View.error
 
 let pstr_typext'const view value =
+  let concrete =
+    match Structure_item_desc.to_concrete value with
+    | None -> conversion_failed "structure_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Structure_item_desc.Pstr_typext arg -> view arg
+  | _ -> View.error
+
+let strtypext'const view value =
   let parent_concrete =
     match Structure_item.to_concrete value with
     | None -> conversion_failed "structure_item"
@@ -317,6 +427,16 @@ let pstr_typext'const view value =
   | _ -> View.error
 
 let pstr_type'const view value =
+  let concrete =
+    match Structure_item_desc.to_concrete value with
+    | None -> conversion_failed "structure_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Structure_item_desc.Pstr_type (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let strtype'const view value =
   let parent_concrete =
     match Structure_item.to_concrete value with
     | None -> conversion_failed "structure_item"
@@ -333,6 +453,16 @@ let pstr_type'const view value =
   | _ -> View.error
 
 let pstr_primitive'const view value =
+  let concrete =
+    match Structure_item_desc.to_concrete value with
+    | None -> conversion_failed "structure_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Structure_item_desc.Pstr_primitive arg -> view arg
+  | _ -> View.error
+
+let strprimitive'const view value =
   let parent_concrete =
     match Structure_item.to_concrete value with
     | None -> conversion_failed "structure_item"
@@ -349,6 +479,16 @@ let pstr_primitive'const view value =
   | _ -> View.error
 
 let pstr_value'const view value =
+  let concrete =
+    match Structure_item_desc.to_concrete value with
+    | None -> conversion_failed "structure_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Structure_item_desc.Pstr_value (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let strvalue'const view value =
   let parent_concrete =
     match Structure_item.to_concrete value with
     | None -> conversion_failed "structure_item"
@@ -365,6 +505,16 @@ let pstr_value'const view value =
   | _ -> View.error
 
 let pstr_eval'const view value =
+  let concrete =
+    match Structure_item_desc.to_concrete value with
+    | None -> conversion_failed "structure_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Structure_item_desc.Pstr_eval (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let streval'const view value =
   let parent_concrete =
     match Structure_item.to_concrete value with
     | None -> conversion_failed "structure_item"
@@ -405,6 +555,16 @@ let structure'const view value =
   view concrete0
 
 let pmod_extension'const view value =
+  let concrete =
+    match Module_expr_desc.to_concrete value with
+    | None -> conversion_failed "module_expr_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Module_expr_desc.Pmod_extension arg -> view arg
+  | _ -> View.error
+
+let meextension'const view value =
   let parent_concrete =
     match Module_expr.to_concrete value with
     | None -> conversion_failed "module_expr"
@@ -421,6 +581,16 @@ let pmod_extension'const view value =
   | _ -> View.error
 
 let pmod_unpack'const view value =
+  let concrete =
+    match Module_expr_desc.to_concrete value with
+    | None -> conversion_failed "module_expr_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Module_expr_desc.Pmod_unpack arg -> view arg
+  | _ -> View.error
+
+let meunpack'const view value =
   let parent_concrete =
     match Module_expr.to_concrete value with
     | None -> conversion_failed "module_expr"
@@ -437,6 +607,16 @@ let pmod_unpack'const view value =
   | _ -> View.error
 
 let pmod_constraint'const view value =
+  let concrete =
+    match Module_expr_desc.to_concrete value with
+    | None -> conversion_failed "module_expr_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Module_expr_desc.Pmod_constraint (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let meconstraint'const view value =
   let parent_concrete =
     match Module_expr.to_concrete value with
     | None -> conversion_failed "module_expr"
@@ -453,6 +633,16 @@ let pmod_constraint'const view value =
   | _ -> View.error
 
 let pmod_apply'const view value =
+  let concrete =
+    match Module_expr_desc.to_concrete value with
+    | None -> conversion_failed "module_expr_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Module_expr_desc.Pmod_apply (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let meapply'const view value =
   let parent_concrete =
     match Module_expr.to_concrete value with
     | None -> conversion_failed "module_expr"
@@ -469,6 +659,16 @@ let pmod_apply'const view value =
   | _ -> View.error
 
 let pmod_functor'const view value =
+  let concrete =
+    match Module_expr_desc.to_concrete value with
+    | None -> conversion_failed "module_expr_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Module_expr_desc.Pmod_functor (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
+  | _ -> View.error
+
+let mefunctor'const view value =
   let parent_concrete =
     match Module_expr.to_concrete value with
     | None -> conversion_failed "module_expr"
@@ -485,6 +685,16 @@ let pmod_functor'const view value =
   | _ -> View.error
 
 let pmod_structure'const view value =
+  let concrete =
+    match Module_expr_desc.to_concrete value with
+    | None -> conversion_failed "module_expr_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Module_expr_desc.Pmod_structure arg -> view arg
+  | _ -> View.error
+
+let mestructure'const view value =
   let parent_concrete =
     match Module_expr.to_concrete value with
     | None -> conversion_failed "module_expr"
@@ -501,6 +711,16 @@ let pmod_structure'const view value =
   | _ -> View.error
 
 let pmod_ident'const view value =
+  let concrete =
+    match Module_expr_desc.to_concrete value with
+    | None -> conversion_failed "module_expr_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Module_expr_desc.Pmod_ident arg -> view arg
+  | _ -> View.error
+
+let meident'const view value =
   let parent_concrete =
     match Module_expr.to_concrete value with
     | None -> conversion_failed "module_expr"
@@ -717,6 +937,16 @@ let pmd_name'match view value =
   view concrete.Module_declaration.pmd_name
 
 let psig_extension'const view value =
+  let concrete =
+    match Signature_item_desc.to_concrete value with
+    | None -> conversion_failed "signature_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Signature_item_desc.Psig_extension (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let sigextension'const view value =
   let parent_concrete =
     match Signature_item.to_concrete value with
     | None -> conversion_failed "signature_item"
@@ -733,6 +963,16 @@ let psig_extension'const view value =
   | _ -> View.error
 
 let psig_attribute'const view value =
+  let concrete =
+    match Signature_item_desc.to_concrete value with
+    | None -> conversion_failed "signature_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Signature_item_desc.Psig_attribute arg -> view arg
+  | _ -> View.error
+
+let sigattribute'const view value =
   let parent_concrete =
     match Signature_item.to_concrete value with
     | None -> conversion_failed "signature_item"
@@ -749,6 +989,16 @@ let psig_attribute'const view value =
   | _ -> View.error
 
 let psig_class_type'const view value =
+  let concrete =
+    match Signature_item_desc.to_concrete value with
+    | None -> conversion_failed "signature_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Signature_item_desc.Psig_class_type arg -> view arg
+  | _ -> View.error
+
+let sigclass_type'const view value =
   let parent_concrete =
     match Signature_item.to_concrete value with
     | None -> conversion_failed "signature_item"
@@ -765,6 +1015,16 @@ let psig_class_type'const view value =
   | _ -> View.error
 
 let psig_class'const view value =
+  let concrete =
+    match Signature_item_desc.to_concrete value with
+    | None -> conversion_failed "signature_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Signature_item_desc.Psig_class arg -> view arg
+  | _ -> View.error
+
+let sigclass'const view value =
   let parent_concrete =
     match Signature_item.to_concrete value with
     | None -> conversion_failed "signature_item"
@@ -781,6 +1041,16 @@ let psig_class'const view value =
   | _ -> View.error
 
 let psig_include'const view value =
+  let concrete =
+    match Signature_item_desc.to_concrete value with
+    | None -> conversion_failed "signature_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Signature_item_desc.Psig_include arg -> view arg
+  | _ -> View.error
+
+let siginclude'const view value =
   let parent_concrete =
     match Signature_item.to_concrete value with
     | None -> conversion_failed "signature_item"
@@ -797,6 +1067,16 @@ let psig_include'const view value =
   | _ -> View.error
 
 let psig_open'const view value =
+  let concrete =
+    match Signature_item_desc.to_concrete value with
+    | None -> conversion_failed "signature_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Signature_item_desc.Psig_open arg -> view arg
+  | _ -> View.error
+
+let sigopen'const view value =
   let parent_concrete =
     match Signature_item.to_concrete value with
     | None -> conversion_failed "signature_item"
@@ -813,6 +1093,16 @@ let psig_open'const view value =
   | _ -> View.error
 
 let psig_modtype'const view value =
+  let concrete =
+    match Signature_item_desc.to_concrete value with
+    | None -> conversion_failed "signature_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Signature_item_desc.Psig_modtype arg -> view arg
+  | _ -> View.error
+
+let sigmodtype'const view value =
   let parent_concrete =
     match Signature_item.to_concrete value with
     | None -> conversion_failed "signature_item"
@@ -829,6 +1119,16 @@ let psig_modtype'const view value =
   | _ -> View.error
 
 let psig_recmodule'const view value =
+  let concrete =
+    match Signature_item_desc.to_concrete value with
+    | None -> conversion_failed "signature_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Signature_item_desc.Psig_recmodule arg -> view arg
+  | _ -> View.error
+
+let sigrecmodule'const view value =
   let parent_concrete =
     match Signature_item.to_concrete value with
     | None -> conversion_failed "signature_item"
@@ -845,6 +1145,16 @@ let psig_recmodule'const view value =
   | _ -> View.error
 
 let psig_module'const view value =
+  let concrete =
+    match Signature_item_desc.to_concrete value with
+    | None -> conversion_failed "signature_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Signature_item_desc.Psig_module arg -> view arg
+  | _ -> View.error
+
+let sigmodule'const view value =
   let parent_concrete =
     match Signature_item.to_concrete value with
     | None -> conversion_failed "signature_item"
@@ -861,6 +1171,16 @@ let psig_module'const view value =
   | _ -> View.error
 
 let psig_exception'const view value =
+  let concrete =
+    match Signature_item_desc.to_concrete value with
+    | None -> conversion_failed "signature_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Signature_item_desc.Psig_exception arg -> view arg
+  | _ -> View.error
+
+let sigexception'const view value =
   let parent_concrete =
     match Signature_item.to_concrete value with
     | None -> conversion_failed "signature_item"
@@ -877,6 +1197,16 @@ let psig_exception'const view value =
   | _ -> View.error
 
 let psig_typext'const view value =
+  let concrete =
+    match Signature_item_desc.to_concrete value with
+    | None -> conversion_failed "signature_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Signature_item_desc.Psig_typext arg -> view arg
+  | _ -> View.error
+
+let sigtypext'const view value =
   let parent_concrete =
     match Signature_item.to_concrete value with
     | None -> conversion_failed "signature_item"
@@ -893,6 +1223,16 @@ let psig_typext'const view value =
   | _ -> View.error
 
 let psig_type'const view value =
+  let concrete =
+    match Signature_item_desc.to_concrete value with
+    | None -> conversion_failed "signature_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Signature_item_desc.Psig_type (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let sigtype'const view value =
   let parent_concrete =
     match Signature_item.to_concrete value with
     | None -> conversion_failed "signature_item"
@@ -909,6 +1249,16 @@ let psig_type'const view value =
   | _ -> View.error
 
 let psig_value'const view value =
+  let concrete =
+    match Signature_item_desc.to_concrete value with
+    | None -> conversion_failed "signature_item_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Signature_item_desc.Psig_value arg -> view arg
+  | _ -> View.error
+
+let sigvalue'const view value =
   let parent_concrete =
     match Signature_item.to_concrete value with
     | None -> conversion_failed "signature_item"
@@ -949,6 +1299,16 @@ let signature'const view value =
   view concrete0
 
 let pmty_alias'const view value =
+  let concrete =
+    match Module_type_desc.to_concrete value with
+    | None -> conversion_failed "module_type_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Module_type_desc.Pmty_alias arg -> view arg
+  | _ -> View.error
+
+let mtalias'const view value =
   let parent_concrete =
     match Module_type.to_concrete value with
     | None -> conversion_failed "module_type"
@@ -965,6 +1325,16 @@ let pmty_alias'const view value =
   | _ -> View.error
 
 let pmty_extension'const view value =
+  let concrete =
+    match Module_type_desc.to_concrete value with
+    | None -> conversion_failed "module_type_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Module_type_desc.Pmty_extension arg -> view arg
+  | _ -> View.error
+
+let mtextension'const view value =
   let parent_concrete =
     match Module_type.to_concrete value with
     | None -> conversion_failed "module_type"
@@ -981,6 +1351,16 @@ let pmty_extension'const view value =
   | _ -> View.error
 
 let pmty_typeof'const view value =
+  let concrete =
+    match Module_type_desc.to_concrete value with
+    | None -> conversion_failed "module_type_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Module_type_desc.Pmty_typeof arg -> view arg
+  | _ -> View.error
+
+let mttypeof'const view value =
   let parent_concrete =
     match Module_type.to_concrete value with
     | None -> conversion_failed "module_type"
@@ -997,6 +1377,16 @@ let pmty_typeof'const view value =
   | _ -> View.error
 
 let pmty_with'const view value =
+  let concrete =
+    match Module_type_desc.to_concrete value with
+    | None -> conversion_failed "module_type_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Module_type_desc.Pmty_with (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let mtwith'const view value =
   let parent_concrete =
     match Module_type.to_concrete value with
     | None -> conversion_failed "module_type"
@@ -1013,6 +1403,16 @@ let pmty_with'const view value =
   | _ -> View.error
 
 let pmty_functor'const view value =
+  let concrete =
+    match Module_type_desc.to_concrete value with
+    | None -> conversion_failed "module_type_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Module_type_desc.Pmty_functor (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
+  | _ -> View.error
+
+let mtfunctor'const view value =
   let parent_concrete =
     match Module_type.to_concrete value with
     | None -> conversion_failed "module_type"
@@ -1029,6 +1429,16 @@ let pmty_functor'const view value =
   | _ -> View.error
 
 let pmty_signature'const view value =
+  let concrete =
+    match Module_type_desc.to_concrete value with
+    | None -> conversion_failed "module_type_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Module_type_desc.Pmty_signature arg -> view arg
+  | _ -> View.error
+
+let mtsignature'const view value =
   let parent_concrete =
     match Module_type.to_concrete value with
     | None -> conversion_failed "module_type"
@@ -1045,6 +1455,16 @@ let pmty_signature'const view value =
   | _ -> View.error
 
 let pmty_ident'const view value =
+  let concrete =
+    match Module_type_desc.to_concrete value with
+    | None -> conversion_failed "module_type_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Module_type_desc.Pmty_ident arg -> view arg
+  | _ -> View.error
+
+let mtident'const view value =
   let parent_concrete =
     match Module_type.to_concrete value with
     | None -> conversion_failed "module_type"
@@ -1113,6 +1533,16 @@ let cfk_virtual'const view value =
   | _ -> View.error
 
 let pcf_extension'const view value =
+  let concrete =
+    match Class_field_desc.to_concrete value with
+    | None -> conversion_failed "class_field_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Class_field_desc.Pcf_extension arg -> view arg
+  | _ -> View.error
+
+let cfextension'const view value =
   let parent_concrete =
     match Class_field.to_concrete value with
     | None -> conversion_failed "class_field"
@@ -1129,6 +1559,16 @@ let pcf_extension'const view value =
   | _ -> View.error
 
 let pcf_attribute'const view value =
+  let concrete =
+    match Class_field_desc.to_concrete value with
+    | None -> conversion_failed "class_field_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Class_field_desc.Pcf_attribute arg -> view arg
+  | _ -> View.error
+
+let cfattribute'const view value =
   let parent_concrete =
     match Class_field.to_concrete value with
     | None -> conversion_failed "class_field"
@@ -1145,6 +1585,16 @@ let pcf_attribute'const view value =
   | _ -> View.error
 
 let pcf_initializer'const view value =
+  let concrete =
+    match Class_field_desc.to_concrete value with
+    | None -> conversion_failed "class_field_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Class_field_desc.Pcf_initializer arg -> view arg
+  | _ -> View.error
+
+let cfinitializer'const view value =
   let parent_concrete =
     match Class_field.to_concrete value with
     | None -> conversion_failed "class_field"
@@ -1161,6 +1611,16 @@ let pcf_initializer'const view value =
   | _ -> View.error
 
 let pcf_constraint'const view value =
+  let concrete =
+    match Class_field_desc.to_concrete value with
+    | None -> conversion_failed "class_field_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Class_field_desc.Pcf_constraint arg -> view arg
+  | _ -> View.error
+
+let cfconstraint'const view value =
   let parent_concrete =
     match Class_field.to_concrete value with
     | None -> conversion_failed "class_field"
@@ -1177,6 +1637,16 @@ let pcf_constraint'const view value =
   | _ -> View.error
 
 let pcf_method'const view value =
+  let concrete =
+    match Class_field_desc.to_concrete value with
+    | None -> conversion_failed "class_field_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Class_field_desc.Pcf_method arg -> view arg
+  | _ -> View.error
+
+let cfmethod'const view value =
   let parent_concrete =
     match Class_field.to_concrete value with
     | None -> conversion_failed "class_field"
@@ -1193,6 +1663,16 @@ let pcf_method'const view value =
   | _ -> View.error
 
 let pcf_val'const view value =
+  let concrete =
+    match Class_field_desc.to_concrete value with
+    | None -> conversion_failed "class_field_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Class_field_desc.Pcf_val arg -> view arg
+  | _ -> View.error
+
+let cfval'const view value =
   let parent_concrete =
     match Class_field.to_concrete value with
     | None -> conversion_failed "class_field"
@@ -1209,6 +1689,16 @@ let pcf_val'const view value =
   | _ -> View.error
 
 let pcf_inherit'const view value =
+  let concrete =
+    match Class_field_desc.to_concrete value with
+    | None -> conversion_failed "class_field_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Class_field_desc.Pcf_inherit (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
+  | _ -> View.error
+
+let cfinherit'const view value =
   let parent_concrete =
     match Class_field.to_concrete value with
     | None -> conversion_failed "class_field"
@@ -1265,6 +1755,16 @@ let pcstr_self'match view value =
   view concrete.Class_structure.pcstr_self
 
 let pcl_open'const view value =
+  let concrete =
+    match Class_expr_desc.to_concrete value with
+    | None -> conversion_failed "class_expr_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Class_expr_desc.Pcl_open (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
+  | _ -> View.error
+
+let ceopen'const view value =
   let parent_concrete =
     match Class_expr.to_concrete value with
     | None -> conversion_failed "class_expr"
@@ -1281,6 +1781,16 @@ let pcl_open'const view value =
   | _ -> View.error
 
 let pcl_extension'const view value =
+  let concrete =
+    match Class_expr_desc.to_concrete value with
+    | None -> conversion_failed "class_expr_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Class_expr_desc.Pcl_extension arg -> view arg
+  | _ -> View.error
+
+let ceextension'const view value =
   let parent_concrete =
     match Class_expr.to_concrete value with
     | None -> conversion_failed "class_expr"
@@ -1297,6 +1807,16 @@ let pcl_extension'const view value =
   | _ -> View.error
 
 let pcl_constraint'const view value =
+  let concrete =
+    match Class_expr_desc.to_concrete value with
+    | None -> conversion_failed "class_expr_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Class_expr_desc.Pcl_constraint (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let ceconstraint'const view value =
   let parent_concrete =
     match Class_expr.to_concrete value with
     | None -> conversion_failed "class_expr"
@@ -1313,6 +1833,16 @@ let pcl_constraint'const view value =
   | _ -> View.error
 
 let pcl_let'const view value =
+  let concrete =
+    match Class_expr_desc.to_concrete value with
+    | None -> conversion_failed "class_expr_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Class_expr_desc.Pcl_let (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
+  | _ -> View.error
+
+let celet'const view value =
   let parent_concrete =
     match Class_expr.to_concrete value with
     | None -> conversion_failed "class_expr"
@@ -1329,6 +1859,16 @@ let pcl_let'const view value =
   | _ -> View.error
 
 let pcl_apply'const view value =
+  let concrete =
+    match Class_expr_desc.to_concrete value with
+    | None -> conversion_failed "class_expr_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Class_expr_desc.Pcl_apply (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let ceapply'const view value =
   let parent_concrete =
     match Class_expr.to_concrete value with
     | None -> conversion_failed "class_expr"
@@ -1345,6 +1885,16 @@ let pcl_apply'const view value =
   | _ -> View.error
 
 let pcl_fun'const view value =
+  let concrete =
+    match Class_expr_desc.to_concrete value with
+    | None -> conversion_failed "class_expr_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Class_expr_desc.Pcl_fun (arg0, arg1, arg2, arg3) -> view (arg0, arg1, arg2, arg3)
+  | _ -> View.error
+
+let cefun'const view value =
   let parent_concrete =
     match Class_expr.to_concrete value with
     | None -> conversion_failed "class_expr"
@@ -1361,6 +1911,16 @@ let pcl_fun'const view value =
   | _ -> View.error
 
 let pcl_structure'const view value =
+  let concrete =
+    match Class_expr_desc.to_concrete value with
+    | None -> conversion_failed "class_expr_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Class_expr_desc.Pcl_structure arg -> view arg
+  | _ -> View.error
+
+let cestructure'const view value =
   let parent_concrete =
     match Class_expr.to_concrete value with
     | None -> conversion_failed "class_expr"
@@ -1377,6 +1937,16 @@ let pcl_structure'const view value =
   | _ -> View.error
 
 let pcl_constr'const view value =
+  let concrete =
+    match Class_expr_desc.to_concrete value with
+    | None -> conversion_failed "class_expr_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Class_expr_desc.Pcl_constr (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let ceconstr'const view value =
   let parent_concrete =
     match Class_expr.to_concrete value with
     | None -> conversion_failed "class_expr"
@@ -1481,6 +2051,16 @@ let pci_virt'match view value =
   view concrete.Class_infos.pci_virt
 
 let pctf_extension'const view value =
+  let concrete =
+    match Class_type_field_desc.to_concrete value with
+    | None -> conversion_failed "class_type_field_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Class_type_field_desc.Pctf_extension arg -> view arg
+  | _ -> View.error
+
+let ctfextension'const view value =
   let parent_concrete =
     match Class_type_field.to_concrete value with
     | None -> conversion_failed "class_type_field"
@@ -1497,6 +2077,16 @@ let pctf_extension'const view value =
   | _ -> View.error
 
 let pctf_attribute'const view value =
+  let concrete =
+    match Class_type_field_desc.to_concrete value with
+    | None -> conversion_failed "class_type_field_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Class_type_field_desc.Pctf_attribute arg -> view arg
+  | _ -> View.error
+
+let ctfattribute'const view value =
   let parent_concrete =
     match Class_type_field.to_concrete value with
     | None -> conversion_failed "class_type_field"
@@ -1513,6 +2103,16 @@ let pctf_attribute'const view value =
   | _ -> View.error
 
 let pctf_constraint'const view value =
+  let concrete =
+    match Class_type_field_desc.to_concrete value with
+    | None -> conversion_failed "class_type_field_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Class_type_field_desc.Pctf_constraint arg -> view arg
+  | _ -> View.error
+
+let ctfconstraint'const view value =
   let parent_concrete =
     match Class_type_field.to_concrete value with
     | None -> conversion_failed "class_type_field"
@@ -1529,6 +2129,16 @@ let pctf_constraint'const view value =
   | _ -> View.error
 
 let pctf_method'const view value =
+  let concrete =
+    match Class_type_field_desc.to_concrete value with
+    | None -> conversion_failed "class_type_field_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Class_type_field_desc.Pctf_method arg -> view arg
+  | _ -> View.error
+
+let ctfmethod'const view value =
   let parent_concrete =
     match Class_type_field.to_concrete value with
     | None -> conversion_failed "class_type_field"
@@ -1545,6 +2155,16 @@ let pctf_method'const view value =
   | _ -> View.error
 
 let pctf_val'const view value =
+  let concrete =
+    match Class_type_field_desc.to_concrete value with
+    | None -> conversion_failed "class_type_field_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Class_type_field_desc.Pctf_val arg -> view arg
+  | _ -> View.error
+
+let ctfval'const view value =
   let parent_concrete =
     match Class_type_field.to_concrete value with
     | None -> conversion_failed "class_type_field"
@@ -1561,6 +2181,16 @@ let pctf_val'const view value =
   | _ -> View.error
 
 let pctf_inherit'const view value =
+  let concrete =
+    match Class_type_field_desc.to_concrete value with
+    | None -> conversion_failed "class_type_field_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Class_type_field_desc.Pctf_inherit arg -> view arg
+  | _ -> View.error
+
+let ctfinherit'const view value =
   let parent_concrete =
     match Class_type_field.to_concrete value with
     | None -> conversion_failed "class_type_field"
@@ -1617,6 +2247,16 @@ let pcsig_self'match view value =
   view concrete.Class_signature.pcsig_self
 
 let pcty_open'const view value =
+  let concrete =
+    match Class_type_desc.to_concrete value with
+    | None -> conversion_failed "class_type_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Class_type_desc.Pcty_open (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
+  | _ -> View.error
+
+let ctopen'const view value =
   let parent_concrete =
     match Class_type.to_concrete value with
     | None -> conversion_failed "class_type"
@@ -1633,6 +2273,16 @@ let pcty_open'const view value =
   | _ -> View.error
 
 let pcty_extension'const view value =
+  let concrete =
+    match Class_type_desc.to_concrete value with
+    | None -> conversion_failed "class_type_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Class_type_desc.Pcty_extension arg -> view arg
+  | _ -> View.error
+
+let ctextension'const view value =
   let parent_concrete =
     match Class_type.to_concrete value with
     | None -> conversion_failed "class_type"
@@ -1649,6 +2299,16 @@ let pcty_extension'const view value =
   | _ -> View.error
 
 let pcty_arrow'const view value =
+  let concrete =
+    match Class_type_desc.to_concrete value with
+    | None -> conversion_failed "class_type_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Class_type_desc.Pcty_arrow (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
+  | _ -> View.error
+
+let ctarrow'const view value =
   let parent_concrete =
     match Class_type.to_concrete value with
     | None -> conversion_failed "class_type"
@@ -1665,6 +2325,16 @@ let pcty_arrow'const view value =
   | _ -> View.error
 
 let pcty_signature'const view value =
+  let concrete =
+    match Class_type_desc.to_concrete value with
+    | None -> conversion_failed "class_type_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Class_type_desc.Pcty_signature arg -> view arg
+  | _ -> View.error
+
+let ctsignature'const view value =
   let parent_concrete =
     match Class_type.to_concrete value with
     | None -> conversion_failed "class_type"
@@ -1681,6 +2351,16 @@ let pcty_signature'const view value =
   | _ -> View.error
 
 let pcty_constr'const view value =
+  let concrete =
+    match Class_type_desc.to_concrete value with
+    | None -> conversion_failed "class_type_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Class_type_desc.Pcty_constr (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let ctconstr'const view value =
   let parent_concrete =
     match Class_type.to_concrete value with
     | None -> conversion_failed "class_type"
@@ -2081,6 +2761,16 @@ let pc_lhs'match view value =
   view concrete.Case.pc_lhs
 
 let pexp_unreachable'const value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_unreachable -> View.ok
+  | _ -> View.error
+
+let eunreachable'const value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2097,6 +2787,16 @@ let pexp_unreachable'const value =
   | _ -> View.error
 
 let pexp_extension'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_extension arg -> view arg
+  | _ -> View.error
+
+let eextension'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2113,6 +2813,16 @@ let pexp_extension'const view value =
   | _ -> View.error
 
 let pexp_open'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_open (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
+  | _ -> View.error
+
+let eopen'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2129,6 +2839,16 @@ let pexp_open'const view value =
   | _ -> View.error
 
 let pexp_pack'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_pack arg -> view arg
+  | _ -> View.error
+
+let epack'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2145,6 +2865,16 @@ let pexp_pack'const view value =
   | _ -> View.error
 
 let pexp_newtype'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_newtype (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let enewtype'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2161,6 +2891,16 @@ let pexp_newtype'const view value =
   | _ -> View.error
 
 let pexp_object'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_object arg -> view arg
+  | _ -> View.error
+
+let eobject'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2177,6 +2917,16 @@ let pexp_object'const view value =
   | _ -> View.error
 
 let pexp_poly'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_poly (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let epoly'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2193,6 +2943,16 @@ let pexp_poly'const view value =
   | _ -> View.error
 
 let pexp_lazy'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_lazy arg -> view arg
+  | _ -> View.error
+
+let elazy'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2209,6 +2969,16 @@ let pexp_lazy'const view value =
   | _ -> View.error
 
 let pexp_assert'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_assert arg -> view arg
+  | _ -> View.error
+
+let eassert'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2225,6 +2995,16 @@ let pexp_assert'const view value =
   | _ -> View.error
 
 let pexp_letexception'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_letexception (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let eletexception'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2241,6 +3021,16 @@ let pexp_letexception'const view value =
   | _ -> View.error
 
 let pexp_letmodule'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_letmodule (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
+  | _ -> View.error
+
+let eletmodule'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2257,6 +3047,16 @@ let pexp_letmodule'const view value =
   | _ -> View.error
 
 let pexp_override'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_override arg -> view arg
+  | _ -> View.error
+
+let eoverride'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2273,6 +3073,16 @@ let pexp_override'const view value =
   | _ -> View.error
 
 let pexp_setinstvar'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_setinstvar (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let esetinstvar'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2289,6 +3099,16 @@ let pexp_setinstvar'const view value =
   | _ -> View.error
 
 let pexp_new'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_new arg -> view arg
+  | _ -> View.error
+
+let enew'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2305,6 +3125,16 @@ let pexp_new'const view value =
   | _ -> View.error
 
 let pexp_send'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_send (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let esend'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2321,6 +3151,16 @@ let pexp_send'const view value =
   | _ -> View.error
 
 let pexp_coerce'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_coerce (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
+  | _ -> View.error
+
+let ecoerce'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2337,6 +3177,16 @@ let pexp_coerce'const view value =
   | _ -> View.error
 
 let pexp_constraint'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_constraint (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let econstraint'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2353,6 +3203,16 @@ let pexp_constraint'const view value =
   | _ -> View.error
 
 let pexp_for'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_for (arg0, arg1, arg2, arg3, arg4) -> view (arg0, arg1, arg2, arg3, arg4)
+  | _ -> View.error
+
+let efor'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2369,6 +3229,16 @@ let pexp_for'const view value =
   | _ -> View.error
 
 let pexp_while'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_while (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let ewhile'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2385,6 +3255,16 @@ let pexp_while'const view value =
   | _ -> View.error
 
 let pexp_sequence'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_sequence (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let esequence'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2401,6 +3281,16 @@ let pexp_sequence'const view value =
   | _ -> View.error
 
 let pexp_ifthenelse'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_ifthenelse (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
+  | _ -> View.error
+
+let eifthenelse'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2417,6 +3307,16 @@ let pexp_ifthenelse'const view value =
   | _ -> View.error
 
 let pexp_array'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_array arg -> view arg
+  | _ -> View.error
+
+let earray'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2433,6 +3333,16 @@ let pexp_array'const view value =
   | _ -> View.error
 
 let pexp_setfield'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_setfield (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
+  | _ -> View.error
+
+let esetfield'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2449,6 +3359,16 @@ let pexp_setfield'const view value =
   | _ -> View.error
 
 let pexp_field'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_field (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let efield'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2465,6 +3385,16 @@ let pexp_field'const view value =
   | _ -> View.error
 
 let pexp_record'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_record (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let erecord'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2481,6 +3411,16 @@ let pexp_record'const view value =
   | _ -> View.error
 
 let pexp_variant'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_variant (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let evariant'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2497,6 +3437,16 @@ let pexp_variant'const view value =
   | _ -> View.error
 
 let pexp_construct'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_construct (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let econstruct'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2513,6 +3463,16 @@ let pexp_construct'const view value =
   | _ -> View.error
 
 let pexp_tuple'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_tuple arg -> view arg
+  | _ -> View.error
+
+let etuple'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2529,6 +3489,16 @@ let pexp_tuple'const view value =
   | _ -> View.error
 
 let pexp_try'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_try (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let etry'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2545,6 +3515,16 @@ let pexp_try'const view value =
   | _ -> View.error
 
 let pexp_match'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_match (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let ematch'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2561,6 +3541,16 @@ let pexp_match'const view value =
   | _ -> View.error
 
 let pexp_apply'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_apply (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let eapply'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2577,6 +3567,16 @@ let pexp_apply'const view value =
   | _ -> View.error
 
 let pexp_fun'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_fun (arg0, arg1, arg2, arg3) -> view (arg0, arg1, arg2, arg3)
+  | _ -> View.error
+
+let efun'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2593,6 +3593,16 @@ let pexp_fun'const view value =
   | _ -> View.error
 
 let pexp_function'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_function arg -> view arg
+  | _ -> View.error
+
+let efunction'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2609,6 +3619,16 @@ let pexp_function'const view value =
   | _ -> View.error
 
 let pexp_let'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_let (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
+  | _ -> View.error
+
+let elet'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2625,6 +3645,16 @@ let pexp_let'const view value =
   | _ -> View.error
 
 let pexp_constant'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_constant arg -> view arg
+  | _ -> View.error
+
+let econstant'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2641,6 +3671,16 @@ let pexp_constant'const view value =
   | _ -> View.error
 
 let pexp_ident'const view value =
+  let concrete =
+    match Expression_desc.to_concrete value with
+    | None -> conversion_failed "expression_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Expression_desc.Pexp_ident arg -> view arg
+  | _ -> View.error
+
+let eident'const view value =
   let parent_concrete =
     match Expression.to_concrete value with
     | None -> conversion_failed "expression"
@@ -2681,6 +3721,16 @@ let pexp_desc'match view value =
   view concrete.Expression.pexp_desc
 
 let ppat_open'const view value =
+  let concrete =
+    match Pattern_desc.to_concrete value with
+    | None -> conversion_failed "pattern_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Pattern_desc.Ppat_open (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let popen'const view value =
   let parent_concrete =
     match Pattern.to_concrete value with
     | None -> conversion_failed "pattern"
@@ -2697,6 +3747,16 @@ let ppat_open'const view value =
   | _ -> View.error
 
 let ppat_extension'const view value =
+  let concrete =
+    match Pattern_desc.to_concrete value with
+    | None -> conversion_failed "pattern_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Pattern_desc.Ppat_extension arg -> view arg
+  | _ -> View.error
+
+let pextension'const view value =
   let parent_concrete =
     match Pattern.to_concrete value with
     | None -> conversion_failed "pattern"
@@ -2713,6 +3773,16 @@ let ppat_extension'const view value =
   | _ -> View.error
 
 let ppat_exception'const view value =
+  let concrete =
+    match Pattern_desc.to_concrete value with
+    | None -> conversion_failed "pattern_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Pattern_desc.Ppat_exception arg -> view arg
+  | _ -> View.error
+
+let pexception'const view value =
   let parent_concrete =
     match Pattern.to_concrete value with
     | None -> conversion_failed "pattern"
@@ -2729,6 +3799,16 @@ let ppat_exception'const view value =
   | _ -> View.error
 
 let ppat_unpack'const view value =
+  let concrete =
+    match Pattern_desc.to_concrete value with
+    | None -> conversion_failed "pattern_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Pattern_desc.Ppat_unpack arg -> view arg
+  | _ -> View.error
+
+let punpack'const view value =
   let parent_concrete =
     match Pattern.to_concrete value with
     | None -> conversion_failed "pattern"
@@ -2745,6 +3825,16 @@ let ppat_unpack'const view value =
   | _ -> View.error
 
 let ppat_lazy'const view value =
+  let concrete =
+    match Pattern_desc.to_concrete value with
+    | None -> conversion_failed "pattern_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Pattern_desc.Ppat_lazy arg -> view arg
+  | _ -> View.error
+
+let plazy'const view value =
   let parent_concrete =
     match Pattern.to_concrete value with
     | None -> conversion_failed "pattern"
@@ -2761,6 +3851,16 @@ let ppat_lazy'const view value =
   | _ -> View.error
 
 let ppat_type'const view value =
+  let concrete =
+    match Pattern_desc.to_concrete value with
+    | None -> conversion_failed "pattern_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Pattern_desc.Ppat_type arg -> view arg
+  | _ -> View.error
+
+let ptype'const view value =
   let parent_concrete =
     match Pattern.to_concrete value with
     | None -> conversion_failed "pattern"
@@ -2777,6 +3877,16 @@ let ppat_type'const view value =
   | _ -> View.error
 
 let ppat_constraint'const view value =
+  let concrete =
+    match Pattern_desc.to_concrete value with
+    | None -> conversion_failed "pattern_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Pattern_desc.Ppat_constraint (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let pconstraint'const view value =
   let parent_concrete =
     match Pattern.to_concrete value with
     | None -> conversion_failed "pattern"
@@ -2793,6 +3903,16 @@ let ppat_constraint'const view value =
   | _ -> View.error
 
 let ppat_or'const view value =
+  let concrete =
+    match Pattern_desc.to_concrete value with
+    | None -> conversion_failed "pattern_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Pattern_desc.Ppat_or (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let por'const view value =
   let parent_concrete =
     match Pattern.to_concrete value with
     | None -> conversion_failed "pattern"
@@ -2809,6 +3929,16 @@ let ppat_or'const view value =
   | _ -> View.error
 
 let ppat_array'const view value =
+  let concrete =
+    match Pattern_desc.to_concrete value with
+    | None -> conversion_failed "pattern_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Pattern_desc.Ppat_array arg -> view arg
+  | _ -> View.error
+
+let parray'const view value =
   let parent_concrete =
     match Pattern.to_concrete value with
     | None -> conversion_failed "pattern"
@@ -2825,6 +3955,16 @@ let ppat_array'const view value =
   | _ -> View.error
 
 let ppat_record'const view value =
+  let concrete =
+    match Pattern_desc.to_concrete value with
+    | None -> conversion_failed "pattern_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Pattern_desc.Ppat_record (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let precord'const view value =
   let parent_concrete =
     match Pattern.to_concrete value with
     | None -> conversion_failed "pattern"
@@ -2841,6 +3981,16 @@ let ppat_record'const view value =
   | _ -> View.error
 
 let ppat_variant'const view value =
+  let concrete =
+    match Pattern_desc.to_concrete value with
+    | None -> conversion_failed "pattern_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Pattern_desc.Ppat_variant (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let pvariant'const view value =
   let parent_concrete =
     match Pattern.to_concrete value with
     | None -> conversion_failed "pattern"
@@ -2857,6 +4007,16 @@ let ppat_variant'const view value =
   | _ -> View.error
 
 let ppat_construct'const view value =
+  let concrete =
+    match Pattern_desc.to_concrete value with
+    | None -> conversion_failed "pattern_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Pattern_desc.Ppat_construct (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let pconstruct'const view value =
   let parent_concrete =
     match Pattern.to_concrete value with
     | None -> conversion_failed "pattern"
@@ -2873,6 +4033,16 @@ let ppat_construct'const view value =
   | _ -> View.error
 
 let ppat_tuple'const view value =
+  let concrete =
+    match Pattern_desc.to_concrete value with
+    | None -> conversion_failed "pattern_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Pattern_desc.Ppat_tuple arg -> view arg
+  | _ -> View.error
+
+let ptuple'const view value =
   let parent_concrete =
     match Pattern.to_concrete value with
     | None -> conversion_failed "pattern"
@@ -2889,6 +4059,16 @@ let ppat_tuple'const view value =
   | _ -> View.error
 
 let ppat_interval'const view value =
+  let concrete =
+    match Pattern_desc.to_concrete value with
+    | None -> conversion_failed "pattern_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Pattern_desc.Ppat_interval (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let pinterval'const view value =
   let parent_concrete =
     match Pattern.to_concrete value with
     | None -> conversion_failed "pattern"
@@ -2905,6 +4085,16 @@ let ppat_interval'const view value =
   | _ -> View.error
 
 let ppat_constant'const view value =
+  let concrete =
+    match Pattern_desc.to_concrete value with
+    | None -> conversion_failed "pattern_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Pattern_desc.Ppat_constant arg -> view arg
+  | _ -> View.error
+
+let pconstant'const view value =
   let parent_concrete =
     match Pattern.to_concrete value with
     | None -> conversion_failed "pattern"
@@ -2921,6 +4111,16 @@ let ppat_constant'const view value =
   | _ -> View.error
 
 let ppat_alias'const view value =
+  let concrete =
+    match Pattern_desc.to_concrete value with
+    | None -> conversion_failed "pattern_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Pattern_desc.Ppat_alias (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let palias'const view value =
   let parent_concrete =
     match Pattern.to_concrete value with
     | None -> conversion_failed "pattern"
@@ -2937,6 +4137,16 @@ let ppat_alias'const view value =
   | _ -> View.error
 
 let ppat_var'const view value =
+  let concrete =
+    match Pattern_desc.to_concrete value with
+    | None -> conversion_failed "pattern_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Pattern_desc.Ppat_var arg -> view arg
+  | _ -> View.error
+
+let pvar'const view value =
   let parent_concrete =
     match Pattern.to_concrete value with
     | None -> conversion_failed "pattern"
@@ -2953,6 +4163,16 @@ let ppat_var'const view value =
   | _ -> View.error
 
 let ppat_any'const value =
+  let concrete =
+    match Pattern_desc.to_concrete value with
+    | None -> conversion_failed "pattern_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Pattern_desc.Ppat_any -> View.ok
+  | _ -> View.error
+
+let pany'const value =
   let parent_concrete =
     match Pattern.to_concrete value with
     | None -> conversion_failed "pattern"
@@ -3041,6 +4261,16 @@ let package_type'const view value =
   view concrete0
 
 let ptyp_extension'const view value =
+  let concrete =
+    match Core_type_desc.to_concrete value with
+    | None -> conversion_failed "core_type_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Core_type_desc.Ptyp_extension arg -> view arg
+  | _ -> View.error
+
+let textension'const view value =
   let parent_concrete =
     match Core_type.to_concrete value with
     | None -> conversion_failed "core_type"
@@ -3057,6 +4287,16 @@ let ptyp_extension'const view value =
   | _ -> View.error
 
 let ptyp_package'const view value =
+  let concrete =
+    match Core_type_desc.to_concrete value with
+    | None -> conversion_failed "core_type_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Core_type_desc.Ptyp_package arg -> view arg
+  | _ -> View.error
+
+let tpackage'const view value =
   let parent_concrete =
     match Core_type.to_concrete value with
     | None -> conversion_failed "core_type"
@@ -3073,6 +4313,16 @@ let ptyp_package'const view value =
   | _ -> View.error
 
 let ptyp_poly'const view value =
+  let concrete =
+    match Core_type_desc.to_concrete value with
+    | None -> conversion_failed "core_type_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Core_type_desc.Ptyp_poly (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let tpoly'const view value =
   let parent_concrete =
     match Core_type.to_concrete value with
     | None -> conversion_failed "core_type"
@@ -3089,6 +4339,16 @@ let ptyp_poly'const view value =
   | _ -> View.error
 
 let ptyp_variant'const view value =
+  let concrete =
+    match Core_type_desc.to_concrete value with
+    | None -> conversion_failed "core_type_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Core_type_desc.Ptyp_variant (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
+  | _ -> View.error
+
+let tvariant'const view value =
   let parent_concrete =
     match Core_type.to_concrete value with
     | None -> conversion_failed "core_type"
@@ -3105,6 +4365,16 @@ let ptyp_variant'const view value =
   | _ -> View.error
 
 let ptyp_alias'const view value =
+  let concrete =
+    match Core_type_desc.to_concrete value with
+    | None -> conversion_failed "core_type_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Core_type_desc.Ptyp_alias (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let talias'const view value =
   let parent_concrete =
     match Core_type.to_concrete value with
     | None -> conversion_failed "core_type"
@@ -3121,6 +4391,16 @@ let ptyp_alias'const view value =
   | _ -> View.error
 
 let ptyp_class'const view value =
+  let concrete =
+    match Core_type_desc.to_concrete value with
+    | None -> conversion_failed "core_type_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Core_type_desc.Ptyp_class (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let tclass'const view value =
   let parent_concrete =
     match Core_type.to_concrete value with
     | None -> conversion_failed "core_type"
@@ -3137,6 +4417,16 @@ let ptyp_class'const view value =
   | _ -> View.error
 
 let ptyp_object'const view value =
+  let concrete =
+    match Core_type_desc.to_concrete value with
+    | None -> conversion_failed "core_type_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Core_type_desc.Ptyp_object (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let tobject'const view value =
   let parent_concrete =
     match Core_type.to_concrete value with
     | None -> conversion_failed "core_type"
@@ -3153,6 +4443,16 @@ let ptyp_object'const view value =
   | _ -> View.error
 
 let ptyp_constr'const view value =
+  let concrete =
+    match Core_type_desc.to_concrete value with
+    | None -> conversion_failed "core_type_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Core_type_desc.Ptyp_constr (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let tconstr'const view value =
   let parent_concrete =
     match Core_type.to_concrete value with
     | None -> conversion_failed "core_type"
@@ -3169,6 +4469,16 @@ let ptyp_constr'const view value =
   | _ -> View.error
 
 let ptyp_tuple'const view value =
+  let concrete =
+    match Core_type_desc.to_concrete value with
+    | None -> conversion_failed "core_type_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Core_type_desc.Ptyp_tuple arg -> view arg
+  | _ -> View.error
+
+let ttuple'const view value =
   let parent_concrete =
     match Core_type.to_concrete value with
     | None -> conversion_failed "core_type"
@@ -3185,6 +4495,16 @@ let ptyp_tuple'const view value =
   | _ -> View.error
 
 let ptyp_arrow'const view value =
+  let concrete =
+    match Core_type_desc.to_concrete value with
+    | None -> conversion_failed "core_type_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Core_type_desc.Ptyp_arrow (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
+  | _ -> View.error
+
+let tarrow'const view value =
   let parent_concrete =
     match Core_type.to_concrete value with
     | None -> conversion_failed "core_type"
@@ -3201,6 +4521,16 @@ let ptyp_arrow'const view value =
   | _ -> View.error
 
 let ptyp_var'const view value =
+  let concrete =
+    match Core_type_desc.to_concrete value with
+    | None -> conversion_failed "core_type_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Core_type_desc.Ptyp_var arg -> view arg
+  | _ -> View.error
+
+let tvar'const view value =
   let parent_concrete =
     match Core_type.to_concrete value with
     | None -> conversion_failed "core_type"
@@ -3217,6 +4547,16 @@ let ptyp_var'const view value =
   | _ -> View.error
 
 let ptyp_any'const value =
+  let concrete =
+    match Core_type_desc.to_concrete value with
+    | None -> conversion_failed "core_type_desc"
+    | Some n -> n
+  in
+  match concrete with
+  | Core_type_desc.Ptyp_any -> View.ok
+  | _ -> View.error
+
+let tany'const value =
   let parent_concrete =
     match Core_type.to_concrete value with
     | None -> conversion_failed "core_type"
