@@ -22,5 +22,5 @@ val loc : Location.t =
     ~pexp_desc:(Ppx_ast.V4_07.Expression_desc.pexp_constant
                   (Ppx_ast.V4_07.Constant.pconst_integer "42" None))
     ~pexp_loc:loc ~pexp_attributes:(Ppx_ast.V4_07.Attributes.create []);;
-- : Ppx_ast.V4_07.Expression.t = <abstr>
+- : Ppx_ast.V4_08.Expression.t = <abstr>
 |}]

@@ -1,3 +1,8 @@
+module V4_08 : sig
+  include module type of Builder_common
+  include module type of Builder_v4_08
+end
+
 module V4_07 : sig
   include module type of Builder_common
   include module type of Builder_v4_07
