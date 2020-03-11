@@ -170,9 +170,17 @@ let pconst_float'const view value =
   | Constant.Pconst_float (arg0, arg1) -> view (arg0, arg1)
   | _ -> View.error
 
-let attribute'const view value =
-  let concrete0 = Attribute.to_concrete value in
-  view concrete0
+let attr_name'match view value =
+  let concrete = Attribute.to_concrete value in
+  view concrete.Attribute.attr_name
+
+let attr_payload'match view value =
+  let concrete = Attribute.to_concrete value in
+  view concrete.Attribute.attr_payload
+
+let attr_loc'match view value =
+  let concrete = Attribute.to_concrete value in
+  view concrete.Attribute.attr_loc
 
 let extension'const view value =
   let concrete0 = Extension.to_concrete value in
@@ -213,6 +221,10 @@ let ptyp_desc'match view value =
 let ptyp_loc'match view value =
   let concrete = Core_type.to_concrete value in
   view concrete.Core_type.ptyp_loc
+
+let ptyp_loc_stack'match view value =
+  let concrete = Core_type.to_concrete value in
+  view concrete.Core_type.ptyp_loc_stack
 
 let ptyp_attributes'match view value =
   let concrete = Core_type.to_concrete value in
@@ -390,28 +402,84 @@ let package_type'const view value =
   let concrete0 = Package_type.to_concrete value in
   view concrete0
 
-let rtag'const view value =
+let prf_desc'match view value =
   let concrete = Row_field.to_concrete value in
+  view concrete.Row_field.prf_desc
+
+let prf_loc'match view value =
+  let concrete = Row_field.to_concrete value in
+  view concrete.Row_field.prf_loc
+
+let prf_attributes'match view value =
+  let concrete = Row_field.to_concrete value in
+  view concrete.Row_field.prf_attributes
+
+let rtag'const view value =
+  let concrete = Row_field_desc.to_concrete value in
   match concrete with
-  | Row_field.Rtag (arg0, arg1, arg2, arg3) -> view (arg0, arg1, arg2, arg3)
+  | Row_field_desc.Rtag (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
+  | _ -> View.error
+
+let rfrtag'const view value =
+  let parent_concrete = Row_field.to_concrete value in
+  let desc = parent_concrete.Row_field.prf_desc in
+  let concrete = Row_field_desc.to_concrete desc in
+  match concrete with
+  | Row_field_desc.Rtag (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
   | _ -> View.error
 
 let rinherit'const view value =
-  let concrete = Row_field.to_concrete value in
+  let concrete = Row_field_desc.to_concrete value in
   match concrete with
-  | Row_field.Rinherit arg -> view arg
+  | Row_field_desc.Rinherit arg -> view arg
   | _ -> View.error
 
-let otag'const view value =
-  let concrete = Object_field.to_concrete value in
+let rfrinherit'const view value =
+  let parent_concrete = Row_field.to_concrete value in
+  let desc = parent_concrete.Row_field.prf_desc in
+  let concrete = Row_field_desc.to_concrete desc in
   match concrete with
-  | Object_field.Otag (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
+  | Row_field_desc.Rinherit arg -> view arg
+  | _ -> View.error
+
+let pof_desc'match view value =
+  let concrete = Object_field.to_concrete value in
+  view concrete.Object_field.pof_desc
+
+let pof_loc'match view value =
+  let concrete = Object_field.to_concrete value in
+  view concrete.Object_field.pof_loc
+
+let pof_attributes'match view value =
+  let concrete = Object_field.to_concrete value in
+  view concrete.Object_field.pof_attributes
+
+let otag'const view value =
+  let concrete = Object_field_desc.to_concrete value in
+  match concrete with
+  | Object_field_desc.Otag (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let ofotag'const view value =
+  let parent_concrete = Object_field.to_concrete value in
+  let desc = parent_concrete.Object_field.pof_desc in
+  let concrete = Object_field_desc.to_concrete desc in
+  match concrete with
+  | Object_field_desc.Otag (arg0, arg1) -> view (arg0, arg1)
   | _ -> View.error
 
 let oinherit'const view value =
-  let concrete = Object_field.to_concrete value in
+  let concrete = Object_field_desc.to_concrete value in
   match concrete with
-  | Object_field.Oinherit arg -> view arg
+  | Object_field_desc.Oinherit arg -> view arg
+  | _ -> View.error
+
+let ofoinherit'const view value =
+  let parent_concrete = Object_field.to_concrete value in
+  let desc = parent_concrete.Object_field.pof_desc in
+  let concrete = Object_field_desc.to_concrete desc in
+  match concrete with
+  | Object_field_desc.Oinherit arg -> view arg
   | _ -> View.error
 
 let ppat_desc'match view value =
@@ -421,6 +489,10 @@ let ppat_desc'match view value =
 let ppat_loc'match view value =
   let concrete = Pattern.to_concrete value in
   view concrete.Pattern.ppat_loc
+
+let ppat_loc_stack'match view value =
+  let concrete = Pattern.to_concrete value in
+  view concrete.Pattern.ppat_loc_stack
 
 let ppat_attributes'match view value =
   let concrete = Pattern.to_concrete value in
@@ -685,6 +757,10 @@ let pexp_desc'match view value =
 let pexp_loc'match view value =
   let concrete = Expression.to_concrete value in
   view concrete.Expression.pexp_loc
+
+let pexp_loc_stack'match view value =
+  let concrete = Expression.to_concrete value in
+  view concrete.Expression.pexp_loc_stack
 
 let pexp_attributes'match view value =
   let concrete = Expression.to_concrete value in
@@ -1155,7 +1231,7 @@ let epack'const view value =
 let pexp_open'const view value =
   let concrete = Expression_desc.to_concrete value in
   match concrete with
-  | Expression_desc.Pexp_open (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
+  | Expression_desc.Pexp_open (arg0, arg1) -> view (arg0, arg1)
   | _ -> View.error
 
 let eopen'const view value =
@@ -1163,7 +1239,21 @@ let eopen'const view value =
   let desc = parent_concrete.Expression.pexp_desc in
   let concrete = Expression_desc.to_concrete desc in
   match concrete with
-  | Expression_desc.Pexp_open (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
+  | Expression_desc.Pexp_open (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let pexp_letop'const view value =
+  let concrete = Expression_desc.to_concrete value in
+  match concrete with
+  | Expression_desc.Pexp_letop arg -> view arg
+  | _ -> View.error
+
+let eletop'const view value =
+  let parent_concrete = Expression.to_concrete value in
+  let desc = parent_concrete.Expression.pexp_desc in
+  let concrete = Expression_desc.to_concrete desc in
+  match concrete with
+  | Expression_desc.Pexp_letop arg -> view arg
   | _ -> View.error
 
 let pexp_extension'const view value =
@@ -1205,6 +1295,34 @@ let pc_guard'match view value =
 let pc_rhs'match view value =
   let concrete = Case.to_concrete value in
   view concrete.Case.pc_rhs
+
+let let_'match view value =
+  let concrete = Letop.to_concrete value in
+  view concrete.Letop.let_
+
+let ands'match view value =
+  let concrete = Letop.to_concrete value in
+  view concrete.Letop.ands
+
+let body'match view value =
+  let concrete = Letop.to_concrete value in
+  view concrete.Letop.body
+
+let pbop_op'match view value =
+  let concrete = Binding_op.to_concrete value in
+  view concrete.Binding_op.pbop_op
+
+let pbop_pat'match view value =
+  let concrete = Binding_op.to_concrete value in
+  view concrete.Binding_op.pbop_pat
+
+let pbop_exp'match view value =
+  let concrete = Binding_op.to_concrete value in
+  view concrete.Binding_op.pbop_exp
+
+let pbop_loc'match view value =
+  let concrete = Binding_op.to_concrete value in
+  view concrete.Binding_op.pbop_loc
 
 let pval_name'match view value =
   let concrete = Value_description.to_concrete value in
@@ -1350,6 +1468,10 @@ let ptyext_private'match view value =
   let concrete = Type_extension.to_concrete value in
   view concrete.Type_extension.ptyext_private
 
+let ptyext_loc'match view value =
+  let concrete = Type_extension.to_concrete value in
+  view concrete.Type_extension.ptyext_loc
+
 let ptyext_attributes'match view value =
   let concrete = Type_extension.to_concrete value in
   view concrete.Type_extension.ptyext_attributes
@@ -1369,6 +1491,18 @@ let pext_loc'match view value =
 let pext_attributes'match view value =
   let concrete = Extension_constructor.to_concrete value in
   view concrete.Extension_constructor.pext_attributes
+
+let ptyexn_constructor'match view value =
+  let concrete = Type_exception.to_concrete value in
+  view concrete.Type_exception.ptyexn_constructor
+
+let ptyexn_loc'match view value =
+  let concrete = Type_exception.to_concrete value in
+  view concrete.Type_exception.ptyexn_loc
+
+let ptyexn_attributes'match view value =
+  let concrete = Type_exception.to_concrete value in
+  view concrete.Type_exception.ptyexn_attributes
 
 let pext_decl'const view value =
   let concrete = Extension_constructor_kind.to_concrete value in
@@ -1453,7 +1587,7 @@ let ctextension'const view value =
 let pcty_open'const view value =
   let concrete = Class_type_desc.to_concrete value in
   match concrete with
-  | Class_type_desc.Pcty_open (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
+  | Class_type_desc.Pcty_open (arg0, arg1) -> view (arg0, arg1)
   | _ -> View.error
 
 let ctopen'const view value =
@@ -1461,7 +1595,7 @@ let ctopen'const view value =
   let desc = parent_concrete.Class_type.pcty_desc in
   let concrete = Class_type_desc.to_concrete desc in
   match concrete with
-  | Class_type_desc.Pcty_open (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
+  | Class_type_desc.Pcty_open (arg0, arg1) -> view (arg0, arg1)
   | _ -> View.error
 
 let pcsig_self'match view value =
@@ -1713,7 +1847,7 @@ let ceextension'const view value =
 let pcl_open'const view value =
   let concrete = Class_expr_desc.to_concrete value in
   match concrete with
-  | Class_expr_desc.Pcl_open (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
+  | Class_expr_desc.Pcl_open (arg0, arg1) -> view (arg0, arg1)
   | _ -> View.error
 
 let ceopen'const view value =
@@ -1721,7 +1855,7 @@ let ceopen'const view value =
   let desc = parent_concrete.Class_expr.pcl_desc in
   let concrete = Class_expr_desc.to_concrete desc in
   match concrete with
-  | Class_expr_desc.Pcl_open (arg0, arg1, arg2) -> view (arg0, arg1, arg2)
+  | Class_expr_desc.Pcl_open (arg0, arg1) -> view (arg0, arg1)
   | _ -> View.error
 
 let pcstr_self'match view value =
@@ -2008,6 +2142,20 @@ let sigtype'const view value =
   | Signature_item_desc.Psig_type (arg0, arg1) -> view (arg0, arg1)
   | _ -> View.error
 
+let psig_typesubst'const view value =
+  let concrete = Signature_item_desc.to_concrete value in
+  match concrete with
+  | Signature_item_desc.Psig_typesubst arg -> view arg
+  | _ -> View.error
+
+let sigtypesubst'const view value =
+  let parent_concrete = Signature_item.to_concrete value in
+  let desc = parent_concrete.Signature_item.psig_desc in
+  let concrete = Signature_item_desc.to_concrete desc in
+  match concrete with
+  | Signature_item_desc.Psig_typesubst arg -> view arg
+  | _ -> View.error
+
 let psig_typext'const view value =
   let concrete = Signature_item_desc.to_concrete value in
   match concrete with
@@ -2048,6 +2196,20 @@ let sigmodule'const view value =
   let concrete = Signature_item_desc.to_concrete desc in
   match concrete with
   | Signature_item_desc.Psig_module arg -> view arg
+  | _ -> View.error
+
+let psig_modsubst'const view value =
+  let concrete = Signature_item_desc.to_concrete value in
+  match concrete with
+  | Signature_item_desc.Psig_modsubst arg -> view arg
+  | _ -> View.error
+
+let sigmodsubst'const view value =
+  let parent_concrete = Signature_item.to_concrete value in
+  let desc = parent_concrete.Signature_item.psig_desc in
+  let concrete = Signature_item_desc.to_concrete desc in
+  match concrete with
+  | Signature_item_desc.Psig_modsubst arg -> view arg
   | _ -> View.error
 
 let psig_recmodule'const view value =
@@ -2178,6 +2340,22 @@ let pmd_loc'match view value =
   let concrete = Module_declaration.to_concrete value in
   view concrete.Module_declaration.pmd_loc
 
+let pms_name'match view value =
+  let concrete = Module_substitution.to_concrete value in
+  view concrete.Module_substitution.pms_name
+
+let pms_manifest'match view value =
+  let concrete = Module_substitution.to_concrete value in
+  view concrete.Module_substitution.pms_manifest
+
+let pms_attributes'match view value =
+  let concrete = Module_substitution.to_concrete value in
+  view concrete.Module_substitution.pms_attributes
+
+let pms_loc'match view value =
+  let concrete = Module_substitution.to_concrete value in
+  view concrete.Module_substitution.pms_loc
+
 let pmtd_name'match view value =
   let concrete = Module_type_declaration.to_concrete value in
   view concrete.Module_type_declaration.pmtd_name
@@ -2194,21 +2372,29 @@ let pmtd_loc'match view value =
   let concrete = Module_type_declaration.to_concrete value in
   view concrete.Module_type_declaration.pmtd_loc
 
-let popen_lid'match view value =
-  let concrete = Open_description.to_concrete value in
-  view concrete.Open_description.popen_lid
+let popen_expr'match view value =
+  let concrete = Open_infos.to_concrete value in
+  view concrete.Open_infos.popen_expr
 
 let popen_override'match view value =
-  let concrete = Open_description.to_concrete value in
-  view concrete.Open_description.popen_override
+  let concrete = Open_infos.to_concrete value in
+  view concrete.Open_infos.popen_override
 
 let popen_loc'match view value =
-  let concrete = Open_description.to_concrete value in
-  view concrete.Open_description.popen_loc
+  let concrete = Open_infos.to_concrete value in
+  view concrete.Open_infos.popen_loc
 
 let popen_attributes'match view value =
-  let concrete = Open_description.to_concrete value in
-  view concrete.Open_description.popen_attributes
+  let concrete = Open_infos.to_concrete value in
+  view concrete.Open_infos.popen_attributes
+
+let open_description'const view value =
+  let concrete0 = Open_description.to_concrete value in
+  view concrete0
+
+let open_declaration'const view value =
+  let concrete0 = Open_declaration.to_concrete value in
+  view concrete0
 
 let pincl_mod'match view value =
   let concrete = Include_infos.to_concrete value in
@@ -2627,36 +2813,82 @@ let ptop_def'const view value =
 let ptop_dir'const view value =
   let concrete = Toplevel_phrase.to_concrete value in
   match concrete with
-  | Toplevel_phrase.Ptop_dir (arg0, arg1) -> view (arg0, arg1)
+  | Toplevel_phrase.Ptop_dir arg -> view arg
   | _ -> View.error
 
-let pdir_none'const value =
+let pdir_name'match view value =
+  let concrete = Toplevel_directive.to_concrete value in
+  view concrete.Toplevel_directive.pdir_name
+
+let pdir_arg'match view value =
+  let concrete = Toplevel_directive.to_concrete value in
+  view concrete.Toplevel_directive.pdir_arg
+
+let pdir_loc'match view value =
+  let concrete = Toplevel_directive.to_concrete value in
+  view concrete.Toplevel_directive.pdir_loc
+
+let pdira_desc'match view value =
   let concrete = Directive_argument.to_concrete value in
-  match concrete with
-  | Directive_argument.Pdir_none -> View.ok
-  | _ -> View.error
+  view concrete.Directive_argument.pdira_desc
+
+let pdira_loc'match view value =
+  let concrete = Directive_argument.to_concrete value in
+  view concrete.Directive_argument.pdira_loc
 
 let pdir_string'const view value =
-  let concrete = Directive_argument.to_concrete value in
+  let concrete = Directive_argument_desc.to_concrete value in
   match concrete with
-  | Directive_argument.Pdir_string arg -> view arg
+  | Directive_argument_desc.Pdir_string arg -> view arg
+  | _ -> View.error
+
+let dastring'const view value =
+  let parent_concrete = Directive_argument.to_concrete value in
+  let desc = parent_concrete.Directive_argument.pdira_desc in
+  let concrete = Directive_argument_desc.to_concrete desc in
+  match concrete with
+  | Directive_argument_desc.Pdir_string arg -> view arg
   | _ -> View.error
 
 let pdir_int'const view value =
-  let concrete = Directive_argument.to_concrete value in
+  let concrete = Directive_argument_desc.to_concrete value in
   match concrete with
-  | Directive_argument.Pdir_int (arg0, arg1) -> view (arg0, arg1)
+  | Directive_argument_desc.Pdir_int (arg0, arg1) -> view (arg0, arg1)
+  | _ -> View.error
+
+let daint'const view value =
+  let parent_concrete = Directive_argument.to_concrete value in
+  let desc = parent_concrete.Directive_argument.pdira_desc in
+  let concrete = Directive_argument_desc.to_concrete desc in
+  match concrete with
+  | Directive_argument_desc.Pdir_int (arg0, arg1) -> view (arg0, arg1)
   | _ -> View.error
 
 let pdir_ident'const view value =
-  let concrete = Directive_argument.to_concrete value in
+  let concrete = Directive_argument_desc.to_concrete value in
   match concrete with
-  | Directive_argument.Pdir_ident arg -> view arg
+  | Directive_argument_desc.Pdir_ident arg -> view arg
+  | _ -> View.error
+
+let daident'const view value =
+  let parent_concrete = Directive_argument.to_concrete value in
+  let desc = parent_concrete.Directive_argument.pdira_desc in
+  let concrete = Directive_argument_desc.to_concrete desc in
+  match concrete with
+  | Directive_argument_desc.Pdir_ident arg -> view arg
   | _ -> View.error
 
 let pdir_bool'const view value =
-  let concrete = Directive_argument.to_concrete value in
+  let concrete = Directive_argument_desc.to_concrete value in
   match concrete with
-  | Directive_argument.Pdir_bool arg -> view arg
+  | Directive_argument_desc.Pdir_bool arg -> view arg
+  | _ -> View.error
+
+let dabool'const view value =
+  let parent_concrete = Directive_argument.to_concrete value in
+  let desc = parent_concrete.Directive_argument.pdira_desc in
+  let concrete = Directive_argument_desc.to_concrete desc in
+  match concrete with
+  | Directive_argument_desc.Pdir_bool arg -> view arg
   | _ -> View.error
 (*$*)

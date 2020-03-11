@@ -66,7 +66,7 @@ let rec pp ppf = function
 
 let hash = Ppx_caml.Hashtbl.hash
 
-let string_equal (x : string) (y : string) = Pervasives.(=) x y
+let string_equal (x : string) (y : string) = Stdlib.(=) x y
 
 let rec equal x y =
   match x, y with

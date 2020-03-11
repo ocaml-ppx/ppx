@@ -137,7 +137,7 @@ let rec nth t i =
   | x :: _, 0 -> Some x
   | _ :: xs, i -> nth xs (i - 1)
 
-let physically_equal = Pervasives.(==)
+let physically_equal = Stdlib.(==)
 
 let init =
   let rec loop acc i n f =

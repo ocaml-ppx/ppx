@@ -2,4 +2,4 @@
  (name stdppx)
  (public_name ppx._stdppx)
  (preprocess future_syntax)
- (libraries ppx_caml unix))
+ (libraries ppx_caml stdlib-shims unix))

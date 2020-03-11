@@ -106,7 +106,11 @@ and constant =
   | Pconst_float of string * char option
 
 and attribute =
-  (string loc * payload)
+  Compiler_types.attribute =
+  { attr_name : string loc
+  ; attr_payload : payload
+  ; attr_loc : location
+  }
 
 and extension =
   (string loc * payload)
@@ -125,6 +129,7 @@ and core_type =
   Compiler_types.core_type =
   { ptyp_desc : core_type_desc
   ; ptyp_loc : location
+  ; ptyp_loc_stack : location list
   ; ptyp_attributes : attributes
   }
 
@@ -148,18 +153,33 @@ and package_type =
 
 and row_field =
   Compiler_types.row_field =
-  | Rtag of string loc * attributes * bool * core_type list
+  { prf_desc : row_field_desc
+  ; prf_loc : location
+  ; prf_attributes : attributes
+  }
+
+and row_field_desc =
+  Compiler_types.row_field_desc =
+  | Rtag of string loc * bool * core_type list
   | Rinherit of core_type
 
 and object_field =
   Compiler_types.object_field =
-  | Otag of string loc * attributes * core_type
+  { pof_desc : object_field_desc
+  ; pof_loc : location
+  ; pof_attributes : attributes
+  }
+
+and object_field_desc =
+  Compiler_types.object_field_desc =
+  | Otag of string loc * core_type
   | Oinherit of core_type
 
 and pattern =
   Compiler_types.pattern =
   { ppat_desc : pattern_desc
   ; ppat_loc : location
+  ; ppat_loc_stack : location list
   ; ppat_attributes : attributes
   }
 
@@ -188,6 +208,7 @@ and expression =
   Compiler_types.expression =
   { pexp_desc : expression_desc
   ; pexp_loc : location
+  ; pexp_loc_stack : location list
   ; pexp_attributes : attributes
   }
 
@@ -226,7 +247,8 @@ and expression_desc =
   | Pexp_object of class_structure
   | Pexp_newtype of string loc * expression
   | Pexp_pack of module_expr
-  | Pexp_open of override_flag * longident_loc * expression
+  | Pexp_open of open_declaration * expression
+  | Pexp_letop of letop
   | Pexp_extension of extension
   | Pexp_unreachable
 
@@ -235,6 +257,21 @@ and case =
   { pc_lhs : pattern
   ; pc_guard : expression option
   ; pc_rhs : expression
+  }
+
+and letop =
+  Compiler_types.letop =
+  { let_ : binding_op
+  ; ands : binding_op list
+  ; body : expression
+  }
+
+and binding_op =
+  Compiler_types.binding_op =
+  { pbop_op : string loc
+  ; pbop_pat : pattern
+  ; pbop_exp : expression
+  ; pbop_loc : location
   }
 
 and value_description =
@@ -294,6 +331,7 @@ and type_extension =
   ; ptyext_params : (core_type * variance) list
   ; ptyext_constructors : extension_constructor list
   ; ptyext_private : private_flag
+  ; ptyext_loc : location
   ; ptyext_attributes : attributes
   }
 
@@ -303,6 +341,13 @@ and extension_constructor =
   ; pext_kind : extension_constructor_kind
   ; pext_loc : location
   ; pext_attributes : attributes
+  }
+
+and type_exception =
+  Compiler_types.type_exception =
+  { ptyexn_constructor : extension_constructor
+  ; ptyexn_loc : location
+  ; ptyexn_attributes : attributes
   }
 
 and extension_constructor_kind =
@@ -323,7 +368,7 @@ and class_type_desc =
   | Pcty_signature of class_signature
   | Pcty_arrow of arg_label * core_type * class_type
   | Pcty_extension of extension
-  | Pcty_open of override_flag * longident_loc * class_type
+  | Pcty_open of open_description * class_type
 
 and class_signature =
   Compiler_types.class_signature =
@@ -379,7 +424,7 @@ and class_expr_desc =
   | Pcl_let of rec_flag * value_binding list * class_expr
   | Pcl_constraint of class_expr * class_type
   | Pcl_extension of extension
-  | Pcl_open of override_flag * longident_loc * class_expr
+  | Pcl_open of open_description * class_expr
 
 and class_structure =
   Compiler_types.class_structure =
@@ -442,9 +487,11 @@ and signature_item_desc =
   Compiler_types.signature_item_desc =
   | Psig_value of value_description
   | Psig_type of rec_flag * type_declaration list
+  | Psig_typesubst of type_declaration list
   | Psig_typext of type_extension
-  | Psig_exception of extension_constructor
+  | Psig_exception of type_exception
   | Psig_module of module_declaration
+  | Psig_modsubst of module_substitution
   | Psig_recmodule of module_declaration list
   | Psig_modtype of module_type_declaration
   | Psig_open of open_description
@@ -462,6 +509,14 @@ and module_declaration =
   ; pmd_loc : location
   }
 
+and module_substitution =
+  Compiler_types.module_substitution =
+  { pms_name : string loc
+  ; pms_manifest : longident_loc
+  ; pms_attributes : attributes
+  ; pms_loc : location
+  }
+
 and module_type_declaration =
   Compiler_types.module_type_declaration =
   { pmtd_name : string loc
@@ -470,13 +525,19 @@ and module_type_declaration =
   ; pmtd_loc : location
   }
 
-and open_description =
-  Compiler_types.open_description =
-  { popen_lid : longident_loc
+and 'a open_infos =
+  'a Compiler_types.open_infos =
+  { popen_expr : 'a
   ; popen_override : override_flag
   ; popen_loc : location
   ; popen_attributes : attributes
   }
+
+and open_description =
+  longident_loc open_infos
+
+and open_declaration =
+  module_expr open_infos
 
 and 'a include_infos =
   'a Compiler_types.include_infos =
@@ -531,11 +592,11 @@ and structure_item_desc =
   | Pstr_primitive of value_description
   | Pstr_type of rec_flag * type_declaration list
   | Pstr_typext of type_extension
-  | Pstr_exception of extension_constructor
+  | Pstr_exception of type_exception
   | Pstr_module of module_binding
   | Pstr_recmodule of module_binding list
   | Pstr_modtype of module_type_declaration
-  | Pstr_open of open_description
+  | Pstr_open of open_declaration
   | Pstr_class of class_declaration list
   | Pstr_class_type of class_type_declaration list
   | Pstr_include of include_declaration
@@ -561,11 +622,23 @@ and module_binding =
 and toplevel_phrase =
   Compiler_types.toplevel_phrase =
   | Ptop_def of structure
-  | Ptop_dir of string * directive_argument
+  | Ptop_dir of toplevel_directive
+
+and toplevel_directive =
+  Compiler_types.toplevel_directive =
+  { pdir_name : string loc
+  ; pdir_arg : directive_argument option
+  ; pdir_loc : location
+  }
 
 and directive_argument =
   Compiler_types.directive_argument =
-  | Pdir_none
+  { pdira_desc : directive_argument_desc
+  ; pdira_loc : location
+  }
+
+and directive_argument_desc =
+  Compiler_types.directive_argument_desc =
   | Pdir_string of string
   | Pdir_int of string * char option
   | Pdir_ident of longident
@@ -746,8 +819,14 @@ and generate_constant ~size ~random =
     (Base_quickcheck.Generator.union
       [gen_pconst_integer; gen_pconst_char; gen_pconst_string; gen_pconst_float])
 and generate_attribute ~size ~random =
-  let gen = (quickcheck_generator_tuple2 (quickcheck_generator_loc quickcheck_generator_string) (Generator.create generate_payload)) in
-  Generator.generate gen ~size ~random
+  let gen_attr_name = (quickcheck_generator_loc quickcheck_generator_string)
+  and gen_attr_payload = (Generator.create generate_payload)
+  and gen_attr_loc = quickcheck_generator_location
+  in
+  { attr_name = Generator.generate gen_attr_name ~size ~random
+  ; attr_payload = Generator.generate gen_attr_payload ~size ~random
+  ; attr_loc = Generator.generate gen_attr_loc ~size ~random
+  }
 and generate_extension ~size ~random =
   let gen = (quickcheck_generator_tuple2 (quickcheck_generator_loc quickcheck_generator_string) (Generator.create generate_payload)) in
   Generator.generate gen ~size ~random
@@ -792,10 +871,12 @@ and generate_payload ~size ~random =
 and generate_core_type ~size ~random =
   let gen_ptyp_desc = (Generator.create generate_core_type_desc)
   and gen_ptyp_loc = quickcheck_generator_location
+  and gen_ptyp_loc_stack = (quickcheck_generator_list quickcheck_generator_location)
   and gen_ptyp_attributes = (Generator.create generate_attributes)
   in
   { ptyp_desc = Generator.generate gen_ptyp_desc ~size ~random
   ; ptyp_loc = Generator.generate gen_ptyp_loc ~size ~random
+  ; ptyp_loc_stack = Generator.generate gen_ptyp_loc_stack ~size ~random
   ; ptyp_attributes = Generator.generate gen_ptyp_attributes ~size ~random
   }
 and generate_core_type_desc ~size ~random =
@@ -910,18 +991,25 @@ and generate_package_type ~size ~random =
   let gen = (quickcheck_generator_tuple2 (Generator.create generate_longident_loc) (quickcheck_generator_list (quickcheck_generator_tuple2 (Generator.create generate_longident_loc) (Generator.create generate_core_type)))) in
   Generator.generate gen ~size ~random
 and generate_row_field ~size ~random =
+  let gen_prf_desc = (Generator.create generate_row_field_desc)
+  and gen_prf_loc = quickcheck_generator_location
+  and gen_prf_attributes = (Generator.create generate_attributes)
+  in
+  { prf_desc = Generator.generate gen_prf_desc ~size ~random
+  ; prf_loc = Generator.generate gen_prf_loc ~size ~random
+  ; prf_attributes = Generator.generate gen_prf_attributes ~size ~random
+  }
+and generate_row_field_desc ~size ~random =
   let gen_rtag =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_loc quickcheck_generator_string)
-      and gen1 = (Generator.create generate_attributes)
-      and gen2 = quickcheck_generator_bool
-      and gen3 = (quickcheck_generator_list (Generator.create generate_core_type))
+      and gen1 = quickcheck_generator_bool
+      and gen2 = (quickcheck_generator_list (Generator.create generate_core_type))
       in
       Rtag
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         , Generator.generate gen2 ~size ~random
-        , Generator.generate gen3 ~size ~random
         ))
   and gen_rinherit =
     Generator.create (fun ~size ~random ->
@@ -935,16 +1023,23 @@ and generate_row_field ~size ~random =
     (Base_quickcheck.Generator.union
       [gen_rtag; gen_rinherit])
 and generate_object_field ~size ~random =
+  let gen_pof_desc = (Generator.create generate_object_field_desc)
+  and gen_pof_loc = quickcheck_generator_location
+  and gen_pof_attributes = (Generator.create generate_attributes)
+  in
+  { pof_desc = Generator.generate gen_pof_desc ~size ~random
+  ; pof_loc = Generator.generate gen_pof_loc ~size ~random
+  ; pof_attributes = Generator.generate gen_pof_attributes ~size ~random
+  }
+and generate_object_field_desc ~size ~random =
   let gen_otag =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_loc quickcheck_generator_string)
-      and gen1 = (Generator.create generate_attributes)
-      and gen2 = (Generator.create generate_core_type)
+      and gen1 = (Generator.create generate_core_type)
       in
       Otag
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
-        , Generator.generate gen2 ~size ~random
         ))
   and gen_oinherit =
     Generator.create (fun ~size ~random ->
@@ -960,10 +1055,12 @@ and generate_object_field ~size ~random =
 and generate_pattern ~size ~random =
   let gen_ppat_desc = (Generator.create generate_pattern_desc)
   and gen_ppat_loc = quickcheck_generator_location
+  and gen_ppat_loc_stack = (quickcheck_generator_list quickcheck_generator_location)
   and gen_ppat_attributes = (Generator.create generate_attributes)
   in
   { ppat_desc = Generator.generate gen_ppat_desc ~size ~random
   ; ppat_loc = Generator.generate gen_ppat_loc ~size ~random
+  ; ppat_loc_stack = Generator.generate gen_ppat_loc_stack ~size ~random
   ; ppat_attributes = Generator.generate gen_ppat_attributes ~size ~random
   }
 and generate_pattern_desc ~size ~random =
@@ -1117,10 +1214,12 @@ and generate_pattern_desc ~size ~random =
 and generate_expression ~size ~random =
   let gen_pexp_desc = (Generator.create generate_expression_desc)
   and gen_pexp_loc = quickcheck_generator_location
+  and gen_pexp_loc_stack = (quickcheck_generator_list quickcheck_generator_location)
   and gen_pexp_attributes = (Generator.create generate_attributes)
   in
   { pexp_desc = Generator.generate gen_pexp_desc ~size ~random
   ; pexp_loc = Generator.generate gen_pexp_loc ~size ~random
+  ; pexp_loc_stack = Generator.generate gen_pexp_loc_stack ~size ~random
   ; pexp_attributes = Generator.generate gen_pexp_attributes ~size ~random
   }
 and generate_expression_desc ~size ~random =
@@ -1421,14 +1520,19 @@ and generate_expression_desc ~size ~random =
         ))
   and gen_pexp_open =
     Generator.create (fun ~size ~random ->
-      let gen0 = (Generator.create generate_override_flag)
-      and gen1 = (Generator.create generate_longident_loc)
-      and gen2 = (Generator.create generate_expression)
+      let gen0 = (Generator.create generate_open_declaration)
+      and gen1 = (Generator.create generate_expression)
       in
       Pexp_open
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
-        , Generator.generate gen2 ~size ~random
+        ))
+  and gen_pexp_letop =
+    Generator.create (fun ~size ~random ->
+      let gen0 = (Generator.create generate_letop)
+      in
+      Pexp_letop
+        ( Generator.generate gen0 ~size ~random
         ))
   and gen_pexp_extension =
     Generator.create (fun ~size ~random ->
@@ -1448,7 +1552,7 @@ and generate_expression_desc ~size ~random =
   else
     Generator.generate ~size:(size-1) ~random
       (Base_quickcheck.Generator.union
-        [gen_pexp_unreachable; gen_pexp_ident; gen_pexp_constant; gen_pexp_let; gen_pexp_function; gen_pexp_fun; gen_pexp_apply; gen_pexp_match; gen_pexp_try; gen_pexp_tuple; gen_pexp_construct; gen_pexp_variant; gen_pexp_record; gen_pexp_field; gen_pexp_setfield; gen_pexp_array; gen_pexp_ifthenelse; gen_pexp_sequence; gen_pexp_while; gen_pexp_for; gen_pexp_constraint; gen_pexp_coerce; gen_pexp_send; gen_pexp_new; gen_pexp_setinstvar; gen_pexp_override; gen_pexp_letmodule; gen_pexp_letexception; gen_pexp_assert; gen_pexp_lazy; gen_pexp_poly; gen_pexp_object; gen_pexp_newtype; gen_pexp_pack; gen_pexp_open; gen_pexp_extension])
+        [gen_pexp_unreachable; gen_pexp_ident; gen_pexp_constant; gen_pexp_let; gen_pexp_function; gen_pexp_fun; gen_pexp_apply; gen_pexp_match; gen_pexp_try; gen_pexp_tuple; gen_pexp_construct; gen_pexp_variant; gen_pexp_record; gen_pexp_field; gen_pexp_setfield; gen_pexp_array; gen_pexp_ifthenelse; gen_pexp_sequence; gen_pexp_while; gen_pexp_for; gen_pexp_constraint; gen_pexp_coerce; gen_pexp_send; gen_pexp_new; gen_pexp_setinstvar; gen_pexp_override; gen_pexp_letmodule; gen_pexp_letexception; gen_pexp_assert; gen_pexp_lazy; gen_pexp_poly; gen_pexp_object; gen_pexp_newtype; gen_pexp_pack; gen_pexp_open; gen_pexp_letop; gen_pexp_extension])
 and generate_case ~size ~random =
   let gen_pc_lhs = (Generator.create generate_pattern)
   and gen_pc_guard = (quickcheck_generator_option (Generator.create generate_expression))
@@ -1457,6 +1561,26 @@ and generate_case ~size ~random =
   { pc_lhs = Generator.generate gen_pc_lhs ~size ~random
   ; pc_guard = Generator.generate gen_pc_guard ~size ~random
   ; pc_rhs = Generator.generate gen_pc_rhs ~size ~random
+  }
+and generate_letop ~size ~random =
+  let gen_let_ = (Generator.create generate_binding_op)
+  and gen_ands = (quickcheck_generator_list (Generator.create generate_binding_op))
+  and gen_body = (Generator.create generate_expression)
+  in
+  { let_ = Generator.generate gen_let_ ~size ~random
+  ; ands = Generator.generate gen_ands ~size ~random
+  ; body = Generator.generate gen_body ~size ~random
+  }
+and generate_binding_op ~size ~random =
+  let gen_pbop_op = (quickcheck_generator_loc quickcheck_generator_string)
+  and gen_pbop_pat = (Generator.create generate_pattern)
+  and gen_pbop_exp = (Generator.create generate_expression)
+  and gen_pbop_loc = quickcheck_generator_location
+  in
+  { pbop_op = Generator.generate gen_pbop_op ~size ~random
+  ; pbop_pat = Generator.generate gen_pbop_pat ~size ~random
+  ; pbop_exp = Generator.generate gen_pbop_exp ~size ~random
+  ; pbop_loc = Generator.generate gen_pbop_loc ~size ~random
   }
 and generate_value_description ~size ~random =
   let gen_pval_name = (quickcheck_generator_loc quickcheck_generator_string)
@@ -1569,12 +1693,14 @@ and generate_type_extension ~size ~random =
   and gen_ptyext_params = (quickcheck_generator_list (quickcheck_generator_tuple2 (Generator.create generate_core_type) (Generator.create generate_variance)))
   and gen_ptyext_constructors = (quickcheck_generator_list (Generator.create generate_extension_constructor))
   and gen_ptyext_private = (Generator.create generate_private_flag)
+  and gen_ptyext_loc = quickcheck_generator_location
   and gen_ptyext_attributes = (Generator.create generate_attributes)
   in
   { ptyext_path = Generator.generate gen_ptyext_path ~size ~random
   ; ptyext_params = Generator.generate gen_ptyext_params ~size ~random
   ; ptyext_constructors = Generator.generate gen_ptyext_constructors ~size ~random
   ; ptyext_private = Generator.generate gen_ptyext_private ~size ~random
+  ; ptyext_loc = Generator.generate gen_ptyext_loc ~size ~random
   ; ptyext_attributes = Generator.generate gen_ptyext_attributes ~size ~random
   }
 and generate_extension_constructor ~size ~random =
@@ -1587,6 +1713,15 @@ and generate_extension_constructor ~size ~random =
   ; pext_kind = Generator.generate gen_pext_kind ~size ~random
   ; pext_loc = Generator.generate gen_pext_loc ~size ~random
   ; pext_attributes = Generator.generate gen_pext_attributes ~size ~random
+  }
+and generate_type_exception ~size ~random =
+  let gen_ptyexn_constructor = (Generator.create generate_extension_constructor)
+  and gen_ptyexn_loc = quickcheck_generator_location
+  and gen_ptyexn_attributes = (Generator.create generate_attributes)
+  in
+  { ptyexn_constructor = Generator.generate gen_ptyexn_constructor ~size ~random
+  ; ptyexn_loc = Generator.generate gen_ptyexn_loc ~size ~random
+  ; ptyexn_attributes = Generator.generate gen_ptyexn_attributes ~size ~random
   }
 and generate_extension_constructor_kind ~size ~random =
   let gen_pext_decl =
@@ -1655,14 +1790,12 @@ and generate_class_type_desc ~size ~random =
         ))
   and gen_pcty_open =
     Generator.create (fun ~size ~random ->
-      let gen0 = (Generator.create generate_override_flag)
-      and gen1 = (Generator.create generate_longident_loc)
-      and gen2 = (Generator.create generate_class_type)
+      let gen0 = (Generator.create generate_open_description)
+      and gen1 = (Generator.create generate_class_type)
       in
       Pcty_open
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
-        , Generator.generate gen2 ~size ~random
         ))
   in
   Generator.generate ~size ~random
@@ -1831,14 +1964,12 @@ and generate_class_expr_desc ~size ~random =
         ))
   and gen_pcl_open =
     Generator.create (fun ~size ~random ->
-      let gen0 = (Generator.create generate_override_flag)
-      and gen1 = (Generator.create generate_longident_loc)
-      and gen2 = (Generator.create generate_class_expr)
+      let gen0 = (Generator.create generate_open_description)
+      and gen1 = (Generator.create generate_class_expr)
       in
       Pcl_open
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
-        , Generator.generate gen2 ~size ~random
         ))
   in
   Generator.generate ~size ~random
@@ -2038,6 +2169,13 @@ and generate_signature_item_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
+  and gen_psig_typesubst =
+    Generator.create (fun ~size ~random ->
+      let gen0 = (quickcheck_generator_list (Generator.create generate_type_declaration))
+      in
+      Psig_typesubst
+        ( Generator.generate gen0 ~size ~random
+        ))
   and gen_psig_typext =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_type_extension)
@@ -2047,7 +2185,7 @@ and generate_signature_item_desc ~size ~random =
         ))
   and gen_psig_exception =
     Generator.create (fun ~size ~random ->
-      let gen0 = (Generator.create generate_extension_constructor)
+      let gen0 = (Generator.create generate_type_exception)
       in
       Psig_exception
         ( Generator.generate gen0 ~size ~random
@@ -2057,6 +2195,13 @@ and generate_signature_item_desc ~size ~random =
       let gen0 = (Generator.create generate_module_declaration)
       in
       Psig_module
+        ( Generator.generate gen0 ~size ~random
+        ))
+  and gen_psig_modsubst =
+    Generator.create (fun ~size ~random ->
+      let gen0 = (Generator.create generate_module_substitution)
+      in
+      Psig_modsubst
         ( Generator.generate gen0 ~size ~random
         ))
   and gen_psig_recmodule =
@@ -2120,7 +2265,7 @@ and generate_signature_item_desc ~size ~random =
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
-      [gen_psig_value; gen_psig_type; gen_psig_typext; gen_psig_exception; gen_psig_module; gen_psig_recmodule; gen_psig_modtype; gen_psig_open; gen_psig_include; gen_psig_class; gen_psig_class_type; gen_psig_attribute; gen_psig_extension])
+      [gen_psig_value; gen_psig_type; gen_psig_typesubst; gen_psig_typext; gen_psig_exception; gen_psig_module; gen_psig_modsubst; gen_psig_recmodule; gen_psig_modtype; gen_psig_open; gen_psig_include; gen_psig_class; gen_psig_class_type; gen_psig_attribute; gen_psig_extension])
 and generate_module_declaration ~size ~random =
   let gen_pmd_name = (quickcheck_generator_loc quickcheck_generator_string)
   and gen_pmd_type = (Generator.create generate_module_type)
@@ -2131,6 +2276,17 @@ and generate_module_declaration ~size ~random =
   ; pmd_type = Generator.generate gen_pmd_type ~size ~random
   ; pmd_attributes = Generator.generate gen_pmd_attributes ~size ~random
   ; pmd_loc = Generator.generate gen_pmd_loc ~size ~random
+  }
+and generate_module_substitution ~size ~random =
+  let gen_pms_name = (quickcheck_generator_loc quickcheck_generator_string)
+  and gen_pms_manifest = (Generator.create generate_longident_loc)
+  and gen_pms_attributes = (Generator.create generate_attributes)
+  and gen_pms_loc = quickcheck_generator_location
+  in
+  { pms_name = Generator.generate gen_pms_name ~size ~random
+  ; pms_manifest = Generator.generate gen_pms_manifest ~size ~random
+  ; pms_attributes = Generator.generate gen_pms_attributes ~size ~random
+  ; pms_loc = Generator.generate gen_pms_loc ~size ~random
   }
 and generate_module_type_declaration ~size ~random =
   let gen_pmtd_name = (quickcheck_generator_loc quickcheck_generator_string)
@@ -2143,17 +2299,25 @@ and generate_module_type_declaration ~size ~random =
   ; pmtd_attributes = Generator.generate gen_pmtd_attributes ~size ~random
   ; pmtd_loc = Generator.generate gen_pmtd_loc ~size ~random
   }
-and generate_open_description ~size ~random =
-  let gen_popen_lid = (Generator.create generate_longident_loc)
+and generate_open_infos
+  : type a . a Generator.t -> size:int -> random:Splittable_random.State.t -> a open_infos
+  = fun quickcheck_generator_a ~size ~random ->
+  let gen_popen_expr = quickcheck_generator_a
   and gen_popen_override = (Generator.create generate_override_flag)
   and gen_popen_loc = quickcheck_generator_location
   and gen_popen_attributes = (Generator.create generate_attributes)
   in
-  { popen_lid = Generator.generate gen_popen_lid ~size ~random
+  { popen_expr = Generator.generate gen_popen_expr ~size ~random
   ; popen_override = Generator.generate gen_popen_override ~size ~random
   ; popen_loc = Generator.generate gen_popen_loc ~size ~random
   ; popen_attributes = Generator.generate gen_popen_attributes ~size ~random
   }
+and generate_open_description ~size ~random =
+  let gen = (Generator.create (generate_open_infos (Generator.create generate_longident_loc))) in
+  Generator.generate gen ~size ~random
+and generate_open_declaration ~size ~random =
+  let gen = (Generator.create (generate_open_infos (Generator.create generate_module_expr))) in
+  Generator.generate gen ~size ~random
 and generate_include_infos
   : type a . a Generator.t -> size:int -> random:Splittable_random.State.t -> a include_infos
   = fun quickcheck_generator_a ~size ~random ->
@@ -2337,7 +2501,7 @@ and generate_structure_item_desc ~size ~random =
         ))
   and gen_pstr_exception =
     Generator.create (fun ~size ~random ->
-      let gen0 = (Generator.create generate_extension_constructor)
+      let gen0 = (Generator.create generate_type_exception)
       in
       Pstr_exception
         ( Generator.generate gen0 ~size ~random
@@ -2365,7 +2529,7 @@ and generate_structure_item_desc ~size ~random =
         ))
   and gen_pstr_open =
     Generator.create (fun ~size ~random ->
-      let gen0 = (Generator.create generate_open_description)
+      let gen0 = (Generator.create generate_open_declaration)
       in
       Pstr_open
         ( Generator.generate gen0 ~size ~random
@@ -2443,21 +2607,33 @@ and generate_toplevel_phrase ~size ~random =
         ))
   and gen_ptop_dir =
     Generator.create (fun ~size ~random ->
-      let gen0 = quickcheck_generator_string
-      and gen1 = (Generator.create generate_directive_argument)
+      let gen0 = (Generator.create generate_toplevel_directive)
       in
       Ptop_dir
         ( Generator.generate gen0 ~size ~random
-        , Generator.generate gen1 ~size ~random
         ))
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
       [gen_ptop_def; gen_ptop_dir])
+and generate_toplevel_directive ~size ~random =
+  let gen_pdir_name = (quickcheck_generator_loc quickcheck_generator_string)
+  and gen_pdir_arg = (quickcheck_generator_option (Generator.create generate_directive_argument))
+  and gen_pdir_loc = quickcheck_generator_location
+  in
+  { pdir_name = Generator.generate gen_pdir_name ~size ~random
+  ; pdir_arg = Generator.generate gen_pdir_arg ~size ~random
+  ; pdir_loc = Generator.generate gen_pdir_loc ~size ~random
+  }
 and generate_directive_argument ~size ~random =
-  let gen_pdir_none =
-    Generator.return Pdir_none
-  and gen_pdir_string =
+  let gen_pdira_desc = (Generator.create generate_directive_argument_desc)
+  and gen_pdira_loc = quickcheck_generator_location
+  in
+  { pdira_desc = Generator.generate gen_pdira_desc ~size ~random
+  ; pdira_loc = Generator.generate gen_pdira_loc ~size ~random
+  }
+and generate_directive_argument_desc ~size ~random =
+  let gen_pdir_string =
     Generator.create (fun ~size ~random ->
       let gen0 = quickcheck_generator_string
       in
@@ -2492,11 +2668,11 @@ and generate_directive_argument ~size ~random =
   then
     Generator.generate ~size ~random
       (Base_quickcheck.Generator.union
-        [gen_pdir_none; gen_pdir_string; gen_pdir_int; gen_pdir_bool])
+        [gen_pdir_string; gen_pdir_int; gen_pdir_bool])
   else
     Generator.generate ~size:(size-1) ~random
       (Base_quickcheck.Generator.union
-        [gen_pdir_none; gen_pdir_string; gen_pdir_int; gen_pdir_bool; gen_pdir_ident])
+        [gen_pdir_string; gen_pdir_int; gen_pdir_bool; gen_pdir_ident])
 
 let quickcheck_generator_longident =
   Generator.create generate_longident
@@ -2538,8 +2714,12 @@ let quickcheck_generator_package_type =
   Generator.create generate_package_type
 let quickcheck_generator_row_field =
   Generator.create generate_row_field
+let quickcheck_generator_row_field_desc =
+  Generator.create generate_row_field_desc
 let quickcheck_generator_object_field =
   Generator.create generate_object_field
+let quickcheck_generator_object_field_desc =
+  Generator.create generate_object_field_desc
 let quickcheck_generator_pattern =
   Generator.create generate_pattern
 let quickcheck_generator_pattern_desc =
@@ -2550,6 +2730,10 @@ let quickcheck_generator_expression_desc =
   Generator.create generate_expression_desc
 let quickcheck_generator_case =
   Generator.create generate_case
+let quickcheck_generator_letop =
+  Generator.create generate_letop
+let quickcheck_generator_binding_op =
+  Generator.create generate_binding_op
 let quickcheck_generator_value_description =
   Generator.create generate_value_description
 let quickcheck_generator_type_declaration =
@@ -2566,6 +2750,8 @@ let quickcheck_generator_type_extension =
   Generator.create generate_type_extension
 let quickcheck_generator_extension_constructor =
   Generator.create generate_extension_constructor
+let quickcheck_generator_type_exception =
+  Generator.create generate_type_exception
 let quickcheck_generator_extension_constructor_kind =
   Generator.create generate_extension_constructor_kind
 let quickcheck_generator_class_type =
@@ -2610,10 +2796,16 @@ let quickcheck_generator_signature_item_desc =
   Generator.create generate_signature_item_desc
 let quickcheck_generator_module_declaration =
   Generator.create generate_module_declaration
+let quickcheck_generator_module_substitution =
+  Generator.create generate_module_substitution
 let quickcheck_generator_module_type_declaration =
   Generator.create generate_module_type_declaration
+let quickcheck_generator_open_infos quickcheck_generator_a =
+  Generator.create (generate_open_infos quickcheck_generator_a)
 let quickcheck_generator_open_description =
   Generator.create generate_open_description
+let quickcheck_generator_open_declaration =
+  Generator.create generate_open_declaration
 let quickcheck_generator_include_infos quickcheck_generator_a =
   Generator.create (generate_include_infos quickcheck_generator_a)
 let quickcheck_generator_include_description =
@@ -2638,8 +2830,12 @@ let quickcheck_generator_module_binding =
   Generator.create generate_module_binding
 let quickcheck_generator_toplevel_phrase =
   Generator.create generate_toplevel_phrase
+let quickcheck_generator_toplevel_directive =
+  Generator.create generate_toplevel_directive
 let quickcheck_generator_directive_argument =
   Generator.create generate_directive_argument
+let quickcheck_generator_directive_argument_desc =
+  Generator.create generate_directive_argument_desc
 
 let quickcheck_observer_longident = Observer.opaque
 let quickcheck_observer_longident_loc = Observer.opaque
@@ -2661,12 +2857,16 @@ let quickcheck_observer_core_type = Observer.opaque
 let quickcheck_observer_core_type_desc = Observer.opaque
 let quickcheck_observer_package_type = Observer.opaque
 let quickcheck_observer_row_field = Observer.opaque
+let quickcheck_observer_row_field_desc = Observer.opaque
 let quickcheck_observer_object_field = Observer.opaque
+let quickcheck_observer_object_field_desc = Observer.opaque
 let quickcheck_observer_pattern = Observer.opaque
 let quickcheck_observer_pattern_desc = Observer.opaque
 let quickcheck_observer_expression = Observer.opaque
 let quickcheck_observer_expression_desc = Observer.opaque
 let quickcheck_observer_case = Observer.opaque
+let quickcheck_observer_letop = Observer.opaque
+let quickcheck_observer_binding_op = Observer.opaque
 let quickcheck_observer_value_description = Observer.opaque
 let quickcheck_observer_type_declaration = Observer.opaque
 let quickcheck_observer_type_kind = Observer.opaque
@@ -2675,6 +2875,7 @@ let quickcheck_observer_constructor_declaration = Observer.opaque
 let quickcheck_observer_constructor_arguments = Observer.opaque
 let quickcheck_observer_type_extension = Observer.opaque
 let quickcheck_observer_extension_constructor = Observer.opaque
+let quickcheck_observer_type_exception = Observer.opaque
 let quickcheck_observer_extension_constructor_kind = Observer.opaque
 let quickcheck_observer_class_type = Observer.opaque
 let quickcheck_observer_class_type_desc = Observer.opaque
@@ -2697,8 +2898,11 @@ let quickcheck_observer_signature = Observer.opaque
 let quickcheck_observer_signature_item = Observer.opaque
 let quickcheck_observer_signature_item_desc = Observer.opaque
 let quickcheck_observer_module_declaration = Observer.opaque
+let quickcheck_observer_module_substitution = Observer.opaque
 let quickcheck_observer_module_type_declaration = Observer.opaque
+let quickcheck_observer_open_infos _ = Observer.opaque
 let quickcheck_observer_open_description = Observer.opaque
+let quickcheck_observer_open_declaration = Observer.opaque
 let quickcheck_observer_include_infos _ = Observer.opaque
 let quickcheck_observer_include_description = Observer.opaque
 let quickcheck_observer_include_declaration = Observer.opaque
@@ -2711,7 +2915,9 @@ let quickcheck_observer_structure_item_desc = Observer.opaque
 let quickcheck_observer_value_binding = Observer.opaque
 let quickcheck_observer_module_binding = Observer.opaque
 let quickcheck_observer_toplevel_phrase = Observer.opaque
+let quickcheck_observer_toplevel_directive = Observer.opaque
 let quickcheck_observer_directive_argument = Observer.opaque
+let quickcheck_observer_directive_argument_desc = Observer.opaque
 
 let quickcheck_shrinker_longident = Shrinker.atomic
 let quickcheck_shrinker_longident_loc = Shrinker.atomic
@@ -2733,12 +2939,16 @@ let quickcheck_shrinker_core_type = Shrinker.atomic
 let quickcheck_shrinker_core_type_desc = Shrinker.atomic
 let quickcheck_shrinker_package_type = Shrinker.atomic
 let quickcheck_shrinker_row_field = Shrinker.atomic
+let quickcheck_shrinker_row_field_desc = Shrinker.atomic
 let quickcheck_shrinker_object_field = Shrinker.atomic
+let quickcheck_shrinker_object_field_desc = Shrinker.atomic
 let quickcheck_shrinker_pattern = Shrinker.atomic
 let quickcheck_shrinker_pattern_desc = Shrinker.atomic
 let quickcheck_shrinker_expression = Shrinker.atomic
 let quickcheck_shrinker_expression_desc = Shrinker.atomic
 let quickcheck_shrinker_case = Shrinker.atomic
+let quickcheck_shrinker_letop = Shrinker.atomic
+let quickcheck_shrinker_binding_op = Shrinker.atomic
 let quickcheck_shrinker_value_description = Shrinker.atomic
 let quickcheck_shrinker_type_declaration = Shrinker.atomic
 let quickcheck_shrinker_type_kind = Shrinker.atomic
@@ -2747,6 +2957,7 @@ let quickcheck_shrinker_constructor_declaration = Shrinker.atomic
 let quickcheck_shrinker_constructor_arguments = Shrinker.atomic
 let quickcheck_shrinker_type_extension = Shrinker.atomic
 let quickcheck_shrinker_extension_constructor = Shrinker.atomic
+let quickcheck_shrinker_type_exception = Shrinker.atomic
 let quickcheck_shrinker_extension_constructor_kind = Shrinker.atomic
 let quickcheck_shrinker_class_type = Shrinker.atomic
 let quickcheck_shrinker_class_type_desc = Shrinker.atomic
@@ -2769,8 +2980,11 @@ let quickcheck_shrinker_signature = Shrinker.atomic
 let quickcheck_shrinker_signature_item = Shrinker.atomic
 let quickcheck_shrinker_signature_item_desc = Shrinker.atomic
 let quickcheck_shrinker_module_declaration = Shrinker.atomic
+let quickcheck_shrinker_module_substitution = Shrinker.atomic
 let quickcheck_shrinker_module_type_declaration = Shrinker.atomic
+let quickcheck_shrinker_open_infos _ = Shrinker.atomic
 let quickcheck_shrinker_open_description = Shrinker.atomic
+let quickcheck_shrinker_open_declaration = Shrinker.atomic
 let quickcheck_shrinker_include_infos _ = Shrinker.atomic
 let quickcheck_shrinker_include_description = Shrinker.atomic
 let quickcheck_shrinker_include_declaration = Shrinker.atomic
@@ -2783,7 +2997,9 @@ let quickcheck_shrinker_structure_item_desc = Shrinker.atomic
 let quickcheck_shrinker_value_binding = Shrinker.atomic
 let quickcheck_shrinker_module_binding = Shrinker.atomic
 let quickcheck_shrinker_toplevel_phrase = Shrinker.atomic
+let quickcheck_shrinker_toplevel_directive = Shrinker.atomic
 let quickcheck_shrinker_directive_argument = Shrinker.atomic
+let quickcheck_shrinker_directive_argument_desc = Shrinker.atomic
 
 module Longident = struct
   type t = longident
@@ -2885,8 +3101,18 @@ module Row_field = struct
   [@@deriving equal, quickcheck, sexp_of]
 end
 
+module Row_field_desc = struct
+  type t = row_field_desc
+  [@@deriving equal, quickcheck, sexp_of]
+end
+
 module Object_field = struct
   type t = object_field
+  [@@deriving equal, quickcheck, sexp_of]
+end
+
+module Object_field_desc = struct
+  type t = object_field_desc
   [@@deriving equal, quickcheck, sexp_of]
 end
 
@@ -2912,6 +3138,16 @@ end
 
 module Case = struct
   type t = case
+  [@@deriving equal, quickcheck, sexp_of]
+end
+
+module Letop = struct
+  type t = letop
+  [@@deriving equal, quickcheck, sexp_of]
+end
+
+module Binding_op = struct
+  type t = binding_op
   [@@deriving equal, quickcheck, sexp_of]
 end
 
@@ -2952,6 +3188,11 @@ end
 
 module Extension_constructor = struct
   type t = extension_constructor
+  [@@deriving equal, quickcheck, sexp_of]
+end
+
+module Type_exception = struct
+  type t = type_exception
   [@@deriving equal, quickcheck, sexp_of]
 end
 
@@ -3065,13 +3306,28 @@ module Module_declaration = struct
   [@@deriving equal, quickcheck, sexp_of]
 end
 
+module Module_substitution = struct
+  type t = module_substitution
+  [@@deriving equal, quickcheck, sexp_of]
+end
+
 module Module_type_declaration = struct
   type t = module_type_declaration
   [@@deriving equal, quickcheck, sexp_of]
 end
 
+module Open_infos = struct
+  type 'a t = 'a open_infos
+  [@@deriving equal, quickcheck, sexp_of]
+end
+
 module Open_description = struct
   type t = open_description
+  [@@deriving equal, quickcheck, sexp_of]
+end
+
+module Open_declaration = struct
+  type t = open_declaration
   [@@deriving equal, quickcheck, sexp_of]
 end
 
@@ -3135,8 +3391,18 @@ module Toplevel_phrase = struct
   [@@deriving equal, quickcheck, sexp_of]
 end
 
+module Toplevel_directive = struct
+  type t = toplevel_directive
+  [@@deriving equal, quickcheck, sexp_of]
+end
+
 module Directive_argument = struct
   type t = directive_argument
+  [@@deriving equal, quickcheck, sexp_of]
+end
+
+module Directive_argument_desc = struct
+  type t = directive_argument_desc
   [@@deriving equal, quickcheck, sexp_of]
 end
 (*$*)

@@ -159,6 +159,14 @@ val ast_to_row_field :
   Versions.V4_08.Row_field.t
   -> Compiler_types.row_field
 
+val ast_of_row_field_desc :
+  Compiler_types.row_field_desc
+  -> Versions.V4_08.Row_field_desc.t
+
+val ast_to_row_field_desc :
+  Versions.V4_08.Row_field_desc.t
+  -> Compiler_types.row_field_desc
+
 val ast_of_object_field :
   Compiler_types.object_field
   -> Versions.V4_08.Object_field.t
@@ -166,6 +174,14 @@ val ast_of_object_field :
 val ast_to_object_field :
   Versions.V4_08.Object_field.t
   -> Compiler_types.object_field
+
+val ast_of_object_field_desc :
+  Compiler_types.object_field_desc
+  -> Versions.V4_08.Object_field_desc.t
+
+val ast_to_object_field_desc :
+  Versions.V4_08.Object_field_desc.t
+  -> Compiler_types.object_field_desc
 
 val ast_of_pattern :
   Compiler_types.pattern
@@ -206,6 +222,22 @@ val ast_of_case :
 val ast_to_case :
   Versions.V4_08.Case.t
   -> Compiler_types.case
+
+val ast_of_letop :
+  Compiler_types.letop
+  -> Versions.V4_08.Letop.t
+
+val ast_to_letop :
+  Versions.V4_08.Letop.t
+  -> Compiler_types.letop
+
+val ast_of_binding_op :
+  Compiler_types.binding_op
+  -> Versions.V4_08.Binding_op.t
+
+val ast_to_binding_op :
+  Versions.V4_08.Binding_op.t
+  -> Compiler_types.binding_op
 
 val ast_of_value_description :
   Compiler_types.value_description
@@ -270,6 +302,14 @@ val ast_of_extension_constructor :
 val ast_to_extension_constructor :
   Versions.V4_08.Extension_constructor.t
   -> Compiler_types.extension_constructor
+
+val ast_of_type_exception :
+  Compiler_types.type_exception
+  -> Versions.V4_08.Type_exception.t
+
+val ast_to_type_exception :
+  Versions.V4_08.Type_exception.t
+  -> Compiler_types.type_exception
 
 val ast_of_extension_constructor_kind :
   Compiler_types.extension_constructor_kind
@@ -449,6 +489,14 @@ val ast_to_module_declaration :
   Versions.V4_08.Module_declaration.t
   -> Compiler_types.module_declaration
 
+val ast_of_module_substitution :
+  Compiler_types.module_substitution
+  -> Versions.V4_08.Module_substitution.t
+
+val ast_to_module_substitution :
+  Versions.V4_08.Module_substitution.t
+  -> Compiler_types.module_substitution
+
 val ast_of_module_type_declaration :
   Compiler_types.module_type_declaration
   -> Versions.V4_08.Module_type_declaration.t
@@ -457,6 +505,16 @@ val ast_to_module_type_declaration :
   Versions.V4_08.Module_type_declaration.t
   -> Compiler_types.module_type_declaration
 
+val ast_of_open_infos :
+  ('a_ -> 'a Unversioned.Types.node)
+  -> 'a_ Compiler_types.open_infos
+  -> 'a Unversioned.Types.node Versions.V4_08.Open_infos.t
+
+val ast_to_open_infos :
+  ('a Unversioned.Types.node -> 'a_)
+  -> 'a Unversioned.Types.node Versions.V4_08.Open_infos.t
+  -> 'a_ Compiler_types.open_infos
+
 val ast_of_open_description :
   Compiler_types.open_description
   -> Versions.V4_08.Open_description.t
@@ -464,6 +522,14 @@ val ast_of_open_description :
 val ast_to_open_description :
   Versions.V4_08.Open_description.t
   -> Compiler_types.open_description
+
+val ast_of_open_declaration :
+  Compiler_types.open_declaration
+  -> Versions.V4_08.Open_declaration.t
+
+val ast_to_open_declaration :
+  Versions.V4_08.Open_declaration.t
+  -> Compiler_types.open_declaration
 
 val ast_of_include_infos :
   ('a_ -> 'a Unversioned.Types.node)
@@ -563,6 +629,14 @@ val ast_to_toplevel_phrase :
   Versions.V4_08.Toplevel_phrase.t
   -> Compiler_types.toplevel_phrase
 
+val ast_of_toplevel_directive :
+  Compiler_types.toplevel_directive
+  -> Versions.V4_08.Toplevel_directive.t
+
+val ast_to_toplevel_directive :
+  Versions.V4_08.Toplevel_directive.t
+  -> Compiler_types.toplevel_directive
+
 val ast_of_directive_argument :
   Compiler_types.directive_argument
   -> Versions.V4_08.Directive_argument.t
@@ -570,4 +644,12 @@ val ast_of_directive_argument :
 val ast_to_directive_argument :
   Versions.V4_08.Directive_argument.t
   -> Compiler_types.directive_argument
+
+val ast_of_directive_argument_desc :
+  Compiler_types.directive_argument_desc
+  -> Versions.V4_08.Directive_argument_desc.t
+
+val ast_to_directive_argument_desc :
+  Versions.V4_08.Directive_argument_desc.t
+  -> Compiler_types.directive_argument_desc
 (*$*)

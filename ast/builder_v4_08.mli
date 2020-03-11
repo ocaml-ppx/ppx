@@ -1,5 +1,10 @@
 (*$ Ppx_ast_cinaps.print_builder_mli (Astlib.Version.of_string "v4_08") *)
 open Versions.V4_08
+val attribute :
+  loc:Astlib.Location.t
+  -> name:string Astlib.Loc.t
+  -> payload:Payload.t
+  -> Attribute.t
 val ptyp_any :
   loc:Astlib.Location.t
   -> Core_type.t
@@ -56,6 +61,25 @@ val ptyp_extension :
   loc:Astlib.Location.t
   -> Extension.t
   -> Core_type.t
+val rtag :
+  loc:Astlib.Location.t
+  -> string Astlib.Loc.t
+  -> bool
+  -> Core_type.t list
+  -> Row_field.t
+val rinherit :
+  loc:Astlib.Location.t
+  -> Core_type.t
+  -> Row_field.t
+val otag :
+  loc:Astlib.Location.t
+  -> string Astlib.Loc.t
+  -> Core_type.t
+  -> Object_field.t
+val oinherit :
+  loc:Astlib.Location.t
+  -> Core_type.t
+  -> Object_field.t
 val ppat_any :
   loc:Astlib.Location.t
   -> Pattern.t
@@ -301,9 +325,12 @@ val pexp_pack :
   -> Expression.t
 val pexp_open :
   loc:Astlib.Location.t
-  -> Override_flag.t
-  -> Longident_loc.t
+  -> Open_declaration.t
   -> Expression.t
+  -> Expression.t
+val pexp_letop :
+  loc:Astlib.Location.t
+  -> Letop.t
   -> Expression.t
 val pexp_extension :
   loc:Astlib.Location.t
@@ -317,6 +344,17 @@ val case :
   -> lhs:Pattern.t
   -> rhs:Expression.t
   -> Case.t
+val letop :
+  ands:Binding_op.t list
+  -> body:Expression.t
+  -> let_:Binding_op.t
+  -> Letop.t
+val binding_op :
+  loc:Astlib.Location.t
+  -> exp:Expression.t
+  -> op:string Astlib.Loc.t
+  -> pat:Pattern.t
+  -> Binding_op.t
 val value_description :
   loc:Astlib.Location.t
   -> name:string Astlib.Loc.t
@@ -345,7 +383,8 @@ val constructor_declaration :
   -> res:Core_type.t option
   -> Constructor_declaration.t
 val type_extension :
-  constructors:Extension_constructor.t list
+  loc:Astlib.Location.t
+  -> constructors:Extension_constructor.t list
   -> params:(Core_type.t * Variance.t) list
   -> path:Longident_loc.t
   -> private_:Private_flag.t
@@ -355,6 +394,10 @@ val extension_constructor :
   -> kind:Extension_constructor_kind.t
   -> name:string Astlib.Loc.t
   -> Extension_constructor.t
+val type_exception :
+  loc:Astlib.Location.t
+  -> constructor:Extension_constructor.t
+  -> Type_exception.t
 val pcty_constr :
   loc:Astlib.Location.t
   -> Longident_loc.t
@@ -376,8 +419,7 @@ val pcty_extension :
   -> Class_type.t
 val pcty_open :
   loc:Astlib.Location.t
-  -> Override_flag.t
-  -> Longident_loc.t
+  -> Open_description.t
   -> Class_type.t
   -> Class_type.t
 val class_signature :
@@ -446,8 +488,7 @@ val pcl_extension :
   -> Class_expr.t
 val pcl_open :
   loc:Astlib.Location.t
-  -> Override_flag.t
-  -> Longident_loc.t
+  -> Open_description.t
   -> Class_expr.t
   -> Class_expr.t
 val class_structure :
@@ -524,17 +565,25 @@ val psig_type :
   -> Rec_flag.t
   -> Type_declaration.t list
   -> Signature_item.t
+val psig_typesubst :
+  loc:Astlib.Location.t
+  -> Type_declaration.t list
+  -> Signature_item.t
 val psig_typext :
   loc:Astlib.Location.t
   -> Type_extension.t
   -> Signature_item.t
 val psig_exception :
   loc:Astlib.Location.t
-  -> Extension_constructor.t
+  -> Type_exception.t
   -> Signature_item.t
 val psig_module :
   loc:Astlib.Location.t
   -> Module_declaration.t
+  -> Signature_item.t
+val psig_modsubst :
+  loc:Astlib.Location.t
+  -> Module_substitution.t
   -> Signature_item.t
 val psig_recmodule :
   loc:Astlib.Location.t
@@ -574,16 +623,16 @@ val module_declaration :
   -> name:string Astlib.Loc.t
   -> type_:Module_type.t
   -> Module_declaration.t
+val module_substitution :
+  loc:Astlib.Location.t
+  -> manifest:Longident_loc.t
+  -> name:string Astlib.Loc.t
+  -> Module_substitution.t
 val module_type_declaration :
   loc:Astlib.Location.t
   -> name:string Astlib.Loc.t
   -> type_:Module_type.t option
   -> Module_type_declaration.t
-val open_description :
-  loc:Astlib.Location.t
-  -> lid:Longident_loc.t
-  -> override:Override_flag.t
-  -> Open_description.t
 val pmod_ident :
   loc:Astlib.Location.t
   -> Longident_loc.t
@@ -641,7 +690,7 @@ val pstr_typext :
   -> Structure_item.t
 val pstr_exception :
   loc:Astlib.Location.t
-  -> Extension_constructor.t
+  -> Type_exception.t
   -> Structure_item.t
 val pstr_module :
   loc:Astlib.Location.t
@@ -657,7 +706,7 @@ val pstr_modtype :
   -> Structure_item.t
 val pstr_open :
   loc:Astlib.Location.t
-  -> Open_description.t
+  -> Open_declaration.t
   -> Structure_item.t
 val pstr_class :
   loc:Astlib.Location.t
@@ -690,4 +739,26 @@ val module_binding :
   -> expr:Module_expr.t
   -> name:string Astlib.Loc.t
   -> Module_binding.t
+val toplevel_directive :
+  loc:Astlib.Location.t
+  -> arg:Directive_argument.t option
+  -> name:string Astlib.Loc.t
+  -> Toplevel_directive.t
+val pdir_string :
+  loc:Astlib.Location.t
+  -> string
+  -> Directive_argument.t
+val pdir_int :
+  loc:Astlib.Location.t
+  -> string
+  -> char option
+  -> Directive_argument.t
+val pdir_ident :
+  loc:Astlib.Location.t
+  -> Longident.t
+  -> Directive_argument.t
+val pdir_bool :
+  loc:Astlib.Location.t
+  -> bool
+  -> Directive_argument.t
 (*$*)

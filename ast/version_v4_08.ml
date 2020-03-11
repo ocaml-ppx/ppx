@@ -601,17 +601,34 @@ end
 module Attribute = struct
   type t = attribute
 
-  type concrete = (string Astlib.Loc.t * payload)
+  type concrete =
+    { attr_name : string Astlib.Loc.t
+    ; attr_payload : payload
+    ; attr_loc : Astlib.Location.t
+    }
 
-  let create =
-    let data = (Data.of_tuple2 ~f1:(Data.of_loc ~f:Data.of_string) ~f2:Data.of_node) in
-    fun x -> node "attribute" (data x)
+  let create ~attr_name ~attr_payload ~attr_loc =
+    let fields =
+      [| (Data.of_loc ~f:Data.of_string) attr_name
+       ; Data.of_node attr_payload
+       ; Data.of_location attr_loc
+      |]
+    in
+    node "attribute" (Record fields)
 
-  let of_concrete = create
+  let of_concrete { attr_name; attr_payload; attr_loc } =
+    create ~attr_name ~attr_payload ~attr_loc
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | Some { name = "attribute"; data } -> (Data.to_tuple2 ~f1:(Data.to_loc ~f:Data.to_string) ~f2:Data.to_node) data
+    | Some { name = "attribute"
+      ; data = Record [| attr_name; attr_payload; attr_loc |]
+      } ->
+        Option.bind ((Data.to_loc ~f:Data.to_string) attr_name) ~f:(fun attr_name ->
+          Option.bind (Data.to_node attr_payload) ~f:(fun attr_payload ->
+            Option.bind (Data.to_location attr_loc) ~f:(fun attr_loc ->
+              Some { attr_name; attr_payload; attr_loc }
+        )))
     | _ -> None
 
   let to_concrete node =
@@ -624,6 +641,10 @@ module Attribute = struct
           node_name = "attribute";
           node = Unversioned.Private.transparent node;
         })
+
+  let attr_name t = (to_concrete t).attr_name
+  let attr_payload t = (to_concrete t).attr_payload
+  let attr_loc t = (to_concrete t).attr_loc
 end
 
 module Extension = struct
@@ -780,31 +801,34 @@ module Core_type = struct
   type concrete =
     { ptyp_desc : core_type_desc
     ; ptyp_loc : Astlib.Location.t
+    ; ptyp_loc_stack : Astlib.Location.t list
     ; ptyp_attributes : attributes
     }
 
-  let create ~ptyp_desc ~ptyp_loc ~ptyp_attributes =
+  let create ~ptyp_desc ~ptyp_loc ~ptyp_loc_stack ~ptyp_attributes =
     let fields =
       [| Data.of_node ptyp_desc
        ; Data.of_location ptyp_loc
+       ; (Data.of_list ~f:Data.of_location) ptyp_loc_stack
        ; Data.of_node ptyp_attributes
       |]
     in
     node "core_type" (Record fields)
 
-  let of_concrete { ptyp_desc; ptyp_loc; ptyp_attributes } =
-    create ~ptyp_desc ~ptyp_loc ~ptyp_attributes
+  let of_concrete { ptyp_desc; ptyp_loc; ptyp_loc_stack; ptyp_attributes } =
+    create ~ptyp_desc ~ptyp_loc ~ptyp_loc_stack ~ptyp_attributes
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
     | Some { name = "core_type"
-      ; data = Record [| ptyp_desc; ptyp_loc; ptyp_attributes |]
+      ; data = Record [| ptyp_desc; ptyp_loc; ptyp_loc_stack; ptyp_attributes |]
       } ->
         Option.bind (Data.to_node ptyp_desc) ~f:(fun ptyp_desc ->
           Option.bind (Data.to_location ptyp_loc) ~f:(fun ptyp_loc ->
-            Option.bind (Data.to_node ptyp_attributes) ~f:(fun ptyp_attributes ->
-              Some { ptyp_desc; ptyp_loc; ptyp_attributes }
-        )))
+            Option.bind ((Data.to_list ~f:Data.to_location) ptyp_loc_stack) ~f:(fun ptyp_loc_stack ->
+              Option.bind (Data.to_node ptyp_attributes) ~f:(fun ptyp_attributes ->
+                Some { ptyp_desc; ptyp_loc; ptyp_loc_stack; ptyp_attributes }
+        ))))
     | _ -> None
 
   let to_concrete node =
@@ -820,6 +844,7 @@ module Core_type = struct
 
   let ptyp_desc t = (to_concrete t).ptyp_desc
   let ptyp_loc t = (to_concrete t).ptyp_loc
+  let ptyp_loc_stack t = (to_concrete t).ptyp_loc_stack
   let ptyp_attributes t = (to_concrete t).ptyp_attributes
 end
 
@@ -1073,22 +1098,70 @@ module Row_field = struct
   type t = row_field
 
   type concrete =
-    | Rtag of string Astlib.Loc.t * attributes * bool * core_type list
+    { prf_desc : row_field_desc
+    ; prf_loc : Astlib.Location.t
+    ; prf_attributes : attributes
+    }
+
+  let create ~prf_desc ~prf_loc ~prf_attributes =
+    let fields =
+      [| Data.of_node prf_desc
+       ; Data.of_location prf_loc
+       ; Data.of_node prf_attributes
+      |]
+    in
+    node "row_field" (Record fields)
+
+  let of_concrete { prf_desc; prf_loc; prf_attributes } =
+    create ~prf_desc ~prf_loc ~prf_attributes
+
+  let to_concrete_opt t =
+    match Node.unwrap (Unversioned.Private.transparent t) ~version with
+    | Some { name = "row_field"
+      ; data = Record [| prf_desc; prf_loc; prf_attributes |]
+      } ->
+        Option.bind (Data.to_node prf_desc) ~f:(fun prf_desc ->
+          Option.bind (Data.to_location prf_loc) ~f:(fun prf_loc ->
+            Option.bind (Data.to_node prf_attributes) ~f:(fun prf_attributes ->
+              Some { prf_desc; prf_loc; prf_attributes }
+        )))
+    | _ -> None
+
+  let to_concrete node =
+    match to_concrete_opt node with
+    | Some concrete -> concrete
+    | None ->
+      raise
+        (Unversioned.Private.Cannot_interpret_ast {
+          version;
+          node_name = "row_field";
+          node = Unversioned.Private.transparent node;
+        })
+
+  let prf_desc t = (to_concrete t).prf_desc
+  let prf_loc t = (to_concrete t).prf_loc
+  let prf_attributes t = (to_concrete t).prf_attributes
+end
+
+module Row_field_desc = struct
+  type t = row_field_desc
+
+  type concrete =
+    | Rtag of string Astlib.Loc.t * bool * core_type list
     | Rinherit of core_type
 
-  let rtag x1 x2 x3 x4 =
-    node "row_field"
+  let rtag x1 x2 x3 =
+    node "row_field_desc"
       (Variant
         { tag = "Rtag"
         ; args =
           [| (Data.of_loc ~f:Data.of_string) x1
-           ; Data.of_node x2
-           ; Data.of_bool x3
-           ; (Data.of_list ~f:Data.of_node) x4
+           ; Data.of_bool x2
+           ; (Data.of_list ~f:Data.of_node) x3
           |]
         })
   let rinherit x1 =
-    node "row_field"
+    node "row_field_desc"
       (Variant
         { tag = "Rinherit"
         ; args =
@@ -1098,23 +1171,22 @@ module Row_field = struct
 
   let of_concrete c =
     match c with
-    | Rtag (x1, x2, x3, x4) ->
-      rtag x1 x2 x3 x4
+    | Rtag (x1, x2, x3) ->
+      rtag x1 x2 x3
     | Rinherit (x1) ->
       rinherit x1
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | Some { name = "row_field"; data } ->
+    | Some { name = "row_field_desc"; data } ->
       begin
         match data with
-        | Variant { tag = "Rtag"; args = [| x1; x2; x3; x4 |] } ->
+        | Variant { tag = "Rtag"; args = [| x1; x2; x3 |] } ->
           Option.bind ((Data.to_loc ~f:Data.to_string) x1) ~f:(fun x1 ->
-            Option.bind (Data.to_node x2) ~f:(fun x2 ->
-              Option.bind (Data.to_bool x3) ~f:(fun x3 ->
-                Option.bind ((Data.to_list ~f:Data.to_node) x4) ~f:(fun x4 ->
-                  Some (Rtag (x1, x2, x3, x4))
-          ))))
+            Option.bind (Data.to_bool x2) ~f:(fun x2 ->
+              Option.bind ((Data.to_list ~f:Data.to_node) x3) ~f:(fun x3 ->
+                Some (Rtag (x1, x2, x3))
+          )))
         | Variant { tag = "Rinherit"; args = [| x1 |] } ->
           Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Some (Rinherit (x1))
@@ -1130,7 +1202,7 @@ module Row_field = struct
       raise
         (Unversioned.Private.Cannot_interpret_ast {
           version;
-          node_name = "row_field";
+          node_name = "row_field_desc";
           node = Unversioned.Private.transparent node;
         })
 end
@@ -1139,21 +1211,69 @@ module Object_field = struct
   type t = object_field
 
   type concrete =
-    | Otag of string Astlib.Loc.t * attributes * core_type
+    { pof_desc : object_field_desc
+    ; pof_loc : Astlib.Location.t
+    ; pof_attributes : attributes
+    }
+
+  let create ~pof_desc ~pof_loc ~pof_attributes =
+    let fields =
+      [| Data.of_node pof_desc
+       ; Data.of_location pof_loc
+       ; Data.of_node pof_attributes
+      |]
+    in
+    node "object_field" (Record fields)
+
+  let of_concrete { pof_desc; pof_loc; pof_attributes } =
+    create ~pof_desc ~pof_loc ~pof_attributes
+
+  let to_concrete_opt t =
+    match Node.unwrap (Unversioned.Private.transparent t) ~version with
+    | Some { name = "object_field"
+      ; data = Record [| pof_desc; pof_loc; pof_attributes |]
+      } ->
+        Option.bind (Data.to_node pof_desc) ~f:(fun pof_desc ->
+          Option.bind (Data.to_location pof_loc) ~f:(fun pof_loc ->
+            Option.bind (Data.to_node pof_attributes) ~f:(fun pof_attributes ->
+              Some { pof_desc; pof_loc; pof_attributes }
+        )))
+    | _ -> None
+
+  let to_concrete node =
+    match to_concrete_opt node with
+    | Some concrete -> concrete
+    | None ->
+      raise
+        (Unversioned.Private.Cannot_interpret_ast {
+          version;
+          node_name = "object_field";
+          node = Unversioned.Private.transparent node;
+        })
+
+  let pof_desc t = (to_concrete t).pof_desc
+  let pof_loc t = (to_concrete t).pof_loc
+  let pof_attributes t = (to_concrete t).pof_attributes
+end
+
+module Object_field_desc = struct
+  type t = object_field_desc
+
+  type concrete =
+    | Otag of string Astlib.Loc.t * core_type
     | Oinherit of core_type
 
-  let otag x1 x2 x3 =
-    node "object_field"
+  let otag x1 x2 =
+    node "object_field_desc"
       (Variant
         { tag = "Otag"
         ; args =
           [| (Data.of_loc ~f:Data.of_string) x1
            ; Data.of_node x2
-           ; Data.of_node x3
           |]
         })
   let oinherit x1 =
-    node "object_field"
+    node "object_field_desc"
       (Variant
         { tag = "Oinherit"
         ; args =
@@ -1163,22 +1283,21 @@ module Object_field = struct
 
   let of_concrete c =
     match c with
-    | Otag (x1, x2, x3) ->
-      otag x1 x2 x3
+    | Otag (x1, x2) ->
+      otag x1 x2
     | Oinherit (x1) ->
       oinherit x1
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | Some { name = "object_field"; data } ->
+    | Some { name = "object_field_desc"; data } ->
       begin
         match data with
-        | Variant { tag = "Otag"; args = [| x1; x2; x3 |] } ->
+        | Variant { tag = "Otag"; args = [| x1; x2 |] } ->
           Option.bind ((Data.to_loc ~f:Data.to_string) x1) ~f:(fun x1 ->
             Option.bind (Data.to_node x2) ~f:(fun x2 ->
-              Option.bind (Data.to_node x3) ~f:(fun x3 ->
-                Some (Otag (x1, x2, x3))
-          )))
+              Some (Otag (x1, x2))
+          ))
         | Variant { tag = "Oinherit"; args = [| x1 |] } ->
           Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Some (Oinherit (x1))
@@ -1194,7 +1313,7 @@ module Object_field = struct
       raise
         (Unversioned.Private.Cannot_interpret_ast {
           version;
-          node_name = "object_field";
+          node_name = "object_field_desc";
           node = Unversioned.Private.transparent node;
         })
 end
@@ -1205,31 +1324,34 @@ module Pattern = struct
   type concrete =
     { ppat_desc : pattern_desc
     ; ppat_loc : Astlib.Location.t
+    ; ppat_loc_stack : Astlib.Location.t list
     ; ppat_attributes : attributes
     }
 
-  let create ~ppat_desc ~ppat_loc ~ppat_attributes =
+  let create ~ppat_desc ~ppat_loc ~ppat_loc_stack ~ppat_attributes =
     let fields =
       [| Data.of_node ppat_desc
        ; Data.of_location ppat_loc
+       ; (Data.of_list ~f:Data.of_location) ppat_loc_stack
        ; Data.of_node ppat_attributes
       |]
     in
     node "pattern" (Record fields)
 
-  let of_concrete { ppat_desc; ppat_loc; ppat_attributes } =
-    create ~ppat_desc ~ppat_loc ~ppat_attributes
+  let of_concrete { ppat_desc; ppat_loc; ppat_loc_stack; ppat_attributes } =
+    create ~ppat_desc ~ppat_loc ~ppat_loc_stack ~ppat_attributes
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
     | Some { name = "pattern"
-      ; data = Record [| ppat_desc; ppat_loc; ppat_attributes |]
+      ; data = Record [| ppat_desc; ppat_loc; ppat_loc_stack; ppat_attributes |]
       } ->
         Option.bind (Data.to_node ppat_desc) ~f:(fun ppat_desc ->
           Option.bind (Data.to_location ppat_loc) ~f:(fun ppat_loc ->
-            Option.bind (Data.to_node ppat_attributes) ~f:(fun ppat_attributes ->
-              Some { ppat_desc; ppat_loc; ppat_attributes }
-        )))
+            Option.bind ((Data.to_list ~f:Data.to_location) ppat_loc_stack) ~f:(fun ppat_loc_stack ->
+              Option.bind (Data.to_node ppat_attributes) ~f:(fun ppat_attributes ->
+                Some { ppat_desc; ppat_loc; ppat_loc_stack; ppat_attributes }
+        ))))
     | _ -> None
 
   let to_concrete node =
@@ -1245,6 +1367,7 @@ module Pattern = struct
 
   let ppat_desc t = (to_concrete t).ppat_desc
   let ppat_loc t = (to_concrete t).ppat_loc
+  let ppat_loc_stack t = (to_concrete t).ppat_loc_stack
   let ppat_attributes t = (to_concrete t).ppat_attributes
 end
 
@@ -1560,31 +1683,34 @@ module Expression = struct
   type concrete =
     { pexp_desc : expression_desc
     ; pexp_loc : Astlib.Location.t
+    ; pexp_loc_stack : Astlib.Location.t list
     ; pexp_attributes : attributes
     }
 
-  let create ~pexp_desc ~pexp_loc ~pexp_attributes =
+  let create ~pexp_desc ~pexp_loc ~pexp_loc_stack ~pexp_attributes =
     let fields =
       [| Data.of_node pexp_desc
        ; Data.of_location pexp_loc
+       ; (Data.of_list ~f:Data.of_location) pexp_loc_stack
        ; Data.of_node pexp_attributes
       |]
     in
     node "expression" (Record fields)
 
-  let of_concrete { pexp_desc; pexp_loc; pexp_attributes } =
-    create ~pexp_desc ~pexp_loc ~pexp_attributes
+  let of_concrete { pexp_desc; pexp_loc; pexp_loc_stack; pexp_attributes } =
+    create ~pexp_desc ~pexp_loc ~pexp_loc_stack ~pexp_attributes
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
     | Some { name = "expression"
-      ; data = Record [| pexp_desc; pexp_loc; pexp_attributes |]
+      ; data = Record [| pexp_desc; pexp_loc; pexp_loc_stack; pexp_attributes |]
       } ->
         Option.bind (Data.to_node pexp_desc) ~f:(fun pexp_desc ->
           Option.bind (Data.to_location pexp_loc) ~f:(fun pexp_loc ->
-            Option.bind (Data.to_node pexp_attributes) ~f:(fun pexp_attributes ->
-              Some { pexp_desc; pexp_loc; pexp_attributes }
-        )))
+            Option.bind ((Data.to_list ~f:Data.to_location) pexp_loc_stack) ~f:(fun pexp_loc_stack ->
+              Option.bind (Data.to_node pexp_attributes) ~f:(fun pexp_attributes ->
+                Some { pexp_desc; pexp_loc; pexp_loc_stack; pexp_attributes }
+        ))))
     | _ -> None
 
   let to_concrete node =
@@ -1600,6 +1726,7 @@ module Expression = struct
 
   let pexp_desc t = (to_concrete t).pexp_desc
   let pexp_loc t = (to_concrete t).pexp_loc
+  let pexp_loc_stack t = (to_concrete t).pexp_loc_stack
   let pexp_attributes t = (to_concrete t).pexp_attributes
 end
 
@@ -1640,7 +1767,8 @@ module Expression_desc = struct
     | Pexp_object of class_structure
     | Pexp_newtype of string Astlib.Loc.t * expression
     | Pexp_pack of module_expr
-    | Pexp_open of override_flag * longident_loc * expression
+    | Pexp_open of open_declaration * expression
+    | Pexp_letop of letop
     | Pexp_extension of extension
     | Pexp_unreachable
 
@@ -1940,14 +2068,21 @@ module Expression_desc = struct
           [| Data.of_node x1
           |]
         })
-  let pexp_open x1 x2 x3 =
+  let pexp_open x1 x2 =
     node "expression_desc"
       (Variant
         { tag = "Pexp_open"
         ; args =
           [| Data.of_node x1
            ; Data.of_node x2
-           ; Data.of_node x3
+          |]
+        })
+  let pexp_letop x1 =
+    node "expression_desc"
+      (Variant
+        { tag = "Pexp_letop"
+        ; args =
+          [| Data.of_node x1
           |]
         })
   let pexp_extension x1 =
@@ -2029,8 +2164,10 @@ module Expression_desc = struct
       pexp_newtype x1 x2
     | Pexp_pack (x1) ->
       pexp_pack x1
-    | Pexp_open (x1, x2, x3) ->
-      pexp_open x1 x2 x3
+    | Pexp_open (x1, x2) ->
+      pexp_open x1 x2
+    | Pexp_letop (x1) ->
+      pexp_letop x1
     | Pexp_extension (x1) ->
       pexp_extension x1
     | Pexp_unreachable -> pexp_unreachable
@@ -2204,12 +2341,15 @@ module Expression_desc = struct
           Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Some (Pexp_pack (x1))
           )
-        | Variant { tag = "Pexp_open"; args = [| x1; x2; x3 |] } ->
+        | Variant { tag = "Pexp_open"; args = [| x1; x2 |] } ->
           Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Option.bind (Data.to_node x2) ~f:(fun x2 ->
-              Option.bind (Data.to_node x3) ~f:(fun x3 ->
-                Some (Pexp_open (x1, x2, x3))
-          )))
+              Some (Pexp_open (x1, x2))
+          ))
+        | Variant { tag = "Pexp_letop"; args = [| x1 |] } ->
+          Option.bind (Data.to_node x1) ~f:(fun x1 ->
+            Some (Pexp_letop (x1))
+          )
         | Variant { tag = "Pexp_extension"; args = [| x1 |] } ->
           Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Some (Pexp_extension (x1))
@@ -2278,6 +2418,108 @@ module Case = struct
   let pc_lhs t = (to_concrete t).pc_lhs
   let pc_guard t = (to_concrete t).pc_guard
   let pc_rhs t = (to_concrete t).pc_rhs
+end
+
+module Letop = struct
+  type t = letop
+
+  type concrete =
+    { let_ : binding_op
+    ; ands : binding_op list
+    ; body : expression
+    }
+
+  let create ~let_ ~ands ~body =
+    let fields =
+      [| Data.of_node let_
+       ; (Data.of_list ~f:Data.of_node) ands
+       ; Data.of_node body
+      |]
+    in
+    node "letop" (Record fields)
+
+  let of_concrete { let_; ands; body } =
+    create ~let_ ~ands ~body
+
+  let to_concrete_opt t =
+    match Node.unwrap (Unversioned.Private.transparent t) ~version with
+    | Some { name = "letop"
+      ; data = Record [| let_; ands; body |]
+      } ->
+        Option.bind (Data.to_node let_) ~f:(fun let_ ->
+          Option.bind ((Data.to_list ~f:Data.to_node) ands) ~f:(fun ands ->
+            Option.bind (Data.to_node body) ~f:(fun body ->
+              Some { let_; ands; body }
+        )))
+    | _ -> None
+
+  let to_concrete node =
+    match to_concrete_opt node with
+    | Some concrete -> concrete
+    | None ->
+      raise
+        (Unversioned.Private.Cannot_interpret_ast {
+          version;
+          node_name = "letop";
+          node = Unversioned.Private.transparent node;
+        })
+
+  let let_ t = (to_concrete t).let_
+  let ands t = (to_concrete t).ands
+  let body t = (to_concrete t).body
+end
+
+module Binding_op = struct
+  type t = binding_op
+
+  type concrete =
+    { pbop_op : string Astlib.Loc.t
+    ; pbop_pat : pattern
+    ; pbop_exp : expression
+    ; pbop_loc : Astlib.Location.t
+    }
+
+  let create ~pbop_op ~pbop_pat ~pbop_exp ~pbop_loc =
+    let fields =
+      [| (Data.of_loc ~f:Data.of_string) pbop_op
+       ; Data.of_node pbop_pat
+       ; Data.of_node pbop_exp
+       ; Data.of_location pbop_loc
+      |]
+    in
+    node "binding_op" (Record fields)
+
+  let of_concrete { pbop_op; pbop_pat; pbop_exp; pbop_loc } =
+    create ~pbop_op ~pbop_pat ~pbop_exp ~pbop_loc
+
+  let to_concrete_opt t =
+    match Node.unwrap (Unversioned.Private.transparent t) ~version with
+    | Some { name = "binding_op"
+      ; data = Record [| pbop_op; pbop_pat; pbop_exp; pbop_loc |]
+      } ->
+        Option.bind ((Data.to_loc ~f:Data.to_string) pbop_op) ~f:(fun pbop_op ->
+          Option.bind (Data.to_node pbop_pat) ~f:(fun pbop_pat ->
+            Option.bind (Data.to_node pbop_exp) ~f:(fun pbop_exp ->
+              Option.bind (Data.to_location pbop_loc) ~f:(fun pbop_loc ->
+                Some { pbop_op; pbop_pat; pbop_exp; pbop_loc }
+        ))))
+    | _ -> None
+
+  let to_concrete node =
+    match to_concrete_opt node with
+    | Some concrete -> concrete
+    | None ->
+      raise
+        (Unversioned.Private.Cannot_interpret_ast {
+          version;
+          node_name = "binding_op";
+          node = Unversioned.Private.transparent node;
+        })
+
+  let pbop_op t = (to_concrete t).pbop_op
+  let pbop_pat t = (to_concrete t).pbop_pat
+  let pbop_exp t = (to_concrete t).pbop_exp
+  let pbop_loc t = (to_concrete t).pbop_loc
 end
 
 module Value_description = struct
@@ -2658,35 +2900,38 @@ module Type_extension = struct
     ; ptyext_params : (core_type * variance) list
     ; ptyext_constructors : extension_constructor list
     ; ptyext_private : private_flag
+    ; ptyext_loc : Astlib.Location.t
     ; ptyext_attributes : attributes
     }
 
-  let create ~ptyext_path ~ptyext_params ~ptyext_constructors ~ptyext_private ~ptyext_attributes =
+  let create ~ptyext_path ~ptyext_params ~ptyext_constructors ~ptyext_private ~ptyext_loc ~ptyext_attributes =
     let fields =
       [| Data.of_node ptyext_path
        ; (Data.of_list ~f:(Data.of_tuple2 ~f1:Data.of_node ~f2:Data.of_node)) ptyext_params
        ; (Data.of_list ~f:Data.of_node) ptyext_constructors
        ; Data.of_node ptyext_private
+       ; Data.of_location ptyext_loc
        ; Data.of_node ptyext_attributes
       |]
     in
     node "type_extension" (Record fields)
 
-  let of_concrete { ptyext_path; ptyext_params; ptyext_constructors; ptyext_private; ptyext_attributes } =
-    create ~ptyext_path ~ptyext_params ~ptyext_constructors ~ptyext_private ~ptyext_attributes
+  let of_concrete { ptyext_path; ptyext_params; ptyext_constructors; ptyext_private; ptyext_loc; ptyext_attributes } =
+    create ~ptyext_path ~ptyext_params ~ptyext_constructors ~ptyext_private ~ptyext_loc ~ptyext_attributes
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
     | Some { name = "type_extension"
-      ; data = Record [| ptyext_path; ptyext_params; ptyext_constructors; ptyext_private; ptyext_attributes |]
+      ; data = Record [| ptyext_path; ptyext_params; ptyext_constructors; ptyext_private; ptyext_loc; ptyext_attributes |]
       } ->
         Option.bind (Data.to_node ptyext_path) ~f:(fun ptyext_path ->
           Option.bind ((Data.to_list ~f:(Data.to_tuple2 ~f1:Data.to_node ~f2:Data.to_node)) ptyext_params) ~f:(fun ptyext_params ->
             Option.bind ((Data.to_list ~f:Data.to_node) ptyext_constructors) ~f:(fun ptyext_constructors ->
               Option.bind (Data.to_node ptyext_private) ~f:(fun ptyext_private ->
-                Option.bind (Data.to_node ptyext_attributes) ~f:(fun ptyext_attributes ->
-                  Some { ptyext_path; ptyext_params; ptyext_constructors; ptyext_private; ptyext_attributes }
-        )))))
+                Option.bind (Data.to_location ptyext_loc) ~f:(fun ptyext_loc ->
+                  Option.bind (Data.to_node ptyext_attributes) ~f:(fun ptyext_attributes ->
+                    Some { ptyext_path; ptyext_params; ptyext_constructors; ptyext_private; ptyext_loc; ptyext_attributes }
+        ))))))
     | _ -> None
 
   let to_concrete node =
@@ -2704,6 +2949,7 @@ module Type_extension = struct
   let ptyext_params t = (to_concrete t).ptyext_params
   let ptyext_constructors t = (to_concrete t).ptyext_constructors
   let ptyext_private t = (to_concrete t).ptyext_private
+  let ptyext_loc t = (to_concrete t).ptyext_loc
   let ptyext_attributes t = (to_concrete t).ptyext_attributes
 end
 
@@ -2758,6 +3004,55 @@ module Extension_constructor = struct
   let pext_kind t = (to_concrete t).pext_kind
   let pext_loc t = (to_concrete t).pext_loc
   let pext_attributes t = (to_concrete t).pext_attributes
+end
+
+module Type_exception = struct
+  type t = type_exception
+
+  type concrete =
+    { ptyexn_constructor : extension_constructor
+    ; ptyexn_loc : Astlib.Location.t
+    ; ptyexn_attributes : attributes
+    }
+
+  let create ~ptyexn_constructor ~ptyexn_loc ~ptyexn_attributes =
+    let fields =
+      [| Data.of_node ptyexn_constructor
+       ; Data.of_location ptyexn_loc
+       ; Data.of_node ptyexn_attributes
+      |]
+    in
+    node "type_exception" (Record fields)
+
+  let of_concrete { ptyexn_constructor; ptyexn_loc; ptyexn_attributes } =
+    create ~ptyexn_constructor ~ptyexn_loc ~ptyexn_attributes
+
+  let to_concrete_opt t =
+    match Node.unwrap (Unversioned.Private.transparent t) ~version with
+    | Some { name = "type_exception"
+      ; data = Record [| ptyexn_constructor; ptyexn_loc; ptyexn_attributes |]
+      } ->
+        Option.bind (Data.to_node ptyexn_constructor) ~f:(fun ptyexn_constructor ->
+          Option.bind (Data.to_location ptyexn_loc) ~f:(fun ptyexn_loc ->
+            Option.bind (Data.to_node ptyexn_attributes) ~f:(fun ptyexn_attributes ->
+              Some { ptyexn_constructor; ptyexn_loc; ptyexn_attributes }
+        )))
+    | _ -> None
+
+  let to_concrete node =
+    match to_concrete_opt node with
+    | Some concrete -> concrete
+    | None ->
+      raise
+        (Unversioned.Private.Cannot_interpret_ast {
+          version;
+          node_name = "type_exception";
+          node = Unversioned.Private.transparent node;
+        })
+
+  let ptyexn_constructor t = (to_concrete t).ptyexn_constructor
+  let ptyexn_loc t = (to_concrete t).ptyexn_loc
+  let ptyexn_attributes t = (to_concrete t).ptyexn_attributes
 end
 
 module Extension_constructor_kind = struct
@@ -2879,7 +3174,7 @@ module Class_type_desc = struct
     | Pcty_signature of class_signature
     | Pcty_arrow of arg_label * core_type * class_type
     | Pcty_extension of extension
-    | Pcty_open of override_flag * longident_loc * class_type
+    | Pcty_open of open_description * class_type
 
   let pcty_constr x1 x2 =
     node "class_type_desc"
@@ -2916,14 +3211,13 @@ module Class_type_desc = struct
           [| Data.of_node x1
           |]
         })
-  let pcty_open x1 x2 x3 =
+  let pcty_open x1 x2 =
     node "class_type_desc"
       (Variant
         { tag = "Pcty_open"
         ; args =
           [| Data.of_node x1
            ; Data.of_node x2
-           ; Data.of_node x3
           |]
         })
 
@@ -2937,8 +3231,8 @@ module Class_type_desc = struct
       pcty_arrow x1 x2 x3
     | Pcty_extension (x1) ->
       pcty_extension x1
-    | Pcty_open (x1, x2, x3) ->
-      pcty_open x1 x2 x3
+    | Pcty_open (x1, x2) ->
+      pcty_open x1 x2
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
@@ -2964,12 +3258,11 @@ module Class_type_desc = struct
           Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Some (Pcty_extension (x1))
           )
-        | Variant { tag = "Pcty_open"; args = [| x1; x2; x3 |] } ->
+        | Variant { tag = "Pcty_open"; args = [| x1; x2 |] } ->
           Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Option.bind (Data.to_node x2) ~f:(fun x2 ->
-              Option.bind (Data.to_node x3) ~f:(fun x3 ->
-                Some (Pcty_open (x1, x2, x3))
-          )))
+              Some (Pcty_open (x1, x2))
+          ))
       | _ -> None
       end
     | _ -> None
@@ -3377,7 +3670,7 @@ module Class_expr_desc = struct
     | Pcl_let of rec_flag * value_binding list * class_expr
     | Pcl_constraint of class_expr * class_type
     | Pcl_extension of extension
-    | Pcl_open of override_flag * longident_loc * class_expr
+    | Pcl_open of open_description * class_expr
 
   let pcl_constr x1 x2 =
     node "class_expr_desc"
@@ -3443,14 +3736,13 @@ module Class_expr_desc = struct
           [| Data.of_node x1
           |]
         })
-  let pcl_open x1 x2 x3 =
+  let pcl_open x1 x2 =
     node "class_expr_desc"
       (Variant
         { tag = "Pcl_open"
         ; args =
           [| Data.of_node x1
            ; Data.of_node x2
-           ; Data.of_node x3
           |]
         })
 
@@ -3470,8 +3762,8 @@ module Class_expr_desc = struct
       pcl_constraint x1 x2
     | Pcl_extension (x1) ->
       pcl_extension x1
-    | Pcl_open (x1, x2, x3) ->
-      pcl_open x1 x2 x3
+    | Pcl_open (x1, x2) ->
+      pcl_open x1 x2
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
@@ -3514,12 +3806,11 @@ module Class_expr_desc = struct
           Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Some (Pcl_extension (x1))
           )
-        | Variant { tag = "Pcl_open"; args = [| x1; x2; x3 |] } ->
+        | Variant { tag = "Pcl_open"; args = [| x1; x2 |] } ->
           Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Option.bind (Data.to_node x2) ~f:(fun x2 ->
-              Option.bind (Data.to_node x3) ~f:(fun x3 ->
-                Some (Pcl_open (x1, x2, x3))
-          )))
+              Some (Pcl_open (x1, x2))
+          ))
       | _ -> None
       end
     | _ -> None
@@ -4128,9 +4419,11 @@ module Signature_item_desc = struct
   type concrete =
     | Psig_value of value_description
     | Psig_type of rec_flag * type_declaration list
+    | Psig_typesubst of type_declaration list
     | Psig_typext of type_extension
-    | Psig_exception of extension_constructor
+    | Psig_exception of type_exception
     | Psig_module of module_declaration
+    | Psig_modsubst of module_substitution
     | Psig_recmodule of module_declaration list
     | Psig_modtype of module_type_declaration
     | Psig_open of open_description
@@ -4157,6 +4450,14 @@ module Signature_item_desc = struct
            ; (Data.of_list ~f:Data.of_node) x2
           |]
         })
+  let psig_typesubst x1 =
+    node "signature_item_desc"
+      (Variant
+        { tag = "Psig_typesubst"
+        ; args =
+          [| (Data.of_list ~f:Data.of_node) x1
+          |]
+        })
   let psig_typext x1 =
     node "signature_item_desc"
       (Variant
@@ -4177,6 +4478,14 @@ module Signature_item_desc = struct
     node "signature_item_desc"
       (Variant
         { tag = "Psig_module"
+        ; args =
+          [| Data.of_node x1
+          |]
+        })
+  let psig_modsubst x1 =
+    node "signature_item_desc"
+      (Variant
+        { tag = "Psig_modsubst"
         ; args =
           [| Data.of_node x1
           |]
@@ -4253,12 +4562,16 @@ module Signature_item_desc = struct
       psig_value x1
     | Psig_type (x1, x2) ->
       psig_type x1 x2
+    | Psig_typesubst (x1) ->
+      psig_typesubst x1
     | Psig_typext (x1) ->
       psig_typext x1
     | Psig_exception (x1) ->
       psig_exception x1
     | Psig_module (x1) ->
       psig_module x1
+    | Psig_modsubst (x1) ->
+      psig_modsubst x1
     | Psig_recmodule (x1) ->
       psig_recmodule x1
     | Psig_modtype (x1) ->
@@ -4290,6 +4603,10 @@ module Signature_item_desc = struct
             Option.bind ((Data.to_list ~f:Data.to_node) x2) ~f:(fun x2 ->
               Some (Psig_type (x1, x2))
           ))
+        | Variant { tag = "Psig_typesubst"; args = [| x1 |] } ->
+          Option.bind ((Data.to_list ~f:Data.to_node) x1) ~f:(fun x1 ->
+            Some (Psig_typesubst (x1))
+          )
         | Variant { tag = "Psig_typext"; args = [| x1 |] } ->
           Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Some (Psig_typext (x1))
@@ -4301,6 +4618,10 @@ module Signature_item_desc = struct
         | Variant { tag = "Psig_module"; args = [| x1 |] } ->
           Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Some (Psig_module (x1))
+          )
+        | Variant { tag = "Psig_modsubst"; args = [| x1 |] } ->
+          Option.bind (Data.to_node x1) ~f:(fun x1 ->
+            Some (Psig_modsubst (x1))
           )
         | Variant { tag = "Psig_recmodule"; args = [| x1 |] } ->
           Option.bind ((Data.to_list ~f:Data.to_node) x1) ~f:(fun x1 ->
@@ -4404,6 +4725,59 @@ module Module_declaration = struct
   let pmd_loc t = (to_concrete t).pmd_loc
 end
 
+module Module_substitution = struct
+  type t = module_substitution
+
+  type concrete =
+    { pms_name : string Astlib.Loc.t
+    ; pms_manifest : longident_loc
+    ; pms_attributes : attributes
+    ; pms_loc : Astlib.Location.t
+    }
+
+  let create ~pms_name ~pms_manifest ~pms_attributes ~pms_loc =
+    let fields =
+      [| (Data.of_loc ~f:Data.of_string) pms_name
+       ; Data.of_node pms_manifest
+       ; Data.of_node pms_attributes
+       ; Data.of_location pms_loc
+      |]
+    in
+    node "module_substitution" (Record fields)
+
+  let of_concrete { pms_name; pms_manifest; pms_attributes; pms_loc } =
+    create ~pms_name ~pms_manifest ~pms_attributes ~pms_loc
+
+  let to_concrete_opt t =
+    match Node.unwrap (Unversioned.Private.transparent t) ~version with
+    | Some { name = "module_substitution"
+      ; data = Record [| pms_name; pms_manifest; pms_attributes; pms_loc |]
+      } ->
+        Option.bind ((Data.to_loc ~f:Data.to_string) pms_name) ~f:(fun pms_name ->
+          Option.bind (Data.to_node pms_manifest) ~f:(fun pms_manifest ->
+            Option.bind (Data.to_node pms_attributes) ~f:(fun pms_attributes ->
+              Option.bind (Data.to_location pms_loc) ~f:(fun pms_loc ->
+                Some { pms_name; pms_manifest; pms_attributes; pms_loc }
+        ))))
+    | _ -> None
+
+  let to_concrete node =
+    match to_concrete_opt node with
+    | Some concrete -> concrete
+    | None ->
+      raise
+        (Unversioned.Private.Cannot_interpret_ast {
+          version;
+          node_name = "module_substitution";
+          node = Unversioned.Private.transparent node;
+        })
+
+  let pms_name t = (to_concrete t).pms_name
+  let pms_manifest t = (to_concrete t).pms_manifest
+  let pms_attributes t = (to_concrete t).pms_attributes
+  let pms_loc t = (to_concrete t).pms_loc
+end
+
 module Module_type_declaration = struct
   type t = module_type_declaration
 
@@ -4457,40 +4831,73 @@ module Module_type_declaration = struct
   let pmtd_loc t = (to_concrete t).pmtd_loc
 end
 
-module Open_description = struct
-  type t = open_description
+module Open_infos = struct
+  type 'a t = 'a open_infos
 
-  type concrete =
-    { popen_lid : longident_loc
+  type 'a concrete =
+    { popen_expr : 'a
     ; popen_override : override_flag
     ; popen_loc : Astlib.Location.t
     ; popen_attributes : attributes
     }
 
-  let create ~popen_lid ~popen_override ~popen_loc ~popen_attributes =
+  let create ~popen_expr ~popen_override ~popen_loc ~popen_attributes =
     let fields =
-      [| Data.of_node popen_lid
+      [| Data.of_node popen_expr
        ; Data.of_node popen_override
        ; Data.of_location popen_loc
        ; Data.of_node popen_attributes
       |]
     in
-    node "open_description" (Record fields)
+    node "open_infos" (Record fields)
 
-  let of_concrete { popen_lid; popen_override; popen_loc; popen_attributes } =
-    create ~popen_lid ~popen_override ~popen_loc ~popen_attributes
+  let of_concrete { popen_expr; popen_override; popen_loc; popen_attributes } =
+    create ~popen_expr ~popen_override ~popen_loc ~popen_attributes
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | Some { name = "open_description"
-      ; data = Record [| popen_lid; popen_override; popen_loc; popen_attributes |]
+    | Some { name = "open_infos"
+      ; data = Record [| popen_expr; popen_override; popen_loc; popen_attributes |]
       } ->
-        Option.bind (Data.to_node popen_lid) ~f:(fun popen_lid ->
+        Option.bind (Data.to_node popen_expr) ~f:(fun popen_expr ->
           Option.bind (Data.to_node popen_override) ~f:(fun popen_override ->
             Option.bind (Data.to_location popen_loc) ~f:(fun popen_loc ->
               Option.bind (Data.to_node popen_attributes) ~f:(fun popen_attributes ->
-                Some { popen_lid; popen_override; popen_loc; popen_attributes }
+                Some { popen_expr; popen_override; popen_loc; popen_attributes }
         ))))
+    | _ -> None
+
+  let to_concrete node =
+    match to_concrete_opt node with
+    | Some concrete -> concrete
+    | None ->
+      raise
+        (Unversioned.Private.Cannot_interpret_ast {
+          version;
+          node_name = "open_infos";
+          node = Unversioned.Private.transparent node;
+        })
+
+  let popen_expr t = (to_concrete t).popen_expr
+  let popen_override t = (to_concrete t).popen_override
+  let popen_loc t = (to_concrete t).popen_loc
+  let popen_attributes t = (to_concrete t).popen_attributes
+end
+
+module Open_description = struct
+  type t = open_description
+
+  type concrete = longident_loc open_infos
+
+  let create =
+    let data = Data.of_node in
+    fun x -> node "open_description" (data x)
+
+  let of_concrete = create
+
+  let to_concrete_opt t =
+    match Node.unwrap (Unversioned.Private.transparent t) ~version with
+    | Some { name = "open_description"; data } -> Data.to_node data
     | _ -> None
 
   let to_concrete node =
@@ -4503,11 +4910,34 @@ module Open_description = struct
           node_name = "open_description";
           node = Unversioned.Private.transparent node;
         })
+end
 
-  let popen_lid t = (to_concrete t).popen_lid
-  let popen_override t = (to_concrete t).popen_override
-  let popen_loc t = (to_concrete t).popen_loc
-  let popen_attributes t = (to_concrete t).popen_attributes
+module Open_declaration = struct
+  type t = open_declaration
+
+  type concrete = module_expr open_infos
+
+  let create =
+    let data = Data.of_node in
+    fun x -> node "open_declaration" (data x)
+
+  let of_concrete = create
+
+  let to_concrete_opt t =
+    match Node.unwrap (Unversioned.Private.transparent t) ~version with
+    | Some { name = "open_declaration"; data } -> Data.to_node data
+    | _ -> None
+
+  let to_concrete node =
+    match to_concrete_opt node with
+    | Some concrete -> concrete
+    | None ->
+      raise
+        (Unversioned.Private.Cannot_interpret_ast {
+          version;
+          node_name = "open_declaration";
+          node = Unversioned.Private.transparent node;
+        })
 end
 
 module Include_infos = struct
@@ -4987,11 +5417,11 @@ module Structure_item_desc = struct
     | Pstr_primitive of value_description
     | Pstr_type of rec_flag * type_declaration list
     | Pstr_typext of type_extension
-    | Pstr_exception of extension_constructor
+    | Pstr_exception of type_exception
     | Pstr_module of module_binding
     | Pstr_recmodule of module_binding list
     | Pstr_modtype of module_type_declaration
-    | Pstr_open of open_description
+    | Pstr_open of open_declaration
     | Pstr_class of class_declaration list
     | Pstr_class_type of class_type_declaration list
     | Pstr_include of include_declaration
@@ -5352,7 +5782,7 @@ module Toplevel_phrase = struct
 
   type concrete =
     | Ptop_def of structure
-    | Ptop_dir of string * directive_argument
+    | Ptop_dir of toplevel_directive
 
   let ptop_def x1 =
     node "toplevel_phrase"
@@ -5362,13 +5792,12 @@ module Toplevel_phrase = struct
           [| Data.of_node x1
           |]
         })
-  let ptop_dir x1 x2 =
+  let ptop_dir x1 =
     node "toplevel_phrase"
       (Variant
         { tag = "Ptop_dir"
         ; args =
-          [| Data.of_string x1
-           ; Data.of_node x2
+          [| Data.of_node x1
           |]
         })
 
@@ -5376,8 +5805,8 @@ module Toplevel_phrase = struct
     match c with
     | Ptop_def (x1) ->
       ptop_def x1
-    | Ptop_dir (x1, x2) ->
-      ptop_dir x1 x2
+    | Ptop_dir (x1) ->
+      ptop_dir x1
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
@@ -5388,11 +5817,10 @@ module Toplevel_phrase = struct
           Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Some (Ptop_def (x1))
           )
-        | Variant { tag = "Ptop_dir"; args = [| x1; x2 |] } ->
-          Option.bind (Data.to_string x1) ~f:(fun x1 ->
-            Option.bind (Data.to_node x2) ~f:(fun x2 ->
-              Some (Ptop_dir (x1, x2))
-          ))
+        | Variant { tag = "Ptop_dir"; args = [| x1 |] } ->
+          Option.bind (Data.to_node x1) ~f:(fun x1 ->
+            Some (Ptop_dir (x1))
+          )
       | _ -> None
       end
     | _ -> None
@@ -5409,20 +5837,111 @@ module Toplevel_phrase = struct
         })
 end
 
+module Toplevel_directive = struct
+  type t = toplevel_directive
+
+  type concrete =
+    { pdir_name : string Astlib.Loc.t
+    ; pdir_arg : directive_argument option
+    ; pdir_loc : Astlib.Location.t
+    }
+
+  let create ~pdir_name ~pdir_arg ~pdir_loc =
+    let fields =
+      [| (Data.of_loc ~f:Data.of_string) pdir_name
+       ; (Data.of_option ~f:Data.of_node) pdir_arg
+       ; Data.of_location pdir_loc
+      |]
+    in
+    node "toplevel_directive" (Record fields)
+
+  let of_concrete { pdir_name; pdir_arg; pdir_loc } =
+    create ~pdir_name ~pdir_arg ~pdir_loc
+
+  let to_concrete_opt t =
+    match Node.unwrap (Unversioned.Private.transparent t) ~version with
+    | Some { name = "toplevel_directive"
+      ; data = Record [| pdir_name; pdir_arg; pdir_loc |]
+      } ->
+        Option.bind ((Data.to_loc ~f:Data.to_string) pdir_name) ~f:(fun pdir_name ->
+          Option.bind ((Data.to_option ~f:Data.to_node) pdir_arg) ~f:(fun pdir_arg ->
+            Option.bind (Data.to_location pdir_loc) ~f:(fun pdir_loc ->
+              Some { pdir_name; pdir_arg; pdir_loc }
+        )))
+    | _ -> None
+
+  let to_concrete node =
+    match to_concrete_opt node with
+    | Some concrete -> concrete
+    | None ->
+      raise
+        (Unversioned.Private.Cannot_interpret_ast {
+          version;
+          node_name = "toplevel_directive";
+          node = Unversioned.Private.transparent node;
+        })
+
+  let pdir_name t = (to_concrete t).pdir_name
+  let pdir_arg t = (to_concrete t).pdir_arg
+  let pdir_loc t = (to_concrete t).pdir_loc
+end
+
 module Directive_argument = struct
   type t = directive_argument
 
   type concrete =
-    | Pdir_none
+    { pdira_desc : directive_argument_desc
+    ; pdira_loc : Astlib.Location.t
+    }
+
+  let create ~pdira_desc ~pdira_loc =
+    let fields =
+      [| Data.of_node pdira_desc
+       ; Data.of_location pdira_loc
+      |]
+    in
+    node "directive_argument" (Record fields)
+
+  let of_concrete { pdira_desc; pdira_loc } =
+    create ~pdira_desc ~pdira_loc
+
+  let to_concrete_opt t =
+    match Node.unwrap (Unversioned.Private.transparent t) ~version with
+    | Some { name = "directive_argument"
+      ; data = Record [| pdira_desc; pdira_loc |]
+      } ->
+        Option.bind (Data.to_node pdira_desc) ~f:(fun pdira_desc ->
+          Option.bind (Data.to_location pdira_loc) ~f:(fun pdira_loc ->
+            Some { pdira_desc; pdira_loc }
+        ))
+    | _ -> None
+
+  let to_concrete node =
+    match to_concrete_opt node with
+    | Some concrete -> concrete
+    | None ->
+      raise
+        (Unversioned.Private.Cannot_interpret_ast {
+          version;
+          node_name = "directive_argument";
+          node = Unversioned.Private.transparent node;
+        })
+
+  let pdira_desc t = (to_concrete t).pdira_desc
+  let pdira_loc t = (to_concrete t).pdira_loc
+end
+
+module Directive_argument_desc = struct
+  type t = directive_argument_desc
+
+  type concrete =
     | Pdir_string of string
     | Pdir_int of string * char option
     | Pdir_ident of longident
     | Pdir_bool of bool
 
-  let pdir_none =
-    node "directive_argument" (Variant { tag = "Pdir_none"; args = [||] })
   let pdir_string x1 =
-    node "directive_argument"
+    node "directive_argument_desc"
       (Variant
         { tag = "Pdir_string"
         ; args =
@@ -5430,7 +5949,7 @@ module Directive_argument = struct
           |]
         })
   let pdir_int x1 x2 =
-    node "directive_argument"
+    node "directive_argument_desc"
       (Variant
         { tag = "Pdir_int"
         ; args =
@@ -5439,7 +5958,7 @@ module Directive_argument = struct
           |]
         })
   let pdir_ident x1 =
-    node "directive_argument"
+    node "directive_argument_desc"
       (Variant
         { tag = "Pdir_ident"
         ; args =
@@ -5447,7 +5966,7 @@ module Directive_argument = struct
           |]
         })
   let pdir_bool x1 =
-    node "directive_argument"
+    node "directive_argument_desc"
       (Variant
         { tag = "Pdir_bool"
         ; args =
@@ -5457,7 +5976,6 @@ module Directive_argument = struct
 
   let of_concrete c =
     match c with
-    | Pdir_none -> pdir_none
     | Pdir_string (x1) ->
       pdir_string x1
     | Pdir_int (x1, x2) ->
@@ -5469,10 +5987,9 @@ module Directive_argument = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | Some { name = "directive_argument"; data } ->
+    | Some { name = "directive_argument_desc"; data } ->
       begin
         match data with
-        | Variant { tag = "Pdir_none"; args = [||] } -> Some Pdir_none
         | Variant { tag = "Pdir_string"; args = [| x1 |] } ->
           Option.bind (Data.to_string x1) ~f:(fun x1 ->
             Some (Pdir_string (x1))
@@ -5501,7 +6018,7 @@ module Directive_argument = struct
       raise
         (Unversioned.Private.Cannot_interpret_ast {
           version;
-          node_name = "directive_argument";
+          node_name = "directive_argument_desc";
           node = Unversioned.Private.transparent node;
         })
 end

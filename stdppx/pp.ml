@@ -114,6 +114,7 @@ module Renderer = struct
         pp_open_tag ppf (embed_tag ~opening ~closing);
         pp th ppf t;
         pp_close_tag ppf ()
+    [@@warning "-3"]
 
     let setup ppf =
       let funcs = pp_get_formatter_tag_functions ppf () in
@@ -123,6 +124,7 @@ module Renderer = struct
           mark_open_tag  = extract_opening_tag
         ; mark_close_tag = extract_closing_tag
         }
+    [@@warning "-3"]
 
     let string () =
       let buf = Buffer.create 1024 in

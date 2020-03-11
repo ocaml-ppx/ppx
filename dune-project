@@ -22,7 +22,7 @@ A comprehensive toolbox for ppx development. It features:
    OCaml AST in the OCaml syntax;
 - a generator of open recursion classes from type definitions.")
  (depends
-  (ocaml (and (>= 4.07) (< 4.08)))
+  (ocaml (and (>= 4.08) (< 4.09)))
   ocaml-syntax-shims
   astlib
   (expect_test_helpers_kernel :with-test)
@@ -43,7 +43,7 @@ A comprehensive toolbox for ppx development. It features:
 interfaces for constructing and deconstructing them so that ppx transformers can
 be easily migrated to new versions of the compiler.")
  (depends
-  (ocaml (and (>= 4.07) (< 4.08)))
+  (ocaml (and (>= 4.08) (< 4.09)))
   (base (>= v0.11.0))
   (dune (>= 1.8.0))
   (ocaml-compiler-libs (>= v0.11.0))

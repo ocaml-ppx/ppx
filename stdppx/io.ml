@@ -1,4 +1,4 @@
-module P = Pervasives
+module P = Stdlib
 
 let close_in  = close_in
 let close_out = close_out
