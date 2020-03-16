@@ -1,8 +1,5 @@
 open Stdppx
 open Ppx_ast.V4_07
-open Ppx_ast.Builder.V4_07
-open Ppx_ast.Builder.Common
-module Traverse = Ppx_ast.Traverse.V4_07
 module Traverse_builtins = Ppx_ast.Traverse_builtins
 module Expr = Expression_desc
 module Pat = Pattern_desc

@@ -1,11 +1,5 @@
 open! Stdppx
 open Ppx_ast.V4_07
-module Traverse = Ppx_ast.Traverse.V4_07
-
-module Builder = struct
-  include Ppx_ast.Builder.Common
-  include Ppx_ast.Builder.V4_07
-end
 
 module Kind = struct
   type t = Intf | Impl
@@ -36,7 +30,7 @@ module Ppx_view = struct
               Driver.assert_no_attributes attrs;
               Ppx_view_lib.Expand.payload ~loc expr
             | _ ->
-              Builder.Error_ext.exprf ~loc
+              Error_ext.exprf ~loc
                 "Invalid view payload: expected a single expression"
       }
 
@@ -67,8 +61,8 @@ let unsupported_extension extension =
   | Some (name_loc, _) ->
     let loc = Astlib.Loc.loc name_loc in
     let name = Astlib.Loc.txt name_loc in
-    let expr = Builder.estring ~loc ("unsupported bootstrap extension " ^ name) in
-    let item = Builder.pstr_eval ~loc expr (Attributes.create []) in
+    let expr = estring ~loc ("unsupported bootstrap extension " ^ name) in
+    let item = pstr_eval ~loc expr (Attributes.create []) in
     let payload = Payload.pstr (Structure.create [item]) in
     Extension.create (Astlib.Loc.create ~txt:"error" ~loc (), payload)
 ;;
@@ -97,7 +91,7 @@ let pattern_extension pat =
 
 let rewriter =
   object (self)
-    inherit Traverse.map as super
+    inherit map as super
 
     method! extension = unsupported_extension
 
@@ -109,7 +103,7 @@ let rewriter =
         let txt = Astlib.Loc.txt name_loc in
         (match Label_map.find t.expr txt with
          | Some entry -> self#expression (entry.callback ~loc payload)
-         | None -> Builder.pexp_extension ~loc (unsupported_extension ext))
+         | None -> pexp_extension ~loc (unsupported_extension ext))
 
     method! pattern pat =
       match pattern_extension pat with
@@ -119,7 +113,7 @@ let rewriter =
         let txt = Astlib.Loc.txt name_loc in
         (match Label_map.find t.patt txt with
          | Some entry -> self#pattern (entry.callback ~loc payload)
-         | None -> Builder.ppat_extension ~loc (unsupported_extension ext))
+         | None -> ppat_extension ~loc (unsupported_extension ext))
   end
 
 let rewrite_ast = function

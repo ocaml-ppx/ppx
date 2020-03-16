@@ -11,7 +11,7 @@ let sig_  = [%sig: module M : S type t = unit]
 
 (* Ppx_view *)
 let f_view x =
-  let open Ppx_ast.Viewer.V4_07 in
+  let open Ppx_ast.V4_07 in
   match%view x with
   | Pexp_constraint (expr, core_type) -> Some (expr, core_type)
   | _ -> None

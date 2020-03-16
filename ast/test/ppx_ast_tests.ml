@@ -12,7 +12,7 @@ module Unstable_for_testing = struct
       ~f:(fun x ->
         require_equal [%here] (module Deriving.Toplevel_phrase) x
           (Conversion.ast_to_toplevel_phrase
-            ((new Traverse.Unstable_for_testing.map)#toplevel_phrase
+            ((new Unstable_for_testing.map)#toplevel_phrase
               (Conversion.ast_of_toplevel_phrase x))));
     [%expect {| |}]
 
@@ -22,7 +22,7 @@ module Unstable_for_testing = struct
       ~f:(fun x ->
         require_equal [%here] (module Deriving.Structure) x
           (Conversion.ast_to_structure
-            ((new Traverse.Unstable_for_testing.map)#structure
+            ((new Unstable_for_testing.map)#structure
               (Conversion.ast_of_structure x))));
     [%expect {| |}]
 
@@ -32,7 +32,7 @@ module Unstable_for_testing = struct
       ~f:(fun x ->
         require_equal [%here] (module Deriving.Signature) x
           (Conversion.ast_to_signature
-            ((new Traverse.Unstable_for_testing.map)#signature
+            ((new Unstable_for_testing.map)#signature
               (Conversion.ast_of_signature x))));
     [%expect {| |}]
 end
@@ -44,7 +44,7 @@ module V4_07 = struct
       ~f:(fun x ->
         require_equal [%here] (module Deriving.Signature) x
           (Conversion.ast_to_signature
-            ((new Traverse.V4_07.map)#signature
+            ((new V4_07.map)#signature
               (Conversion.ast_of_signature x))));
     [%expect {| |}]
 
@@ -54,7 +54,7 @@ module V4_07 = struct
       ~f:(fun x ->
         require_equal [%here] (module Deriving.Structure) x
           (Conversion.ast_to_structure
-            ((new Traverse.V4_07.map)#structure
+            ((new V4_07.map)#structure
               (Conversion.ast_of_structure x))));
     [%expect {| |}]
 
@@ -64,7 +64,7 @@ module V4_07 = struct
       ~f:(fun x ->
         require_equal [%here] (module Deriving.Toplevel_phrase) x
           (Conversion.ast_to_toplevel_phrase
-            ((new Traverse.V4_07.map)#toplevel_phrase
+            ((new V4_07.map)#toplevel_phrase
               (Conversion.ast_of_toplevel_phrase x))));
     [%expect {| |}]
 end

@@ -1,4 +1,4 @@
-open Unversioned
+open Unversioned.Types
 
 (*$ Ppx_ast_cinaps.print_version_mli (Astlib.Version.of_string "v4_07") *)
 module rec Longident : sig

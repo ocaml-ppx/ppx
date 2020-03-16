@@ -1,7 +1,18 @@
-module Builder = Builder
-module Conversion = Conversion
 module Compiler_types = Compiler_types
-module Traverse = Traverse
+module Conversion = Conversion
 module Traverse_builtins = Traverse_builtins
-module Viewer = Viewer
-include Versions
+include Unversioned.Types
+
+module V4_07 = struct
+  include Versions.V4_07
+  include Builder.V4_07
+  include Viewer.V4_07
+  include Traverse.V4_07
+end
+
+module Unstable_for_testing = struct
+  include Versions.Unstable_for_testing
+  include Builder.Unstable_for_testing
+  include Viewer.Unstable_for_testing
+  include Traverse.Unstable_for_testing
+end
