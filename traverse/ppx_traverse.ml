@@ -4,17 +4,6 @@ open Astlib
 open Ppx_ast
 open V4_07
 
-module Viewer = Viewer.V4_07
-module Traverse = Traverse.V4_07
-
-module Builder = struct
-  include Builder.V4_07
-  include Builder.Common
-end
-
-open Viewer
-open Builder
-
 let alphabet =
   Array.init (Char.code 'z' - Char.code 'a' + 1)
     ~f:(fun i -> String.make 1 (Char.chr (i + Char.code 'a')))
@@ -166,9 +155,8 @@ module Backends = struct
 
   exception Found
   let uses_var var =
-    let open Viewer in
     let iter = object
-      inherit Traverse.iter as super
+      inherit iter as super
       method! expression = function%view
         | Pexp_ident { txt = Lident id; _ } when String.equal id var ->
           Exn.raise_notrace Found
@@ -322,20 +310,17 @@ let method_name = function%view
 ;;
 
 let rec type_expr_mapper ~(what:what) te =
-  let open Viewer in
   match%view te with
   | { ptyp_loc=loc; _ } ->
     match%view te with
     | Ptyp_var s -> evar ~loc ("_" ^ s)
     | Ptyp_tuple tes ->
-      let open Builder in
       let vars = vars_of_list tes ~get_loc:(function%view { ptyp_loc; _ } -> ptyp_loc) in
       let deconstruct = ptuple ~loc (pvars_of_vars vars) in
       let reconstruct = what#tuple ~loc (evars_of_vars vars) in
       let mappers = map_variables ~what vars tes in
       what#abstract ~loc deconstruct (what#combine ~loc mappers ~reconstruct)
     | Ptyp_constr (path, params) ->
-      let open Builder in
       let map = pexp_send ~loc (evar ~loc "self") (Loc.map path ~f:method_name) in
       (match params with
        | [] -> map
@@ -386,12 +371,11 @@ let is_constant_constructor = function%view
   | _ -> false
 
 let erase_type_variables = object
-  inherit Traverse.map as super
+  inherit map as super
 
   method! core_type core_type =
-    let open Viewer in
     match%view core_type with
-    | Ptyp_var _ [@view? {ptyp_loc = loc; _}] -> Builder.ptyp_any ~loc
+    | Ptyp_var _ [@view? {ptyp_loc = loc; _}] -> ptyp_any ~loc
     | x -> super#core_type x
 end
 
@@ -455,13 +439,10 @@ let gen_mapper ~(what:what) td =
         | Some te -> type_expr_mapper ~what te
     in
     List.fold_right ptype_params ~init:body ~f:(fun (ty, _) acc ->
-      let open Viewer in
       match%view ty with
       | Ptyp_var s [@view? { ptyp_loc = loc }] ->
-        let open Builder in
         pexp_fun ~loc Arg_label.nolabel None (pvar ~loc ("_" ^ s)) acc
       | _ [@view? { ptyp_loc = loc }] ->
-        let open Builder in
         pexp_fun ~loc Arg_label.nolabel None (ppat_any ~loc) acc)
 ;;
 
@@ -473,10 +454,9 @@ module Longident_map = Map.Make(struct
 
 let type_deps =
   let collect = object
-    inherit [int Longident_map.t] Traverse.fold as super
+    inherit [int Longident_map.t] fold as super
     method! core_type t acc =
       let acc =
-        let open Viewer in
         match%view t with
         | Ptyp_constr (id, vars) -> Longident_map.add acc (Loc.txt id) (List.length vars)
         | _ -> acc
@@ -504,10 +484,9 @@ let type_deps =
 
 let lift_virtual_methods ~loc methods =
   let collect = object
-    inherit [String.Set.t] Traverse.fold as super
+    inherit [String.Set.t] fold as super
 
     method! expression x acc =
-      let open Viewer in
       match%view x with
       | Pexp_send (_, ({ txt = "tuple"|"record"|"constr"|"other" as s; loc = _; })) ->
         String.Set.add acc s
@@ -515,7 +494,6 @@ let lift_virtual_methods ~loc methods =
   end in
   let used = collect#list collect#class_field methods String.Set.empty in
   let all_virtual_methods =
-    let open Viewer in
     match%view
       [%stri
         class virtual blah = object
@@ -530,7 +508,6 @@ let lift_virtual_methods ~loc methods =
     | _ -> assert false
   in
   List.filter all_virtual_methods ~f:(fun m ->
-    let open Viewer in
     match%view m with
     | Pcf_method (s, _, _) -> String.Set.mem used (Loc.txt s)
     | _ -> false)

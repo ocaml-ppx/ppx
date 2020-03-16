@@ -1,9 +1,6 @@
 open! Stdppx
 open Ppx_ast.V4_07
-open Ppx_ast.Builder.V4_07
-open Ppx_ast.Builder.Common
 module Conversion = Ppx_ast.Conversion
-module Traverse = Ppx_ast.Traverse.V4_07
 module Traverse_builtins = Ppx_ast.Traverse_builtins
 
 module type Driver = sig
@@ -22,7 +19,7 @@ end
 
 module Make (Driver : Driver) (Non_terminal : Non_terminal) = struct
   let lift loc = object
-    inherit [Non_terminal.t] Traverse.lift as super
+    inherit [Non_terminal.t] lift as super
     inherit! Non_terminal.std_lifters loc
 
     method! attribute x =

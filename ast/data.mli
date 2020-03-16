@@ -1,6 +1,6 @@
 type t = Node.t Astlib.Ast.data
 
-val of_node : _ Unversioned.node -> t
+val of_node : _ Unversioned.Types.node -> t
 val of_bool : bool -> t
 val of_char : char -> t
 val of_int : int -> t
@@ -21,7 +21,7 @@ val of_tuple4
   -> f4:('d -> t)
   -> t
 
-val to_node : t -> _ Unversioned.node option
+val to_node : t -> _ Unversioned.Types.node option
 val to_bool : t -> bool option
 val to_char : t -> char option
 val to_int : t -> int option

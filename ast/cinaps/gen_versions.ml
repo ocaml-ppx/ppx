@@ -408,7 +408,8 @@ let print_ast_types grammars =
 let print_unversioned_types () =
   Print.newline ();
   let grammars = Astlib.History.versioned_grammars Astlib.history in
-  print_ast_types grammars
+  Print.indented (fun () ->
+    print_ast_types grammars)
 
 let print_version_mli version =
   let grammar = Astlib.History.find_grammar Astlib.history ~version in

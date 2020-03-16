@@ -1,7 +1,5 @@
 open Ppx_ast
 open V4_07
-open Builder.V4_07
-open Builder.Common
 
 let loc = Astlib.Location.of_location Ocaml_common.Location.none
 [@@warning "-3"]
@@ -12,7 +10,6 @@ let float x = efloat ~loc x
 let ident x = pexp_ident ~loc (Located.lident ~loc x)
 
 let class_infos =
-  let open Builder.V4_07 in
   let extension =
     Extension.create
       ( Astlib.Loc.create ~txt:"ext" ~loc ()
@@ -26,15 +23,13 @@ let class_infos =
     ~pci_attributes:(Attributes.create [])
     ~pci_expr:(pcty_extension ~loc extension)
 
-open Viewer.V4_07
-
 let%expect_test "match failure" =
   begin try match%view int 3 with
     | Pexp_constant (Pconst_integer ("2", _)) ->
       print_string "matched"
   with e ->
     print_string (Printexc.to_string e)
-  end;[%expect {|"Match_failure ppx_view/test/test.ml:32:12"|}]
+  end;[%expect {|"Match_failure ppx_view/test/test.ml:27:12"|}]
 
 let%expect_test "match simple" =
   let match_3 = function%view

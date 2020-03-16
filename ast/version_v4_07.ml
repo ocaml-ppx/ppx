@@ -1,5 +1,5 @@
 open Stdppx
-open Unversioned
+open Unversioned.Types
 
 (*$ Ppx_ast_cinaps.print_version_ml (Astlib.Version.of_string "v4_07") *)
 let version = Astlib.Version.of_string "v4_07"

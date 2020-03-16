@@ -297,7 +297,7 @@ let print_test name ~version =
             (Ml.id name);
           Print.indented (fun () ->
             Print.println
-              "((new Traverse.%s.map)#%s"
+              "((new %s.map)#%s"
               (Ml.module_name (Astlib.Version.to_string version))
               (Ml.id name);
             Print.indented (fun () ->
