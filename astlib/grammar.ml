@@ -59,15 +59,10 @@ type clause =
 type variant = (string * clause) list
 
 (** A nominal type may contain a structural type, a record type, or a variant type. *)
-type versioned =
+type decl =
   | Wrapper of ty
   | Record of record
   | Variant of variant
-
-(** A declaration may be an unversioned structure type or a versioned node type. *)
-type decl =
-  | Unversioned of ty
-  | Versioned of versioned
 
 (** The "kind" of a type determines its type arguments. [Mono]morphic types have no type
     arguments; [Poly]morphic types have one or more type arguments. *)

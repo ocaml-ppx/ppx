@@ -78,18 +78,12 @@ let subst_clause ~env clause =
 let subst_variants variants ~env =
   List.map variants ~f:(fun (cname, clause) -> (cname, subst_clause ~env clause))
 
-let subst_versioned versioned ~env =
-  let open Astlib.Grammar in
-  match versioned with
-  | Wrapper ty -> Wrapper (subst_ty ~env ty)
-  | Record fields -> Record (subst_fields ~env fields)
-  | Variant variants -> Variant (subst_variants ~env variants)
-
 let subst_decl decl ~env =
   let open Astlib.Grammar in
   match decl with
-  | Unversioned ty -> Unversioned (subst_ty ~env ty)
-  | Versioned versioned -> Versioned (subst_versioned ~env versioned)
+  | Wrapper ty -> Wrapper (subst_ty ~env ty)
+  | Record fields -> Record (subst_fields ~env fields)
+  | Variant variants -> Variant (subst_variants ~env variants)
 
 let rec ty_instances ty =
   match (ty : Astlib.Grammar.ty) with
@@ -113,16 +107,11 @@ let clause_instances clause =
 let variant_instances variant =
   List.concat (List.map variant ~f:(fun (_, clause) -> clause_instances clause))
 
-let versioned_instances versioned =
-  match (versioned : Astlib.Grammar.versioned) with
+let decl_instances decl =
+  match (decl : Astlib.Grammar.decl) with
   | Wrapper ty -> ty_instances ty
   | Record record -> record_instances record
   | Variant variant -> variant_instances variant
-
-let decl_instances decl =
-  match (decl : Astlib.Grammar.decl) with
-  | Unversioned ty -> ty_instances ty
-  | Versioned versioned -> versioned_instances versioned
 
 let rec transitive_instances decl ~grammar_table =
   let instances = decl_instances decl in

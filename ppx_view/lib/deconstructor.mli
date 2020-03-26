@@ -16,5 +16,6 @@ val pattern :
   Astlib.Location.t * Pattern_desc.concrete
 
 val longident_loc :
+  loc:Astlib.Location.t ->
   Longident_loc.t ->
   Astlib.Location.t * Longident.concrete

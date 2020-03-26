@@ -3,7 +3,7 @@ open Versions.V4_07
 open Builder_v4_07
 
 module Located = struct
-  let longident ~loc longident = Astlib.Loc.create ~loc ~txt:longident ()
+  let longident ~loc longident = Longident_loc.create (Astlib.Loc.create ~loc ~txt:longident ())
   let lident ~loc x = longident ~loc (Longident.lident x)
 
   let dotted ~loc list =

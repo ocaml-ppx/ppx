@@ -285,11 +285,25 @@ and With_constraint : sig
 end
 
 and Include_declaration : sig
-  type t = Module_expr.t Include_infos.t
+  type t = include_declaration
+
+  type concrete = Module_expr.t Include_infos.t
+
+  val of_concrete : concrete -> t
+  val to_concrete : t -> concrete option
+
+  val create : Module_expr.t Include_infos.t -> t
 end
 
 and Include_description : sig
-  type t = Module_type.t Include_infos.t
+  type t = include_description
+
+  type concrete = Module_type.t Include_infos.t
+
+  val of_concrete : concrete -> t
+  val to_concrete : t -> concrete option
+
+  val create : Module_type.t Include_infos.t -> t
 end
 
 and Include_infos : sig
@@ -527,7 +541,14 @@ and Module_type : sig
 end
 
 and Class_declaration : sig
-  type t = Class_expr.t Class_infos.t
+  type t = class_declaration
+
+  type concrete = Class_expr.t Class_infos.t
+
+  val of_concrete : concrete -> t
+  val to_concrete : t -> concrete option
+
+  val create : Class_expr.t Class_infos.t -> t
 end
 
 and Class_field_kind : sig
@@ -697,11 +718,25 @@ and Class_expr : sig
 end
 
 and Class_type_declaration : sig
-  type t = Class_type.t Class_infos.t
+  type t = class_type_declaration
+
+  type concrete = Class_type.t Class_infos.t
+
+  val of_concrete : concrete -> t
+  val to_concrete : t -> concrete option
+
+  val create : Class_type.t Class_infos.t -> t
 end
 
 and Class_description : sig
-  type t = Class_type.t Class_infos.t
+  type t = class_description
+
+  type concrete = Class_type.t Class_infos.t
+
+  val of_concrete : concrete -> t
+  val to_concrete : t -> concrete option
+
+  val create : Class_type.t Class_infos.t -> t
 end
 
 and Class_infos : sig
@@ -1647,7 +1682,14 @@ and Arg_label : sig
 end
 
 and Label : sig
-  type t = string
+  type t = label
+
+  type concrete = string
+
+  val of_concrete : concrete -> t
+  val to_concrete : t -> concrete option
+
+  val create : string -> t
 end
 
 and Closed_flag : sig
@@ -1749,7 +1791,14 @@ and Rec_flag : sig
 end
 
 and Longident_loc : sig
-  type t = Longident.t Astlib.Loc.t
+  type t = longident_loc
+
+  type concrete = Longident.t Astlib.Loc.t
+
+  val of_concrete : concrete -> t
+  val to_concrete : t -> concrete option
+
+  val create : Longident.t Astlib.Loc.t -> t
 end
 
 and Longident : sig

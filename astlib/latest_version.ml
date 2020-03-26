@@ -5,76 +5,69 @@ let conversions : History.conversion list = []
 let grammar : Grammar.t =
   [ ( "longident"
     , Mono
-        (Versioned
-           (Variant
-              [ ("Lident", Tuple [String])
-              ; ("Ldot", Tuple [Name "longident"; String])
-              ; ("Lapply", Tuple [Name "longident"; Name "longident"]) ])) )
-  ; ("longident_loc", Mono (Unversioned (Loc (Name "longident"))))
+        (Variant
+           [ ("Lident", Tuple [String])
+           ; ("Ldot", Tuple [Name "longident"; String])
+           ; ("Lapply", Tuple [Name "longident"; Name "longident"]) ]))
+  ; ("longident_loc", Mono (Wrapper (Loc (Name "longident"))))
   ; ( "rec_flag"
     , Mono
-        (Versioned (Variant [("Nonrecursive", Empty); ("Recursive", Empty)]))
+        (Variant [("Nonrecursive", Empty); ("Recursive", Empty)])
     )
   ; ( "direction_flag"
-    , Mono (Versioned (Variant [("Upto", Empty); ("Downto", Empty)])) )
+    , Mono (Variant [("Upto", Empty); ("Downto", Empty)]) )
   ; ( "private_flag"
-    , Mono (Versioned (Variant [("Private", Empty); ("Public", Empty)])) )
+    , Mono (Variant [("Private", Empty); ("Public", Empty)]) )
   ; ( "mutable_flag"
-    , Mono (Versioned (Variant [("Immutable", Empty); ("Mutable", Empty)])) )
+    , Mono (Variant [("Immutable", Empty); ("Mutable", Empty)]) )
   ; ( "virtual_flag"
-    , Mono (Versioned (Variant [("Virtual", Empty); ("Concrete", Empty)])) )
+    , Mono (Variant [("Virtual", Empty); ("Concrete", Empty)]) )
   ; ( "override_flag"
-    , Mono (Versioned (Variant [("Override", Empty); ("Fresh", Empty)])) )
+    , Mono (Variant [("Override", Empty); ("Fresh", Empty)]) )
   ; ( "closed_flag"
-    , Mono (Versioned (Variant [("Closed", Empty); ("Open", Empty)])) )
-  ; ("label", Mono (Unversioned String))
+    , Mono (Variant [("Closed", Empty); ("Open", Empty)]) )
+  ; ("label", Mono (Wrapper String))
   ; ( "arg_label"
     , Mono
-        (Versioned
-           (Variant
+        (Variant
               [ ("Nolabel", Empty)
               ; ("Labelled", Tuple [String])
-              ; ("Optional", Tuple [String]) ])) )
+              ; ("Optional", Tuple [String]) ]) )
   ; ( "variance"
     , Mono
-        (Versioned
-           (Variant
+        (Variant
               [ ("Covariant", Empty)
               ; ("Contravariant", Empty)
-              ; ("Invariant", Empty) ])) )
+              ; ("Invariant", Empty) ]) )
   ; ( "constant"
     , Mono
-        (Versioned
-           (Variant
+        (Variant
               [ ("Pconst_integer", Tuple [String; Option Char])
               ; ("Pconst_char", Tuple [Char])
               ; ("Pconst_string", Tuple [String; Option String])
-              ; ("Pconst_float", Tuple [String; Option Char]) ])) )
+              ; ("Pconst_float", Tuple [String; Option Char]) ]) )
   ; ( "attribute"
-    , Mono (Versioned (Wrapper (Tuple [Loc String; Name "payload"]))) )
+    , Mono (Wrapper (Tuple [Loc String; Name "payload"])) )
   ; ( "extension"
-    , Mono (Versioned (Wrapper (Tuple [Loc String; Name "payload"]))) )
-  ; ("attributes", Mono (Versioned (Wrapper (List (Name "attribute")))))
+    , Mono (Wrapper (Tuple [Loc String; Name "payload"])) )
+  ; ("attributes", Mono (Wrapper (List (Name "attribute"))))
   ; ( "payload"
     , Mono
-        (Versioned
-           (Variant
+        (Variant
               [ ("PStr", Tuple [Name "structure"])
               ; ("PSig", Tuple [Name "signature"])
               ; ("PTyp", Tuple [Name "core_type"])
-              ; ("PPat", Tuple [Name "pattern"; Option (Name "expression")]) ]))
+              ; ("PPat", Tuple [Name "pattern"; Option (Name "expression")]) ])
     )
   ; ( "core_type"
     , Mono
-        (Versioned
-           (Record
+        (Record
               [ ("ptyp_desc", Name "core_type_desc")
               ; ("ptyp_loc", Location)
-              ; ("ptyp_attributes", Name "attributes") ])) )
+              ; ("ptyp_attributes", Name "attributes") ]) )
   ; ( "core_type_desc"
     , Mono
-        (Versioned
-           (Variant
+        (Variant
               [ ("Ptyp_any", Empty)
               ; ("Ptyp_var", Tuple [String])
               ; ( "Ptyp_arrow"
@@ -95,46 +88,41 @@ let grammar : Grammar.t =
                     ; Option (List (Name "label")) ] )
               ; ("Ptyp_poly", Tuple [List (Loc String); Name "core_type"])
               ; ("Ptyp_package", Tuple [Name "package_type"])
-              ; ("Ptyp_extension", Tuple [Name "extension"]) ])) )
+              ; ("Ptyp_extension", Tuple [Name "extension"]) ]) )
   ; ( "package_type"
     , Mono
-        (Versioned
-           (Wrapper
+        (Wrapper
               (Tuple
                  [ Name "longident_loc"
-                 ; List (Tuple [Name "longident_loc"; Name "core_type"]) ])))
+                 ; List (Tuple [Name "longident_loc"; Name "core_type"]) ]))
     )
   ; ( "row_field"
     , Mono
-        (Versioned
-           (Variant
+        (Variant
               [ ( "Rtag"
                 , Tuple
                     [ Loc (Name "label")
                     ; Name "attributes"
                     ; Bool
                     ; List (Name "core_type") ] )
-              ; ("Rinherit", Tuple [Name "core_type"]) ])) )
+              ; ("Rinherit", Tuple [Name "core_type"]) ]) )
   ; ( "object_field"
     , Mono
-        (Versioned
-           (Variant
+        (Variant
               [ ( "Otag"
                 , Tuple
                     [Loc (Name "label"); Name "attributes"; Name "core_type"]
                 )
-              ; ("Oinherit", Tuple [Name "core_type"]) ])) )
+              ; ("Oinherit", Tuple [Name "core_type"]) ]) )
   ; ( "pattern"
     , Mono
-        (Versioned
-           (Record
+        (Record
               [ ("ppat_desc", Name "pattern_desc")
               ; ("ppat_loc", Location)
-              ; ("ppat_attributes", Name "attributes") ])) )
+              ; ("ppat_attributes", Name "attributes") ]) )
   ; ( "pattern_desc"
     , Mono
-        (Versioned
-           (Variant
+        (Variant
               [ ("Ppat_any", Empty)
               ; ("Ppat_var", Tuple [Loc String])
               ; ("Ppat_alias", Tuple [Name "pattern"; Loc String])
@@ -156,19 +144,17 @@ let grammar : Grammar.t =
               ; ("Ppat_unpack", Tuple [Loc String])
               ; ("Ppat_exception", Tuple [Name "pattern"])
               ; ("Ppat_extension", Tuple [Name "extension"])
-              ; ("Ppat_open", Tuple [Name "longident_loc"; Name "pattern"]) ]))
+              ; ("Ppat_open", Tuple [Name "longident_loc"; Name "pattern"]) ])
     )
   ; ( "expression"
     , Mono
-        (Versioned
-           (Record
+        (Record
               [ ("pexp_desc", Name "expression_desc")
               ; ("pexp_loc", Location)
-              ; ("pexp_attributes", Name "attributes") ])) )
+              ; ("pexp_attributes", Name "attributes") ]) )
   ; ( "expression_desc"
     , Mono
-        (Versioned
-           (Variant
+        (Variant
               [ ("Pexp_ident", Tuple [Name "longident_loc"])
               ; ("Pexp_constant", Tuple [Name "constant"])
               ; ( "Pexp_let"
@@ -248,27 +234,24 @@ let grammar : Grammar.t =
                     ; Name "longident_loc"
                     ; Name "expression" ] )
               ; ("Pexp_extension", Tuple [Name "extension"])
-              ; ("Pexp_unreachable", Empty) ])) )
+              ; ("Pexp_unreachable", Empty) ]) )
   ; ( "case"
     , Mono
-        (Versioned
-           (Record
+        (Record
               [ ("pc_lhs", Name "pattern")
               ; ("pc_guard", Option (Name "expression"))
-              ; ("pc_rhs", Name "expression") ])) )
+              ; ("pc_rhs", Name "expression") ]) )
   ; ( "value_description"
     , Mono
-        (Versioned
-           (Record
+        (Record
               [ ("pval_name", Loc String)
               ; ("pval_type", Name "core_type")
               ; ("pval_prim", List String)
               ; ("pval_attributes", Name "attributes")
-              ; ("pval_loc", Location) ])) )
+              ; ("pval_loc", Location) ]) )
   ; ( "type_declaration"
     , Mono
-        (Versioned
-           (Record
+        (Record
               [ ("ptype_name", Loc String)
               ; ( "ptype_params"
                 , List (Tuple [Name "core_type"; Name "variance"]) )
@@ -279,78 +262,69 @@ let grammar : Grammar.t =
               ; ("ptype_private", Name "private_flag")
               ; ("ptype_manifest", Option (Name "core_type"))
               ; ("ptype_attributes", Name "attributes")
-              ; ("ptype_loc", Location) ])) )
+              ; ("ptype_loc", Location) ]) )
   ; ( "type_kind"
     , Mono
-        (Versioned
-           (Variant
+        (Variant
               [ ("Ptype_abstract", Empty)
               ; ("Ptype_variant", Tuple [List (Name "constructor_declaration")])
               ; ("Ptype_record", Tuple [List (Name "label_declaration")])
-              ; ("Ptype_open", Empty) ])) )
+              ; ("Ptype_open", Empty) ]) )
   ; ( "label_declaration"
     , Mono
-        (Versioned
-           (Record
+        (Record
               [ ("pld_name", Loc String)
               ; ("pld_mutable", Name "mutable_flag")
               ; ("pld_type", Name "core_type")
               ; ("pld_loc", Location)
-              ; ("pld_attributes", Name "attributes") ])) )
+              ; ("pld_attributes", Name "attributes") ]) )
   ; ( "constructor_declaration"
     , Mono
-        (Versioned
-           (Record
+        (Record
               [ ("pcd_name", Loc String)
               ; ("pcd_args", Name "constructor_arguments")
               ; ("pcd_res", Option (Name "core_type"))
               ; ("pcd_loc", Location)
-              ; ("pcd_attributes", Name "attributes") ])) )
+              ; ("pcd_attributes", Name "attributes") ]) )
   ; ( "constructor_arguments"
     , Mono
-        (Versioned
-           (Variant
+        (Variant
               [ ("Pcstr_tuple", Tuple [List (Name "core_type")])
-              ; ("Pcstr_record", Tuple [List (Name "label_declaration")]) ]))
+              ; ("Pcstr_record", Tuple [List (Name "label_declaration")]) ])
     )
   ; ( "type_extension"
     , Mono
-        (Versioned
-           (Record
+        (Record
               [ ("ptyext_path", Name "longident_loc")
               ; ( "ptyext_params"
                 , List (Tuple [Name "core_type"; Name "variance"]) )
               ; ("ptyext_constructors", List (Name "extension_constructor"))
               ; ("ptyext_private", Name "private_flag")
-              ; ("ptyext_attributes", Name "attributes") ])) )
+              ; ("ptyext_attributes", Name "attributes") ]) )
   ; ( "extension_constructor"
     , Mono
-        (Versioned
-           (Record
+        (Record
               [ ("pext_name", Loc String)
               ; ("pext_kind", Name "extension_constructor_kind")
               ; ("pext_loc", Location)
-              ; ("pext_attributes", Name "attributes") ])) )
+              ; ("pext_attributes", Name "attributes") ]) )
   ; ( "extension_constructor_kind"
     , Mono
-        (Versioned
-           (Variant
+        (Variant
               [ ( "Pext_decl"
                 , Tuple
                     [Name "constructor_arguments"; Option (Name "core_type")]
                 )
-              ; ("Pext_rebind", Tuple [Name "longident_loc"]) ])) )
+              ; ("Pext_rebind", Tuple [Name "longident_loc"]) ]) )
   ; ( "class_type"
     , Mono
-        (Versioned
-           (Record
+        (Record
               [ ("pcty_desc", Name "class_type_desc")
               ; ("pcty_loc", Location)
-              ; ("pcty_attributes", Name "attributes") ])) )
+              ; ("pcty_attributes", Name "attributes") ]) )
   ; ( "class_type_desc"
     , Mono
-        (Versioned
-           (Variant
+        (Variant
               [ ( "Pcty_constr"
                 , Tuple [Name "longident_loc"; List (Name "core_type")] )
               ; ("Pcty_signature", Tuple [Name "class_signature"])
@@ -362,24 +336,21 @@ let grammar : Grammar.t =
                 , Tuple
                     [ Name "override_flag"
                     ; Name "longident_loc"
-                    ; Name "class_type" ] ) ])) )
+                    ; Name "class_type" ] ) ]) )
   ; ( "class_signature"
     , Mono
-        (Versioned
-           (Record
+        (Record
               [ ("pcsig_self", Name "core_type")
-              ; ("pcsig_fields", List (Name "class_type_field")) ])) )
+              ; ("pcsig_fields", List (Name "class_type_field")) ]) )
   ; ( "class_type_field"
     , Mono
-        (Versioned
-           (Record
+        (Record
               [ ("pctf_desc", Name "class_type_field_desc")
               ; ("pctf_loc", Location)
-              ; ("pctf_attributes", Name "attributes") ])) )
+              ; ("pctf_attributes", Name "attributes") ]) )
   ; ( "class_type_field_desc"
     , Mono
-        (Versioned
-           (Variant
+        (Variant
               [ ("Pctf_inherit", Tuple [Name "class_type"])
               ; ( "Pctf_val"
                 , Tuple
@@ -398,12 +369,11 @@ let grammar : Grammar.t =
               ; ( "Pctf_constraint"
                 , Tuple [Tuple [Name "core_type"; Name "core_type"]] )
               ; ("Pctf_attribute", Tuple [Name "attribute"])
-              ; ("Pctf_extension", Tuple [Name "extension"]) ])) )
+              ; ("Pctf_extension", Tuple [Name "extension"]) ]) )
   ; ( "class_infos"
     , Poly
         ( ["a"]
-        , Versioned
-            (Record
+        , (Record
                [ ("pci_virt", Name "virtual_flag")
                ; ( "pci_params"
                  , List (Tuple [Name "core_type"; Name "variance"]) )
@@ -412,20 +382,18 @@ let grammar : Grammar.t =
                ; ("pci_loc", Location)
                ; ("pci_attributes", Name "attributes") ]) ) )
   ; ( "class_description"
-    , Mono (Unversioned (Instance ("class_infos", [Name "class_type"]))) )
+    , Mono (Wrapper (Instance ("class_infos", [Name "class_type"]))) )
   ; ( "class_type_declaration"
-    , Mono (Unversioned (Instance ("class_infos", [Name "class_type"]))) )
+    , Mono (Wrapper (Instance ("class_infos", [Name "class_type"]))) )
   ; ( "class_expr"
     , Mono
-        (Versioned
-           (Record
+        (Record
               [ ("pcl_desc", Name "class_expr_desc")
               ; ("pcl_loc", Location)
-              ; ("pcl_attributes", Name "attributes") ])) )
+              ; ("pcl_attributes", Name "attributes") ]) )
   ; ( "class_expr_desc"
     , Mono
-        (Versioned
-           (Variant
+        (Variant
               [ ( "Pcl_constr"
                 , Tuple [Name "longident_loc"; List (Name "core_type")] )
               ; ("Pcl_structure", Tuple [Name "class_structure"])
@@ -450,24 +418,21 @@ let grammar : Grammar.t =
                 , Tuple
                     [ Name "override_flag"
                     ; Name "longident_loc"
-                    ; Name "class_expr" ] ) ])) )
+                    ; Name "class_expr" ] ) ]) )
   ; ( "class_structure"
     , Mono
-        (Versioned
-           (Record
+        (Record
               [ ("pcstr_self", Name "pattern")
-              ; ("pcstr_fields", List (Name "class_field")) ])) )
+              ; ("pcstr_fields", List (Name "class_field")) ]) )
   ; ( "class_field"
     , Mono
-        (Versioned
-           (Record
+        (Record
               [ ("pcf_desc", Name "class_field_desc")
               ; ("pcf_loc", Location)
-              ; ("pcf_attributes", Name "attributes") ])) )
+              ; ("pcf_attributes", Name "attributes") ]) )
   ; ( "class_field_desc"
     , Mono
-        (Versioned
-           (Variant
+        (Variant
               [ ( "Pcf_inherit"
                 , Tuple
                     [ Name "override_flag"
@@ -489,27 +454,24 @@ let grammar : Grammar.t =
                 , Tuple [Tuple [Name "core_type"; Name "core_type"]] )
               ; ("Pcf_initializer", Tuple [Name "expression"])
               ; ("Pcf_attribute", Tuple [Name "attribute"])
-              ; ("Pcf_extension", Tuple [Name "extension"]) ])) )
+              ; ("Pcf_extension", Tuple [Name "extension"]) ]) )
   ; ( "class_field_kind"
     , Mono
-        (Versioned
-           (Variant
+        (Variant
               [ ("Cfk_virtual", Tuple [Name "core_type"])
               ; ( "Cfk_concrete"
-                , Tuple [Name "override_flag"; Name "expression"] ) ])) )
+                , Tuple [Name "override_flag"; Name "expression"] ) ]) )
   ; ( "class_declaration"
-    , Mono (Unversioned (Instance ("class_infos", [Name "class_expr"]))) )
+    , Mono (Wrapper (Instance ("class_infos", [Name "class_expr"]))) )
   ; ( "module_type"
     , Mono
-        (Versioned
-           (Record
+        (Record
               [ ("pmty_desc", Name "module_type_desc")
               ; ("pmty_loc", Location)
-              ; ("pmty_attributes", Name "attributes") ])) )
+              ; ("pmty_attributes", Name "attributes") ]) )
   ; ( "module_type_desc"
     , Mono
-        (Versioned
-           (Variant
+        (Variant
               [ ("Pmty_ident", Tuple [Name "longident_loc"])
               ; ("Pmty_signature", Tuple [Name "signature"])
               ; ( "Pmty_functor"
@@ -521,18 +483,16 @@ let grammar : Grammar.t =
                 , Tuple [Name "module_type"; List (Name "with_constraint")] )
               ; ("Pmty_typeof", Tuple [Name "module_expr"])
               ; ("Pmty_extension", Tuple [Name "extension"])
-              ; ("Pmty_alias", Tuple [Name "longident_loc"]) ])) )
-  ; ("signature", Mono (Versioned (Wrapper (List (Name "signature_item")))))
+              ; ("Pmty_alias", Tuple [Name "longident_loc"]) ]) )
+  ; ("signature", Mono (Wrapper (List (Name "signature_item"))))
   ; ( "signature_item"
     , Mono
-        (Versioned
-           (Record
+        (Record
               [ ("psig_desc", Name "signature_item_desc")
-              ; ("psig_loc", Location) ])) )
+              ; ("psig_loc", Location) ]) )
   ; ( "signature_item_desc"
     , Mono
-        (Versioned
-           (Variant
+        (Variant
               [ ("Psig_value", Tuple [Name "value_description"])
               ; ( "Psig_type"
                 , Tuple [Name "rec_flag"; List (Name "type_declaration")] )
@@ -548,136 +508,123 @@ let grammar : Grammar.t =
                 , Tuple [List (Name "class_type_declaration")] )
               ; ("Psig_attribute", Tuple [Name "attribute"])
               ; ("Psig_extension", Tuple [Name "extension"; Name "attributes"])
-              ])) )
+              ]) )
   ; ( "module_declaration"
     , Mono
-        (Versioned
-           (Record
+        (Record
               [ ("pmd_name", Loc String)
               ; ("pmd_type", Name "module_type")
               ; ("pmd_attributes", Name "attributes")
-              ; ("pmd_loc", Location) ])) )
+              ; ("pmd_loc", Location) ]) )
   ; ( "module_type_declaration"
     , Mono
-        (Versioned
-           (Record
+        (Record
               [ ("pmtd_name", Loc String)
               ; ("pmtd_type", Option (Name "module_type"))
               ; ("pmtd_attributes", Name "attributes")
-              ; ("pmtd_loc", Location) ])) )
+              ; ("pmtd_loc", Location) ]) )
   ; ( "open_description"
     , Mono
-        (Versioned
-           (Record
+        (Record
               [ ("popen_lid", Name "longident_loc")
               ; ("popen_override", Name "override_flag")
               ; ("popen_loc", Location)
-              ; ("popen_attributes", Name "attributes") ])) )
+              ; ("popen_attributes", Name "attributes") ]) )
   ; ( "include_infos"
     , Poly
         ( ["a"]
-        , Versioned
-            (Record
-               [ ("pincl_mod", Var "a")
-               ; ("pincl_loc", Location)
-               ; ("pincl_attributes", Name "attributes") ]) ) )
+        , (Record
+             [ ("pincl_mod", Var "a")
+             ; ("pincl_loc", Location)
+             ; ("pincl_attributes", Name "attributes") ]) ) )
   ; ( "include_description"
-    , Mono (Unversioned (Instance ("include_infos", [Name "module_type"]))) )
+    , Mono (Wrapper (Instance ("include_infos", [Name "module_type"]))) )
   ; ( "include_declaration"
-    , Mono (Unversioned (Instance ("include_infos", [Name "module_expr"]))) )
+    , Mono (Wrapper (Instance ("include_infos", [Name "module_expr"]))) )
   ; ( "with_constraint"
     , Mono
-        (Versioned
-           (Variant
-              [ ( "Pwith_type"
-                , Tuple [Name "longident_loc"; Name "type_declaration"] )
-              ; ( "Pwith_module"
-                , Tuple [Name "longident_loc"; Name "longident_loc"] )
-              ; ( "Pwith_typesubst"
-                , Tuple [Name "longident_loc"; Name "type_declaration"] )
-              ; ( "Pwith_modsubst"
-                , Tuple [Name "longident_loc"; Name "longident_loc"] ) ])) )
+        (Variant
+           [ ( "Pwith_type"
+             , Tuple [Name "longident_loc"; Name "type_declaration"] )
+           ; ( "Pwith_module"
+             , Tuple [Name "longident_loc"; Name "longident_loc"] )
+           ; ( "Pwith_typesubst"
+             , Tuple [Name "longident_loc"; Name "type_declaration"] )
+           ; ( "Pwith_modsubst"
+             , Tuple [Name "longident_loc"; Name "longident_loc"] ) ]) )
   ; ( "module_expr"
     , Mono
-        (Versioned
-           (Record
-              [ ("pmod_desc", Name "module_expr_desc")
-              ; ("pmod_loc", Location)
-              ; ("pmod_attributes", Name "attributes") ])) )
+        (Record
+           [ ("pmod_desc", Name "module_expr_desc")
+           ; ("pmod_loc", Location)
+           ; ("pmod_attributes", Name "attributes") ]) )
   ; ( "module_expr_desc"
     , Mono
-        (Versioned
-           (Variant
-              [ ("Pmod_ident", Tuple [Name "longident_loc"])
-              ; ("Pmod_structure", Tuple [Name "structure"])
-              ; ( "Pmod_functor"
-                , Tuple
-                    [ Loc String
-                    ; Option (Name "module_type")
-                    ; Name "module_expr" ] )
-              ; ("Pmod_apply", Tuple [Name "module_expr"; Name "module_expr"])
-              ; ( "Pmod_constraint"
-                , Tuple [Name "module_expr"; Name "module_type"] )
-              ; ("Pmod_unpack", Tuple [Name "expression"])
-              ; ("Pmod_extension", Tuple [Name "extension"]) ])) )
-  ; ("structure", Mono (Versioned (Wrapper (List (Name "structure_item")))))
+        (Variant
+           [ ("Pmod_ident", Tuple [Name "longident_loc"])
+           ; ("Pmod_structure", Tuple [Name "structure"])
+           ; ( "Pmod_functor"
+             , Tuple
+                 [ Loc String
+                 ; Option (Name "module_type")
+                 ; Name "module_expr" ] )
+           ; ("Pmod_apply", Tuple [Name "module_expr"; Name "module_expr"])
+           ; ( "Pmod_constraint"
+             , Tuple [Name "module_expr"; Name "module_type"] )
+           ; ("Pmod_unpack", Tuple [Name "expression"])
+           ; ("Pmod_extension", Tuple [Name "extension"]) ]) )
+  ; ("structure", Mono (Wrapper (List (Name "structure_item"))))
   ; ( "structure_item"
     , Mono
-        (Versioned
-           (Record
-              [ ("pstr_desc", Name "structure_item_desc")
-              ; ("pstr_loc", Location) ])) )
+        (Record
+           [ ("pstr_desc", Name "structure_item_desc")
+           ; ("pstr_loc", Location) ]) )
   ; ( "structure_item_desc"
     , Mono
-        (Versioned
-           (Variant
-              [ ("Pstr_eval", Tuple [Name "expression"; Name "attributes"])
-              ; ( "Pstr_value"
-                , Tuple [Name "rec_flag"; List (Name "value_binding")] )
-              ; ("Pstr_primitive", Tuple [Name "value_description"])
-              ; ( "Pstr_type"
-                , Tuple [Name "rec_flag"; List (Name "type_declaration")] )
-              ; ("Pstr_typext", Tuple [Name "type_extension"])
-              ; ("Pstr_exception", Tuple [Name "extension_constructor"])
-              ; ("Pstr_module", Tuple [Name "module_binding"])
-              ; ("Pstr_recmodule", Tuple [List (Name "module_binding")])
-              ; ("Pstr_modtype", Tuple [Name "module_type_declaration"])
-              ; ("Pstr_open", Tuple [Name "open_description"])
-              ; ("Pstr_class", Tuple [List (Name "class_declaration")])
-              ; ( "Pstr_class_type"
-                , Tuple [List (Name "class_type_declaration")] )
-              ; ("Pstr_include", Tuple [Name "include_declaration"])
-              ; ("Pstr_attribute", Tuple [Name "attribute"])
-              ; ("Pstr_extension", Tuple [Name "extension"; Name "attributes"])
-              ])) )
+        (Variant
+           [ ("Pstr_eval", Tuple [Name "expression"; Name "attributes"])
+           ; ( "Pstr_value"
+             , Tuple [Name "rec_flag"; List (Name "value_binding")] )
+           ; ("Pstr_primitive", Tuple [Name "value_description"])
+           ; ( "Pstr_type"
+             , Tuple [Name "rec_flag"; List (Name "type_declaration")] )
+           ; ("Pstr_typext", Tuple [Name "type_extension"])
+           ; ("Pstr_exception", Tuple [Name "extension_constructor"])
+           ; ("Pstr_module", Tuple [Name "module_binding"])
+           ; ("Pstr_recmodule", Tuple [List (Name "module_binding")])
+           ; ("Pstr_modtype", Tuple [Name "module_type_declaration"])
+           ; ("Pstr_open", Tuple [Name "open_description"])
+           ; ("Pstr_class", Tuple [List (Name "class_declaration")])
+           ; ( "Pstr_class_type"
+             , Tuple [List (Name "class_type_declaration")] )
+           ; ("Pstr_include", Tuple [Name "include_declaration"])
+           ; ("Pstr_attribute", Tuple [Name "attribute"])
+           ; ("Pstr_extension", Tuple [Name "extension"; Name "attributes"])
+           ]) )
   ; ( "value_binding"
     , Mono
-        (Versioned
-           (Record
-              [ ("pvb_pat", Name "pattern")
-              ; ("pvb_expr", Name "expression")
-              ; ("pvb_attributes", Name "attributes")
-              ; ("pvb_loc", Location) ])) )
+        (Record
+           [ ("pvb_pat", Name "pattern")
+           ; ("pvb_expr", Name "expression")
+           ; ("pvb_attributes", Name "attributes")
+           ; ("pvb_loc", Location) ]) )
   ; ( "module_binding"
     , Mono
-        (Versioned
-           (Record
-              [ ("pmb_name", Loc String)
-              ; ("pmb_expr", Name "module_expr")
-              ; ("pmb_attributes", Name "attributes")
-              ; ("pmb_loc", Location) ])) )
+        (Record
+           [ ("pmb_name", Loc String)
+           ; ("pmb_expr", Name "module_expr")
+           ; ("pmb_attributes", Name "attributes")
+           ; ("pmb_loc", Location) ]) )
   ; ( "toplevel_phrase"
     , Mono
-        (Versioned
-           (Variant
-              [ ("Ptop_def", Tuple [Name "structure"])
-              ; ("Ptop_dir", Tuple [String; Name "directive_argument"]) ])) )
+        (Variant
+           [ ("Ptop_def", Tuple [Name "structure"])
+           ; ("Ptop_dir", Tuple [String; Name "directive_argument"]) ]) )
   ; ( "directive_argument"
     , Mono
-        (Versioned
-           (Variant
-              [ ("Pdir_none", Empty)
-              ; ("Pdir_string", Tuple [String])
-              ; ("Pdir_int", Tuple [String; Option Char])
-              ; ("Pdir_ident", Tuple [Name "longident"])
-              ; ("Pdir_bool", Tuple [Bool]) ])) ) ]
+        (Variant
+           [ ("Pdir_none", Empty)
+           ; ("Pdir_string", Tuple [String])
+           ; ("Pdir_int", Tuple [String; Option Char])
+           ; ("Pdir_ident", Tuple [Name "longident"])
+           ; ("Pdir_bool", Tuple [Bool]) ]) ) ]
