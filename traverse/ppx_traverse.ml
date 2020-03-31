@@ -20,6 +20,9 @@ let evars_of_vars = List.map ~f:evar_of_var
 let pvars_of_vars = List.map ~f:pvar_of_var
 let tvars_of_vars = List.map ~f:tvar_of_var
 
+let longident_loc string_loc =
+  Longident_loc.create (Loc.map string_loc ~f:Longident.lident)
+
 module Backends = struct
   class reconstructors = object
     method record ~loc flds = pexp_record ~loc flds None
@@ -158,7 +161,8 @@ module Backends = struct
     let iter = object
       inherit iter as super
       method! expression = function%view
-        | Pexp_ident { txt = Lident id; _ } when String.equal id var ->
+        | Pexp_ident (Longident_loc { txt = Lident id; _ })
+          when String.equal id var ->
           Exn.raise_notrace Found
         | e -> super#expression e
     end in
@@ -225,21 +229,22 @@ module Backends = struct
     method record ~loc flds =
       let flds =
         elist ~loc
-          (List.map flds ~f:(fun (lab, e) ->
-             match%view e with
-             | { pexp_loc; _ } ->
+          (List.map flds ~f:(function%view
+             | Longident_loc {loc; txt}, ({ pexp_loc; _ } as e) ->
                etuple
-                 ~loc:(Location.update (Loc.loc lab) ~end_:(Location.end_ pexp_loc))
-                 [ estring ~loc:(Loc.loc lab) (string_of_lid (Loc.txt lab))
+                 ~loc:(Location.update loc ~end_:(Location.end_ pexp_loc))
+                 [ estring ~loc (string_of_lid txt)
                  ; e
                  ]))
       in
       [%expr self#record [%e flds]]
     method construct ~loc id args =
       let args = elist ~loc args in
+      match%view id with
+      | Longident_loc {loc; txt} ->
       [%expr
         self#constr
-          [%e estring ~loc:(Loc.loc id) (string_of_lid (Loc.txt id))]
+          [%e estring ~loc:loc (string_of_lid txt)]
           [%e args]]
     method tuple ~loc es =
       [%expr self#tuple [%e elist ~loc es]]
@@ -252,7 +257,7 @@ type what = Backends.what
 let mapper_type ~(what:what) ~loc type_name params =
   let vars = vars_of_list params ~get_loc:(function%view { ptyp_loc; _ } -> ptyp_loc) in
   let params = tvars_of_vars vars in
-  let ty = ptyp_constr ~loc (Loc.map type_name ~f:Longident.lident) params in
+  let ty = ptyp_constr ~loc (longident_loc type_name) params in
   let ty =
     List.fold_right params ~init:(what#typ ~loc ty)
       ~f:(fun param ty ->
@@ -271,7 +276,7 @@ let constrained_mapper ~(what:what) ?(is_gadt=false) mapper td =
     in
     let make_type params =
       let loc = ptype_loc in
-      let ty = ptyp_constr ~loc (Loc.map ptype_name ~f:Longident.lident) params in
+      let ty = ptyp_constr ~loc (longident_loc ptype_name) params in
       List.fold_right params ~init:(what#typ ~loc:ptype_loc ty)
         ~f:(fun param ty ->
           match%view param with
@@ -286,7 +291,7 @@ let constrained_mapper ~(what:what) ?(is_gadt=false) mapper td =
       if false || is_gadt then
         let typs =
           List.map vars ~f:(fun v ->
-            ptyp_constr ~loc:(Loc.loc v) (Loc.map v ~f:Longident.lident) [])
+            ptyp_constr ~loc:(Loc.loc v) (longident_loc v) [])
         in
         List.fold_right vars
           ~init:(pexp_constraint ~loc:pexp_loc mapper (make_type typs))
@@ -320,8 +325,9 @@ let rec type_expr_mapper ~(what:what) te =
       let reconstruct = what#tuple ~loc (evars_of_vars vars) in
       let mappers = map_variables ~what vars tes in
       what#abstract ~loc deconstruct (what#combine ~loc mappers ~reconstruct)
-    | Ptyp_constr (path, params) ->
-      let map = pexp_send ~loc (evar ~loc "self") (Loc.map path ~f:method_name) in
+    | Ptyp_constr (Longident_loc path, params) ->
+      let f lident = Label.create (method_name lident) in
+      let map = pexp_send ~loc (evar ~loc "self") (Loc.map path ~f) in
       (match params with
        | [] -> map
        | _  ->
@@ -344,12 +350,12 @@ let gen_record' ~(what:what) ~loc lds =
   let vars = List.map lds ~f:(function%view { pld_name; _ } -> pld_name) in
   let deconstruct =
     ppat_record ~loc
-      (List.map vars ~f:(fun v -> (Loc.map v ~f:Longident.lident, pvar_of_var v)))
+      (List.map vars ~f:(fun v -> (longident_loc v, pvar_of_var v)))
       Closed_flag.closed
   in
   let reconstruct =
     what#record ~loc
-      (List.map vars ~f:(fun v -> (Loc.map v ~f:Longident.lident, evar_of_var v)))
+      (List.map vars ~f:(fun v -> (longident_loc v, evar_of_var v)))
   in
   let mappers =
     map_variables ~what
@@ -387,7 +393,7 @@ let gen_variant ~(what:what) ~loc cds =
   else
     let cases =
       List.map cds ~f:(function%view { pcd_name; pcd_loc; pcd_res; pcd_args; _ } ->
-        let cstr = Loc.map pcd_name ~f:Longident.lident in
+        let cstr = longident_loc pcd_name in
         let loc = pcd_loc in
         let args =
           match pcd_res with
@@ -458,7 +464,8 @@ let type_deps =
     method! core_type t acc =
       let acc =
         match%view t with
-        | Ptyp_constr (id, vars) -> Longident_map.add acc (Loc.txt id) (List.length vars)
+        | Ptyp_constr (Longident_loc {txt; _}, vars) ->
+          Longident_map.add acc txt (List.length vars)
         | _ -> acc
       in
       super#core_type t acc
@@ -488,7 +495,7 @@ let lift_virtual_methods ~loc methods =
 
     method! expression x acc =
       match%view x with
-      | Pexp_send (_, ({ txt = "tuple"|"record"|"constr"|"other" as s; loc = _; })) ->
+      | Pexp_send (_, ({ txt = Label ("tuple"|"record"|"constr"|"other" as s); loc = _; })) ->
         String.Set.add acc s
       | _ -> super#expression x acc
   end in
@@ -504,12 +511,15 @@ let lift_virtual_methods ~loc methods =
         end
       ]
     with
-    | Pstr_class [ { pci_expr = Pcl_structure { pcstr_fields = l; _ } ; _ } ] -> l
+    | Pstr_class
+        [ Class_declaration
+            { pci_expr = Pcl_structure { pcstr_fields = l; _ } ; _ } ] ->
+      l
     | _ -> assert false
   in
   List.filter all_virtual_methods ~f:(fun m ->
     match%view m with
-    | Pcf_method (s, _, _) -> String.Set.mem used (Loc.txt s)
+    | Pcf_method ({txt = Label s; _}, _, _) -> String.Set.mem used s
     | _ -> false)
 
 let map_lident id ~f =
@@ -525,8 +535,12 @@ let lident_last_exn id =
   | Lapply _ -> assert false
 
 let class_constr ~what ~class_params id =
+  let longident_loc =
+    Longident_loc.create
+      (Loc.map id ~f:(map_lident ~f:(fun s -> what#name ^ "_" ^ s)))
+  in
   pcl_constr ~loc:(Loc.loc id)
-    (Loc.map id ~f:(map_lident ~f:(fun s -> what#name ^ "_" ^ s)))
+    longident_loc
     (List.map class_params ~f:fst)
 
 let gen_class ~(what:what) ~loc tds =
@@ -535,7 +549,7 @@ let gen_class ~(what:what) ~loc tds =
     List.map (type_deps tds) ~f:(fun (id, arity) ->
       let id = Loc.create ~txt:(lident_last_exn id) ~loc () in
       pcf_method ~loc
-        (id,
+        (Loc.map id ~f:Label.create,
          Private_flag.public,
          Class_field_kind.cfk_virtual
            (mapper_type ~what ~loc id
@@ -554,7 +568,7 @@ let gen_class ~(what:what) ~loc tds =
         in
         let mapper = constrained_mapper ~what ~is_gadt mapper td in
         pcf_method ~loc
-          (ptype_name,
+          (Loc.map ptype_name ~f:Label.create,
            Private_flag.public,
            Class_field_kind.cfk_concrete Override_flag.fresh mapper))
   in
@@ -594,7 +608,8 @@ let gen_str ~what ~loc ~path:_ (rf, tds) =
    | Recursive -> ());
   match%view gen_class ~loc ~what tds with
   | { pci_loc = loc; _ } as cl ->
-    Structure.create [ pstr_class ~loc [cl] ]
+    let class_decl = Class_declaration.create cl in
+    Structure.create [ pstr_class ~loc [class_decl] ]
     |> Conversion.ast_to_structure
 
 let () =
