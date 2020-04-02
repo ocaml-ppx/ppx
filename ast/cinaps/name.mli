@@ -1,1 +1,1 @@
-val make : string list -> Astlib.Grammar.ty list -> string
+val make : string list -> Astlib.Grammar.targ list -> string

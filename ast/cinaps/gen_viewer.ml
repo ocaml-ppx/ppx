@@ -227,11 +227,7 @@ module Signature : VIEWER_PRINTER = struct
       | None -> substituted_ty
       | Some (poly_env, ty) -> aux ~poly_env ty
     in
-    let poly_env =
-      Poly_env.create
-        ~vars:targs
-        ~args:(List.map targs ~f:(fun s -> Astlib.Grammar.Var s))
-    in
+    let poly_env = Poly_env.uninstantiated targs in
     aux ~poly_env ty
 
   let print_wrapper_viewer ~wrapper_types ~targs ~name ty =
