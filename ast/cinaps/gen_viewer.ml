@@ -155,20 +155,6 @@ module Signature : VIEWER_PRINTER = struct
     | Var v when List.mem ~set:targs v -> Ml.(poly_inst ~args:[tvar v] "node")
     | _ -> string_of_ty ty
 
-  let rec subst_vars ~substs ty =
-    let open Astlib.Grammar in
-    match ty with
-    | Var s ->
-      (match List.assoc_opt s substs with
-       | Some subst_ty -> subst_ty
-       | None -> assert false)
-    | Loc ty -> Loc (subst_vars ~substs ty)
-    | List ty -> List (subst_vars ~substs ty)
-    | Option ty -> Option (subst_vars ~substs ty)
-    | Tuple tyl -> Tuple (List.map ~f:(subst_vars ~substs) tyl)
-    | Instance (s, tyl) -> Instance (s, List.map ~f:(subst_vars ~substs) tyl)
-    | Bool | Char | Int | String | Location | Name _ -> ty
-
   (** Recursively follows the type aliases, replacing type variables in
       polymorphic types instances when needed.
       This is used to determined the type of the view argument of views for
@@ -184,9 +170,9 @@ module Signature : VIEWER_PRINTER = struct
       [unwrapped_view_type ~wrapper_types ~targs:[] ~name:"t" (Instance ...)]
       will return [Instance ("t", [Int; Int])]. *)
   let unwrapped_view_type ~wrapper_types ~targs ty =
-    let rec aux ~substs ty =
-      let substituted_ty = subst_vars ~substs ty in
-      let name_and_tyl = 
+    let rec aux ~poly_env ty =
+      let substituted_ty = Poly_env.subst_ty ~env:poly_env ty in
+      let name_and_tyl =
         match substituted_ty with
         | Name s -> Some (s, [])
         | Instance (s, l) -> Some (s, l)
@@ -197,15 +183,19 @@ module Signature : VIEWER_PRINTER = struct
         let open Option.O in
         name_and_tyl >>= fun (name, tyl) ->
         String.Map.find wrapper_types name >>| fun (targs, ty) ->
-        let substs = List.combine targs tyl in
-        substs, ty
+        let poly_env = Poly_env.create ~vars:targs ~args:tyl in
+        poly_env, ty
       in
       match next with
       | None -> substituted_ty
-      | Some (substs, ty) -> aux ~substs ty
+      | Some (poly_env, ty) -> aux ~poly_env ty
     in
-    let substs = List.map targs ~f:(fun s -> (s, Astlib.Grammar.Var s)) in
-    aux ~substs ty
+    let poly_env =
+      Poly_env.create
+        ~vars:targs
+        ~args:(List.map targs ~f:(fun s -> Astlib.Grammar.Var s))
+    in
+    aux ~poly_env ty
 
   let print_wrapper_viewer ~wrapper_types ~targs ~name ty =
     let in_, out = "'i", "'o" in
