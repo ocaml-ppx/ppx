@@ -1,7 +1,9 @@
 open Stdppx
 
 module Render (Config : sig val internal : bool end) = struct
-  let string_of_ty ty = Grammar.string_of_ty ~internal:Config.internal ty
+  let string_of_ty ?nodify ty =
+    Grammar.string_of_ty ?nodify ~internal:Config.internal ty
+
   let string_of_tuple_type ?(parens = true) tuple =
     Grammar.string_of_tuple_type ~internal:Config.internal ~parens tuple
 
@@ -29,15 +31,15 @@ module Signature = struct
 
   let inst_node ty ~tvars =
     Ml.poly_inst ty ~args:(List.map tvars ~f:(fun tvar ->
-      Render.string_of_ty (Instance ("node", [Var tvar]))))
+      Render.string_of_ty (Instance ("node", [Tvar tvar]))))
 
   let inst ty ~tvars =
     Ml.poly_inst ty ~args:(List.map tvars ~f:(fun tvar ->
       Render.string_of_ty (Var tvar)))
 
   let declare_constructors decl ~tvars =
-    let env = Poly_env.nodify_targs tvars in
-    let string_of_ty ty = Render.string_of_ty (Poly_env.subst_ty ty ~env) in
+    let env = Poly_env.uninstantiated tvars in
+    let string_of_ty ty = Render.string_of_ty ~nodify:true (Poly_env.subst_ty ty ~env) in
     match (decl : Astlib.Grammar.decl) with
     | Wrapper ty ->
       Ml.declare_val
@@ -356,13 +358,11 @@ let print_ast_types grammars =
   Print.newline ();
   List.iter types ~f:(fun (type_name, tvars) ->
     let type_name_ = type_name ^ "_" in
+    let node_args =
+      [Ml.poly_inst type_name_ ~args:(List.map tvars ~f:Ml.tvar)]
+    in
     Ml.declare_type type_name ~tvars
-      (Line
-         (Grammar.string_of_ty ~internal:true
-            (Instance
-               ("node",
-                [Instance
-                   (type_name_, List.map tvars ~f:(fun v -> Astlib.Grammar.Var v))])))))
+      (Line (Ml.poly_inst "node" ~args:node_args)))
 
 let print_unversioned_types () =
   Print.newline ();

@@ -31,7 +31,7 @@ module Helpers = struct
   end
 end
 
-type env = (string * Astlib.Grammar.ty) list
+type env = (string * Astlib.Grammar.targ) list
 type env_table = (string, env list) Hashtbl.t
 
 let empty_env = []
@@ -45,23 +45,35 @@ let args env = List.map env ~f:snd
 
 let create ~vars ~args = List.zip_exn vars args
 
+let uninstantiated vars =
+  create ~vars ~args:(List.map vars ~f:(fun v -> Astlib.Grammar.Tvar v))
+
 let env_is_empty = function
   | [] -> true
   | _ :: _ -> false
 
-let nodify_targs targs =
-  List.map targs ~f:(fun tvar ->
-    (tvar, (Astlib.Grammar.Instance ("node", [Var tvar]))))
+let targ_to_type targ : Astlib.Grammar.ty =
+  match (targ : Astlib.Grammar.targ) with
+  | Tname name -> Name name
+  | Tvar var -> Var var
+
+let subst_targ targ ~env =
+  match (targ : Astlib.Grammar.targ) with
+  | Tname _ -> targ
+  | Tvar var -> Option.value_exn (List.assoc env var)
+
+let subst_targs targs ~env =
+  List.map targs ~f:(subst_targ ~env)
 
 let rec subst_ty ty ~env : Astlib.Grammar.ty =
   match (ty : Astlib.Grammar.ty) with
-  | Var string -> Option.value_exn (List.assoc env string)
+  | Var string -> targ_to_type (Option.value_exn (List.assoc env string))
   | Name _ | Bool | Char | Int | String | Location -> ty
   | Loc ty -> Loc (subst_ty ty ~env)
   | List ty -> List (subst_ty ty ~env)
   | Option ty -> Option (subst_ty ty ~env)
   | Tuple tuple -> Tuple (subst_tuple tuple ~env)
-  | Instance (poly, args) -> Instance (poly, subst_tuple args ~env)
+  | Instance (poly, args) -> Instance (poly, subst_targs args ~env)
 
 and subst_tuple tuple ~env = List.map tuple ~f:(subst_ty ~env)
 
@@ -123,7 +135,7 @@ let rec transitive_instances decl ~grammar_table =
         let instances = transitive_instances decl ~grammar_table in
         let env = List.combine vars args in
         List.map instances ~f:(fun (poly, args) ->
-          (poly, subst_tuple args ~env)))
+          (poly, subst_targs args ~env)))
   in
   instances @ List.concat transitive
 

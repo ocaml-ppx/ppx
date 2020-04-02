@@ -1,5 +1,18 @@
-val string_of_ty : internal: bool -> Astlib.Grammar.ty -> string
+(** Helper functions to print [Astlib.Grammar] values as the OCaml types they
+    represent.
+
+    The [nodify] optional argument is used to replace type variables by
+    instances of the [node] type, e.g. it will replace any ['a] by ['a node]
+    when printing the type. This is used to enforce that some functions in
+    [Versions] only accept polymorphic types instantiated with other AST
+    types. *)
+
+val string_of_targ : ?nodify: bool -> internal: bool -> Astlib.Grammar.targ -> string
+
+val string_of_ty : ?nodify: bool -> internal: bool -> Astlib.Grammar.ty -> string
+
 val string_of_tuple_type :
+  ?nodify: bool ->
   internal: bool ->
   ?parens: bool ->
   Astlib.Grammar.ty list ->

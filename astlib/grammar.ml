@@ -10,7 +10,7 @@
 
     [Name "expression"] represents the type [expression].
 
-    [Instance ("class_infos", [Name "class_expr"])] represents the type
+    [Instance ("class_infos", [Tname "class_expr"])] represents the type
     [class_expr class_infos]. *)
 type ty =
   | Var of string
@@ -24,9 +24,13 @@ type ty =
   | List of ty
   | Option of ty
   | Tuple of tuple
-  | Instance of string * ty list
+  | Instance of string * targ list
 
 and tuple = ty list
+
+and targ =
+  | Tname of string
+  | Tvar of string
 
 (** Represents named fields of a record. *)
 type record = (string * ty) list

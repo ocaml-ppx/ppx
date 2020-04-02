@@ -28,6 +28,11 @@ let type_name name ~view =
   | `parsetree ->
     Printf.sprintf "Compiler_types.%s" (Ml.id name)
 
+let string_of_targ ~view targ =
+  match (targ : Astlib.Grammar.targ) with
+  | Tname name -> type_name name ~view
+  | Tvar var -> Ml.tvar var
+
 let rec string_of_ty ty ~view =
   match (ty : Astlib.Grammar.ty) with
   | Var var -> Ml.tvar var
@@ -58,7 +63,7 @@ let rec string_of_ty ty ~view =
     in
     Ml.poly_inst
       (type_name poly ~view)
-      ~args:(List.map args ~f:(string_of_ty ~view:arg_view))
+      ~args:(List.map args ~f:(string_of_targ ~view:arg_view))
 
 and string_of_tuple tuple ~view =
   Printf.sprintf "(%s)"

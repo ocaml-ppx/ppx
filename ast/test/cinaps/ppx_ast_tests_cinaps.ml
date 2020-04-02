@@ -1,11 +1,17 @@
 open StdLabels
 open Ppx_ast_cinaps
 
+let string_of_targ targ =
+  match (targ : Astlib.Grammar.targ) with
+  | Tname name -> Ml.id name
+  | Tvar var -> Ml.tvar var
+
 let rec string_of_ty ty =
   match (ty : Astlib.Grammar.ty) with
   | Var var -> Ml.tvar var
   | Name name -> Ml.id name
-  | Instance (poly, args) -> Ml.poly_inst poly ~args:(List.map args ~f:string_of_ty)
+  | Instance (poly, args) ->
+    Ml.poly_inst poly ~args:(List.map args ~f:string_of_targ)
   | Bool -> "bool"
   | Char -> "char"
   | Int -> "int"
@@ -73,16 +79,25 @@ let tvars_of kind =
   | Mono _ -> []
   | Poly (tvars, _) -> tvars
 
+let var_generator var = Ml.id ("quickcheck_generator_" ^ var)
+
+let name_generator name =
+    Printf.sprintf "(Generator.create generate_%s)" (Ml.id name)
+
+let generator_targ targ =
+  match (targ : Astlib.Grammar.targ) with
+  | Tvar var -> var_generator var
+  | Tname name -> name_generator name
+
 let rec generator_string ty =
   match (ty : Astlib.Grammar.ty) with
-  | Var var -> Ml.id ("quickcheck_generator_" ^ var)
-  | Name name ->
-    Printf.sprintf "(Generator.create generate_%s)" (Ml.id name)
+  | Var var -> var_generator var
+  | Name name -> name_generator name
   | Instance (poly, args) ->
     Printf.sprintf "(Generator.create (%s %s))"
       (Ml.id ("generate_" ^ poly))
       (String.concat ~sep:" "
-         (List.map args ~f:generator_string))
+         (List.map args ~f:generator_targ))
   | Bool -> "quickcheck_generator_bool"
   | Char -> "quickcheck_generator_char"
   | Int -> "quickcheck_generator_int"

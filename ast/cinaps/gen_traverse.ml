@@ -1,6 +1,6 @@
 open Stdppx
 
-let string_of_ty ty = Grammar.string_of_ty ~internal:false ty
+let string_of_targ targ = Grammar.string_of_targ ~internal:false targ
 
 let parens x = Printf.sprintf "(%s)" x
 
@@ -82,7 +82,7 @@ type deconstructed =
     in an [of_concrete] call in the [Ast_type _] case.
     Other traversal classes can ignore the context. *)
 type value_kind =
-  | Ast_type of {node_name : string; targs : Astlib.Grammar.ty list}
+  | Ast_type of {node_name : string; targs : Astlib.Grammar.targ list}
   | Abstract
 
 (** The type used to describe the various traversal classes and how to generate
@@ -117,7 +117,7 @@ type type_ = Concrete | T
 let node_type ~type_ ~args node_name =
   let type_name = match type_ with T -> "t" | Concrete -> "concrete" in
   let node_type = Printf.sprintf "%s.%s" (Ml.module_name node_name) type_name in
-  let args = List.map args ~f:string_of_ty in
+  let args = List.map args ~f:string_of_targ in
   Ml.poly_inst node_type ~args
 
 let fun_arg type_name = Ml.id (Printf.sprintf "f%s" type_name)

@@ -14,7 +14,7 @@ let rec update_ty ty : Grammar.ty =
   | List ty -> List (update_ty ty)
   | Option ty -> Option (update_ty ty)
   | Tuple tuple -> Tuple (update_tuple tuple)
-  | Instance (name, tuple) -> Instance (name, update_tuple tuple)
+  | Instance _ -> ty
 
 and update_tuple tuple =
   List.rev_map tuple ~f:update_ty

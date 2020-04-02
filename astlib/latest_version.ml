@@ -381,9 +381,9 @@ let grammar : Grammar.t =
                ; ("pci_loc", Location)
                ; ("pci_attributes", Name "attributes") ]) ) )
   ; ( "class_description"
-    , Mono (Wrapper (Instance ("class_infos", [Name "class_type"]))) )
+    , Mono (Wrapper (Instance ("class_infos", [Tname "class_type"]))) )
   ; ( "class_type_declaration"
-    , Mono (Wrapper (Instance ("class_infos", [Name "class_type"]))) )
+    , Mono (Wrapper (Instance ("class_infos", [Tname "class_type"]))) )
   ; ( "class_expr"
     , Mono
         (Record
@@ -461,7 +461,7 @@ let grammar : Grammar.t =
               ; ( "Cfk_concrete"
                 , Tuple [Name "override_flag"; Name "expression"] ) ]) )
   ; ( "class_declaration"
-    , Mono (Wrapper (Instance ("class_infos", [Name "class_expr"]))) )
+    , Mono (Wrapper (Instance ("class_infos", [Tname "class_expr"]))) )
   ; ( "module_type"
     , Mono
         (Record
@@ -537,9 +537,9 @@ let grammar : Grammar.t =
              ; ("pincl_loc", Location)
              ; ("pincl_attributes", Name "attributes") ]) ) )
   ; ( "include_description"
-    , Mono (Wrapper (Instance ("include_infos", [Name "module_type"]))) )
+    , Mono (Wrapper (Instance ("include_infos", [Tname "module_type"]))) )
   ; ( "include_declaration"
-    , Mono (Wrapper (Instance ("include_infos", [Name "module_expr"]))) )
+    , Mono (Wrapper (Instance ("include_infos", [Tname "module_expr"]))) )
   ; ( "with_constraint"
     , Mono
         (Variant

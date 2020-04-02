@@ -1,21 +1,9 @@
 open StdLabels
 
-let rec add_ty_suffix ty acc =
-  match (ty : Astlib.Grammar.ty) with
-  | Var var -> var :: acc
-  | Name name -> name :: acc
-  | Instance (poly, args) -> add_tuple_suffix args (poly :: acc)
-  | Bool -> "bool" :: acc
-  | Char -> "char" :: acc
-  | Int -> "int" :: acc
-  | String -> "string" :: acc
-  | Location -> "location" :: acc
-  | Loc ty -> add_ty_suffix ty ("loc" :: acc)
-  | List ty -> add_ty_suffix ty ("list" :: acc)
-  | Option ty -> add_ty_suffix ty ("option" :: acc)
-  | Tuple tuple -> add_tuple_suffix tuple acc
-
-and add_tuple_suffix tuple acc = List.fold_right tuple ~init:acc ~f:add_ty_suffix
+let name_of_targ targ =
+  match (targ : Astlib.Grammar.targ) with
+  | Tname name -> name
+  | Tvar var -> var
 
 let builtins =
   [ "and"; "as"; "assert"; "asr"; "begin"; "class"; "constraint"; "do"; "done"; "downto"
@@ -31,8 +19,8 @@ let fix_builtin name =
   then name ^ "_"
   else name
 
-let make prefix tys =
+let make prefix targs =
   fix_builtin
     (String.concat ~sep:"_"
        (List.map ~f:Ml.id
-          (prefix @ add_tuple_suffix tys [])))
+          (prefix @ List.map targs ~f:name_of_targ)))
