@@ -13,7 +13,9 @@ module Error = struct
 
   let of_error (t : t) = t
   let to_error (t : t) = t
-  let make ~loc f = Ocaml_common.Location.error_of_printer loc (fun fmt () -> f fmt) ()
+  let create ~loc f = Ocaml_common.Location.error_of_printer loc (fun fmt () -> f fmt) ()
+  let createf ~loc fmt = Ocaml_common.Location.errorf ~loc fmt
+  let raisef ~loc fmt = Ocaml_common.Location.raise_errorf ~loc fmt
   let location (t : t) = t.loc
   let report fmt t = Ocaml_common.Location.report_error fmt t
   let register_of_exn f = Ocaml_common.Location.register_error_of_exn f

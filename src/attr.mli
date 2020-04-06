@@ -27,14 +27,14 @@ module Context : sig
     | Value_description       : value_description       t
     | Class_type              : class_type              t
     | Class_type_field        : class_type_field        t
-    | Class_infos             : _ class_infos           t
+    | Class_infos             : _ node class_infos      t
     | Class_expr              : class_expr              t
     | Class_field             : class_field             t
     | Module_type             : module_type             t
     | Module_declaration      : module_declaration      t
     | Module_type_declaration : module_type_declaration t
     | Open_description        : open_description        t
-    | Include_infos           : _ include_infos         t
+    | Include_infos           : _ node include_infos    t
     | Module_expr             : module_expr             t
     | Value_binding           : value_binding           t
     | Module_binding          : module_binding          t
@@ -55,14 +55,14 @@ module Context : sig
   val value_description       : value_description       t
   val class_type              : class_type              t
   val class_type_field        : class_type_field        t
-  val class_infos             : _ class_infos           t
+  val class_infos             : _ node class_infos      t
   val class_expr              : class_expr              t
   val class_field             : class_field             t
   val module_type             : module_type             t
   val module_declaration      : module_declaration      t
   val module_type_declaration : module_type_declaration t
   val open_description        : open_description        t
-  val include_infos           : _ include_infos         t
+  val include_infos           : _ node include_infos    t
   val module_expr             : module_expr             t
   val value_binding           : value_binding           t
   val module_binding          : module_binding          t

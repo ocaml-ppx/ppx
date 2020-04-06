@@ -20,14 +20,14 @@ module Context = struct
     | Value_description       : value_description       t
     | Class_type              : class_type              t
     | Class_type_field        : class_type_field        t
-    | Class_infos             : _ class_infos           t
+    | Class_infos             : _ node class_infos      t
     | Class_expr              : class_expr              t
     | Class_field             : class_field             t
     | Module_type             : module_type             t
     | Module_declaration      : module_declaration      t
     | Module_type_declaration : module_type_declaration t
     | Open_description        : open_description        t
-    | Include_infos           : _ include_infos         t
+    | Include_infos           : _ node include_infos    t
     | Module_expr             : module_expr             t
     | Value_binding           : value_binding           t
     | Module_binding          : module_binding          t
@@ -66,102 +66,125 @@ module Context = struct
   let object_type_field       = Object_type_field
 
   let get_pstr_eval st =
-    match st.pstr_desc with
+    match%view (Structure_item.pstr_desc st) with
     | Pstr_eval (e, l) -> (e, l)
     | _ -> failwith "Attribute.Context.get_pstr_eval"
 
   let get_pstr_extension st =
-    match st.pstr_desc with
+    match%view (Structure_item.pstr_desc st) with
     | Pstr_extension (e, l) -> (e, l)
     | _ -> failwith "Attribute.Context.get_pstr_extension"
 
   let get_psig_extension st =
-    match st.psig_desc with
+    match%view (Signature_item.psig_desc st) with
     | Psig_extension (e, l) -> (e, l)
     | _ -> failwith "Attribute.Context.get_psig_extension"
 
-  let get_attributes : type a. a t -> a -> attributes = fun t x ->
-    match t with
-    | Label_declaration       -> x.pld_attributes
-    | Constructor_declaration -> x.pcd_attributes
-    | Type_declaration        -> x.ptype_attributes
-    | Type_extension          -> x.ptyext_attributes
-    | Extension_constructor   -> x.pext_attributes
-    | Pattern                 -> x.ppat_attributes
-    | Core_type               -> x.ptyp_attributes
-    | Expression              -> x.pexp_attributes
-    | Value_description       -> x.pval_attributes
-    | Class_type              -> x.pcty_attributes
-    | Class_type_field        -> x.pctf_attributes
-    | Class_infos             -> x.pci_attributes
-    | Class_expr              -> x.pcl_attributes
-    | Class_field             -> x.pcf_attributes
-    | Module_type             -> x.pmty_attributes
-    | Module_declaration      -> x.pmd_attributes
-    | Module_type_declaration -> x.pmtd_attributes
-    | Open_description        -> x.popen_attributes
-    | Include_infos           -> x.pincl_attributes
-    | Module_expr             -> x.pmod_attributes
-    | Value_binding           -> x.pvb_attributes
-    | Module_binding          -> x.pmb_attributes
-    | Pstr_eval               -> snd (get_pstr_eval      x)
-    | Pstr_extension          -> snd (get_pstr_extension x)
-    | Psig_extension          -> snd (get_psig_extension x)
-    | Rtag                    ->
-      begin match x with
-      | Rtag (_, attrs, _, _) -> attrs
-      | Rinherit _ -> []
-      end
-    | Object_type_field       ->
-      begin match x with
-      | Otag (_, attrs, _) -> attrs
-      | Oinherit _ -> []
-      end
+  let get_attributes : type a. a t -> a -> attribute list = fun t x ->
+    let attributes =
+      match t with
+      | Label_declaration       -> Label_declaration.pld_attributes x
+      | Constructor_declaration -> Constructor_declaration.pcd_attributes x
+      | Type_declaration        -> Type_declaration.ptype_attributes x
+      | Type_extension          -> Type_extension.ptyext_attributes x
+      | Extension_constructor   -> Extension_constructor.pext_attributes x
+      | Pattern                 -> Pattern.ppat_attributes x
+      | Core_type               -> Core_type.ptyp_attributes x
+      | Expression              -> Expression.pexp_attributes x
+      | Value_description       -> Value_description.pval_attributes x
+      | Class_type              -> Class_type.pcty_attributes x
+      | Class_type_field        -> Class_type_field.pctf_attributes x
+      | Class_infos             -> Class_infos.pci_attributes x
+      | Class_expr              -> Class_expr.pcl_attributes x
+      | Class_field             -> Class_field.pcf_attributes x
+      | Module_type             -> Module_type.pmty_attributes x
+      | Module_declaration      -> Module_declaration.pmd_attributes x
+      | Module_type_declaration -> Module_type_declaration.pmtd_attributes x
+      | Open_description        -> Open_description.popen_attributes x
+      | Include_infos           -> Include_infos.pincl_attributes x
+      | Module_expr             -> Module_expr.pmod_attributes x
+      | Value_binding           -> Value_binding.pvb_attributes x
+      | Module_binding          -> Module_binding.pmb_attributes x
+      | Pstr_eval               -> snd (get_pstr_eval      x)
+      | Pstr_extension          -> snd (get_pstr_extension x)
+      | Psig_extension          -> snd (get_psig_extension x)
+      | Rtag                    ->
+        begin match%view x with
+        | Rtag (_, attrs, _, _) -> attrs
+        | Rinherit _ -> Attributes.create []
+        end
+      | Object_type_field       ->
+        begin match%view x with
+        | Otag (_, attrs, _) -> attrs
+        | Oinherit _ -> Attributes.create []
+        end
+    in
+    Attributes.to_concrete attributes
 
-  let set_attributes : type a. a t -> a -> attributes -> a = fun t x attrs ->
+  let set_attributes : type a. a t -> a -> attribute list -> a = fun t x attrs ->
+    let attrs = Attributes.create attrs in
     match t with
-    | Label_declaration       -> { x with pld_attributes    = attrs }
-    | Constructor_declaration -> { x with pcd_attributes    = attrs }
-    | Type_declaration        -> { x with ptype_attributes  = attrs }
-    | Type_extension          -> { x with ptyext_attributes = attrs }
-    | Extension_constructor   -> { x with pext_attributes   = attrs }
-    | Pattern                 -> { x with ppat_attributes   = attrs }
-    | Core_type               -> { x with ptyp_attributes   = attrs }
-    | Expression              -> { x with pexp_attributes   = attrs }
-    | Value_description       -> { x with pval_attributes   = attrs }
-    | Class_type              -> { x with pcty_attributes   = attrs }
-    | Class_type_field        -> { x with pctf_attributes   = attrs }
-    | Class_infos             -> { x with pci_attributes    = attrs }
-    | Class_expr              -> { x with pcl_attributes    = attrs }
-    | Class_field             -> { x with pcf_attributes    = attrs }
-    | Module_type             -> { x with pmty_attributes   = attrs }
-    | Module_declaration      -> { x with pmd_attributes    = attrs }
-    | Module_type_declaration -> { x with pmtd_attributes   = attrs }
-    | Open_description        -> { x with popen_attributes  = attrs }
-    | Include_infos           -> { x with pincl_attributes  = attrs }
-    | Module_expr             -> { x with pmod_attributes   = attrs }
-    | Value_binding           -> { x with pvb_attributes    = attrs }
-    | Module_binding          -> { x with pmb_attributes    = attrs }
+    | Label_declaration ->
+      Label_declaration.update x ~pld_attributes:(Label_declaration.pld_attributes x)
+    | Constructor_declaration ->
+      Constructor_declaration.update x
+        ~pcd_attributes:(Constructor_declaration.pcd_attributes x)
+    | Type_declaration ->
+      Type_declaration.update x ~ptype_attributes:(Type_declaration.ptype_attributes x)
+    | Type_extension ->
+      Type_extension.update x ~ptyext_attributes:(Type_extension.ptyext_attributes x)
+    | Extension_constructor ->
+      Extension_constructor.update x
+        ~pext_attributes:(Extension_constructor.pext_attributes x)
+    | Pattern -> Pattern.update x ~ppat_attributes:(Pattern.ppat_attributes x)
+    | Core_type -> Core_type.update x ~ptyp_attributes:(Core_type.ptyp_attributes x)
+    | Expression -> Expression.update x ~pexp_attributes:(Expression.pexp_attributes x)
+    | Value_description ->
+      Value_description.update x ~pval_attributes:(Value_description.pval_attributes x)
+    | Class_type -> Class_type.update x ~pcty_attributes:(Class_type.pcty_attributes x)
+    | Class_type_field ->
+      Class_type_field.update x ~pctf_attributes:(Class_type_field.pctf_attributes x)
+    | Class_infos -> Class_infos.update x ~pci_attributes:(Class_infos.pci_attributes x)
+    | Class_expr -> Class_expr.update x ~pcl_attributes:(Class_expr.pcl_attributes x)
+    | Class_field -> Class_field.update x ~pcf_attributes:(Class_field.pcf_attributes x)
+    | Module_type -> Module_type.update x ~pmty_attributes:(Module_type.pmty_attributes x)
+    | Module_declaration ->
+      Module_declaration.update x ~pmd_attributes:(Module_declaration.pmd_attributes x)
+    | Module_type_declaration ->
+      Module_type_declaration.update x
+        ~pmtd_attributes:(Module_type_declaration.pmtd_attributes x)
+    | Open_description ->
+      Open_description.update x ~popen_attributes:(Open_description.popen_attributes x)
+    | Include_infos ->
+      Include_infos.update x ~pincl_attributes:(Include_infos.pincl_attributes x)
+    | Module_expr -> Module_expr.update x ~pmod_attributes:(Module_expr.pmod_attributes x)
+    | Value_binding ->
+      Value_binding.update x ~pvb_attributes:(Value_binding.pvb_attributes x)
+    | Module_binding ->
+      Module_binding.update x ~pmb_attributes:(Module_binding.pmb_attributes x)
     | Pstr_eval ->
-      { x with pstr_desc = Pstr_eval      (get_pstr_eval x      |> fst, attrs) }
+      Structure_item.update x
+        ~pstr_desc:(Structure_item_desc.pstr_eval (fst (get_pstr_eval x)) attrs)
     | Pstr_extension ->
-      { x with pstr_desc = Pstr_extension (get_pstr_extension x |> fst, attrs) }
+      Structure_item.update x
+        ~pstr_desc:(Structure_item_desc.pstr_extension (fst (get_pstr_extension x)) attrs)
     | Psig_extension ->
-      { x with psig_desc = Psig_extension (get_psig_extension x |> fst, attrs) }
+      Signature_item.update x
+        ~psig_desc:(Signature_item_desc.psig_extension (fst (get_psig_extension x)) attrs)
     | Rtag                   ->
-      begin match x with
+      begin match%view x with
       | Rtag (lbl, _, can_be_constant, params_opts) ->
-        Rtag (lbl, attrs, can_be_constant, params_opts)
+        Row_field.rtag lbl attrs can_be_constant params_opts
       | Rinherit _ ->
-        assert (List.is_empty attrs);
+        assert (List.is_empty (Attributes.to_concrete attrs));
         x
       end
     | Object_type_field ->
-      begin match x with
+      begin match%view x with
       | Otag (lbl, _, typ) ->
-        Otag (lbl, attrs, typ)
+        Object_field.otag lbl attrs typ
       | Oinherit _ ->
-        assert (List.is_empty attrs);
+        assert (List.is_empty (Attributes.to_concrete attrs));
         x
       end
 
@@ -199,11 +222,11 @@ module Context = struct
     -> (attributes, b, c) Ast_pattern.t
     -> (a, c, d) Ast_pattern.t
     -> (a, b, d) Ast_pattern.t = function
-    | Label_declaration       -> Ast_pattern.pld_attributes
-    | Constructor_declaration -> Ast_pattern.pcd_attributes
-    | Type_declaration        -> Ast_pattern.ptype_attributes
-    | Type_extension          -> Ast_pattern.ptyext_attributes
-    | Extension_constructor   -> Ast_pattern.pext_attributes
+    | Label_declaration       -> (Label_declaration.pld_attributes Ast_pattern)
+    | Constructor_declaration -> (Constructor_declaration.pcd_attributes Ast_pattern)
+    | Type_declaration        -> (Type_declaration.ptype_attributes Ast_pattern)
+    | Type_extension          -> (Type_extension.ptyext_attributes Ast_pattern)
+    | Extension_constructor   -> (Extension_constructor.pext_attributes Ast_pattern)
 *)
 
   let equal : _ t -> _ t -> bool = poly_equal
@@ -223,26 +246,35 @@ module Floating_context = struct
 
   let get_attribute_if_is_floating_node : type a. a t -> a -> attribute option
     = fun t x ->
-      match t, x with
-      | Structure_item   , { pstr_desc = Pstr_attribute a; _ } -> Some a
-      | Signature_item   , { psig_desc = Psig_attribute a; _ } -> Some a
-      | Class_field      , { pcf_desc  = Pcf_attribute  a; _ } -> Some a
-      | Class_type_field , { pctf_desc = Pctf_attribute a; _ } -> Some a
-      | _ -> None
+      match t with
+      | Structure_item   -> (match%view x with | { pstr_desc = Pstr_attribute a; _ } -> Some a | _ -> None)
+      | Signature_item   -> (match%view x with | { psig_desc = Psig_attribute a; _ } -> Some a | _ -> None)
+      | Class_field      -> (match%view x with | { pcf_desc  = Pcf_attribute  a; _ } -> Some a | _ -> None)
+      | Class_type_field -> (match%view x with | { pctf_desc = Pctf_attribute a; _ } -> Some a | _ -> None)
 
   let get_attribute t x =
     match get_attribute_if_is_floating_node t x with
     | Some a -> a
     | None   -> failwith "Attribute.Floating.Context.get_attribute"
 
+  let dummy_ext =
+    Extension.create
+      ({ txt = ""; loc = Location.none }, Payload.pStr (Structure.create []))
+
   let replace_by_dummy : type a. a t -> a -> a =
-    let dummy_ext = ({ txt = ""; loc = Location.none }, PStr []) in
     fun t x ->
-    match t with
-    | Structure_item   -> { x with pstr_desc = Pstr_extension (dummy_ext, []) }
-    | Signature_item   -> { x with psig_desc = Psig_extension (dummy_ext, []) }
-    | Class_field      -> { x with pcf_desc  = Pcf_extension   dummy_ext      }
-    | Class_type_field -> { x with pctf_desc = Pctf_extension  dummy_ext      }
+      match t with
+      | Structure_item   ->
+        Structure_item.update x
+          ~pstr_desc:(Structure_item_desc.pstr_extension dummy_ext (Attributes.create []))
+      | Signature_item   ->
+        Signature_item.update x
+          ~psig_desc:(Signature_item_desc.psig_extension dummy_ext (Attributes.create []))
+      | Class_field      ->
+        Class_field.update x ~pcf_desc:(Class_field_desc.pcf_extension dummy_ext)
+      | Class_type_field ->
+        Class_type_field.update x
+          ~pctf_desc:(Class_type_field_desc.pctf_extension dummy_ext)
 
   let desc : type a. a t -> string = function
     | Structure_item   -> "structure item"
@@ -295,7 +327,7 @@ let declare name context pattern k =
 ;;
 
 module Attribute_table = Hashtbl.Make(struct
-    type t = string loc
+    type t = string Loc.t
     let hash : t -> int = Hashtbl.hash
     let equal : t -> t -> bool = (=)
   end)
@@ -303,7 +335,7 @@ module Attribute_table = Hashtbl.Make(struct
 let not_seen = Attribute_table.create 128
 
 let mark_as_seen attr =
-  let name = fst attr in
+  let name = fst (Attribute.to_concrete attr) in
   Attribute_table.remove not_seen name
 ;;
 
@@ -316,13 +348,13 @@ end
 
 let get_internal =
   let rec find_best_match t attributes longest_match =
-    match attributes with
+    match%view attributes with
     | [] -> longest_match
-    | (name, _) as attr :: rest ->
+    | Attribute (name, _) as attr :: rest ->
       if Name.Pattern.matches t.name name.txt then begin
-        match longest_match with
+        match%view longest_match with
         | None -> find_best_match t rest (Some attr)
-        | Some (name', _) ->
+        | Some (Attribute (name', _)) ->
           let len = String.length name.txt in
           let len' = String.length name'.txt in
           if len > len' then
@@ -341,7 +373,10 @@ let get_internal =
 let convert ?(do_mark_as_seen = true) pattern attr =
   if do_mark_as_seen then mark_as_seen attr;
   let (Payload_parser (pattern, k)) = pattern in
-  Ast_pattern.parse pattern (Common.loc_of_payload attr) (snd attr)
+  let attr = Attribute.to_concrete attr in
+  Ast_pattern.parse pattern
+    (Common.loc_of_payload attr)
+    (snd attr)
     (k ~name_loc:(fst attr).loc)
 ;;
 
@@ -357,7 +392,9 @@ let consume t x =
   match get_internal t attrs with
   | None -> None
   | Some attr ->
-    let attrs = List.filter attrs ~f:(fun attr' -> not (attr == attr')) in
+    let attrs =
+      List.filter attrs ~f:(fun attr' -> not (attr == attr'))
+    in
     let x = Context.set_attributes t.context x attrs in
     Some (x, convert t.payload attr)
 ;;
@@ -372,7 +409,7 @@ let remove_seen (type a) (context : a Context.t) packeds (x : a) =
           match get_internal t attrs with
           | None      -> loop acc rest
           | Some attr ->
-            let name = fst attr in
+            let name = fst (Attribute.to_concrete attr) in
             if Attribute_table.mem not_seen name then
               loop acc rest
             else
@@ -382,9 +419,7 @@ let remove_seen (type a) (context : a Context.t) packeds (x : a) =
     in
     loop [] packeds
   in
-  let attrs =
-    List.filter attrs ~f:(fun attr' -> not (List.memq ~set:matched attr'))
-  in
+  let attrs = List.filter attrs ~f:(fun attr' -> not (List.memq ~set:matched attr')) in
   Context.set_attributes context x attrs
 ;;
 
@@ -422,7 +457,7 @@ module Floating = struct
     | { context; _ } :: _ ->
       assert (List.for_all ts ~f:(fun t -> Context.equal t.context context));
       let attr = Context.get_attribute context x in
-      let name = fst attr in
+      let name = fst (Attribute.to_concrete attr) in
       match List.filter ts ~f:(fun t -> Name.Pattern.matches t.name name.txt) with
       | [] -> None
       | [t] -> Some (convert t.payload attr)
@@ -433,7 +468,7 @@ module Floating = struct
   ;;
 end
 
-let check_attribute registrar context name =
+let check_attribute registrar context (name : _ Loc.t) =
   if not (Name.Whitelisted.is_whitelisted ~kind:`Attribute name.txt
           || Name.ignore_checks name.txt)
   && Attribute_table.mem not_seen name then
@@ -446,16 +481,18 @@ let check_attribute registrar context name =
 let check_unused = object(self)
   inherit Ast_traverse.iter as super
 
-  method! attribute (name, _) =
-    Location.raise_errorf ~loc:name.loc
-      "attribute not expected here, Ppx.Attribute needs updating!"
+  method! attribute attr =
+    match%view attr with
+    | Attribute (name, _) ->
+      Location.raise_errorf ~loc:name.loc
+        "attribute not expected here, Ppx.Attribute needs updating!"
 
   method private check_node : type a. a Context.t -> a -> a = fun context node ->
     let attrs = Context.get_attributes context node in
     match attrs with
     | [] -> node
     | _  ->
-      List.iter attrs ~f:(fun ((name, payload) as attr) ->
+      List.iter attrs ~f:(function%view (Attribute (name, payload) as attr) ->
         self#payload payload;
         check_attribute registrar (On_item context) name;
         (* If we allow the attribute to pass through, mark it as seen *)
@@ -464,9 +501,9 @@ let check_unused = object(self)
 
   method private check_floating : type a. a Floating.Context.t -> a -> a
     = fun context node ->
-      match Floating.Context.get_attribute_if_is_floating_node context node with
+      match%view Floating.Context.get_attribute_if_is_floating_node context node with
       | None -> node
-      | Some  ((name, payload) as attr) ->
+      | Some (Attribute (name, payload) as attr) ->
         self#payload payload;
         check_attribute registrar (Floating context) name;
         mark_as_seen attr;
@@ -505,7 +542,7 @@ let check_unused = object(self)
 
   method! row_field x =
     let x =
-      match x with
+      match%view x with
       | Rtag _ -> self#check_node Rtag x
       | _      -> x
     in
@@ -513,10 +550,10 @@ let check_unused = object(self)
 
   method! core_type_desc x =
     let x =
-      match x with
+      match%view x with
       | Ptyp_object (fields, closed_flag) ->
         let fields = List.map fields ~f:(self#check_node Object_type_field) in
-        Ptyp_object (fields, closed_flag)
+        Core_type_desc.ptyp_object fields closed_flag
       | _ -> x
     in
     super#core_type_desc x
@@ -524,7 +561,7 @@ let check_unused = object(self)
   method! structure_item item =
     let item = self#check_floating Structure_item item in
     let item =
-      match item.pstr_desc with
+      match%view (Structure_item.pstr_desc item) with
       | Pstr_eval      _ -> self#check_node Pstr_eval      item
       | Pstr_extension _ -> self#check_node Pstr_extension item
       | _                -> item
@@ -534,7 +571,7 @@ let check_unused = object(self)
   method! signature_item item =
     let item = self#check_floating Signature_item item in
     let item =
-      match item.psig_desc with
+      match%view (Signature_item.psig_desc item) with
       | Psig_extension _ -> self#check_node Psig_extension item
       | _                -> item
     in
@@ -546,15 +583,17 @@ let reset_checks () = Attribute_table.clear not_seen
 let collect = object
   inherit Ast_traverse.iter as super
 
-  method! attribute ((name, payload) as attr) =
-    let loc = Common.loc_of_attribute attr in
-    super#payload payload;
-    Attribute_table.add not_seen name loc
+  method! attribute attr =
+    match%view attr with
+    | Attribute (name, payload) ->
+      let loc = Common.loc_of_attribute attr in
+      super#payload payload;
+      Attribute_table.add not_seen name loc
 end
 
 let check_all_seen () =
   let fail ~key:name ~data:loc =
-    let txt = name.txt in
+    let txt = name.Loc.txt in
     if not (Name.ignore_checks txt) then
       Location.raise_errorf ~loc "Attribute `%s' was silently dropped" txt
   in
@@ -564,7 +603,7 @@ let check_all_seen () =
 let remove_attributes_present_in table = object
   inherit Ast_traverse.iter as super
 
-  method! attribute (name, payload) =
+  method! attribute = function%view (Attribute (name, payload)) ->
     super#payload payload;
     Attribute_table.remove table name
 end
@@ -578,11 +617,17 @@ let copy_of_not_seen () =
 let dropped_so_far_structure st =
   let table = copy_of_not_seen () in
   (remove_attributes_present_in table)#structure st;
-  Attribute_table.foldi ~f:(fun name loc acc -> { txt = name.txt; loc } :: acc) table ~init:[]
+  Attribute_table.foldi
+    ~f:(fun name loc acc -> ({ txt = name.txt; loc } : _ Loc.t) :: acc)
+    table
+    ~init:[]
 ;;
 
 let dropped_so_far_signature sg =
   let table = copy_of_not_seen () in
   (remove_attributes_present_in table)#signature sg;
-  Attribute_table.foldi ~f:(fun name loc acc -> { txt = name.txt; loc } :: acc) table ~init:[]
+  Attribute_table.foldi
+    ~f:(fun name loc acc -> ({ txt = name.txt; loc } : _ Loc.t) :: acc)
+    table
+    ~init:[]
 ;;

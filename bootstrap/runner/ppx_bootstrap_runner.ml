@@ -60,7 +60,7 @@ let unsupported_extension extension =
   | { loc; txt = name }, _ ->
     let expr = estring ~loc ("unsupported bootstrap extension " ^ name) in
     let item = pstr_eval ~loc expr (Attributes.create []) in
-    let payload = Payload.pstr (Structure.create [item]) in
+    let payload = Payload.pStr (Structure.create [item]) in
     Extension.create ({ txt = "error"; loc }, payload)
 ;;
 

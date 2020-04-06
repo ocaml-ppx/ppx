@@ -573,14 +573,14 @@ and directive_argument =
 [@@deriving equal, sexp_of]
 
 let rec generate_longident ~size ~random =
-  let gen_lident =
+  let gen_Lident =
     Generator.create (fun ~size ~random ->
       let gen0 = quickcheck_generator_string
       in
       Lident
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_ldot =
+  and gen_Ldot =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_longident)
       and gen1 = quickcheck_generator_string
@@ -589,7 +589,7 @@ let rec generate_longident ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_lapply =
+  and gen_Lapply =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_longident)
       and gen1 = (Generator.create generate_longident)
@@ -603,88 +603,88 @@ let rec generate_longident ~size ~random =
   then
     Generator.generate ~size ~random
       (Base_quickcheck.Generator.union
-        [gen_lident])
+        [gen_Lident])
   else
     Generator.generate ~size:(size-1) ~random
       (Base_quickcheck.Generator.union
-        [gen_lident; gen_ldot; gen_lapply])
+        [gen_Lident; gen_Ldot; gen_Lapply])
 and generate_longident_loc ~size ~random =
   let gen = (quickcheck_generator_loc (Generator.create generate_longident)) in
   Generator.generate gen ~size ~random
 and generate_rec_flag ~size ~random =
-  let gen_nonrecursive =
+  let gen_Nonrecursive =
     Generator.return Nonrecursive
-  and gen_recursive =
+  and gen_Recursive =
     Generator.return Recursive
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
-      [gen_nonrecursive; gen_recursive])
+      [gen_Nonrecursive; gen_Recursive])
 and generate_direction_flag ~size ~random =
-  let gen_upto =
+  let gen_Upto =
     Generator.return Upto
-  and gen_downto =
+  and gen_Downto =
     Generator.return Downto
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
-      [gen_upto; gen_downto])
+      [gen_Upto; gen_Downto])
 and generate_private_flag ~size ~random =
-  let gen_private =
+  let gen_Private =
     Generator.return Private
-  and gen_public =
+  and gen_Public =
     Generator.return Public
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
-      [gen_private; gen_public])
+      [gen_Private; gen_Public])
 and generate_mutable_flag ~size ~random =
-  let gen_immutable =
+  let gen_Immutable =
     Generator.return Immutable
-  and gen_mutable =
+  and gen_Mutable =
     Generator.return Mutable
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
-      [gen_immutable; gen_mutable])
+      [gen_Immutable; gen_Mutable])
 and generate_virtual_flag ~size ~random =
-  let gen_virtual =
+  let gen_Virtual =
     Generator.return Virtual
-  and gen_concrete =
+  and gen_Concrete =
     Generator.return Concrete
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
-      [gen_virtual; gen_concrete])
+      [gen_Virtual; gen_Concrete])
 and generate_override_flag ~size ~random =
-  let gen_override =
+  let gen_Override =
     Generator.return Override
-  and gen_fresh =
+  and gen_Fresh =
     Generator.return Fresh
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
-      [gen_override; gen_fresh])
+      [gen_Override; gen_Fresh])
 and generate_closed_flag ~size ~random =
-  let gen_closed =
+  let gen_Closed =
     Generator.return Closed
-  and gen_open =
+  and gen_Open =
     Generator.return Open
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
-      [gen_closed; gen_open])
+      [gen_Closed; gen_Open])
 and generate_arg_label ~size ~random =
-  let gen_nolabel =
+  let gen_Nolabel =
     Generator.return Nolabel
-  and gen_labelled =
+  and gen_Labelled =
     Generator.create (fun ~size ~random ->
       let gen0 = quickcheck_generator_string
       in
       Labelled
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_optional =
+  and gen_Optional =
     Generator.create (fun ~size ~random ->
       let gen0 = quickcheck_generator_string
       in
@@ -694,20 +694,20 @@ and generate_arg_label ~size ~random =
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
-      [gen_nolabel; gen_labelled; gen_optional])
+      [gen_Nolabel; gen_Labelled; gen_Optional])
 and generate_variance ~size ~random =
-  let gen_covariant =
+  let gen_Covariant =
     Generator.return Covariant
-  and gen_contravariant =
+  and gen_Contravariant =
     Generator.return Contravariant
-  and gen_invariant =
+  and gen_Invariant =
     Generator.return Invariant
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
-      [gen_covariant; gen_contravariant; gen_invariant])
+      [gen_Covariant; gen_Contravariant; gen_Invariant])
 and generate_constant ~size ~random =
-  let gen_pconst_integer =
+  let gen_Pconst_integer =
     Generator.create (fun ~size ~random ->
       let gen0 = quickcheck_generator_string
       and gen1 = (quickcheck_generator_option quickcheck_generator_char)
@@ -716,14 +716,14 @@ and generate_constant ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pconst_char =
+  and gen_Pconst_char =
     Generator.create (fun ~size ~random ->
       let gen0 = quickcheck_generator_char
       in
       Pconst_char
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pconst_string =
+  and gen_Pconst_string =
     Generator.create (fun ~size ~random ->
       let gen0 = quickcheck_generator_string
       and gen1 = (quickcheck_generator_option quickcheck_generator_string)
@@ -732,7 +732,7 @@ and generate_constant ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pconst_float =
+  and gen_Pconst_float =
     Generator.create (fun ~size ~random ->
       let gen0 = quickcheck_generator_string
       and gen1 = (quickcheck_generator_option quickcheck_generator_char)
@@ -744,7 +744,7 @@ and generate_constant ~size ~random =
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
-      [gen_pconst_integer; gen_pconst_char; gen_pconst_string; gen_pconst_float])
+      [gen_Pconst_integer; gen_Pconst_char; gen_Pconst_string; gen_Pconst_float])
 and generate_attribute ~size ~random =
   let gen = (quickcheck_generator_tuple2 (quickcheck_generator_loc quickcheck_generator_string) (Generator.create generate_payload)) in
   Generator.generate gen ~size ~random
@@ -755,28 +755,28 @@ and generate_attributes ~size ~random =
   let gen = (quickcheck_generator_list (Generator.create generate_attribute)) in
   Generator.generate gen ~size ~random
 and generate_payload ~size ~random =
-  let gen_pstr =
+  let gen_PStr =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_structure)
       in
       PStr
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_psig =
+  and gen_PSig =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_signature)
       in
       PSig
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_ptyp =
+  and gen_PTyp =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_core_type)
       in
       PTyp
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_ppat =
+  and gen_PPat =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_pattern)
       and gen1 = (quickcheck_generator_option (Generator.create generate_expression))
@@ -788,7 +788,7 @@ and generate_payload ~size ~random =
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
-      [gen_pstr; gen_psig; gen_ptyp; gen_ppat])
+      [gen_PStr; gen_PSig; gen_PTyp; gen_PPat])
 and generate_core_type ~size ~random =
   let gen_ptyp_desc = (Generator.create generate_core_type_desc)
   and gen_ptyp_loc = quickcheck_generator_location
@@ -799,16 +799,16 @@ and generate_core_type ~size ~random =
   ; ptyp_attributes = Generator.generate gen_ptyp_attributes ~size ~random
   }
 and generate_core_type_desc ~size ~random =
-  let gen_ptyp_any =
+  let gen_Ptyp_any =
     Generator.return Ptyp_any
-  and gen_ptyp_var =
+  and gen_Ptyp_var =
     Generator.create (fun ~size ~random ->
       let gen0 = quickcheck_generator_string
       in
       Ptyp_var
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_ptyp_arrow =
+  and gen_Ptyp_arrow =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_arg_label)
       and gen1 = (Generator.create generate_core_type)
@@ -819,14 +819,14 @@ and generate_core_type_desc ~size ~random =
         , Generator.generate gen1 ~size ~random
         , Generator.generate gen2 ~size ~random
         ))
-  and gen_ptyp_tuple =
+  and gen_Ptyp_tuple =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_list (Generator.create generate_core_type))
       in
       Ptyp_tuple
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_ptyp_constr =
+  and gen_Ptyp_constr =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_longident_loc)
       and gen1 = (quickcheck_generator_list (Generator.create generate_core_type))
@@ -835,7 +835,7 @@ and generate_core_type_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_ptyp_object =
+  and gen_Ptyp_object =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_list (Generator.create generate_object_field))
       and gen1 = (Generator.create generate_closed_flag)
@@ -844,7 +844,7 @@ and generate_core_type_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_ptyp_class =
+  and gen_Ptyp_class =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_longident_loc)
       and gen1 = (quickcheck_generator_list (Generator.create generate_core_type))
@@ -853,7 +853,7 @@ and generate_core_type_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_ptyp_alias =
+  and gen_Ptyp_alias =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_core_type)
       and gen1 = quickcheck_generator_string
@@ -862,7 +862,7 @@ and generate_core_type_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_ptyp_variant =
+  and gen_Ptyp_variant =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_list (Generator.create generate_row_field))
       and gen1 = (Generator.create generate_closed_flag)
@@ -873,7 +873,7 @@ and generate_core_type_desc ~size ~random =
         , Generator.generate gen1 ~size ~random
         , Generator.generate gen2 ~size ~random
         ))
-  and gen_ptyp_poly =
+  and gen_Ptyp_poly =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_list (quickcheck_generator_loc quickcheck_generator_string))
       and gen1 = (Generator.create generate_core_type)
@@ -882,14 +882,14 @@ and generate_core_type_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_ptyp_package =
+  and gen_Ptyp_package =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_package_type)
       in
       Ptyp_package
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_ptyp_extension =
+  and gen_Ptyp_extension =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_extension)
       in
@@ -901,16 +901,16 @@ and generate_core_type_desc ~size ~random =
   then
     Generator.generate ~size ~random
       (Base_quickcheck.Generator.union
-        [gen_ptyp_any; gen_ptyp_var])
+        [gen_Ptyp_any; gen_Ptyp_var])
   else
     Generator.generate ~size:(size-1) ~random
       (Base_quickcheck.Generator.union
-        [gen_ptyp_any; gen_ptyp_var; gen_ptyp_arrow; gen_ptyp_tuple; gen_ptyp_constr; gen_ptyp_object; gen_ptyp_class; gen_ptyp_alias; gen_ptyp_variant; gen_ptyp_poly; gen_ptyp_package; gen_ptyp_extension])
+        [gen_Ptyp_any; gen_Ptyp_var; gen_Ptyp_arrow; gen_Ptyp_tuple; gen_Ptyp_constr; gen_Ptyp_object; gen_Ptyp_class; gen_Ptyp_alias; gen_Ptyp_variant; gen_Ptyp_poly; gen_Ptyp_package; gen_Ptyp_extension])
 and generate_package_type ~size ~random =
   let gen = (quickcheck_generator_tuple2 (Generator.create generate_longident_loc) (quickcheck_generator_list (quickcheck_generator_tuple2 (Generator.create generate_longident_loc) (Generator.create generate_core_type)))) in
   Generator.generate gen ~size ~random
 and generate_row_field ~size ~random =
-  let gen_rtag =
+  let gen_Rtag =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_loc quickcheck_generator_string)
       and gen1 = (Generator.create generate_attributes)
@@ -923,7 +923,7 @@ and generate_row_field ~size ~random =
         , Generator.generate gen2 ~size ~random
         , Generator.generate gen3 ~size ~random
         ))
-  and gen_rinherit =
+  and gen_Rinherit =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_core_type)
       in
@@ -933,9 +933,9 @@ and generate_row_field ~size ~random =
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
-      [gen_rtag; gen_rinherit])
+      [gen_Rtag; gen_Rinherit])
 and generate_object_field ~size ~random =
-  let gen_otag =
+  let gen_Otag =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_loc quickcheck_generator_string)
       and gen1 = (Generator.create generate_attributes)
@@ -946,7 +946,7 @@ and generate_object_field ~size ~random =
         , Generator.generate gen1 ~size ~random
         , Generator.generate gen2 ~size ~random
         ))
-  and gen_oinherit =
+  and gen_Oinherit =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_core_type)
       in
@@ -956,7 +956,7 @@ and generate_object_field ~size ~random =
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
-      [gen_otag; gen_oinherit])
+      [gen_Otag; gen_Oinherit])
 and generate_pattern ~size ~random =
   let gen_ppat_desc = (Generator.create generate_pattern_desc)
   and gen_ppat_loc = quickcheck_generator_location
@@ -967,16 +967,16 @@ and generate_pattern ~size ~random =
   ; ppat_attributes = Generator.generate gen_ppat_attributes ~size ~random
   }
 and generate_pattern_desc ~size ~random =
-  let gen_ppat_any =
+  let gen_Ppat_any =
     Generator.return Ppat_any
-  and gen_ppat_var =
+  and gen_Ppat_var =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_loc quickcheck_generator_string)
       in
       Ppat_var
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_ppat_alias =
+  and gen_Ppat_alias =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_pattern)
       and gen1 = (quickcheck_generator_loc quickcheck_generator_string)
@@ -985,14 +985,14 @@ and generate_pattern_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_ppat_constant =
+  and gen_Ppat_constant =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_constant)
       in
       Ppat_constant
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_ppat_interval =
+  and gen_Ppat_interval =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_constant)
       and gen1 = (Generator.create generate_constant)
@@ -1001,14 +1001,14 @@ and generate_pattern_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_ppat_tuple =
+  and gen_Ppat_tuple =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_list (Generator.create generate_pattern))
       in
       Ppat_tuple
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_ppat_construct =
+  and gen_Ppat_construct =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_longident_loc)
       and gen1 = (quickcheck_generator_option (Generator.create generate_pattern))
@@ -1017,7 +1017,7 @@ and generate_pattern_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_ppat_variant =
+  and gen_Ppat_variant =
     Generator.create (fun ~size ~random ->
       let gen0 = quickcheck_generator_string
       and gen1 = (quickcheck_generator_option (Generator.create generate_pattern))
@@ -1026,7 +1026,7 @@ and generate_pattern_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_ppat_record =
+  and gen_Ppat_record =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_list (quickcheck_generator_tuple2 (Generator.create generate_longident_loc) (Generator.create generate_pattern)))
       and gen1 = (Generator.create generate_closed_flag)
@@ -1035,14 +1035,14 @@ and generate_pattern_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_ppat_array =
+  and gen_Ppat_array =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_list (Generator.create generate_pattern))
       in
       Ppat_array
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_ppat_or =
+  and gen_Ppat_or =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_pattern)
       and gen1 = (Generator.create generate_pattern)
@@ -1051,7 +1051,7 @@ and generate_pattern_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_ppat_constraint =
+  and gen_Ppat_constraint =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_pattern)
       and gen1 = (Generator.create generate_core_type)
@@ -1060,42 +1060,42 @@ and generate_pattern_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_ppat_type =
+  and gen_Ppat_type =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_longident_loc)
       in
       Ppat_type
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_ppat_lazy =
+  and gen_Ppat_lazy =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_pattern)
       in
       Ppat_lazy
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_ppat_unpack =
+  and gen_Ppat_unpack =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_loc quickcheck_generator_string)
       in
       Ppat_unpack
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_ppat_exception =
+  and gen_Ppat_exception =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_pattern)
       in
       Ppat_exception
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_ppat_extension =
+  and gen_Ppat_extension =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_extension)
       in
       Ppat_extension
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_ppat_open =
+  and gen_Ppat_open =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_longident_loc)
       and gen1 = (Generator.create generate_pattern)
@@ -1109,11 +1109,11 @@ and generate_pattern_desc ~size ~random =
   then
     Generator.generate ~size ~random
       (Base_quickcheck.Generator.union
-        [gen_ppat_any; gen_ppat_var; gen_ppat_unpack])
+        [gen_Ppat_any; gen_Ppat_var; gen_Ppat_unpack])
   else
     Generator.generate ~size:(size-1) ~random
       (Base_quickcheck.Generator.union
-        [gen_ppat_any; gen_ppat_var; gen_ppat_unpack; gen_ppat_alias; gen_ppat_constant; gen_ppat_interval; gen_ppat_tuple; gen_ppat_construct; gen_ppat_variant; gen_ppat_record; gen_ppat_array; gen_ppat_or; gen_ppat_constraint; gen_ppat_type; gen_ppat_lazy; gen_ppat_exception; gen_ppat_extension; gen_ppat_open])
+        [gen_Ppat_any; gen_Ppat_var; gen_Ppat_unpack; gen_Ppat_alias; gen_Ppat_constant; gen_Ppat_interval; gen_Ppat_tuple; gen_Ppat_construct; gen_Ppat_variant; gen_Ppat_record; gen_Ppat_array; gen_Ppat_or; gen_Ppat_constraint; gen_Ppat_type; gen_Ppat_lazy; gen_Ppat_exception; gen_Ppat_extension; gen_Ppat_open])
 and generate_expression ~size ~random =
   let gen_pexp_desc = (Generator.create generate_expression_desc)
   and gen_pexp_loc = quickcheck_generator_location
@@ -1124,21 +1124,21 @@ and generate_expression ~size ~random =
   ; pexp_attributes = Generator.generate gen_pexp_attributes ~size ~random
   }
 and generate_expression_desc ~size ~random =
-  let gen_pexp_ident =
+  let gen_Pexp_ident =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_longident_loc)
       in
       Pexp_ident
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pexp_constant =
+  and gen_Pexp_constant =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_constant)
       in
       Pexp_constant
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pexp_let =
+  and gen_Pexp_let =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_rec_flag)
       and gen1 = (quickcheck_generator_list (Generator.create generate_value_binding))
@@ -1149,14 +1149,14 @@ and generate_expression_desc ~size ~random =
         , Generator.generate gen1 ~size ~random
         , Generator.generate gen2 ~size ~random
         ))
-  and gen_pexp_function =
+  and gen_Pexp_function =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_list (Generator.create generate_case))
       in
       Pexp_function
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pexp_fun =
+  and gen_Pexp_fun =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_arg_label)
       and gen1 = (quickcheck_generator_option (Generator.create generate_expression))
@@ -1169,7 +1169,7 @@ and generate_expression_desc ~size ~random =
         , Generator.generate gen2 ~size ~random
         , Generator.generate gen3 ~size ~random
         ))
-  and gen_pexp_apply =
+  and gen_Pexp_apply =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_expression)
       and gen1 = (quickcheck_generator_list (quickcheck_generator_tuple2 (Generator.create generate_arg_label) (Generator.create generate_expression)))
@@ -1178,7 +1178,7 @@ and generate_expression_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pexp_match =
+  and gen_Pexp_match =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_expression)
       and gen1 = (quickcheck_generator_list (Generator.create generate_case))
@@ -1187,7 +1187,7 @@ and generate_expression_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pexp_try =
+  and gen_Pexp_try =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_expression)
       and gen1 = (quickcheck_generator_list (Generator.create generate_case))
@@ -1196,14 +1196,14 @@ and generate_expression_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pexp_tuple =
+  and gen_Pexp_tuple =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_list (Generator.create generate_expression))
       in
       Pexp_tuple
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pexp_construct =
+  and gen_Pexp_construct =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_longident_loc)
       and gen1 = (quickcheck_generator_option (Generator.create generate_expression))
@@ -1212,7 +1212,7 @@ and generate_expression_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pexp_variant =
+  and gen_Pexp_variant =
     Generator.create (fun ~size ~random ->
       let gen0 = quickcheck_generator_string
       and gen1 = (quickcheck_generator_option (Generator.create generate_expression))
@@ -1221,7 +1221,7 @@ and generate_expression_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pexp_record =
+  and gen_Pexp_record =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_list (quickcheck_generator_tuple2 (Generator.create generate_longident_loc) (Generator.create generate_expression)))
       and gen1 = (quickcheck_generator_option (Generator.create generate_expression))
@@ -1230,7 +1230,7 @@ and generate_expression_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pexp_field =
+  and gen_Pexp_field =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_expression)
       and gen1 = (Generator.create generate_longident_loc)
@@ -1239,7 +1239,7 @@ and generate_expression_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pexp_setfield =
+  and gen_Pexp_setfield =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_expression)
       and gen1 = (Generator.create generate_longident_loc)
@@ -1250,14 +1250,14 @@ and generate_expression_desc ~size ~random =
         , Generator.generate gen1 ~size ~random
         , Generator.generate gen2 ~size ~random
         ))
-  and gen_pexp_array =
+  and gen_Pexp_array =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_list (Generator.create generate_expression))
       in
       Pexp_array
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pexp_ifthenelse =
+  and gen_Pexp_ifthenelse =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_expression)
       and gen1 = (Generator.create generate_expression)
@@ -1268,7 +1268,7 @@ and generate_expression_desc ~size ~random =
         , Generator.generate gen1 ~size ~random
         , Generator.generate gen2 ~size ~random
         ))
-  and gen_pexp_sequence =
+  and gen_Pexp_sequence =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_expression)
       and gen1 = (Generator.create generate_expression)
@@ -1277,7 +1277,7 @@ and generate_expression_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pexp_while =
+  and gen_Pexp_while =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_expression)
       and gen1 = (Generator.create generate_expression)
@@ -1286,7 +1286,7 @@ and generate_expression_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pexp_for =
+  and gen_Pexp_for =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_pattern)
       and gen1 = (Generator.create generate_expression)
@@ -1301,7 +1301,7 @@ and generate_expression_desc ~size ~random =
         , Generator.generate gen3 ~size ~random
         , Generator.generate gen4 ~size ~random
         ))
-  and gen_pexp_constraint =
+  and gen_Pexp_constraint =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_expression)
       and gen1 = (Generator.create generate_core_type)
@@ -1310,7 +1310,7 @@ and generate_expression_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pexp_coerce =
+  and gen_Pexp_coerce =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_expression)
       and gen1 = (quickcheck_generator_option (Generator.create generate_core_type))
@@ -1321,7 +1321,7 @@ and generate_expression_desc ~size ~random =
         , Generator.generate gen1 ~size ~random
         , Generator.generate gen2 ~size ~random
         ))
-  and gen_pexp_send =
+  and gen_Pexp_send =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_expression)
       and gen1 = (quickcheck_generator_loc quickcheck_generator_string)
@@ -1330,14 +1330,14 @@ and generate_expression_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pexp_new =
+  and gen_Pexp_new =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_longident_loc)
       in
       Pexp_new
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pexp_setinstvar =
+  and gen_Pexp_setinstvar =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_loc quickcheck_generator_string)
       and gen1 = (Generator.create generate_expression)
@@ -1346,14 +1346,14 @@ and generate_expression_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pexp_override =
+  and gen_Pexp_override =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_list (quickcheck_generator_tuple2 (quickcheck_generator_loc quickcheck_generator_string) (Generator.create generate_expression)))
       in
       Pexp_override
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pexp_letmodule =
+  and gen_Pexp_letmodule =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_loc quickcheck_generator_string)
       and gen1 = (Generator.create generate_module_expr)
@@ -1364,7 +1364,7 @@ and generate_expression_desc ~size ~random =
         , Generator.generate gen1 ~size ~random
         , Generator.generate gen2 ~size ~random
         ))
-  and gen_pexp_letexception =
+  and gen_Pexp_letexception =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_extension_constructor)
       and gen1 = (Generator.create generate_expression)
@@ -1373,21 +1373,21 @@ and generate_expression_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pexp_assert =
+  and gen_Pexp_assert =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_expression)
       in
       Pexp_assert
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pexp_lazy =
+  and gen_Pexp_lazy =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_expression)
       in
       Pexp_lazy
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pexp_poly =
+  and gen_Pexp_poly =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_expression)
       and gen1 = (quickcheck_generator_option (Generator.create generate_core_type))
@@ -1396,14 +1396,14 @@ and generate_expression_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pexp_object =
+  and gen_Pexp_object =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_class_structure)
       in
       Pexp_object
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pexp_newtype =
+  and gen_Pexp_newtype =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_loc quickcheck_generator_string)
       and gen1 = (Generator.create generate_expression)
@@ -1412,14 +1412,14 @@ and generate_expression_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pexp_pack =
+  and gen_Pexp_pack =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_module_expr)
       in
       Pexp_pack
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pexp_open =
+  and gen_Pexp_open =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_override_flag)
       and gen1 = (Generator.create generate_longident_loc)
@@ -1430,25 +1430,25 @@ and generate_expression_desc ~size ~random =
         , Generator.generate gen1 ~size ~random
         , Generator.generate gen2 ~size ~random
         ))
-  and gen_pexp_extension =
+  and gen_Pexp_extension =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_extension)
       in
       Pexp_extension
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pexp_unreachable =
+  and gen_Pexp_unreachable =
     Generator.return Pexp_unreachable
   in
   if size = 0
   then
     Generator.generate ~size ~random
       (Base_quickcheck.Generator.union
-        [gen_pexp_unreachable])
+        [gen_Pexp_unreachable])
   else
     Generator.generate ~size:(size-1) ~random
       (Base_quickcheck.Generator.union
-        [gen_pexp_unreachable; gen_pexp_ident; gen_pexp_constant; gen_pexp_let; gen_pexp_function; gen_pexp_fun; gen_pexp_apply; gen_pexp_match; gen_pexp_try; gen_pexp_tuple; gen_pexp_construct; gen_pexp_variant; gen_pexp_record; gen_pexp_field; gen_pexp_setfield; gen_pexp_array; gen_pexp_ifthenelse; gen_pexp_sequence; gen_pexp_while; gen_pexp_for; gen_pexp_constraint; gen_pexp_coerce; gen_pexp_send; gen_pexp_new; gen_pexp_setinstvar; gen_pexp_override; gen_pexp_letmodule; gen_pexp_letexception; gen_pexp_assert; gen_pexp_lazy; gen_pexp_poly; gen_pexp_object; gen_pexp_newtype; gen_pexp_pack; gen_pexp_open; gen_pexp_extension])
+        [gen_Pexp_unreachable; gen_Pexp_ident; gen_Pexp_constant; gen_Pexp_let; gen_Pexp_function; gen_Pexp_fun; gen_Pexp_apply; gen_Pexp_match; gen_Pexp_try; gen_Pexp_tuple; gen_Pexp_construct; gen_Pexp_variant; gen_Pexp_record; gen_Pexp_field; gen_Pexp_setfield; gen_Pexp_array; gen_Pexp_ifthenelse; gen_Pexp_sequence; gen_Pexp_while; gen_Pexp_for; gen_Pexp_constraint; gen_Pexp_coerce; gen_Pexp_send; gen_Pexp_new; gen_Pexp_setinstvar; gen_Pexp_override; gen_Pexp_letmodule; gen_Pexp_letexception; gen_Pexp_assert; gen_Pexp_lazy; gen_Pexp_poly; gen_Pexp_object; gen_Pexp_newtype; gen_Pexp_pack; gen_Pexp_open; gen_Pexp_extension])
 and generate_case ~size ~random =
   let gen_pc_lhs = (Generator.create generate_pattern)
   and gen_pc_guard = (quickcheck_generator_option (Generator.create generate_expression))
@@ -1491,34 +1491,34 @@ and generate_type_declaration ~size ~random =
   ; ptype_loc = Generator.generate gen_ptype_loc ~size ~random
   }
 and generate_type_kind ~size ~random =
-  let gen_ptype_abstract =
+  let gen_Ptype_abstract =
     Generator.return Ptype_abstract
-  and gen_ptype_variant =
+  and gen_Ptype_variant =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_list (Generator.create generate_constructor_declaration))
       in
       Ptype_variant
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_ptype_record =
+  and gen_Ptype_record =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_list (Generator.create generate_label_declaration))
       in
       Ptype_record
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_ptype_open =
+  and gen_Ptype_open =
     Generator.return Ptype_open
   in
   if size = 0
   then
     Generator.generate ~size ~random
       (Base_quickcheck.Generator.union
-        [gen_ptype_abstract; gen_ptype_open])
+        [gen_Ptype_abstract; gen_Ptype_open])
   else
     Generator.generate ~size:(size-1) ~random
       (Base_quickcheck.Generator.union
-        [gen_ptype_abstract; gen_ptype_open; gen_ptype_variant; gen_ptype_record])
+        [gen_Ptype_abstract; gen_Ptype_open; gen_Ptype_variant; gen_Ptype_record])
 and generate_label_declaration ~size ~random =
   let gen_pld_name = (quickcheck_generator_loc quickcheck_generator_string)
   and gen_pld_mutable = (Generator.create generate_mutable_flag)
@@ -1546,14 +1546,14 @@ and generate_constructor_declaration ~size ~random =
   ; pcd_attributes = Generator.generate gen_pcd_attributes ~size ~random
   }
 and generate_constructor_arguments ~size ~random =
-  let gen_pcstr_tuple =
+  let gen_Pcstr_tuple =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_list (Generator.create generate_core_type))
       in
       Pcstr_tuple
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pcstr_record =
+  and gen_Pcstr_record =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_list (Generator.create generate_label_declaration))
       in
@@ -1563,7 +1563,7 @@ and generate_constructor_arguments ~size ~random =
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
-      [gen_pcstr_tuple; gen_pcstr_record])
+      [gen_Pcstr_tuple; gen_Pcstr_record])
 and generate_type_extension ~size ~random =
   let gen_ptyext_path = (Generator.create generate_longident_loc)
   and gen_ptyext_params = (quickcheck_generator_list (quickcheck_generator_tuple2 (Generator.create generate_core_type) (Generator.create generate_variance)))
@@ -1589,7 +1589,7 @@ and generate_extension_constructor ~size ~random =
   ; pext_attributes = Generator.generate gen_pext_attributes ~size ~random
   }
 and generate_extension_constructor_kind ~size ~random =
-  let gen_pext_decl =
+  let gen_Pext_decl =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_constructor_arguments)
       and gen1 = (quickcheck_generator_option (Generator.create generate_core_type))
@@ -1598,7 +1598,7 @@ and generate_extension_constructor_kind ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pext_rebind =
+  and gen_Pext_rebind =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_longident_loc)
       in
@@ -1608,7 +1608,7 @@ and generate_extension_constructor_kind ~size ~random =
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
-      [gen_pext_decl; gen_pext_rebind])
+      [gen_Pext_decl; gen_Pext_rebind])
 and generate_class_type ~size ~random =
   let gen_pcty_desc = (Generator.create generate_class_type_desc)
   and gen_pcty_loc = quickcheck_generator_location
@@ -1619,7 +1619,7 @@ and generate_class_type ~size ~random =
   ; pcty_attributes = Generator.generate gen_pcty_attributes ~size ~random
   }
 and generate_class_type_desc ~size ~random =
-  let gen_pcty_constr =
+  let gen_Pcty_constr =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_longident_loc)
       and gen1 = (quickcheck_generator_list (Generator.create generate_core_type))
@@ -1628,14 +1628,14 @@ and generate_class_type_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pcty_signature =
+  and gen_Pcty_signature =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_class_signature)
       in
       Pcty_signature
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pcty_arrow =
+  and gen_Pcty_arrow =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_arg_label)
       and gen1 = (Generator.create generate_core_type)
@@ -1646,14 +1646,14 @@ and generate_class_type_desc ~size ~random =
         , Generator.generate gen1 ~size ~random
         , Generator.generate gen2 ~size ~random
         ))
-  and gen_pcty_extension =
+  and gen_Pcty_extension =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_extension)
       in
       Pcty_extension
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pcty_open =
+  and gen_Pcty_open =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_override_flag)
       and gen1 = (Generator.create generate_longident_loc)
@@ -1667,7 +1667,7 @@ and generate_class_type_desc ~size ~random =
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
-      [gen_pcty_constr; gen_pcty_signature; gen_pcty_arrow; gen_pcty_extension; gen_pcty_open])
+      [gen_Pcty_constr; gen_Pcty_signature; gen_Pcty_arrow; gen_Pcty_extension; gen_Pcty_open])
 and generate_class_signature ~size ~random =
   let gen_pcsig_self = (Generator.create generate_core_type)
   and gen_pcsig_fields = (quickcheck_generator_list (Generator.create generate_class_type_field))
@@ -1685,42 +1685,42 @@ and generate_class_type_field ~size ~random =
   ; pctf_attributes = Generator.generate gen_pctf_attributes ~size ~random
   }
 and generate_class_type_field_desc ~size ~random =
-  let gen_pctf_inherit =
+  let gen_Pctf_inherit =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_class_type)
       in
       Pctf_inherit
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pctf_val =
+  and gen_Pctf_val =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_tuple4 (quickcheck_generator_loc quickcheck_generator_string) (Generator.create generate_mutable_flag) (Generator.create generate_virtual_flag) (Generator.create generate_core_type))
       in
       Pctf_val
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pctf_method =
+  and gen_Pctf_method =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_tuple4 (quickcheck_generator_loc quickcheck_generator_string) (Generator.create generate_private_flag) (Generator.create generate_virtual_flag) (Generator.create generate_core_type))
       in
       Pctf_method
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pctf_constraint =
+  and gen_Pctf_constraint =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_tuple2 (Generator.create generate_core_type) (Generator.create generate_core_type))
       in
       Pctf_constraint
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pctf_attribute =
+  and gen_Pctf_attribute =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_attribute)
       in
       Pctf_attribute
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pctf_extension =
+  and gen_Pctf_extension =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_extension)
       in
@@ -1730,7 +1730,7 @@ and generate_class_type_field_desc ~size ~random =
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
-      [gen_pctf_inherit; gen_pctf_val; gen_pctf_method; gen_pctf_constraint; gen_pctf_attribute; gen_pctf_extension])
+      [gen_Pctf_inherit; gen_Pctf_val; gen_Pctf_method; gen_Pctf_constraint; gen_Pctf_attribute; gen_Pctf_extension])
 and generate_class_infos
   : type a . a Generator.t -> size:int -> random:Splittable_random.State.t -> a class_infos
   = fun quickcheck_generator_a ~size ~random ->
@@ -1764,7 +1764,7 @@ and generate_class_expr ~size ~random =
   ; pcl_attributes = Generator.generate gen_pcl_attributes ~size ~random
   }
 and generate_class_expr_desc ~size ~random =
-  let gen_pcl_constr =
+  let gen_Pcl_constr =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_longident_loc)
       and gen1 = (quickcheck_generator_list (Generator.create generate_core_type))
@@ -1773,14 +1773,14 @@ and generate_class_expr_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pcl_structure =
+  and gen_Pcl_structure =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_class_structure)
       in
       Pcl_structure
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pcl_fun =
+  and gen_Pcl_fun =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_arg_label)
       and gen1 = (quickcheck_generator_option (Generator.create generate_expression))
@@ -1793,7 +1793,7 @@ and generate_class_expr_desc ~size ~random =
         , Generator.generate gen2 ~size ~random
         , Generator.generate gen3 ~size ~random
         ))
-  and gen_pcl_apply =
+  and gen_Pcl_apply =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_class_expr)
       and gen1 = (quickcheck_generator_list (quickcheck_generator_tuple2 (Generator.create generate_arg_label) (Generator.create generate_expression)))
@@ -1802,7 +1802,7 @@ and generate_class_expr_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pcl_let =
+  and gen_Pcl_let =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_rec_flag)
       and gen1 = (quickcheck_generator_list (Generator.create generate_value_binding))
@@ -1813,7 +1813,7 @@ and generate_class_expr_desc ~size ~random =
         , Generator.generate gen1 ~size ~random
         , Generator.generate gen2 ~size ~random
         ))
-  and gen_pcl_constraint =
+  and gen_Pcl_constraint =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_class_expr)
       and gen1 = (Generator.create generate_class_type)
@@ -1822,14 +1822,14 @@ and generate_class_expr_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pcl_extension =
+  and gen_Pcl_extension =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_extension)
       in
       Pcl_extension
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pcl_open =
+  and gen_Pcl_open =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_override_flag)
       and gen1 = (Generator.create generate_longident_loc)
@@ -1843,7 +1843,7 @@ and generate_class_expr_desc ~size ~random =
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
-      [gen_pcl_constr; gen_pcl_structure; gen_pcl_fun; gen_pcl_apply; gen_pcl_let; gen_pcl_constraint; gen_pcl_extension; gen_pcl_open])
+      [gen_Pcl_constr; gen_Pcl_structure; gen_Pcl_fun; gen_Pcl_apply; gen_Pcl_let; gen_Pcl_constraint; gen_Pcl_extension; gen_Pcl_open])
 and generate_class_structure ~size ~random =
   let gen_pcstr_self = (Generator.create generate_pattern)
   and gen_pcstr_fields = (quickcheck_generator_list (Generator.create generate_class_field))
@@ -1861,7 +1861,7 @@ and generate_class_field ~size ~random =
   ; pcf_attributes = Generator.generate gen_pcf_attributes ~size ~random
   }
 and generate_class_field_desc ~size ~random =
-  let gen_pcf_inherit =
+  let gen_Pcf_inherit =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_override_flag)
       and gen1 = (Generator.create generate_class_expr)
@@ -1872,42 +1872,42 @@ and generate_class_field_desc ~size ~random =
         , Generator.generate gen1 ~size ~random
         , Generator.generate gen2 ~size ~random
         ))
-  and gen_pcf_val =
+  and gen_Pcf_val =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_tuple3 (quickcheck_generator_loc quickcheck_generator_string) (Generator.create generate_mutable_flag) (Generator.create generate_class_field_kind))
       in
       Pcf_val
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pcf_method =
+  and gen_Pcf_method =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_tuple3 (quickcheck_generator_loc quickcheck_generator_string) (Generator.create generate_private_flag) (Generator.create generate_class_field_kind))
       in
       Pcf_method
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pcf_constraint =
+  and gen_Pcf_constraint =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_tuple2 (Generator.create generate_core_type) (Generator.create generate_core_type))
       in
       Pcf_constraint
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pcf_initializer =
+  and gen_Pcf_initializer =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_expression)
       in
       Pcf_initializer
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pcf_attribute =
+  and gen_Pcf_attribute =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_attribute)
       in
       Pcf_attribute
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pcf_extension =
+  and gen_Pcf_extension =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_extension)
       in
@@ -1917,16 +1917,16 @@ and generate_class_field_desc ~size ~random =
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
-      [gen_pcf_inherit; gen_pcf_val; gen_pcf_method; gen_pcf_constraint; gen_pcf_initializer; gen_pcf_attribute; gen_pcf_extension])
+      [gen_Pcf_inherit; gen_Pcf_val; gen_Pcf_method; gen_Pcf_constraint; gen_Pcf_initializer; gen_Pcf_attribute; gen_Pcf_extension])
 and generate_class_field_kind ~size ~random =
-  let gen_cfk_virtual =
+  let gen_Cfk_virtual =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_core_type)
       in
       Cfk_virtual
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_cfk_concrete =
+  and gen_Cfk_concrete =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_override_flag)
       and gen1 = (Generator.create generate_expression)
@@ -1938,7 +1938,7 @@ and generate_class_field_kind ~size ~random =
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
-      [gen_cfk_virtual; gen_cfk_concrete])
+      [gen_Cfk_virtual; gen_Cfk_concrete])
 and generate_class_declaration ~size ~random =
   let gen = (Generator.create (generate_class_infos (Generator.create generate_class_expr))) in
   Generator.generate gen ~size ~random
@@ -1952,21 +1952,21 @@ and generate_module_type ~size ~random =
   ; pmty_attributes = Generator.generate gen_pmty_attributes ~size ~random
   }
 and generate_module_type_desc ~size ~random =
-  let gen_pmty_ident =
+  let gen_Pmty_ident =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_longident_loc)
       in
       Pmty_ident
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pmty_signature =
+  and gen_Pmty_signature =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_signature)
       in
       Pmty_signature
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pmty_functor =
+  and gen_Pmty_functor =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_loc quickcheck_generator_string)
       and gen1 = (quickcheck_generator_option (Generator.create generate_module_type))
@@ -1977,7 +1977,7 @@ and generate_module_type_desc ~size ~random =
         , Generator.generate gen1 ~size ~random
         , Generator.generate gen2 ~size ~random
         ))
-  and gen_pmty_with =
+  and gen_Pmty_with =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_module_type)
       and gen1 = (quickcheck_generator_list (Generator.create generate_with_constraint))
@@ -1986,21 +1986,21 @@ and generate_module_type_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pmty_typeof =
+  and gen_Pmty_typeof =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_module_expr)
       in
       Pmty_typeof
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pmty_extension =
+  and gen_Pmty_extension =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_extension)
       in
       Pmty_extension
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pmty_alias =
+  and gen_Pmty_alias =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_longident_loc)
       in
@@ -2010,7 +2010,7 @@ and generate_module_type_desc ~size ~random =
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
-      [gen_pmty_ident; gen_pmty_signature; gen_pmty_functor; gen_pmty_with; gen_pmty_typeof; gen_pmty_extension; gen_pmty_alias])
+      [gen_Pmty_ident; gen_Pmty_signature; gen_Pmty_functor; gen_Pmty_with; gen_Pmty_typeof; gen_Pmty_extension; gen_Pmty_alias])
 and generate_signature ~size ~random =
   let gen = (quickcheck_generator_list (Generator.create generate_signature_item)) in
   Generator.generate gen ~size ~random
@@ -2022,14 +2022,14 @@ and generate_signature_item ~size ~random =
   ; psig_loc = Generator.generate gen_psig_loc ~size ~random
   }
 and generate_signature_item_desc ~size ~random =
-  let gen_psig_value =
+  let gen_Psig_value =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_value_description)
       in
       Psig_value
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_psig_type =
+  and gen_Psig_type =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_rec_flag)
       and gen1 = (quickcheck_generator_list (Generator.create generate_type_declaration))
@@ -2038,77 +2038,77 @@ and generate_signature_item_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_psig_typext =
+  and gen_Psig_typext =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_type_extension)
       in
       Psig_typext
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_psig_exception =
+  and gen_Psig_exception =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_extension_constructor)
       in
       Psig_exception
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_psig_module =
+  and gen_Psig_module =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_module_declaration)
       in
       Psig_module
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_psig_recmodule =
+  and gen_Psig_recmodule =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_list (Generator.create generate_module_declaration))
       in
       Psig_recmodule
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_psig_modtype =
+  and gen_Psig_modtype =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_module_type_declaration)
       in
       Psig_modtype
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_psig_open =
+  and gen_Psig_open =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_open_description)
       in
       Psig_open
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_psig_include =
+  and gen_Psig_include =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_include_description)
       in
       Psig_include
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_psig_class =
+  and gen_Psig_class =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_list (Generator.create generate_class_description))
       in
       Psig_class
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_psig_class_type =
+  and gen_Psig_class_type =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_list (Generator.create generate_class_type_declaration))
       in
       Psig_class_type
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_psig_attribute =
+  and gen_Psig_attribute =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_attribute)
       in
       Psig_attribute
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_psig_extension =
+  and gen_Psig_extension =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_extension)
       and gen1 = (Generator.create generate_attributes)
@@ -2120,7 +2120,7 @@ and generate_signature_item_desc ~size ~random =
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
-      [gen_psig_value; gen_psig_type; gen_psig_typext; gen_psig_exception; gen_psig_module; gen_psig_recmodule; gen_psig_modtype; gen_psig_open; gen_psig_include; gen_psig_class; gen_psig_class_type; gen_psig_attribute; gen_psig_extension])
+      [gen_Psig_value; gen_Psig_type; gen_Psig_typext; gen_Psig_exception; gen_Psig_module; gen_Psig_recmodule; gen_Psig_modtype; gen_Psig_open; gen_Psig_include; gen_Psig_class; gen_Psig_class_type; gen_Psig_attribute; gen_Psig_extension])
 and generate_module_declaration ~size ~random =
   let gen_pmd_name = (quickcheck_generator_loc quickcheck_generator_string)
   and gen_pmd_type = (Generator.create generate_module_type)
@@ -2172,7 +2172,7 @@ and generate_include_declaration ~size ~random =
   let gen = (Generator.create (generate_include_infos (Generator.create generate_module_expr))) in
   Generator.generate gen ~size ~random
 and generate_with_constraint ~size ~random =
-  let gen_pwith_type =
+  let gen_Pwith_type =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_longident_loc)
       and gen1 = (Generator.create generate_type_declaration)
@@ -2181,7 +2181,7 @@ and generate_with_constraint ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pwith_module =
+  and gen_Pwith_module =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_longident_loc)
       and gen1 = (Generator.create generate_longident_loc)
@@ -2190,7 +2190,7 @@ and generate_with_constraint ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pwith_typesubst =
+  and gen_Pwith_typesubst =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_longident_loc)
       and gen1 = (Generator.create generate_type_declaration)
@@ -2199,7 +2199,7 @@ and generate_with_constraint ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pwith_modsubst =
+  and gen_Pwith_modsubst =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_longident_loc)
       and gen1 = (Generator.create generate_longident_loc)
@@ -2211,7 +2211,7 @@ and generate_with_constraint ~size ~random =
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
-      [gen_pwith_type; gen_pwith_module; gen_pwith_typesubst; gen_pwith_modsubst])
+      [gen_Pwith_type; gen_Pwith_module; gen_Pwith_typesubst; gen_Pwith_modsubst])
 and generate_module_expr ~size ~random =
   let gen_pmod_desc = (Generator.create generate_module_expr_desc)
   and gen_pmod_loc = quickcheck_generator_location
@@ -2222,21 +2222,21 @@ and generate_module_expr ~size ~random =
   ; pmod_attributes = Generator.generate gen_pmod_attributes ~size ~random
   }
 and generate_module_expr_desc ~size ~random =
-  let gen_pmod_ident =
+  let gen_Pmod_ident =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_longident_loc)
       in
       Pmod_ident
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pmod_structure =
+  and gen_Pmod_structure =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_structure)
       in
       Pmod_structure
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pmod_functor =
+  and gen_Pmod_functor =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_loc quickcheck_generator_string)
       and gen1 = (quickcheck_generator_option (Generator.create generate_module_type))
@@ -2247,7 +2247,7 @@ and generate_module_expr_desc ~size ~random =
         , Generator.generate gen1 ~size ~random
         , Generator.generate gen2 ~size ~random
         ))
-  and gen_pmod_apply =
+  and gen_Pmod_apply =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_module_expr)
       and gen1 = (Generator.create generate_module_expr)
@@ -2256,7 +2256,7 @@ and generate_module_expr_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pmod_constraint =
+  and gen_Pmod_constraint =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_module_expr)
       and gen1 = (Generator.create generate_module_type)
@@ -2265,14 +2265,14 @@ and generate_module_expr_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pmod_unpack =
+  and gen_Pmod_unpack =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_expression)
       in
       Pmod_unpack
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pmod_extension =
+  and gen_Pmod_extension =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_extension)
       in
@@ -2282,7 +2282,7 @@ and generate_module_expr_desc ~size ~random =
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
-      [gen_pmod_ident; gen_pmod_structure; gen_pmod_functor; gen_pmod_apply; gen_pmod_constraint; gen_pmod_unpack; gen_pmod_extension])
+      [gen_Pmod_ident; gen_Pmod_structure; gen_Pmod_functor; gen_Pmod_apply; gen_Pmod_constraint; gen_Pmod_unpack; gen_Pmod_extension])
 and generate_structure ~size ~random =
   let gen = (quickcheck_generator_list (Generator.create generate_structure_item)) in
   Generator.generate gen ~size ~random
@@ -2294,7 +2294,7 @@ and generate_structure_item ~size ~random =
   ; pstr_loc = Generator.generate gen_pstr_loc ~size ~random
   }
 and generate_structure_item_desc ~size ~random =
-  let gen_pstr_eval =
+  let gen_Pstr_eval =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_expression)
       and gen1 = (Generator.create generate_attributes)
@@ -2303,7 +2303,7 @@ and generate_structure_item_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pstr_value =
+  and gen_Pstr_value =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_rec_flag)
       and gen1 = (quickcheck_generator_list (Generator.create generate_value_binding))
@@ -2312,14 +2312,14 @@ and generate_structure_item_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pstr_primitive =
+  and gen_Pstr_primitive =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_value_description)
       in
       Pstr_primitive
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pstr_type =
+  and gen_Pstr_type =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_rec_flag)
       and gen1 = (quickcheck_generator_list (Generator.create generate_type_declaration))
@@ -2328,77 +2328,77 @@ and generate_structure_item_desc ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pstr_typext =
+  and gen_Pstr_typext =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_type_extension)
       in
       Pstr_typext
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pstr_exception =
+  and gen_Pstr_exception =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_extension_constructor)
       in
       Pstr_exception
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pstr_module =
+  and gen_Pstr_module =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_module_binding)
       in
       Pstr_module
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pstr_recmodule =
+  and gen_Pstr_recmodule =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_list (Generator.create generate_module_binding))
       in
       Pstr_recmodule
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pstr_modtype =
+  and gen_Pstr_modtype =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_module_type_declaration)
       in
       Pstr_modtype
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pstr_open =
+  and gen_Pstr_open =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_open_description)
       in
       Pstr_open
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pstr_class =
+  and gen_Pstr_class =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_list (Generator.create generate_class_declaration))
       in
       Pstr_class
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pstr_class_type =
+  and gen_Pstr_class_type =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_list (Generator.create generate_class_type_declaration))
       in
       Pstr_class_type
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pstr_include =
+  and gen_Pstr_include =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_include_declaration)
       in
       Pstr_include
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pstr_attribute =
+  and gen_Pstr_attribute =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_attribute)
       in
       Pstr_attribute
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pstr_extension =
+  and gen_Pstr_extension =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_extension)
       and gen1 = (Generator.create generate_attributes)
@@ -2410,7 +2410,7 @@ and generate_structure_item_desc ~size ~random =
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
-      [gen_pstr_eval; gen_pstr_value; gen_pstr_primitive; gen_pstr_type; gen_pstr_typext; gen_pstr_exception; gen_pstr_module; gen_pstr_recmodule; gen_pstr_modtype; gen_pstr_open; gen_pstr_class; gen_pstr_class_type; gen_pstr_include; gen_pstr_attribute; gen_pstr_extension])
+      [gen_Pstr_eval; gen_Pstr_value; gen_Pstr_primitive; gen_Pstr_type; gen_Pstr_typext; gen_Pstr_exception; gen_Pstr_module; gen_Pstr_recmodule; gen_Pstr_modtype; gen_Pstr_open; gen_Pstr_class; gen_Pstr_class_type; gen_Pstr_include; gen_Pstr_attribute; gen_Pstr_extension])
 and generate_value_binding ~size ~random =
   let gen_pvb_pat = (Generator.create generate_pattern)
   and gen_pvb_expr = (Generator.create generate_expression)
@@ -2434,14 +2434,14 @@ and generate_module_binding ~size ~random =
   ; pmb_loc = Generator.generate gen_pmb_loc ~size ~random
   }
 and generate_toplevel_phrase ~size ~random =
-  let gen_ptop_def =
+  let gen_Ptop_def =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_structure)
       in
       Ptop_def
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_ptop_dir =
+  and gen_Ptop_dir =
     Generator.create (fun ~size ~random ->
       let gen0 = quickcheck_generator_string
       and gen1 = (Generator.create generate_directive_argument)
@@ -2453,18 +2453,18 @@ and generate_toplevel_phrase ~size ~random =
   in
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
-      [gen_ptop_def; gen_ptop_dir])
+      [gen_Ptop_def; gen_Ptop_dir])
 and generate_directive_argument ~size ~random =
-  let gen_pdir_none =
+  let gen_Pdir_none =
     Generator.return Pdir_none
-  and gen_pdir_string =
+  and gen_Pdir_string =
     Generator.create (fun ~size ~random ->
       let gen0 = quickcheck_generator_string
       in
       Pdir_string
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pdir_int =
+  and gen_Pdir_int =
     Generator.create (fun ~size ~random ->
       let gen0 = quickcheck_generator_string
       and gen1 = (quickcheck_generator_option quickcheck_generator_char)
@@ -2473,14 +2473,14 @@ and generate_directive_argument ~size ~random =
         ( Generator.generate gen0 ~size ~random
         , Generator.generate gen1 ~size ~random
         ))
-  and gen_pdir_ident =
+  and gen_Pdir_ident =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_longident)
       in
       Pdir_ident
         ( Generator.generate gen0 ~size ~random
         ))
-  and gen_pdir_bool =
+  and gen_Pdir_bool =
     Generator.create (fun ~size ~random ->
       let gen0 = quickcheck_generator_bool
       in
@@ -2492,11 +2492,11 @@ and generate_directive_argument ~size ~random =
   then
     Generator.generate ~size ~random
       (Base_quickcheck.Generator.union
-        [gen_pdir_none; gen_pdir_string; gen_pdir_int; gen_pdir_bool])
+        [gen_Pdir_none; gen_Pdir_string; gen_Pdir_int; gen_Pdir_bool])
   else
     Generator.generate ~size:(size-1) ~random
       (Base_quickcheck.Generator.union
-        [gen_pdir_none; gen_pdir_string; gen_pdir_int; gen_pdir_bool; gen_pdir_ident])
+        [gen_Pdir_none; gen_Pdir_string; gen_Pdir_int; gen_Pdir_bool; gen_Pdir_ident])
 
 let quickcheck_generator_longident =
   Generator.create generate_longident

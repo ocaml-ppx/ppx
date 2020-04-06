@@ -2,42 +2,42 @@
 open! Import
 open Common
 
-module E  = Extension
-module EC = Extension.Context
-module A  = Attribute
-module AC = Attribute.Context
+module E  = Ext
+module EC = Ext.Context
+module A  = Attr
+module AC = Attr.Context
 
 module Rule = struct
   module Attr_group_inline = struct
-    type ('a, 'b, 'c) unpacked =
-      { attribute : ('b, 'c) Attribute.t
+    type ('a, 'b, 'c, 'd) unpacked =
+      { attribute : ('b, 'c) Attr.t
       ; expect    : bool
       ; expand    : (ctxt:Expansion_context.Deriver.t
-                     -> Asttypes.rec_flag
+                     -> Rec_flag.t
                      -> 'b list
                      -> 'c option list
-                     -> 'a list)
+                     -> 'd)
       }
 
-    type ('a, 'b) t = T : ('a, 'b, _) unpacked -> ('a, 'b) t
+    type ('a, 'b, 'c) t = T : ('a, 'b, _, 'c) unpacked -> ('a, 'b, 'c) t
 
-    let attr_name (T t) = Attribute.name t.attribute
+    let attr_name (T t) = Attr.name t.attribute
 
     let split_normal_and_expect l = List.partition l ~f:(fun (T t) -> not t.expect)
   end
 
   module Attr_inline = struct
-    type ('a, 'b, 'c) unpacked =
-      { attribute : ('b, 'c) Attribute.t
+    type ('a, 'b, 'c, 'd) unpacked =
+      { attribute : ('b, 'c) Attr.t
       ; expect    : bool
       ; expand    : (ctxt:Expansion_context.Deriver.t
                      -> 'b
                      -> 'c
-                     -> 'a list)
+                     -> 'd)
       }
 
-    type ('a, 'b) t = T : ('a, 'b, _) unpacked -> ('a, 'b) t
-    let attr_name (T t) = Attribute.name t.attribute
+    type ('a, 'b, 'c) t = T : ('a, 'b, _, 'c) unpacked -> ('a, 'b, 'c) t
+    let attr_name (T t) = Attr.name t.attribute
 
     let split_normal_and_expect l = List.partition l ~f:(fun (T t) -> not t.expect)
   end
@@ -45,8 +45,8 @@ module Rule = struct
   module Special_function = struct
     type t =
       { name   : string
-      ; ident  : Longident.t
-      ; expand : Parsetree.expression -> Parsetree.expression option
+      ; ident  : Longid.t
+      ; expand : expression -> expression option
       }
   end
 
@@ -58,23 +58,23 @@ module Rule = struct
     type t =
       { suffix : char
       ; kind : Constant_kind.t
-      ; expand : Location.t -> string -> Parsetree.expression
+      ; expand : Location.t -> string -> expression
       }
   end
 
   module Field = struct
     type 'a t =
-      | Extension          : Extension.t                                            t
+      | Extension          : Ext.t                                                  t
       | Special_function   : Special_function.t                                     t
       | Constant           : Constant.t                                             t
-      | Attr_str_type_decl : (structure_item, type_declaration) Attr_group_inline.t t
-      | Attr_sig_type_decl : (signature_item, type_declaration) Attr_group_inline.t t
-      | Attr_str_module_type_decl : (structure_item, module_type_declaration) Attr_inline.t t
-      | Attr_sig_module_type_decl : (signature_item, module_type_declaration) Attr_inline.t t
-      | Attr_str_type_ext  : (structure_item, type_extension) Attr_inline.t         t
-      | Attr_sig_type_ext  : (signature_item, type_extension) Attr_inline.t         t
-      | Attr_str_exception : (structure_item, extension_constructor) Attr_inline.t  t
-      | Attr_sig_exception : (signature_item, extension_constructor) Attr_inline.t  t
+      | Attr_str_type_decl : (structure_item, type_declaration, structure) Attr_group_inline.t t
+      | Attr_sig_type_decl : (signature_item, type_declaration, signature) Attr_group_inline.t t
+      | Attr_str_module_type_decl : (structure_item, module_type_declaration, structure) Attr_inline.t t
+      | Attr_sig_module_type_decl : (signature_item, module_type_declaration, signature) Attr_inline.t t
+      | Attr_str_type_ext  : (structure_item, type_extension, structure) Attr_inline.t         t
+      | Attr_sig_type_ext  : (signature_item, type_extension, signature) Attr_inline.t         t
+      | Attr_str_exception : (structure_item, extension_constructor, structure) Attr_inline.t  t
+      | Attr_sig_exception : (signature_item, extension_constructor, signature) Attr_inline.t  t
 
     type (_, _) equality = Eq : ('a, 'a) equality | Ne : (_, _) equality
 
@@ -96,21 +96,21 @@ module Rule = struct
 
   type t = T : 'a Field.t * 'a -> t
 
-  type ('a, 'b, 'c) attr_group_inline =
-    ('b, 'c) Attribute.t
+  type ('a, 'b, 'c, 'd) attr_group_inline =
+    ('b, 'c) Attr.t
     -> (ctxt:Expansion_context.Deriver.t
-        -> Asttypes.rec_flag
+        -> Rec_flag.t
         -> 'b list
         -> 'c option list
-        -> 'a list)
+        -> 'd)
     -> t
 
-  type ('a, 'b, 'c) attr_inline =
-    ('b, 'c) Attribute.t
+  type ('a, 'b, 'c, 'd) attr_inline =
+    ('b, 'c) Attr.t
     -> (ctxt:Expansion_context.Deriver.t
         -> 'b
         -> 'c
-        -> 'a list)
+        -> 'd)
     -> t
 
   let rec filter : type a. a Field.t -> t list -> a list = fun field l ->
@@ -126,7 +126,7 @@ module Rule = struct
 
   let special_function id f =
     T (Special_function, { name   = id
-                         ; ident  = Longident.parse id
+                         ; ident  = Longid.parse id
                          ; expand = f
                          })
   ;;
@@ -206,7 +206,7 @@ module Generated_code_hook = struct
     | Many   of 'a list
 
   type t =
-    { f : 'a. 'a Extension.Context.t -> Location.t -> 'a single_or_many -> unit }
+    { f : 'a. 'a Ext.Context.t -> Location.t -> 'a single_or_many -> unit }
 
   let nop = { f = (fun _ _ _ -> ()) }
 
@@ -300,7 +300,7 @@ let rec get_group attr l =
   match l with
   | [] -> None
   | x :: l ->
-    match Attribute.get attr x, get_group attr l with
+    match Attr.get attr x, get_group attr l with
     | None       , None      -> None
     | None       , Some vals -> Some (None :: vals)
     | Some value , None      -> Some (Some value :: List.map l ~f:(fun _ -> None))
@@ -347,7 +347,7 @@ let handle_attr_group_inline attrs rf items ~loc ~base_ctxt =
 let handle_attr_inline attrs item ~loc ~base_ctxt =
   List.fold_left attrs ~init:[]
     ~f:(fun acc (Rule.Attr_inline.T a) ->
-      match Attribute.get a.attribute item with
+      match Attr.get a.attribute item with
       | None -> acc
       | Some value ->
         let ctxt = Expansion_context.Deriver.make ~derived_item_loc:loc ~base:base_ctxt () in
@@ -356,7 +356,7 @@ let handle_attr_inline attrs item ~loc ~base_ctxt =
 
 module Expect_mismatch_handler = struct
   type t =
-    { f : 'a. 'a Attribute.Floating.Context.t -> Location.t -> 'a list -> unit }
+    { f : 'a. 'a Attr.Floating.Context.t -> Location.t -> 'a list -> unit }
 
   let nop = { f = fun _ _ _ -> () }
 end
@@ -441,25 +441,25 @@ class map_top_down ?(expect_mismatch_handler=Expect_mismatch_handler.nop)
     method! location _ x = x
 
     method! core_type base_ctxt x =
-      map_node EC.core_type core_type super#core_type x.ptyp_loc base_ctxt x
+      map_node EC.core_type core_type super#core_type (Core_type.ptyp_loc x) base_ctxt x
 
     method! pattern base_ctxt x =
-      map_node EC.pattern pattern super#pattern x.ppat_loc base_ctxt x
+      map_node EC.pattern pattern super#pattern (Pattern.ppat_loc x) base_ctxt x
 
     method! expression base_ctxt e =
       let e =
-        match e.pexp_desc with
+        match%view Expression.pexp_desc e with
         | Pexp_extension _ ->
-          map_node EC.expression expression (fun _ e -> e) e.pexp_loc base_ctxt e
+          map_node EC.expression expression (fun _ e -> e) (Expression.pexp_loc e) base_ctxt e
         | _ -> e
       in
       let expand_constant kind char text =
         match Hashtbl.find constants (char,kind) with
         | None -> super#expression base_ctxt e
-        | Some expand -> self#expression base_ctxt (expand e.pexp_loc text)
+        | Some expand -> self#expression base_ctxt (expand (Expression.pexp_loc e) text)
       in
-      match e.pexp_desc with
-      | Pexp_apply ({ pexp_desc = Pexp_ident id; _ } as func, args) -> begin
+      match%view Expression.pexp_desc e with
+      | Pexp_apply ({ pexp_desc = Pexp_ident (Longident_loc id); _ } as func, args) -> begin
           match Hashtbl.find special_functions id.txt with
           | None ->
             self#pexp_apply_without_traversing_function base_ctxt e func args
@@ -470,7 +470,7 @@ class map_top_down ?(expect_mismatch_handler=Expect_mismatch_handler.nop)
             | Some e ->
               self#expression base_ctxt e
         end
-      | Pexp_ident id -> begin
+      | Pexp_ident (Longident_loc id) -> begin
           match Hashtbl.find special_functions id.txt with
           | None ->
             super#expression base_ctxt e
@@ -491,102 +491,108 @@ class map_top_down ?(expect_mismatch_handler=Expect_mismatch_handler.nop)
        - func.pexp_desc = Pexp_ident _
     *)
     method private pexp_apply_without_traversing_function base_ctxt e func args =
-      let { pexp_desc = _; pexp_loc; pexp_attributes } = e in
       let func =
-        let { pexp_desc; pexp_loc; pexp_attributes } = func in
-        let pexp_attributes = self#attributes base_ctxt pexp_attributes in
-        { pexp_desc
-        ; pexp_loc (* location doesn't need to be traversed *)
-        ; pexp_attributes
-        }
+        Expression.update func
+          ~pexp_attributes:(self#attributes base_ctxt (Expression.pexp_attributes func))
       in
-      let args = List.map args ~f:(fun (lab, exp) -> (lab, self#expression base_ctxt exp)) in
-      let pexp_attributes = self#attributes base_ctxt pexp_attributes in
-      { pexp_loc
-      ; pexp_attributes
-      ; pexp_desc = Pexp_apply (func, args)
-      }
+      let args =
+        List.map args ~f:(fun (lab, exp) -> (lab, self#expression base_ctxt exp))
+      in
+      Expression.update e
+        ~pexp_attributes:(self#attributes base_ctxt (Expression.pexp_attributes e))
+        ~pexp_desc:(Expression_desc.pexp_apply func args)
 
     method! class_type base_ctxt x =
-      map_node EC.class_type class_type super#class_type x.pcty_loc base_ctxt x
+      map_node EC.class_type class_type super#class_type (Class_type.pcty_loc x) base_ctxt x
 
     method! class_type_field base_ctxt x =
       map_node EC.class_type_field class_type_field super#class_type_field
-        x.pctf_loc base_ctxt x
+        (Class_type_field.pctf_loc x) base_ctxt x
 
     method! class_expr base_ctxt x =
-      map_node EC.class_expr class_expr super#class_expr x.pcl_loc base_ctxt x
+      map_node EC.class_expr class_expr super#class_expr (Class_expr.pcl_loc x) base_ctxt x
 
     method! class_field base_ctxt x =
-      map_node EC.class_field class_field super#class_field x.pcf_loc base_ctxt x
+      map_node EC.class_field class_field super#class_field (Class_field.pcf_loc x) base_ctxt x
 
     method! module_type base_ctxt x =
-      map_node EC.module_type module_type super#module_type x.pmty_loc base_ctxt x
+      map_node EC.module_type module_type super#module_type (Module_type.pmty_loc x) base_ctxt x
 
     method! module_expr base_ctxt x =
-      map_node EC.module_expr module_expr super#module_expr x.pmod_loc base_ctxt x
+      map_node EC.module_expr module_expr super#module_expr (Module_expr.pmod_loc x) base_ctxt x
 
     method! structure_item base_ctxt x =
-      map_node EC.structure_item structure_item super#structure_item x.pstr_loc base_ctxt x
+      map_node EC.structure_item structure_item super#structure_item (Structure_item.pstr_loc x) base_ctxt x
 
     method! signature_item base_ctxt x =
-      map_node EC.signature_item signature_item super#signature_item x.psig_loc base_ctxt x
+      map_node EC.signature_item signature_item super#signature_item (Signature_item.psig_loc x) base_ctxt x
 
-    method! class_structure base_ctxt { pcstr_self; pcstr_fields } =
-      let pcstr_self = self#pattern base_ctxt pcstr_self in
-      let pcstr_fields =
-        map_nodes EC.class_field class_field super#class_field
-          (fun x -> x.pcf_loc) base_ctxt pcstr_fields
-      in
-      { pcstr_self; pcstr_fields }
+    method! class_structure base_ctxt cstr =
+      match%view cstr with
+      | { pcstr_self; pcstr_fields } ->
+        let pcstr_self = self#pattern base_ctxt pcstr_self in
+        let pcstr_fields =
+          map_nodes EC.class_field class_field super#class_field
+            Class_field.pcf_loc base_ctxt pcstr_fields
+        in
+        Class_structure.create ~pcstr_self ~pcstr_fields
 
-    method! class_signature base_ctxt { pcsig_self; pcsig_fields } =
-      let pcsig_self = self#core_type base_ctxt pcsig_self in
-      let pcsig_fields =
-        map_nodes EC.class_type_field class_type_field super#class_type_field
-          (fun x -> x.pctf_loc) base_ctxt pcsig_fields
-      in
-      { pcsig_self; pcsig_fields }
+    method! class_signature base_ctxt csig =
+      match%view csig with
+      | { pcsig_self; pcsig_fields } ->
+        let pcsig_self = self#core_type base_ctxt pcsig_self in
+        let pcsig_fields =
+          map_nodes EC.class_type_field class_type_field super#class_type_field
+            Class_type_field.pctf_loc base_ctxt pcsig_fields
+        in
+        Class_signature.create ~pcsig_self ~pcsig_fields
 
     (* TODO: try to factorize #structure and #signature without meta-programming *)
     (*$*)
     method! structure base_ctxt st =
       let rec with_extra_items item ~extra_items ~expect_items ~rest ~in_generated_code =
         let item = super#structure_item base_ctxt item in
-        let extra_items = loop (rev_concat extra_items) ~in_generated_code:true in
+        let extra_items =
+          loop (rev_concat (List.map extra_items ~f:Structure.to_concrete))
+            ~in_generated_code:true
+        in
         if not in_generated_code then
-          Generated_code_hook.insert_after hook Structure_item item.pstr_loc
+          Generated_code_hook.insert_after hook Structure_item
+            (Structure_item.pstr_loc item)
             (Many extra_items);
         let original_rest = rest in
         let rest = loop rest ~in_generated_code in
         (match expect_items with
         | [] -> ()
         | _ ->
-          let expected = rev_concat expect_items in
-          let pos = item.pstr_loc.loc_end in
-          Code_matcher.match_structure original_rest ~pos ~expected
+          let expected =
+            Structure.create (rev_concat (List.map expect_items ~f:Structure.to_concrete))
+          in
+          let pos = (Structure_item.pstr_loc item).loc_end in
+          Code_matcher.match_structure (Structure.create original_rest) ~pos ~expected
             ~mismatch_handler:(fun loc repl ->
-              expect_mismatch_handler.f Structure_item loc repl));
+              expect_mismatch_handler.f Structure_item loc (Structure.to_concrete repl)));
         item :: (extra_items @ rest)
       and loop st ~in_generated_code =
         match st with
         | [] -> []
         | item :: rest ->
-          let loc = item.pstr_loc in
-          match item.pstr_desc with
+          let loc = Structure_item.pstr_loc item in
+          match%view Structure_item.pstr_desc item with
           | Pstr_extension (ext, attrs) -> begin
-              let extension_point_loc = item.pstr_loc in
+              let extension_point_loc = Structure_item.pstr_loc item in
               let ctxt = Expansion_context.Extension.make ~extension_point_loc ~base:base_ctxt () in
               match E.For_context.convert_inline structure_item ~ctxt ext with
               | None ->
                 let item = super#structure_item base_ctxt item in
-                let rest = self#structure base_ctxt rest in
-                item :: rest
+                let rest = self#structure base_ctxt (Structure.create rest) in
+                item :: Structure.to_concrete rest
               | Some items ->
                 assert_no_attributes attrs;
                 let items = loop items ~in_generated_code:true in
                 if not in_generated_code then
-                  Generated_code_hook.replace hook Structure_item item.pstr_loc
+                  Generated_code_hook.replace hook Structure_item
+                    (Structure_item.pstr_loc item)
                     (Many items);
                 items @ loop rest ~in_generated_code
             end
@@ -625,49 +631,56 @@ class map_top_down ?(expect_mismatch_handler=Expect_mismatch_handler.nop)
 
           | _ ->
             let item = self#structure_item base_ctxt item in
-            let rest = self#structure base_ctxt rest in
-            item :: rest
+            let rest = self#structure base_ctxt (Structure.create rest) in
+            item :: Structure.to_concrete rest
       in
-      loop st ~in_generated_code:false
+      Structure.create (loop (Structure.to_concrete st) ~in_generated_code:false)
 
     (*$ str_to_sig _last_text_block *)
     method! signature base_ctxt sg =
       let rec with_extra_items item ~extra_items ~expect_items ~rest ~in_generated_code =
         let item = super#signature_item base_ctxt item in
-        let extra_items = loop (rev_concat extra_items) ~in_generated_code:true in
+        let extra_items =
+          loop (rev_concat (List.map extra_items ~f:Signature.to_concrete))
+            ~in_generated_code:true
+        in
         if not in_generated_code then
-          Generated_code_hook.insert_after hook Signature_item item.psig_loc
+          Generated_code_hook.insert_after hook Signature_item
+            (Signature_item.psig_loc item)
             (Many extra_items);
         let original_rest = rest in
         let rest = loop rest ~in_generated_code in
         (match expect_items with
         | [] -> ()
         | _ ->
-          let expected = rev_concat expect_items in
-          let pos = item.psig_loc.loc_end in
-          Code_matcher.match_signature original_rest ~pos ~expected
+          let expected =
+            Signature.create (rev_concat (List.map expect_items ~f:Signature.to_concrete))
+          in
+          let pos = (Signature_item.psig_loc item).loc_end in
+          Code_matcher.match_signature (Signature.create original_rest) ~pos ~expected
             ~mismatch_handler:(fun loc repl ->
-              expect_mismatch_handler.f Signature_item loc repl));
+              expect_mismatch_handler.f Signature_item loc (Signature.to_concrete repl)));
         item :: (extra_items @ rest)
       and loop sg ~in_generated_code =
         match sg with
         | [] -> []
         | item :: rest ->
-          let loc = item.psig_loc in
-          match item.psig_desc with
+          let loc = Signature_item.psig_loc item in
+          match%view Signature_item.psig_desc item with
           | Psig_extension (ext, attrs) -> begin
-              let extension_point_loc = item.psig_loc in
+              let extension_point_loc = Signature_item.psig_loc item in
               let ctxt = Expansion_context.Extension.make ~extension_point_loc ~base:base_ctxt () in
               match E.For_context.convert_inline signature_item ~ctxt ext with
               | None ->
                 let item = super#signature_item base_ctxt item in
-                let rest = self#signature base_ctxt rest in
-                item :: rest
+                let rest = self#signature base_ctxt (Signature.create rest) in
+                item :: Signature.to_concrete rest
               | Some items ->
                 assert_no_attributes attrs;
                 let items = loop items ~in_generated_code:true in
                 if not in_generated_code then
-                  Generated_code_hook.replace hook Signature_item item.psig_loc
+                  Generated_code_hook.replace hook Signature_item
+                    (Signature_item.psig_loc item)
                     (Many items);
                 items @ loop rest ~in_generated_code
             end
@@ -706,10 +719,10 @@ class map_top_down ?(expect_mismatch_handler=Expect_mismatch_handler.nop)
 
           | _ ->
             let item = self#signature_item base_ctxt item in
-            let rest = self#signature base_ctxt rest in
-            item :: rest
+            let rest = self#signature base_ctxt (Signature.create rest) in
+            item :: Signature.to_concrete rest
       in
-      loop sg ~in_generated_code:false
+      Signature.create (loop (Signature.to_concrete sg) ~in_generated_code:false)
 
     (*$*)
   end

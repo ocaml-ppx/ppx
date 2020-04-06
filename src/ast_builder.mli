@@ -118,17 +118,17 @@ val elist : loc:Location.t -> expression list -> expression
 val plist : loc:Location.t -> pattern    list -> pattern
 
 val pstr_value_list :
-  loc:Location.t -> Asttypes.rec_flag -> value_binding list -> structure_item list
+  loc:Location.t -> rec_flag -> value_binding list -> structure_item list
 (** [pstr_value_list ~loc rf vbs] = [pstr_value ~loc rf vbs] if [vbs <> []], [[]]
       otherwise. *)
 
 val nonrec_type_declaration :
   loc:Location.t
   -> name:string Loc.t
-  -> params:(core_type * Asttypes.variance) list
+  -> params:(core_type * variance) list
   -> cstrs:(core_type * core_type * Location.t) list
   -> kind:type_kind
-  -> private_:Asttypes.private_flag
+  -> private_:private_flag
   -> manifest:core_type option
   -> type_declaration
        [@@deprecated
@@ -149,6 +149,8 @@ val unapplied_type_constr_conv :
 val type_constr_conv :
   loc:Location.t
   -> Longident.t Loc.t -> f:(string -> string) -> expression list -> expression
+
+val include_infos : loc:Location.t -> 'a node -> 'a node Include_infos.t
 
 (** Tries to simplify [fun v1 v2 .. -> f v1 v2 ..] into [f]. Only works when [f] is a
       path, not an arbitrary expression as that would change the meaning of
@@ -181,10 +183,8 @@ module Located : sig
 
   val mk : loc:Location.t -> 'a -> 'a Loc.t
 
-  val map        : ('a -> 'b) -> 'a Loc.t -> 'b Loc.t
-  val map_lident : string Loc.t -> Longident.t Loc.t
+  val map        : 'a Loc.t -> f:('a -> 'b) -> 'b Loc.t
+  val map_lident : string Loc.t -> Longident_loc.t
 
-  val lident : loc:Location.t -> string -> Longident.t Loc.t
+  val lident : loc:Location.t -> string -> Longident_loc.t
 end
-
-include module type of Ast_builder_generated

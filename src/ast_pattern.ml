@@ -23,7 +23,7 @@ end
 
 let __ = T (fun ctx _loc x k -> incr_matched ctx; k x)
 
-let __' = T (fun ctx loc x k -> incr_matched ctx; k { loc; txt = x })
+let __' = T (fun ctx loc x k -> incr_matched ctx; k ({ loc; txt = x } : _ Loc.t))
 
 let drop = T (fun ctx _loc _ k -> incr_matched ctx; k)
 
@@ -189,37 +189,39 @@ let pnativeint t = ppat_constant (const_nativeint t)
 
 let single_expr_payload t = pstr (pstr_eval t nil ^:: nil)
 
-let no_label t = (cst Asttypes.Nolabel ~to_string:(fun _ -> "Nolabel")) ** t
+let no_label t = (cst Arg_label.nolabel ~to_string:(fun _ -> "Nolabel")) ** t
 
-let attribute (T f1) (T f2) = T (fun ctx loc ((name : _ Loc.t), payload) k ->
-  let k = f1 ctx name.loc name.txt k in
-  let k = f2 ctx loc payload k in
-  k
+let attribute (T f1) (T f2) = T (fun ctx loc attribute k ->
+  match%view attribute with
+  | Attribute (name, payload) ->
+    let k = f1 ctx name.loc name.txt k in
+    let k = f2 ctx loc payload k in
+    k
 )
 
 let extension = attribute
 
-let rec parse_elist (e : Parsetree.expression) acc =
-  Common.assert_no_attributes e.pexp_attributes;
-  match e.pexp_desc with
-  | Pexp_construct ({ txt = Lident "[]"; _ }, None) ->
+let rec parse_elist (e : expression) acc =
+  Common.assert_no_attributes (Expression.pexp_attributes e);
+  match%view (Expression.pexp_desc e) with
+  | Pexp_construct (Longident_loc { txt = Lident "[]"; _ }, None) ->
     List.rev acc
-  | Pexp_construct ({ txt = Lident "::"; _ }, Some arg) -> begin
-      Common.assert_no_attributes arg.pexp_attributes;
-      match arg.pexp_desc with
+  | Pexp_construct (Longident_loc { txt = Lident "::"; _ }, Some arg) -> begin
+      Common.assert_no_attributes (Expression.pexp_attributes arg);
+      match%view (Expression.pexp_desc arg) with
       | Pexp_tuple [hd; tl] ->
         parse_elist tl (hd :: acc)
       | _ ->
-        fail arg.pexp_loc "list"
+        fail (Expression.pexp_loc arg) "list"
     end
   | _ ->
-    fail e.pexp_loc "list"
+    fail (Expression.pexp_loc e) "list"
 ;;
 
 let elist (T f) = T (fun ctx _loc e k ->
   let l = parse_elist e [] in
   incr_matched ctx;
-  k (List.map l ~f:(fun x -> f ctx x.Parsetree.pexp_loc x (fun x -> x))))
+  k (List.map l ~f:(fun x -> f ctx (Expression.pexp_loc x) x (fun x -> x))))
 ;;
 
 let of_func f = (T f)

@@ -182,25 +182,25 @@ let attributes'const view value =
   let concrete0 = Attributes.to_concrete value in
   view concrete0
 
-let pstr'const view value =
+let pStr'const view value =
   let concrete = Payload.to_concrete value in
   match concrete with
   | Payload.PStr arg -> view arg
   | _ -> View.error
 
-let psig'const view value =
+let pSig'const view value =
   let concrete = Payload.to_concrete value in
   match concrete with
   | Payload.PSig arg -> view arg
   | _ -> View.error
 
-let ptyp'const view value =
+let pTyp'const view value =
   let concrete = Payload.to_concrete value in
   match concrete with
   | Payload.PTyp arg -> view arg
   | _ -> View.error
 
-let ppat'const view value =
+let pPat'const view value =
   let concrete = Payload.to_concrete value in
   match concrete with
   | Payload.PPat (arg0, arg1) -> view (arg0, arg1)

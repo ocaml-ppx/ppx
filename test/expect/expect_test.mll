@@ -96,7 +96,7 @@ let rec error_reporter ppf {Location.loc; msg; sub; if_highlight=_} =
 let apply_rewriters : (Parsetree.toplevel_phrase -> Parsetree.toplevel_phrase) = function
   | Ptop_dir _ as x -> x
   | Ptop_def s ->
-    let s = Ppx.Selected_ast.of_ocaml Structure s in
+    let s = Ppx.Conversion.ast_of_structure s in
     Ptop_def (Ppx.Driver.map_structure s
               |> Migrate_parsetree.Driver.migrate_some_structure
                    (module Migrate_parsetree.OCaml_current))

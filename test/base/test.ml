@@ -1,5 +1,6 @@
 #require "base";;
 #require "stdio";;
+#require "ppx.ast";;
 
 let () = Printexc.record_backtrace false
 
@@ -57,50 +58,55 @@ let _ = split_path ".D"
 |}]
 
 let convert_longident string =
-  let lident = Longident.parse string in
-  let name = Longident.name lident in
-  (name, lident)
+  let lident = Longid.parse string in
+  let name = Longid.name lident in
+  (name, Conversion.ast_to_longident lident)
 [%%expect{|
-val convert_longident : string -> string * longident = <fun>
+val convert_longident : string -> string * Longident.t = <fun>
 |}]
 
 let _ = convert_longident "x"
 [%%expect{|
-- : string * longident = ("x", Ppx.Longident.Lident "x")
+- : string * Longident.t = ("x", Ppx_ast__.Compiler_types.Lident "x")
 |}]
 
 let _ = convert_longident "(+)"
 [%%expect{|
-- : string * longident = ("( + )", Ppx.Longident.Lident "+")
+- : string * Longident.t = ("( + )", Ppx_ast__.Compiler_types.Lident "+")
 |}]
 
 let _ = convert_longident "( + )"
 [%%expect{|
-- : string * longident = ("( + )", Ppx.Longident.Lident "+")
+- : string * Longident.t = ("( + )", Ppx_ast__.Compiler_types.Lident "+")
 |}]
 
 let _ = convert_longident "Base.x"
 [%%expect{|
-- : string * longident =
-("Base.x", Ppx.Longident.Ldot (Ppx.Longident.Lident "Base", "x"))
+- : string * Longident.t =
+("Base.x",
+ Ppx_ast__.Compiler_types.Ldot (Ppx_ast__.Compiler_types.Lident "Base", "x"))
 |}]
 
 let _ = convert_longident "Base.(+)"
 [%%expect{|
-- : string * longident =
-("Base.( + )", Ppx.Longident.Ldot (Ppx.Longident.Lident "Base", "+"))
+- : string * Longident.t =
+("Base.( + )",
+ Ppx_ast__.Compiler_types.Ldot (Ppx_ast__.Compiler_types.Lident "Base", "+"))
 |}]
 
 let _ = convert_longident "Base.( + )"
 [%%expect{|
-- : string * longident =
-("Base.( + )", Ppx.Longident.Ldot (Ppx.Longident.Lident "Base", "+"))
+- : string * Longident.t =
+("Base.( + )",
+ Ppx_ast__.Compiler_types.Ldot (Ppx_ast__.Compiler_types.Lident "Base", "+"))
 |}]
 
 let _ = convert_longident "Base.( land )"
 [%%expect{|
-- : string * longident =
-("Base.( land )", Ppx.Longident.Ldot (Ppx.Longident.Lident "Base", "land"))
+- : string * Longident.t =
+("Base.( land )",
+ Ppx_ast__.Compiler_types.Ldot (Ppx_ast__.Compiler_types.Lident "Base",
+  "land"))
 |}]
 
 let _ = convert_longident "A(B)"

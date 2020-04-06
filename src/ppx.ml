@@ -24,24 +24,24 @@ end (** @inline *)
 
 (** Includes the overrides from Ppx_ast_deprecated, as well as all the Ast definitions since we
     need them in every single ppx *)
-include Ppx_ast_deprecated
-include Ast
+include Ppx_ast
+include Import.Ast
 
 module Ast_builder         = Ast_builder
 module Ast_pattern         = Ast_pattern
 module Ast_traverse        = Ast_traverse
-module Attribute           = Attribute
+module Attr                = Attr
 module Code_path           = Code_path
 module Caller_id           = Caller_id
 module Context_free        = Context_free
 module Deriving            = Deriving
 module Driver              = Driver
 module Expansion_context   = Expansion_context
-module Extension           = Extension
+module Ext                 = Ext
 module File_path           = File_path
 module Loc                 = Loc
 module Location            = Location
-module Longident           = Longident
+module Longid              = Longid
 module Merlin_helpers      = Merlin_helpers
 module Reserved_namespaces = Name.Reserved_namespaces
 module Spellcheck          = Spellcheck

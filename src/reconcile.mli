@@ -3,8 +3,8 @@ open Utils
 
 module Context : sig
   type 'a t =
-    | Extension          of 'a Extension.Context.t
-    | Floating_attribute of 'a Attribute.Floating.Context.t
+    | Extension          of 'a Ext.Context.t
+    | Floating_attribute of 'a Attr.Floating.Context.t
 end
 
 module Replacement : sig

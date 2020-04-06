@@ -15,7 +15,7 @@ module Rule : sig
   type t
 
   (** Rewrite an extension point *)
-  val extension : Extension.t -> t
+  val extension : Ext.t -> t
 
   (** [special_function id expand] is a rule to rewrite a function call at parsing time.
       [id] is the identifier to match on and [expand] is used to expand the full function
@@ -44,7 +44,7 @@ module Rule : sig
   val constant
     :  Constant_kind.t
     -> char
-    -> (Location.t -> string -> Parsetree.expression)
+    -> (Location.t -> string -> expression)
     -> t
 
   (** The rest of this API is for rewriting rules that apply when a certain attribute is
@@ -61,50 +61,50 @@ module Rule : sig
       [items]. [expand] must return a list of element to add after the group. For instance
       a list of structure item to add after a group of type definitions.
   *)
-  type ('a, 'b, 'c) attr_group_inline =
-    ('b, 'c) Attribute.t
+  type ('a, 'b, 'c, 'd) attr_group_inline =
+    ('b, 'c) Attr.t
     -> (ctxt:Expansion_context.Deriver.t
-        -> Asttypes.rec_flag
+        -> Rec_flag.t
         -> 'b list
         -> 'c option list
-        -> 'a list)
+        -> 'd)
     -> t
 
-  val attr_str_type_decl : (structure_item, type_declaration, _) attr_group_inline
-  val attr_sig_type_decl : (signature_item, type_declaration, _) attr_group_inline
+  val attr_str_type_decl : (structure_item, type_declaration, _, structure) attr_group_inline
+  val attr_sig_type_decl : (signature_item, type_declaration, _, signature) attr_group_inline
 
   (** The _expect variants are for producing code that is compared to what the user wrote
       in the source code. *)
-  val attr_str_type_decl_expect : (structure_item, type_declaration, _) attr_group_inline
-  val attr_sig_type_decl_expect : (signature_item, type_declaration, _) attr_group_inline
+  val attr_str_type_decl_expect : (structure_item, type_declaration, _, structure) attr_group_inline
+  val attr_sig_type_decl_expect : (signature_item, type_declaration, _, signature) attr_group_inline
 
   (** Same as [attr_group_inline] but for elements that are not part of a group, such as
       exceptions and type extensions *)
-  type ('a, 'b, 'c) attr_inline =
-    ('b, 'c) Attribute.t
+  type ('a, 'b, 'c, 'd) attr_inline =
+    ('b, 'c) Attr.t
     -> (ctxt:Expansion_context.Deriver.t
         -> 'b
         -> 'c
-        -> 'a list)
+        -> 'd)
     -> t
 
-  val attr_str_module_type_decl : (structure_item, module_type_declaration, _) attr_inline
-  val attr_sig_module_type_decl : (signature_item, module_type_declaration, _) attr_inline
+  val attr_str_module_type_decl : (structure_item, module_type_declaration, _, structure) attr_inline
+  val attr_sig_module_type_decl : (signature_item, module_type_declaration, _, signature) attr_inline
 
-  val attr_str_module_type_decl_expect : (structure_item, module_type_declaration, _) attr_inline
-  val attr_sig_module_type_decl_expect : (signature_item, module_type_declaration, _) attr_inline
+  val attr_str_module_type_decl_expect : (structure_item, module_type_declaration, _, structure) attr_inline
+  val attr_sig_module_type_decl_expect : (signature_item, module_type_declaration, _, signature) attr_inline
 
-  val attr_str_type_ext : (structure_item, type_extension, _) attr_inline
-  val attr_sig_type_ext : (signature_item, type_extension, _) attr_inline
+  val attr_str_type_ext : (structure_item, type_extension, _, structure) attr_inline
+  val attr_sig_type_ext : (signature_item, type_extension, _, signature) attr_inline
 
-  val attr_str_type_ext_expect : (structure_item, type_extension, _) attr_inline
-  val attr_sig_type_ext_expect : (signature_item, type_extension, _) attr_inline
+  val attr_str_type_ext_expect : (structure_item, type_extension, _, structure) attr_inline
+  val attr_sig_type_ext_expect : (signature_item, type_extension, _, signature) attr_inline
 
-  val attr_str_exception : (structure_item, extension_constructor, _) attr_inline
-  val attr_sig_exception : (signature_item, extension_constructor, _) attr_inline
+  val attr_str_exception : (structure_item, extension_constructor, _, structure) attr_inline
+  val attr_sig_exception : (signature_item, extension_constructor, _, signature) attr_inline
 
-  val attr_str_exception_expect : (structure_item, extension_constructor, _) attr_inline
-  val attr_sig_exception_expect : (signature_item, extension_constructor, _) attr_inline
+  val attr_str_exception_expect : (structure_item, extension_constructor, _, structure) attr_inline
+  val attr_sig_exception_expect : (signature_item, extension_constructor, _, signature) attr_inline
 end
 
 (**/**)
@@ -116,14 +116,14 @@ module Generated_code_hook : sig
 
   (*_ Hook called whenever we generate code some *)
   type t =
-    { f : 'a. 'a Extension.Context.t -> Location.t -> 'a single_or_many -> unit }
+    { f : 'a. 'a Ext.Context.t -> Location.t -> 'a single_or_many -> unit }
 
   val nop : t
 end
 
 module Expect_mismatch_handler : sig
   type t =
-    { f : 'a. 'a Attribute.Floating.Context.t -> Location.t -> 'a list -> unit }
+    { f : 'a. 'a Attr.Floating.Context.t -> Location.t -> 'a list -> unit }
 
   val nop : t
 end

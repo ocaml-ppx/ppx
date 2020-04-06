@@ -1,33 +1,33 @@
 open! Import
 
 class map = object
-  inherit Ppx_traverse_builtins.map
-  inherit Ast.map
+  inherit Traverse_builtins.map
+  inherit Ast.Virtual.map
 end
 
 class iter = object
-  inherit Ppx_traverse_builtins.iter
-  inherit Ast.iter
+  inherit Traverse_builtins.iter
+  inherit Ast.Virtual.iter
 end
 
 class ['acc] fold = object
-  inherit ['acc] Ppx_traverse_builtins.fold
-  inherit ['acc] Ast.fold
+  inherit ['acc] Traverse_builtins.fold
+  inherit ['acc] Ast.Virtual.fold
 end
 
 class ['acc] fold_map = object
-  inherit ['acc] Ppx_traverse_builtins.fold_map
-  inherit ['acc] Ast.fold_map
+  inherit ['acc] Traverse_builtins.fold_map
+  inherit ['acc] Ast.Virtual.fold_map
 end
 
 class ['ctx] map_with_context = object
-  inherit ['ctx] Ppx_traverse_builtins.map_with_context
-  inherit ['ctx] Ast.map_with_context
+  inherit ['ctx] Traverse_builtins.map_with_context
+  inherit ['ctx] Ast.Virtual.map_with_context
 end
 
 class virtual ['res] lift = object
-  inherit ['res] Ppx_traverse_builtins.lift
-  inherit ['res] Ast.lift
+  inherit ['res] Traverse_builtins.lift
+  inherit ['res] Ast.Virtual.lift
 end
 
 let enter name path = if String.is_empty path then name else path ^ "." ^ name
@@ -60,13 +60,19 @@ class map_with_path = object
      isn't, and the "path" constructed here would be able to differentiate
      between them. *)
   method! module_binding path mb =
-       super#module_binding (enter mb.pmb_name.txt path) mb
+    match%view mb with
+    | { pmb_name = { txt; _ }; _ } ->
+      super#module_binding (enter txt path) mb
 
   method! module_declaration path md =
-    super#module_declaration (enter md.pmd_name.txt path) md
+    match%view md with
+    | { pmd_name = { txt; _ }; _ } ->
+      super#module_declaration (enter txt path) md
 
   method! module_type_declaration path mtd =
-    super#module_type_declaration (enter mtd.pmtd_name.txt path) mtd
+    match%view mtd with
+    | { pmtd_name = { txt; _ }; _ } ->
+      super#module_type_declaration (enter txt path) mtd
 end
 
 let var_names_of = object
@@ -74,8 +80,8 @@ let var_names_of = object
 
   method! pattern p acc =
     let acc = super#pattern p acc in
-    match p.ppat_desc with
-    | Ppat_var {txt; _} -> txt :: acc
+    match%view p with
+    | { ppat_desc = Ppat_var {txt; _}; _ } -> txt :: acc
     | _ -> acc
 end
 
@@ -86,42 +92,53 @@ class map_with_expansion_context = object (self)
     super#expression (Expansion_context.Base.enter_expr ctxt) expr
 
   method! module_binding ctxt mb =
-    super#module_binding
-      (Expansion_context.Base.enter_module ~loc:mb.pmb_loc mb.pmb_name.txt ctxt)
-      mb
+    match%view mb with
+    | { pmb_loc; pmb_name = { txt; _ }; _ } ->
+      super#module_binding
+        (Expansion_context.Base.enter_module ~loc:pmb_loc txt ctxt)
+        mb
 
   method! module_declaration ctxt md =
-    super#module_declaration
-      (Expansion_context.Base.enter_module ~loc:md.pmd_loc md.pmd_name.txt ctxt)
-      md
+    match%view md with
+    | { pmd_loc; pmd_name = { txt; _ }; _ } ->
+      super#module_declaration
+        (Expansion_context.Base.enter_module ~loc:pmd_loc txt ctxt)
+        md
 
   method! module_type_declaration ctxt mtd =
+    match%view mtd with
+    | { pmtd_loc; pmtd_name = { txt; _ }; _ } ->
     super#module_type_declaration
-      (Expansion_context.Base.enter_module ~loc:mtd.pmtd_loc mtd.pmtd_name.txt ctxt)
+      (Expansion_context.Base.enter_module ~loc:pmtd_loc txt ctxt)
       mtd
 
   method! value_description ctxt vd =
+    match%view vd with
+    | { pval_loc; pval_name = { txt; _ }; _ } ->
     super#value_description
-      (Expansion_context.Base.enter_value ~loc:vd.pval_loc vd.pval_name.txt ctxt)
+      (Expansion_context.Base.enter_value ~loc:pval_loc txt ctxt)
       vd
 
-  method! value_binding ctxt {pvb_pat; pvb_expr; pvb_attributes; pvb_loc} =
-    let all_var_names = var_names_of#pattern pvb_pat [] in
-    let var_name = List.last all_var_names in
-    let in_binding_ctxt =
-      Option.fold var_name
-        ~init:ctxt
-        ~f:(fun ctxt var_name -> Expansion_context.Base.enter_value ~loc:pvb_loc var_name ctxt)
-    in
-    let pvb_pat = self#pattern ctxt pvb_pat in
-    let pvb_expr = self#expression in_binding_ctxt pvb_expr in
-    let pvb_attributes = self#attributes in_binding_ctxt pvb_attributes in
-    let pvb_loc = self#location ctxt pvb_loc in
-    { pvb_pat; pvb_expr; pvb_attributes; pvb_loc }
+  method! value_binding ctxt pvb =
+    match%view pvb with
+    | {pvb_pat; pvb_expr; pvb_attributes; pvb_loc} ->
+      let all_var_names = var_names_of#pattern pvb_pat [] in
+      let var_name = List.last all_var_names in
+      let in_binding_ctxt =
+        Option.fold var_name
+          ~init:ctxt
+          ~f:(fun ctxt var_name ->
+            Expansion_context.Base.enter_value ~loc:pvb_loc var_name ctxt)
+      in
+      let pvb_pat = self#pattern ctxt pvb_pat in
+      let pvb_expr = self#expression in_binding_ctxt pvb_expr in
+      let pvb_attributes = self#attributes in_binding_ctxt pvb_attributes in
+      let pvb_loc = self#location ctxt pvb_loc in
+      Value_binding.of_concrete { pvb_pat; pvb_expr; pvb_attributes; pvb_loc }
 end
 
 class sexp_of = object
-  inherit [Sexp.t] Ast.lift
+  inherit [Sexp.t] Ast.Virtual.lift
 
   method int       = Sexp.Encoder.int
   method string    = Sexp.Encoder.string
@@ -135,14 +152,19 @@ class sexp_of = object
   method option    = Sexp.Encoder.option
   method list      = Sexp.Encoder.list
   method array : 'a. ('a -> Sexp.t) -> 'a array -> Sexp.t = Sexp.Encoder.array
+  method position (_ : Astlib.Position.t) = Sexp.Atom "_"
+  method location (_ : Astlib.Location.t) = Sexp.Atom "_"
+  method loc f loc = f loc.txt
 
   method other : 'a. 'a -> Sexp.t = fun _ -> Sexp.Atom "_"
 
-  method record fields =
+  method node _ sexp = sexp
+
+  method record _ fields =
     List (List.map fields ~f:(fun (label, sexp) ->
       Sexp.List [Atom label; sexp]))
 
-  method constr tag args =
+  method constr _ tag args =
     match args with
     | [] -> Atom tag
     | _  -> List (Atom tag :: args)

@@ -63,13 +63,13 @@ val attribute'const: ((string Astlib.Loc.t * Payload.t), 'i, 'o) View.t -> (Attr
 val extension'const: ((string Astlib.Loc.t * Payload.t), 'i, 'o) View.t -> (Extension.t, 'i, 'o) View.t
 val attributes'const: (Attribute.t list, 'i, 'o) View.t -> (Attributes.t, 'i, 'o) View.t
 
-val pstr'const : (Structure.t, 'i, 'o) View.t -> (Payload.t, 'i, 'o) View.t
+val pStr'const : (Structure.t, 'i, 'o) View.t -> (Payload.t, 'i, 'o) View.t
 
-val psig'const : (Signature.t, 'i, 'o) View.t -> (Payload.t, 'i, 'o) View.t
+val pSig'const : (Signature.t, 'i, 'o) View.t -> (Payload.t, 'i, 'o) View.t
 
-val ptyp'const : (Core_type.t, 'i, 'o) View.t -> (Payload.t, 'i, 'o) View.t
+val pTyp'const : (Core_type.t, 'i, 'o) View.t -> (Payload.t, 'i, 'o) View.t
 
-val ppat'const : ((Pattern.t * Expression.t option), 'i, 'o) View.t -> (Payload.t, 'i, 'o) View.t
+val pPat'const : ((Pattern.t * Expression.t option), 'i, 'o) View.t -> (Payload.t, 'i, 'o) View.t
 
 val ptyp_desc'match : (Core_type_desc.t, 'i, 'o) View.t -> (Core_type.t, 'i, 'o) View.t
 

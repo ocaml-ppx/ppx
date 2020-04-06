@@ -2,12 +2,13 @@
 
 open! Import
 
-type t = longident =
-    Lident of string
-  | Ldot of t * string
-  | Lapply of t * t
+type t = longident
 
 include Comparable.S with type t := t
+
+val lident : string -> t
+val ldot : t -> string -> t
+val lapply : t -> t -> t
 
 val flatten_exn : t -> string list
 val last_exn : t -> string

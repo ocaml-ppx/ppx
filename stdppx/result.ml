@@ -2,6 +2,13 @@ type ('a, 'error) t = ('a, 'error) Ppx_caml.result =
   | Ok    of 'a
   | Error of 'error
 
+let compare compare_a compare_error a b =
+  match a, b with
+  | Ok a, Ok b -> compare_a a b
+  | Ok _, Error _ -> Ordering.Lt
+  | Error _, Ok _ -> Ordering.Gt
+  | Error a, Error b -> compare_error a b
+
 let ok x = Ok x
 
 let is_ok = function

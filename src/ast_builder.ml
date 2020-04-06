@@ -1,67 +1,21 @@
 open! Import
+include Ast
 
-module Located = struct
-
-  let loc x = x.loc
-
-  let mk ~loc x = { loc; txt = x }
-
-  let map f t = { t with txt = f t.txt }
-  let map_lident x = map (fun x -> Longident.Lident x) x
-
-  let lident ~loc x = mk ~loc (Longident.parse x)
-end
-
-include Ast_builder_generated
-
-let pstr_value_list ~loc rec_flag = function
-  | [] -> []
-  | vbs -> [pstr_value ~loc rec_flag vbs]
-
-let nonrec_type_declaration ~loc:_ ~name:_ ~params:_ ~cstrs:_ ~kind:_ ~private_:_
-      ~manifest:_ =
-  failwith "Ppx.Ast_builder.nonrec_type_declaration: don't use this function"
+let esequence ~loc el =
+  match el with
+  | [] -> eunit ~loc
+  | hd :: tl -> List.fold_left tl ~init:hd ~f:(fun acc e -> pexp_sequence ~loc acc e)
 ;;
 
-let eint ~loc t = pexp_constant ~loc (Pconst_integer (Int.to_string  t, None))
-let echar ~loc t = pexp_constant ~loc (Pconst_char t)
-let estring ~loc t = pexp_constant ~loc (Pconst_string (t, None))
-let efloat ~loc t = pexp_constant ~loc (Pconst_float (t, None))
-let eint32 ~loc t = pexp_constant ~loc (Pconst_integer (Int32.to_string t, Some 'l'))
-let eint64 ~loc t = pexp_constant ~loc (Pconst_integer (Int64.to_string t, Some 'L'))
-let enativeint ~loc t = pexp_constant ~loc (Pconst_integer (Nativeint.to_string t, Some 'n'))
+let pconstruct cd arg =
+  match%view cd with
+  | { pcd_loc; pcd_name = { loc; txt }; _ } ->
+    ppat_construct ~loc:pcd_loc (Located.lident ~loc txt) arg
 
-let pint ~loc t = ppat_constant ~loc (Pconst_integer (Int.to_string t, None))
-let pchar ~loc t = ppat_constant ~loc (Pconst_char t)
-let pstring ~loc t = ppat_constant ~loc (Pconst_string (t, None))
-let pfloat ~loc t = ppat_constant ~loc (Pconst_float (t, None))
-let pint32 ~loc t = ppat_constant ~loc (Pconst_integer (Int32.to_string t, Some 'l'))
-let pint64 ~loc t = ppat_constant ~loc (Pconst_integer (Int64.to_string t, Some 'L'))
-let pnativeint ~loc t = ppat_constant ~loc (Pconst_integer (Nativeint.to_string t, Some 'n'))
-
-let ebool ~loc t = pexp_construct ~loc (Located.lident ~loc (Bool.to_string  t)) None
-let pbool ~loc t = ppat_construct ~loc (Located.lident ~loc (Bool.to_string t)) None
-
-let evar ~loc v = pexp_ident ~loc (Located.mk ~loc (Longident.parse v))
-let pvar ~loc v = ppat_var ~loc (Located.mk ~loc v)
-
-let eunit ~loc = pexp_construct ~loc (Located.lident ~loc "()") None
-let punit ~loc = ppat_construct ~loc (Located.lident ~loc "()") None
-
-let pexp_tuple ~loc l =
-  match l with
-  | [x] -> x
-  | _   -> pexp_tuple ~loc l
-
-let ppat_tuple ~loc l =
-  match l with
-  | [x] -> x
-  | _   -> ppat_tuple ~loc l
-
-let ptyp_tuple ~loc l =
-  match l with
-  | [x] -> x
-  | _   -> ptyp_tuple ~loc l
+let econstruct cd arg =
+  match%view cd with
+  | { pcd_loc; pcd_name = { loc; txt }; _ } ->
+    pexp_construct ~loc:pcd_loc (Located.lident ~loc txt) arg
 
 let pexp_tuple_opt ~loc l =
   match l with
@@ -73,105 +27,70 @@ let ppat_tuple_opt ~loc l =
   | [] -> None
   | _ :: _ -> Some (ppat_tuple ~loc l)
 
-let ptyp_poly ~loc vars ty =
-  match vars with
-  | [] -> ty
-  | _ -> ptyp_poly ~loc vars ty
+let pstr_value_list ~loc rec_flag = function
+  | [] -> []
+  | vbs -> [pstr_value ~loc rec_flag vbs]
 
-let pexp_apply ~loc e el =
-  match e, el with
-  | _, [] -> e
-  | { pexp_desc = Pexp_apply (e, args)
-    ; pexp_attributes = []; _ }, _ ->
-    { e with pexp_desc = Pexp_apply (e, args @ el) }
-  | _ -> pexp_apply ~loc e el
+let nonrec_type_declaration ~loc:_ ~name:_ ~params:_ ~cstrs:_ ~kind:_ ~private_:_
+      ~manifest:_ =
+  failwith "Ppx.Ast_builder.nonrec_type_declaration: don't use this function"
 ;;
 
-let eapply ~loc e el =
-  pexp_apply ~loc e (List.map el ~f:(fun e -> (Asttypes.Nolabel, e)))
-
-let eabstract ~loc ps e =
-  List.fold_right ps ~init:e ~f:(fun p e -> pexp_fun ~loc Asttypes.Nolabel None p e)
-;;
-
-let esequence ~loc el =
-  match el with
-  | [] -> eunit ~loc
-  | hd :: tl -> List.fold_left tl ~init:hd ~f:(fun acc e -> pexp_sequence ~loc acc e)
-;;
-
-let pconstruct cd arg = ppat_construct ~loc:cd.pcd_loc (Located.map_lident cd.pcd_name) arg
-let econstruct cd arg = pexp_construct ~loc:cd.pcd_loc (Located.map_lident cd.pcd_name) arg
-
-let rec elist ~loc l =
-  match l with
-  | [] ->
-    pexp_construct ~loc (Located.mk ~loc (Longident.Lident "[]")) None
-  | x :: l ->
-    pexp_construct ~loc (Located.mk ~loc (Longident.Lident "::"))
-      (Some (pexp_tuple ~loc [x; elist ~loc l]))
-;;
-
-let rec plist ~loc l =
-  match l with
-  | [] ->
-    ppat_construct ~loc (Located.mk ~loc (Longident.Lident "[]")) None
-  | x :: l ->
-    ppat_construct ~loc (Located.mk ~loc (Longident.Lident "::"))
-      (Some (ppat_tuple ~loc [x; plist ~loc l]))
-;;
-
-let unapplied_type_constr_conv_without_apply ~loc (ident : Longident.t) ~f =
-  match ident with
-  | Lident n -> pexp_ident ~loc { txt = Lident (f n); loc }
-  | Ldot (path, n) -> pexp_ident ~loc { txt = Ldot (path, f n); loc }
+let unapplied_type_constr_conv_without_apply ~loc (ident : Longid.t) ~f =
+  match%view ident with
+  | Lident n -> pexp_ident ~loc (Located.lident ~loc (f n))
+  | Ldot (path, n) -> pexp_ident ~loc (Located.longident ~loc (Longid.ldot path (f n)))
   | Lapply _ -> Location.raise_errorf ~loc "unexpected applicative functor type"
 
-let type_constr_conv ~loc:apply_loc { Loc.loc; txt = longident } ~f args =
-  match (longident : Longident.t) with
-  | Lident _
+let type_constr_conv ~loc:apply_loc longident_loc ~f args =
+  match%view longident_loc with
+  | { txt = longident; loc } ->
+    match%view longident with
+    | Lident _
     | Ldot ((Lident _ | Ldot _), _)
     | Lapply _ ->
-    let ident = unapplied_type_constr_conv_without_apply longident ~loc ~f in
-    begin match args with
-    | [] -> ident
-    | _ :: _ -> eapply ~loc:apply_loc ident args
-    end
-  | Ldot (Lapply _ as module_path, n) ->
-    let suffix_n functor_ = String.uncapitalize functor_ ^ "__" ^ n in
-    let rec gather_lapply functor_args : Longident.t -> Longident.t * _ = function
-      | Lapply (rest, arg) ->
-        gather_lapply (arg :: functor_args) rest
-      | Lident functor_ ->
-        Lident (suffix_n functor_), functor_args
-      | Ldot (functor_path, functor_) ->
-        Ldot (functor_path, suffix_n functor_), functor_args
-    in
-    let ident, functor_args = gather_lapply [] module_path in
-    eapply ~loc:apply_loc (unapplied_type_constr_conv_without_apply ident ~loc ~f)
-      (List.map functor_args ~f:(fun path ->
-           pexp_pack ~loc (pmod_ident ~loc { txt = path; loc }))
-       @ args)
+      let ident = unapplied_type_constr_conv_without_apply longident ~loc ~f in
+      begin match args with
+      | [] -> ident
+      | _ :: _ -> eapply ~loc:apply_loc ident args
+      end
+    | Ldot (Lapply _ as module_path, n) ->
+      let suffix_n functor_ = String.uncapitalize functor_ ^ "__" ^ n in
+      let rec gather_lapply functor_args : Longid.t -> Longid.t * _ = function%view
+        | Lapply (rest, arg) ->
+          gather_lapply (arg :: functor_args) rest
+        | Lident functor_ ->
+          Longid.lident (suffix_n functor_), functor_args
+        | Ldot (functor_path, functor_) ->
+          Longid.ldot functor_path (suffix_n functor_), functor_args
+      in
+      let ident, functor_args = gather_lapply [] module_path in
+      eapply ~loc:apply_loc (unapplied_type_constr_conv_without_apply ident ~loc ~f)
+        (List.map functor_args ~f:(fun path ->
+           pexp_pack ~loc (pmod_ident ~loc (Located.longident ~loc path)))
+         @ args)
 
 let unapplied_type_constr_conv ~loc longident ~f =
   type_constr_conv longident ~loc ~f []
 
+let include_infos ~loc:pincl_loc pincl_mod =
+  Include_infos.create ~pincl_loc ~pincl_mod ~pincl_attributes:(Attributes.create [])
 
 let eta_reduce =
   let rec gather_params acc expr =
-    match expr with
+    match%view expr with
     | { pexp_desc =
           Pexp_fun (label, None (* no default expression *), subpat, body)
-      ; pexp_attributes = []
+      ; pexp_attributes = Attributes []
       ; pexp_loc = _
       } ->
-      begin match subpat with
-      | { ppat_desc = Ppat_var name; ppat_attributes = []; ppat_loc = _ } ->
+      begin match%view subpat with
+      | { ppat_desc = Ppat_var name; ppat_attributes = Attributes []; ppat_loc = _ } ->
         gather_params ((label, name, None) :: acc) body
       | { ppat_desc = Ppat_constraint ({ ppat_desc = Ppat_var name
-                                       ; ppat_attributes = []
+                                       ; ppat_attributes = Attributes []
                                        ; ppat_loc = _ }, ty)
-        ; ppat_attributes = []; ppat_loc = _ } ->
+        ; ppat_attributes = Attributes []; ppat_loc = _ } ->
         (* We reduce [fun (x : ty) -> f x] by rewriting it [(f : ty -> _)]. *)
         gather_params ((label, name, Some ty) :: acc) body
       | _ -> List.rev acc, expr
@@ -184,7 +103,7 @@ let eta_reduce =
       let ty =
         List.fold_right params ~init:(ptyp_any ~loc)
           ~f:(fun (param_label, param, ty_opt) acc ->
-            let loc = param.loc in
+            let loc = Loc.loc param in
             let ty =
               match ty_opt with
               | None -> ptyp_any ~loc
@@ -197,41 +116,45 @@ let eta_reduce =
   in
   let rec gather_args n x =
     if n = 0 then Some (x, [])
-    else match x with
-         | { pexp_desc = Pexp_apply (body, args)
-           ; pexp_attributes = []; pexp_loc = _ } ->
-           if List.length args <= n then
-             match gather_args (n - List.length args) body with
-             | None -> None
-             | Some (body, args') ->
-               Some (body, args' @ args)
-           else
-             None
-         | _ -> None
+    else match%view x with
+      | { pexp_desc = Pexp_apply (body, args)
+        ; pexp_attributes = Attributes []; pexp_loc = _ } ->
+        if List.length args <= n then
+          match gather_args (n - List.length args) body with
+          | None -> None
+          | Some (body, args') ->
+            Some (body, args' @ args)
+        else
+          None
+      | _ -> None
   in
   fun expr ->
-    let params, body = gather_params [] expr in
-    match gather_args (List.length params) body with
-    | None -> None
-    | Some (({ pexp_desc = Pexp_ident _; _ } as f_ident), args) ->
-      begin
-        match
-          List.for_all2 args params ~f:(fun (arg_label, arg) (param_label, param, _) ->
+    match%view expr with
+    | { pexp_loc; _ } ->
+      let params, body = gather_params [] expr in
+      match%view gather_args (List.length params) body with
+      | None -> None
+      | Some (({ pexp_desc = Pexp_ident _; _ } as f_ident), args) ->
+        begin
+          match
+            List.for_all2 args params ~f:(fun (arg_label, arg) (param_label, param, _) ->
               (arg_label : arg_label) = param_label
-              && match arg with
-                 | { pexp_desc = Pexp_ident { txt = Lident name'; _ }; pexp_attributes = []; pexp_loc = _ }
-                   -> String.equal name' param.txt
-                 | _ -> false)
-        with
-        | false -> None
-        | true -> Some (annotate ~loc:expr.pexp_loc f_ident params)
-        | exception Invalid_argument _ -> assert false
-      end
-    | _ -> None
+              && match%view arg with
+              | { pexp_desc = Pexp_ident (Longident_loc { txt = Lident name'; _ })
+                ; pexp_attributes = Attributes []
+                ; pexp_loc = _ }
+                -> String.equal name' (Loc.txt param)
+              | _ -> false)
+          with
+          | false -> None
+          | true -> Some (annotate ~loc:pexp_loc f_ident params)
+          | exception Invalid_argument _ -> assert false
+        end
+      | _ -> None
 ;;
 
 let eta_reduce_if_possible expr = Option.value (eta_reduce expr) ~default:expr
 let eta_reduce_if_possible_and_nonrec expr ~rec_flag =
-  match rec_flag with
+  match%view rec_flag with
   | Recursive -> expr
   | Nonrecursive -> eta_reduce_if_possible expr

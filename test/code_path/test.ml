@@ -5,7 +5,7 @@ open Ppx
 let () =
   Driver.register_transformation "test"
     ~extensions:[
-      Extension.V3.declare "code_path"
+      Ext.V3.declare "code_path"
         Expression
         Ast_pattern.(pstr nil)
         (fun ~ctxt ->

@@ -6,12 +6,12 @@ let loc = Ocaml_common.Location.none
 
 let int x = eint ~loc x
 let int32 x = eint32 ~loc x
-let float x = efloat ~loc x
+let float x = efloat ~loc (Float.to_string x)
 let ident x = pexp_ident ~loc (Located.lident ~loc x)
 
 let class_infos =
   let extension =
-    Extension.create ({ loc; txt = "ext" } , Payload.pstr (Structure.create []) )
+    Extension.create ({ loc; txt = "ext" } , Payload.pStr (Structure.create []) )
   in
   Class_infos.create
     ~pci_virt:Virtual_flag.virtual_

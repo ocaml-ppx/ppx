@@ -35,6 +35,7 @@ val print_array : 'a list -> f:(int -> 'a -> string) -> unit
 val print_arrow : 'a list -> f:('a -> string) -> string -> unit
 
 val print_labelled_arrow : (string * 'a) list -> f:('a -> string) -> string -> unit
+val print_optional_arrow : (string * 'a) list -> f:('a -> string) -> string -> unit
 
 type element =
   | Empty

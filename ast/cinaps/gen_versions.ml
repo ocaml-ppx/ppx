@@ -51,7 +51,12 @@ module Signature = struct
       Ml.declare_val
         "create"
         (Block (fun () ->
-           Ml.print_labelled_arrow record ~f:string_of_ty (inst_node "t" ~tvars)))
+           Ml.print_labelled_arrow record ~f:string_of_ty (inst_node "t" ~tvars)));
+      Ml.declare_val
+        "update"
+        (Block (fun () ->
+           Ml.print_optional_arrow record ~f:string_of_ty
+             (let ty = inst_node "t" ~tvars in Printf.sprintf "%s -> %s" ty ty)))
     | Variant variant ->
       List.iter variant ~f:(fun (tag, clause) ->
         Ml.declare_val
@@ -364,6 +369,23 @@ module Structure = struct
         Print.println "let %s t = (to_concrete t).%s" (Ml.id field) (Ml.id field));
     | Variant _ -> ()
 
+  let define_update decl =
+    match (decl : Astlib.Grammar.decl) with
+    | Ty _ | Variant _ -> ()
+    | Record record ->
+      Print.newline ();
+      Print.println "let update %s t ="
+        (String.concat ~sep:" "
+           (List.map record ~f:(fun (field, _) -> "?" ^ Ml.id field)));
+      Print.indented (fun () ->
+        Print.println "let concrete = to_concrete t in";
+        List.iter record ~f:(fun (field, _) ->
+          let id = Ml.id field in
+          Print.println "let %s = Option.value %s ~default:concrete.%s in" id id id);
+        Print.println "create %s"
+          (String.concat ~sep:" "
+             (List.map record ~f:(fun (field, _) -> "~" ^ Ml.id field))))
+
   let print decl ~node_name ~tvars ~grammar =
       Ml.declare_type "t" ~tvars (Line (Ml.poly_type node_name ~tvars));
       Print.newline ();
@@ -376,7 +398,8 @@ module Structure = struct
       define_to_concrete_opt decl ~node_name ~grammar;
       Print.newline ();
       define_to_concrete ~node_name;
-      define_accessors decl
+      define_accessors decl;
+      define_update decl
 end
 
 module Unversioned = struct

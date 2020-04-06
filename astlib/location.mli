@@ -26,12 +26,18 @@ module Error : sig
 
   (** {2 Constructors} *)
 
-  (** [make ~loc pp_msg] returns the error located at [loc] with the message
+  (** [create ~loc pp_msg] returns the error located at [loc] with the message
       formatted by [pp_msg] *)
-  val make :
+  val create :
     loc: location ->
     (Format.formatter -> unit) ->
     t
+
+  (** Like [create], using a [Format.printf]-style format string. *)
+  val createf :
+    loc: location ->
+    ('a, Format.formatter, unit, t) format4
+    -> 'a
 
   (** {2 Accessors} *)
 
@@ -50,4 +56,10 @@ module Error : sig
 
   (** Used to raise/catch [t] as an exception. *)
   exception Error of t
+
+  (** Like [createf]. Raises [Error t] *)
+  val raisef :
+    loc: location ->
+    ('a, Format.formatter, unit, _) format4
+    -> 'a
 end

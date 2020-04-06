@@ -67,7 +67,7 @@ val declare_with_path_arg
   :  string
   -> 'context Context.t
   -> (payload, 'a, 'context) Ast_pattern.t
-  -> (loc:Location.t -> path:string -> arg:Longident.t Asttypes.loc option -> 'a)
+  -> (loc:Location.t -> path:string -> arg:Longident.t Loc.t option -> 'a)
   -> t
 
 (** Inline the result of the expansion into its parent. Only works for these contexts:
@@ -88,7 +88,7 @@ val declare_inline_with_path_arg
   :  string
   -> 'context Context.t
   -> (payload, 'a, 'context list) Ast_pattern.t
-  -> (loc:Location.t -> path:string -> arg:Longident.t Asttypes.loc option -> 'a)
+  -> (loc:Location.t -> path:string -> arg:Longident.t Loc.t option -> 'a)
   -> t
 
 val of_bootstrap_extension : Ppx_bootstrap.Extension.t -> t

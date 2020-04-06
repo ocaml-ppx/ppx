@@ -1,85 +1,71 @@
-open Import
+open! Import
 
-module L = Ocaml_common.Location
-
-type t = location =
-  { loc_start : Lexing.position
-  ; loc_end   : Lexing.position
-  ; loc_ghost : bool
-  }
+type t = Astlib.Location.t = {
+  loc_start : Astlib.Position.t;
+  loc_end : Astlib.Position.t;
+  loc_ghost : bool;
+}
 
 let in_file name =
-  let loc =
-    { pos_fname = name
-    ; pos_lnum  = 1
-    ; pos_bol   = 0
-    ; pos_cnum  = -1
+  let pos : Astlib.Position.t =
+    {
+      pos_fname=name;
+      pos_lnum=1;
+      pos_bol=0;
+      pos_cnum=(-1);
     }
   in
-  { loc_start = loc
-  ; loc_end   = loc
-  ; loc_ghost = true
+  {
+    loc_start=pos;
+    loc_end=pos;
+    loc_ghost=true;
   }
 
 let none = in_file "_none_"
 
-let raise_errorf ?loc fmt = L.raise_errorf ?loc fmt
-let report_exception = L.report_exception
-
 let of_lexbuf (lexbuf : Lexing.lexbuf) =
-  { loc_start = lexbuf.lex_start_p
-  ; loc_end   = lexbuf.lex_curr_p
-  ; loc_ghost = false
+  {
+    loc_start=lexbuf.lex_start_p;
+    loc_end=lexbuf.lex_curr_p;
+    loc_ghost=true;
   }
 
 let print ppf t =
+  let start = t.loc_start in
+  let end_ = t.loc_end in
   Format.fprintf ppf "File \"%s\", line %d, characters %d-%d:"
-    t.loc_start.pos_fname
-    t.loc_start.pos_lnum
-    (t.loc_start.pos_cnum - t.loc_start.pos_bol)
-    (t.loc_end.pos_cnum   - t.loc_start.pos_bol)
+    start.pos_fname
+    start.pos_lnum
+    (start.pos_cnum - start.pos_bol)
+    (end_.pos_cnum - end_.pos_bol)
 
-type nonrec 'a loc = 'a loc =
-  { txt : 'a
-  ; loc : t
-  }
+type 'a loc = 'a Astlib.Loc.t
 
 module Error = struct
-  type t = L.error
+  type t = Astlib.Location.Error.t
 
-  let createf ~loc fmt = L.errorf ~loc fmt
+  let createf = Astlib.Location.Error.createf
 
-  let message (t : t) = t.msg
-  let set_message (t : t) msg = { t with msg }
-
-  let register_error_of_exn = L.register_error_of_exn
-
-  let of_exn = Compiler_specifics.error_of_exn
-
-  let rec to_extension (t : t) =
-    let loc = t.loc in
-    let str s =
-      { pstr_loc  = loc
-      ; pstr_desc =
-          Pstr_eval
-            ({ pexp_loc = loc
-             ; pexp_attributes = []
-             ; pexp_desc = Pexp_constant (Pconst_string (s, None))
-             }, [])
-      }
-    in
-    ({ loc = t.loc; txt = "ocaml.error" },
-     PStr (str t.msg          ::
-           str t.if_highlight ::
-           List.map t.sub ~f:(fun t ->
-             { pstr_loc = loc
-             ; pstr_desc = Pstr_extension (to_extension t, [])
-             })))
+  let register_of_exn = Astlib.Location.Error.register_of_exn
+  let of_exn = Astlib.Location.Error.of_exn
+  let to_extension = Error_ext.extension_of_error
 end
 
-exception Error of Error.t
+let report_exception ppf exn =
+  match Error.of_exn exn with
+  | Some error -> Astlib.Location.Error.report ppf error
+  | None -> raise exn
+
+let raise_errorf ?(loc = none) fmt = Astlib.Location.Error.raisef ~loc fmt
+
+exception Error = Astlib.Location.Error.Error
 
 let () =
   Printexc.register_printer (function
-    | Error e -> Some (Error.message e)
+    | Error e ->
+      let buf = Buffer.create 1024 in
+      let ppf = Format.formatter_of_buffer buf in
+      Astlib.Location.Error.report ppf e;
+      Format.pp_print_flush ppf ();
+      Some (Buffer.contents buf)
     | _ -> None)

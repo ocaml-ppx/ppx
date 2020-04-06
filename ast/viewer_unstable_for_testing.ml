@@ -2458,25 +2458,25 @@ let ptyp_desc'match view value =
   let concrete = Core_type.to_concrete value in
   view concrete.Core_type.ptyp_desc
 
-let ppat'const view value =
+let pPat'const view value =
   let concrete = Payload.to_concrete value in
   match concrete with
   | Payload.PPat (arg0, arg1) -> view (arg0, arg1)
   | _ -> View.error
 
-let ptyp'const view value =
+let pTyp'const view value =
   let concrete = Payload.to_concrete value in
   match concrete with
   | Payload.PTyp arg -> view arg
   | _ -> View.error
 
-let psig'const view value =
+let pSig'const view value =
   let concrete = Payload.to_concrete value in
   match concrete with
   | Payload.PSig arg -> view arg
   | _ -> View.error
 
-let pstr'const view value =
+let pStr'const view value =
   let concrete = Payload.to_concrete value in
   match concrete with
   | Payload.PStr arg -> view arg

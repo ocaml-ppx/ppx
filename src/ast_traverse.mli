@@ -28,28 +28,28 @@ open! Import
 *)
 
 class map : object
-  inherit Ppx_traverse_builtins.map
-  inherit Ast.map
+  inherit Traverse_builtins.map
+  inherit Ast.Virtual.map
 end
 
 class iter : object
-  inherit Ppx_traverse_builtins.iter
-  inherit Ast.iter
+  inherit Traverse_builtins.iter
+  inherit Ast.Virtual.iter
 end
 
 class ['acc] fold : object
-  inherit ['acc] Ppx_traverse_builtins.fold
-  inherit ['acc] Ast.fold
+  inherit ['acc] Traverse_builtins.fold
+  inherit ['acc] Ast.Virtual.fold
 end
 
 class ['acc] fold_map : object
-  inherit ['acc] Ppx_traverse_builtins.fold_map
-  inherit ['acc] Ast.fold_map
+  inherit ['acc] Traverse_builtins.fold_map
+  inherit ['acc] Ast.Virtual.fold_map
 end
 
 class ['ctx] map_with_context : object
-  inherit ['ctx] Ppx_traverse_builtins.map_with_context
-  inherit ['ctx] Ast.map_with_context
+  inherit ['ctx] Traverse_builtins.map_with_context
+  inherit ['ctx] Ast.Virtual.map_with_context
 end
 
 class map_with_path : [string] map_with_context
@@ -57,13 +57,13 @@ class map_with_path : [string] map_with_context
 class map_with_expansion_context : [Expansion_context.Base.t] map_with_context
 
 class virtual ['res] lift : object
-  inherit ['res] Ppx_traverse_builtins.lift
-  inherit ['res] Ast.lift
+  inherit ['res] Traverse_builtins.lift
+  inherit ['res] Ast.Virtual.lift
 end
 
 class sexp_of : object
-  inherit [Sexp.t] Ppx_traverse_builtins.std_lifters
-  inherit [Sexp.t] Ast.lift
+  inherit [Sexp.t] Traverse_builtins.std_lifters
+  inherit [Sexp.t] Ast.Virtual.lift
 end
 
 val sexp_of : sexp_of
