@@ -10,7 +10,7 @@ let alphabet =
 ;;
 
 let vars_of_list ~get_loc l =
-  List.mapi l ~f:(fun i x -> { txt = alphabet.(i); loc = get_loc x })
+  List.mapi l ~f:(fun i x -> ({ txt = alphabet.(i); loc = get_loc x } : _ Loc.t))
 
 let evar_of_var = function%view { txt; loc } -> evar ~loc txt
 let pvar_of_var = function%view { txt; loc } -> pvar ~loc txt
@@ -290,12 +290,12 @@ let constrained_mapper ~(what:what) ?(is_gadt=false) mapper td =
     let mapper =
       if false || is_gadt then
         let typs =
-          List.map vars ~f:(fun v ->
+          List.map vars ~f:(fun (v : _ Loc.t) ->
             ptyp_constr ~loc:v.loc (longident_loc v) [])
         in
         List.fold_right vars
           ~init:(pexp_constraint ~loc:pexp_loc mapper (make_type typs))
-          ~f:(fun v e -> pexp_newtype ~loc:v.loc v e)
+          ~f:(fun (v : _ Loc.t) e -> pexp_newtype ~loc:v.loc v e)
       else
         mapper
     in
@@ -546,7 +546,7 @@ let gen_class ~(what:what) ~loc tds =
   let class_params = what#class_params ~loc in
   let virtual_methods =
     List.map (type_deps tds) ~f:(fun (id, arity) ->
-      let id = { txt = lident_last_exn id; loc } in
+      let (id : _ Loc.t) = { txt = lident_last_exn id; loc } in
       pcf_method ~loc
         (id,
          Private_flag.public,
@@ -593,22 +593,18 @@ let gen_class ~(what:what) ~loc tds =
                 ~fields:(virtual_methods @ methods)))
 
 let gen_str ~what ~loc ~path:_ (rf, tds) =
-  let rf = Conversion.ast_of_rec_flag rf in
-  let tds = List.map tds ~f:Conversion.ast_of_type_declaration in
   (match%view rf with
    | Nonrecursive ->
      (* The method name would clash... *)
      Location.Error.report
        Format.err_formatter
-       (Location.Error.make ~loc
-          (fun fmt -> Format.pp_print_string fmt "ppx_traverse doesn't support nonrec"));
+       (Location.Error.createf ~loc "ppx_traverse doesn't support nonrec");
      assert false
    | Recursive -> ());
   match%view gen_class ~loc ~what tds with
   | { pci_loc = loc; _ } as cl ->
     let class_decl = Class_declaration.create cl in
     Structure.create [ pstr_class ~loc [class_decl] ]
-    |> Conversion.ast_to_structure
 
 let () =
   let derivers =

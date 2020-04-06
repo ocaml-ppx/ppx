@@ -1,9 +1,8 @@
 #require "base";;
-#require "ppx.ast_deprecated";;
+#require "ppx.ast";;
 
 open Base
 open Ppx
-
 
 (* Linters *)
 
@@ -12,13 +11,16 @@ let lint = object
 
   method! type_declaration td acc =
     let acc = super#type_declaration td acc in
-    match td.ptype_kind with
+    match Type_kind.to_concrete (Type_declaration.ptype_kind td) with
     | Ptype_record lds ->
       if Poly.(<>)
-           (List.sort lds ~compare:(fun a b -> String.compare a.pld_name.txt b.pld_name.txt))
+           (List.sort lds ~compare:(fun a b ->
+              String.compare
+                (Label_declaration.pld_name a).txt
+                (Label_declaration.pld_name b).txt))
            lds
       then
-        Driver.Lint_error.of_string td.ptype_loc
+        Driver.Lint_error.of_string (Type_declaration.ptype_loc td)
           "Fields are not sorted!"
         :: acc
       else
@@ -46,14 +48,14 @@ Error (Warning 22): Fields are not sorted!
 let () =
   Driver.register_transformation "plop"
     ~rules:[Context_free.Rule.extension
-              (Extension.declare_with_path_arg "plop"
+              (Ext.declare_with_path_arg "plop"
                  Expression
                  Ast_pattern.(pstr nil)
                  (fun ~loc ~path:_ ~arg ->
                     let open Ast_builder in
                     match arg with
                     | None -> estring ~loc "-"
-                    | Some { loc; txt } -> estring ~loc (Longident.name txt)))]
+                    | Some { loc; txt } -> estring ~loc (Longid.name txt)))]
 [%%expect{|
 |}]
 

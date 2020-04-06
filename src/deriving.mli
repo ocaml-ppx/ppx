@@ -45,28 +45,28 @@ module Generator : sig
   type ('output_ast, 'input_ast) t
 
   val make
-    :  ?attributes:Attribute.packed list
+    :  ?attributes:Attr.packed list
     -> ?deps:deriver list
     -> ('f, 'output_ast) Args.t
     -> (loc:Location.t -> path:string -> 'input_ast -> 'f)
     -> ('output_ast, 'input_ast) t
 
   val make_noarg
-    :  ?attributes:Attribute.packed list
+    :  ?attributes:Attr.packed list
     -> ?deps:deriver list
     -> (loc:Location.t -> path:string -> 'input_ast -> 'output_ast)
     -> ('output_ast, 'input_ast) t
 
   module V2 : sig
     val make
-      :  ?attributes:Attribute.packed list
+      :  ?attributes:Attr.packed list
       -> ?deps:deriver list
       -> ('f, 'output_ast) Args.t
       -> (ctxt:Expansion_context.Deriver.t -> 'input_ast -> 'f)
       -> ('output_ast, 'input_ast) t
 
     val make_noarg
-      :  ?attributes:Attribute.packed list
+      :  ?attributes:Attr.packed list
       -> ?deps:deriver list
       -> (ctxt:Expansion_context.Deriver.t -> 'input_ast -> 'output_ast)
       -> ('output_ast, 'input_ast) t

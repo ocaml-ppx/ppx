@@ -1,4 +1,8 @@
 module Located : sig
+  val loc : _ Astlib.Loc.t -> Location.t
+  val mk : loc:Location.t -> 'a -> 'a Astlib.Loc.t
+  val map : 'a Astlib.Loc.t -> f:('a -> 'b) -> 'b Astlib.Loc.t
+  val map_lident : string Astlib.Loc.t -> Versions.longident_loc
   val longident
     : loc: Astlib.Location.t -> Versions.longident -> Versions.longident_loc
   val lident : loc: Astlib.Location.t -> string -> Versions.longident_loc
@@ -11,7 +15,7 @@ val eint : loc: Astlib.Location.t -> int -> Versions.expression
 val eint32 : loc: Astlib.Location.t -> int32 -> Versions.expression
 val eint64 : loc: Astlib.Location.t -> int64 -> Versions.expression
 val enativeint : loc: Astlib.Location.t -> nativeint -> Versions.expression
-val efloat : loc: Astlib.Location.t -> float -> Versions.expression
+val efloat : loc: Astlib.Location.t -> string -> Versions.expression
 val evar : loc: Astlib.Location.t -> string -> Versions.expression
 val eunit : loc: Astlib.Location.t -> Versions.expression
 val ebool : loc: Astlib.Location.t -> bool -> Versions.expression
@@ -35,7 +39,7 @@ val pint : loc: Astlib.Location.t -> int -> Versions.pattern
 val pint32 : loc: Astlib.Location.t -> int32 -> Versions.pattern
 val pint64 : loc: Astlib.Location.t -> int64 -> Versions.pattern
 val pnativeint : loc: Astlib.Location.t -> nativeint -> Versions.pattern
-val pfloat : loc: Astlib.Location.t -> float -> Versions.pattern
+val pfloat : loc: Astlib.Location.t -> string -> Versions.pattern
 val pvar : loc: Astlib.Location.t -> string -> Versions.pattern
 val punit : loc: Astlib.Location.t -> Versions.pattern
 val pbool : loc: Astlib.Location.t -> bool -> Versions.pattern

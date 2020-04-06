@@ -89,10 +89,10 @@ end
     - whole-file transformations ([impl], [intf], [enclose_impl], [enclose_intf])
 *)
 val register_transformation
-  :  ?extensions       : Extension.t list (* deprecated, use ~rules instead *)
+  :  ?extensions       : Ext.t list (* deprecated, use ~rules instead *)
   -> ?rules            : Context_free.Rule.t list
-  -> ?enclose_impl     : (Location.t option -> structure * structure)
-  -> ?enclose_intf     : (Location.t option -> signature * signature)
+  -> ?enclose_impl     : (Location.t option -> structure_item list * structure_item list)
+  -> ?enclose_intf     : (Location.t option -> signature_item list * signature_item list)
   -> ?impl             : (structure -> structure)
   -> ?intf             : (signature -> signature)
   -> ?lint_impl        : (structure -> Lint_error.t list)
@@ -111,10 +111,8 @@ val register_transformation
     library.
 *)
 val register_transformation_using_ocaml_current_ast
-  :  ?impl : (Migrate_parsetree.OCaml_current.Ast.Parsetree.structure ->
-              Migrate_parsetree.OCaml_current.Ast.Parsetree.structure)
-  -> ?intf : (Migrate_parsetree.OCaml_current.Ast.Parsetree.signature ->
-              Migrate_parsetree.OCaml_current.Ast.Parsetree.signature)
+  :  ?impl : (Compiler_types.structure -> Compiler_types.structure)
+  -> ?intf : (Compiler_types.signature -> Compiler_types.signature)
   -> ?aliases : string list
   -> string
   -> unit

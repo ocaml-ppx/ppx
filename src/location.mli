@@ -5,11 +5,11 @@
 
 open! Import
 
-type t = location =
-  { loc_start : Lexing.position
-  ; loc_end   : Lexing.position
-  ; loc_ghost : bool
-  }
+type t = Astlib.Location.t = {
+  loc_start : Astlib.Position.t;
+  loc_end : Astlib.Position.t;
+  loc_ghost : bool;
+}
 
 (** Return an empty ghost range located in a given file. *)
 val in_file : string -> t
@@ -30,28 +30,20 @@ val report_exception : Format.formatter -> exn -> unit
 (** Prints [File "...", line ..., characters ...-...:] *)
 val print : Format.formatter -> t -> unit
 
-type nonrec 'a loc = 'a loc =
-  { txt : 'a
-  ; loc : t
-  }
+type 'a loc = 'a Astlib.Loc.t
 
 module Error : sig
   type location = t
-  type t = Ocaml_common.Location.error
+  type t = Astlib.Location.Error.t
 
   val createf : loc:location -> ('a, Format.formatter, unit, t) format4 -> 'a
 
-  val message : t -> string
-  val set_message : t -> string -> t
-
   (** Register an exception handler. Exception registered this way will be properly
       displayed by [report_exception]. *)
-  val register_error_of_exn: (exn -> t option) -> unit
+  val register_of_exn: (exn -> t option) -> unit
 
   val of_exn : exn -> t option
 
-  (** Convert an error to an extension point. The compiler recognizes this and displays
-      the error properly. *)
   val to_extension : t -> extension
 end with type location := t
 

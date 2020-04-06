@@ -13,6 +13,7 @@
   ppx_traverse_builtins
   stdppx)
  (flags (:standard -open Ocaml_shadow -safe-string))
+ (preprocess (pps ppx_bootstrap_runner))
  (ppx.driver
   (main       Ppx.Driver.standalone)
   (replaces   ocaml-migrate-parsetree)
@@ -22,20 +23,3 @@
 (cinaps
  (files *.ml *.mli)
  (libraries ppxlib_cinaps_helpers))
-
-(rule
- (targets ast_pattern_generated.ml)
- (deps    gen/gen_ast_pattern.exe)
- (action  (run ./gen/gen_ast_pattern.exe %{lib:ppx.ast_deprecated:ast.ml})))
-
-(rule
- (targets ast_builder_generated.ml)
- (deps gen/gen_ast_builder.exe)
- (action  (run ./gen/gen_ast_builder.exe %{lib:ppx.ast_deprecated:ast.ml})))
-
-;; This is to make the code compatible with different versions of
-;; OCaml
-(rule
- (targets compiler_specifics.ml)
- (deps    gen-compiler_specifics)
- (action  (run %{ocaml} %{deps} %{ocaml_version} %{targets})))

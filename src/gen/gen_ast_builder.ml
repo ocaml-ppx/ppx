@@ -194,8 +194,8 @@ let generate filename =
     |> List.flatten
   in
   let st =
-    Str.open_ (Opn.mk (Loc.lident "Import"))
-    :: items
+    Str.open_ (Opn.mk (Loc.lident "Ppx_ast_deprecated.Ast")) ::
+    items
   in
   dump "ast_builder_generated" Pprintast.structure st ~ext:".ml"
 

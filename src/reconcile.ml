@@ -1,35 +1,37 @@
 open! Import
 open Utils
+module Pprintast = Ppx_ast_deprecated.Pprintast
 
 module Context = struct
   type 'a t =
-    | Extension          of 'a Extension.Context.t
-    | Floating_attribute of 'a Attribute.Floating.Context.t
+    | Extension          of 'a Ext.Context.t
+    | Floating_attribute of 'a Attr.Floating.Context.t
 
   let paren pp ppf x =
     Format.fprintf ppf "(%a)" pp x
 
+  let f pp conv fmt x = pp fmt (conv x)
+
   let printer
     : type a. a t -> Format.formatter -> a -> unit =
-    let open Extension.Context in
-    let open Attribute.Floating.Context in
+    let open Ext.Context in
+    let open Attr.Floating.Context in
     function
-    | Extension Class_expr       -> Pprintast.class_expr
-    | Extension Class_field      -> Pprintast.class_field
-    | Extension Class_type       -> Pprintast.class_type
-    | Extension Class_type_field -> Pprintast.class_type_field
-    | Extension Core_type        -> paren Pprintast.core_type
-    | Extension Expression       -> paren Pprintast.expression
-    | Extension Module_expr      -> Pprintast.module_expr
-    | Extension Module_type      -> Pprintast.module_type
-    | Extension Pattern          -> paren Pprintast.pattern
-    | Extension Signature_item   -> Pprintast.signature_item
-    | Extension Structure_item   -> Pprintast.structure_item
-
-    | Floating_attribute Structure_item   -> Pprintast.structure_item
-    | Floating_attribute Signature_item   -> Pprintast.signature_item
-    | Floating_attribute Class_field      -> Pprintast.class_field
-    | Floating_attribute Class_type_field -> Pprintast.class_type_field
+    | Extension Class_expr       -> f Pprintast.class_expr Conversion.ast_to_class_expr
+    | Extension Class_field      -> f Pprintast.class_field Conversion.ast_to_class_field
+    | Extension Class_type       -> f Pprintast.class_type Conversion.ast_to_class_type
+    | Extension Class_type_field -> f Pprintast.class_type_field Conversion.ast_to_class_type_field
+    | Extension Core_type        -> f (paren Pprintast.core_type) Conversion.ast_to_core_type
+    | Extension Expression       -> f (paren Pprintast.expression) Conversion.ast_to_expression
+    | Extension Module_expr      -> f Pprintast.module_expr Conversion.ast_to_module_expr
+    | Extension Module_type      -> f Pprintast.module_type Conversion.ast_to_module_type
+    | Extension Pattern          -> f (paren Pprintast.pattern) Conversion.ast_to_pattern
+    | Extension Signature_item   -> f Pprintast.signature_item Conversion.ast_to_signature_item
+    | Extension Structure_item   -> f Pprintast.structure_item Conversion.ast_to_structure_item
+    | Floating_attribute Structure_item   -> f Pprintast.structure_item Conversion.ast_to_structure_item
+    | Floating_attribute Signature_item   -> f Pprintast.signature_item Conversion.ast_to_signature_item
+    | Floating_attribute Class_field      -> f Pprintast.class_field Conversion.ast_to_class_field
+    | Floating_attribute Class_type_field -> f Pprintast.class_type_field Conversion.ast_to_class_type_field
 end
 
 module Replacement = struct

@@ -107,7 +107,8 @@ module Args = struct
           let value =
             match List.assoc args p.name with
             | None -> p.default
-            | Some expr -> Ast_pattern.Packed.parse p.pattern expr.pexp_loc expr
+            | Some expr ->
+              Ast_pattern.Packed.parse p.pattern (Expression.pexp_loc expr) expr
           in
           I_cons (create t args, value)
     ;;
@@ -139,7 +140,7 @@ module Generator = struct
     | T : { spec           : ('c, 'a) Args.t
           ; gen            : ctxt:Expansion_context.Deriver.t -> 'b -> 'c
           ; arg_names      : String.Set.t
-          ; attributes     : Attribute.packed list
+          ; attributes     : Attr.packed list
           ; deps           : deriver list
           } -> ('a, 'b) t
 
@@ -174,11 +175,11 @@ module Generator = struct
   let check_arguments name generators (args : (string * expression) list) =
     List.iter args ~f:(fun (label, e) ->
       if String.is_empty label then
-        Location.raise_errorf ~loc:e.pexp_loc
+        Location.raise_errorf ~loc:(Expression.pexp_loc e)
           "Ppx.Deriving: generator arguments must be labelled");
     Option.iter (List.find_a_dup args ~compare:(fun (a, _) (b, _) -> String.compare a b))
       ~f:(fun (label, e) ->
-        Location.raise_errorf ~loc:e.pexp_loc
+        Location.raise_errorf ~loc:(Expression.pexp_loc e)
           "Ppx.Deriving: argument labelled '%s' appears more than once" label);
     let accepted_args = merge_accepted_args generators in
     List.iter args ~f:(fun (label, e) ->
@@ -188,7 +189,7 @@ module Generator = struct
           | None -> ""
           | Some s -> ".\n" ^ s
         in
-        Location.raise_errorf ~loc:e.pexp_loc
+        Location.raise_errorf ~loc:(Expression.pexp_loc e)
           "Ppx.Deriving: generator '%s' doesn't accept argument '%s'%s"
           name label spellcheck_msg);
   ;;
@@ -197,13 +198,12 @@ module Generator = struct
     Args.apply t.spec args (t.gen ~ctxt x)
   ;;
 
-  let apply_all ~ctxt entry (name, generators, args) =
-    check_arguments name.txt generators args;
-    List.concat_map generators ~f:(fun t -> apply t ~name:name.txt ~ctxt entry args)
-  ;;
-
-  let apply_all ~ctxt entry generators =
-    List.concat_map generators ~f:(apply_all ~ctxt entry)
+  let apply_all ~ctxt ~concat entry generators =
+    List.concat_map generators ~f:(fun ((name : _ Loc.t), inner, args) ->
+      check_arguments name.txt inner args;
+      List.map inner ~f:(fun t ->
+        apply t ~name:name.txt ~ctxt entry args))
+    |> concat
   ;;
 end
 
@@ -318,7 +318,7 @@ module Deriver = struct
     |> String.Set.to_list
   ;;
 
-  let not_supported (field : (_, _) Field.t) ?(spellcheck=true) name =
+  let not_supported (field : (_, _) Field.t) ?(spellcheck=true) (name : _ Loc.t) =
     let spellcheck_msg =
       if spellcheck then
         match Spellcheck.spellcheck (supported_for field) name.txt with
@@ -332,7 +332,7 @@ module Deriver = struct
       name.txt field.name spellcheck_msg
   ;;
 
-  let resolve field name =
+  let resolve field (name : _ Loc.t) =
     try
       resolve_internal field name.txt
     with Not_supported name' ->
@@ -341,7 +341,7 @@ module Deriver = struct
 
   let resolve_all field derivers =
     let derivers_and_args =
-      List.filter_map derivers ~f:(fun (name, args) ->
+      List.filter_map derivers ~f:(fun ((name : _ Loc.t), args) ->
         match Ppx_derivers.lookup name.txt with
         | None ->
           not_supported field name
@@ -407,7 +407,7 @@ module Deriver = struct
     (match extension with
      | None -> ()
      | Some f ->
-       let extension = Extension.declare name Expression Ast_pattern.(ptyp __) f in
+       let extension = Ext.declare name Expression Ast_pattern.(ptyp __) f in
        Driver.register_transformation ("Ppx.Deriving." ^ name)
          ~rules:[ Context_free.Rule.extension extension ]);
     name
@@ -454,8 +454,8 @@ let add_alias = Deriver.add_alias
 
 let invalid_with ~loc = Location.raise_errorf ~loc "invalid [@@deriving ] attribute syntax"
 
-let generator_name_of_id loc id =
-  match Longident.flatten_exn id with
+let generator_name_of_id loc id : _ Loc.t =
+  match Longid.flatten_exn id with
   | l -> { loc; txt = String.concat ~sep:"." l }
   | exception _ -> invalid_with ~loc:loc
 ;;
@@ -465,13 +465,13 @@ exception Unknown_syntax of Location.t * string
 let parse_arguments l =
   try
     Args (
-      match l with
+      match%view l with
       | [(Nolabel, e)] -> begin
-          match e.pexp_desc with
+          match%view Expression.pexp_desc e with
           | Pexp_record (fields, None)  ->
-            List.map fields ~f:(fun (id, expr) ->
+            List.map fields ~f:(function%view (Longident_loc id, expr) ->
               let name =
-                match id.txt with
+                match%view id.txt with
                 | Lident s -> s
                 | _ -> Exn.raise_notrace
                          (Unknown_syntax
@@ -481,22 +481,23 @@ let parse_arguments l =
           | _ ->
             Exn.raise_notrace
               (Unknown_syntax
-                 (e.pexp_loc, "non-optional labelled argument or record expected"))
+                 (Expression.pexp_loc e,
+                  "non-optional labelled argument or record expected"))
         end
       | l ->
         List.map l ~f:(fun (label, expr) ->
-          match label with
+          match%view label with
           | Labelled s ->
             (s, expr)
           | _ ->
             Exn.raise_notrace
               (Unknown_syntax
-                 (expr.pexp_loc, "non-optional labelled argument expected"))))
+                 (Expression.pexp_loc expr, "non-optional labelled argument expected"))))
   with Unknown_syntax (loc, msg) ->
     Unknown_syntax (loc, msg)
 
 let mk_deriving_attr context ~prefix ~suffix =
-  Attribute.declare
+  Attr.declare
     (prefix ^ "deriving" ^ suffix)
     context
     Ast_pattern.(
@@ -521,13 +522,19 @@ let mk_deriving_attr context ~prefix ~suffix =
    +-----------------------------------------------------------------+ *)
 
 let disable_unused_warning_attribute ~loc =
-  ({ txt = "ocaml.warning"; loc },
-   PStr [pstr_eval ~loc (estring ~loc "-32") []])
+  Attribute.create
+    ({ txt = "ocaml.warning"; loc },
+     Payload.pStr
+       (Structure.create
+          [pstr_eval ~loc (estring ~loc "-32") (Attributes.create [])]))
 ;;
 
 let inline_doc_attr ~loc =
-  ({ txt = "ocaml.doc"; loc },
-   PStr [pstr_eval ~loc (estring ~loc "@inline") []])
+  Attribute.create
+    ({ txt = "ocaml.doc"; loc },
+     Payload.pStr
+       (Structure.create
+          [pstr_eval ~loc (estring ~loc "@inline") (Attributes.create [])]))
 ;;
 
 let disable_unused_warning_str ~loc st =
@@ -541,10 +548,15 @@ let disable_unused_warning_str ~loc st =
     let include_infos =
       include_infos ~loc
         (pmod_structure ~loc
-           (pstr_attribute ~loc (disable_unused_warning_attribute ~loc) :: st))
+           (Structure.create
+              (pstr_attribute ~loc (disable_unused_warning_attribute ~loc)
+               :: Structure.to_concrete st)))
     in
-    [pstr_include ~loc
-       {include_infos with pincl_attributes = [inline_doc_attr ~loc]}]
+    Structure.create
+      [pstr_include ~loc
+         (Include_declaration.create
+            (Include_infos.update include_infos
+               ~pincl_attributes:(Attributes.create [inline_doc_attr ~loc])))]
 ;;
 
 let disable_unused_warning_sig ~loc sg =
@@ -554,10 +566,15 @@ let disable_unused_warning_sig ~loc sg =
     let include_infos =
       include_infos ~loc
         (pmty_signature ~loc
-           (psig_attribute ~loc (disable_unused_warning_attribute ~loc) :: sg))
+           (Signature.create
+              (psig_attribute ~loc (disable_unused_warning_attribute ~loc)
+               :: Signature.to_concrete sg)))
     in
-    [psig_include ~loc
-       { include_infos with pincl_attributes = [inline_doc_attr ~loc]}]
+    Signature.create
+      [psig_include ~loc
+         (Include_description.create
+            (Include_infos.update include_infos
+               ~pincl_attributes:(Attributes.create [inline_doc_attr ~loc])))]
 ;;
 
 (* +-----------------------------------------------------------------+
@@ -577,86 +594,95 @@ let remove generators =
     method! extension x = x
 
     method! label_declaration ld =
-      Attribute.remove_seen Attribute.Context.label_declaration attributes ld
+      Attr.remove_seen Attr.Context.label_declaration attributes ld
 
     method! constructor_declaration cd =
-      Attribute.remove_seen Attribute.Context.constructor_declaration attributes cd
+      Attr.remove_seen Attr.Context.constructor_declaration attributes cd
   end
 *)
 (* +-----------------------------------------------------------------+
    | Main expansion                                                  |
    +-----------------------------------------------------------------+ *)
 
-let types_used_by_deriving (tds : type_declaration list)
-  : structure_item list =
+let types_used_by_deriving (tds : type_declaration list) =
   if keep_w32_impl () then
-    []
+    Structure.create []
   else
     List.map tds ~f:(fun td ->
       let typ = Common.core_type_of_type_declaration td in
-      let loc = td.ptype_loc in
+      let loc = Type_declaration.ptype_loc td in
       pstr_value
         ~loc
-        Nonrecursive
+        Rec_flag.nonrecursive
         [value_binding
            ~loc
            ~pat:(ppat_any ~loc)
            ~expr:(pexp_fun
                    ~loc
-                    Nolabel
+                    Arg_label.nolabel
                     None
                     (ppat_constraint ~loc (ppat_any ~loc) typ)
                     (eunit ~loc))]
-    )
+    ) |> Structure.create
 
 let merge_generators field l =
   List.filter_map l ~f:(fun x -> x)
   |> List.concat
   |> Deriver.resolve_all field
 
+let concat_structure list =
+  Structure.create (List.concat_map list ~f:Structure.to_concrete)
+
+let concat_signature list =
+  Signature.create (List.concat_map list ~f:Signature.to_concrete)
+
 let expand_str_type_decls ~ctxt rec_flag tds values =
   let generators = merge_generators Deriver.Field.str_type_decl values in
   (* TODO: instead of disabling the unused warning for types themselves, we
      should add a tag [@@unused]. *)
   let generated =
-    types_used_by_deriving tds
-    @ Generator.apply_all ~ctxt (rec_flag, tds) generators;
+    concat_structure [
+      types_used_by_deriving tds;
+      Generator.apply_all ~ctxt ~concat:concat_structure (rec_flag, tds) generators;
+    ]
   in
   disable_unused_warning_str ~loc:(Expansion_context.Deriver.derived_item_loc ctxt) generated
 
 let expand_sig_type_decls ~ctxt rec_flag tds values =
   let generators = merge_generators Deriver.Field.sig_type_decl values in
-  let generated = Generator.apply_all ~ctxt (rec_flag, tds) generators in
+  let generated =
+    Generator.apply_all ~ctxt ~concat:concat_signature (rec_flag, tds) generators
+  in
   disable_unused_warning_sig ~loc:(Expansion_context.Deriver.derived_item_loc ctxt) generated
 
 let expand_str_module_type_decl ~ctxt mtd generators =
   let generators = Deriver.resolve_all Deriver.Field.str_module_type_decl generators in
-  let generated = Generator.apply_all ~ctxt mtd generators in
+  let generated = Generator.apply_all ~ctxt ~concat:concat_structure mtd generators in
   disable_unused_warning_str ~loc:(Expansion_context.Deriver.derived_item_loc ctxt) generated
 
 let expand_sig_module_type_decl ~ctxt mtd generators =
   let generators = Deriver.resolve_all Deriver.Field.sig_module_type_decl generators in
-  let generated = Generator.apply_all ~ctxt mtd generators in
+  let generated = Generator.apply_all ~ctxt ~concat:concat_signature mtd generators in
   disable_unused_warning_sig ~loc:(Expansion_context.Deriver.derived_item_loc ctxt) generated
 
 let expand_str_exception ~ctxt ec generators =
   let generators = Deriver.resolve_all Deriver.Field.str_exception generators in
-  let generated = Generator.apply_all ~ctxt ec generators in
+  let generated = Generator.apply_all ~ctxt ~concat:concat_structure ec generators in
   disable_unused_warning_str ~loc:(Expansion_context.Deriver.derived_item_loc ctxt) generated
 
 let expand_sig_exception ~ctxt ec generators =
   let generators = Deriver.resolve_all Deriver.Field.sig_exception generators in
-  let generated = Generator.apply_all ~ctxt ec generators in
+  let generated = Generator.apply_all ~ctxt ~concat:concat_signature ec generators in
   disable_unused_warning_sig ~loc:(Expansion_context.Deriver.derived_item_loc ctxt) generated
 
 let expand_str_type_ext ~ctxt te generators =
   let generators = Deriver.resolve_all Deriver.Field.str_type_ext generators in
-  let generated = Generator.apply_all ~ctxt te generators in
+  let generated = Generator.apply_all ~ctxt ~concat:concat_structure te generators in
   disable_unused_warning_str ~loc:(Expansion_context.Deriver.derived_item_loc ctxt) generated
 
 let expand_sig_type_ext ~ctxt te generators =
   let generators = Deriver.resolve_all Deriver.Field.sig_type_ext generators in
-  let generated = Generator.apply_all ~ctxt te generators in
+  let generated = Generator.apply_all ~ctxt ~concat:concat_signature te generators in
   disable_unused_warning_sig ~loc:(Expansion_context.Deriver.derived_item_loc ctxt) generated
 
 let rules ~typ ~expand_sig ~expand_str ~rule_str ~rule_sig ~rule_str_expect

@@ -35,11 +35,14 @@ module Cookies = struct
   type t = Migrate_parsetree.Driver.cookies
 
   let get t name pattern =
-    Option.map (Migrate_parsetree.Driver.get_cookie t name (module Ppx_ast_deprecated.Selected_ast))
+    Option.map
+      (Migrate_parsetree.Driver.get_cookie t name (module Ppx_ast_deprecated.Selected_ast))
       ~f:(fun e ->
-        Ast_pattern.parse pattern e.pexp_loc e Fn.id)
+        let e = Conversion.ast_of_expression e in
+        Ast_pattern.parse pattern (Expression.pexp_loc e) e Fn.id)
 
   let set t name expr =
+    let expr = Conversion.ast_to_expression expr in
     Migrate_parsetree.Driver.set_cookie t name (module Ppx_ast_deprecated.Selected_ast) expr
 
   let handlers = ref []
@@ -62,14 +65,14 @@ module Transform = struct
   type t =
     { name            : string
     ; aliases         : string list
-    ; impl            : (Parsetree.structure -> Parsetree.structure) option
-    ; intf            : (Parsetree.signature -> Parsetree.signature) option
-    ; lint_impl       : (Parsetree.structure -> Lint_error.t list) option
-    ; lint_intf       : (Parsetree.signature -> Lint_error.t list) option
-    ; preprocess_impl : (Parsetree.structure -> Parsetree.structure) option
-    ; preprocess_intf : (Parsetree.signature -> Parsetree.signature) option
-    ; enclose_impl    : (Location.t option -> Parsetree.structure * Parsetree.structure) option
-    ; enclose_intf    : (Location.t option -> Parsetree.signature * Parsetree.signature) option
+    ; impl            : (structure -> structure) option
+    ; intf            : (signature -> signature) option
+    ; lint_impl       : (structure -> Lint_error.t list) option
+    ; lint_intf       : (signature -> Lint_error.t list) option
+    ; preprocess_impl : (structure -> structure) option
+    ; preprocess_intf : (signature -> signature) option
+    ; enclose_impl    : (Location.t option -> structure_item list * structure_item list) option
+    ; enclose_intf    : (Location.t option -> signature_item list * signature_item list) option
     ; rules           : Context_free.Rule.t list
     ; registered_at   : Caller_id.t
     }
@@ -166,7 +169,7 @@ module Transform = struct
     let map_impl st_with_attrs =
       let st =
         let attrs, st =
-          List.split_while st_with_attrs ~f:(function
+          List.split_while (Structure.to_concrete st_with_attrs) ~f:(function%view
             | { pstr_desc = Pstr_attribute _; _ } -> true
             | _ -> false)
         in
@@ -174,14 +177,19 @@ module Transform = struct
           match enclose_impl with
           | None   -> ([], [])
           | Some f ->
-            let whole_loc = loc_of_list st ~get_loc:(fun st -> st.Parsetree.pstr_loc) in
+            let whole_loc = loc_of_list st ~get_loc:Structure_item.pstr_loc in
             gen_header_and_footer Structure_item whole_loc f
         in
-        let file_path = File_path.get_default_path_str st in
+        let file_path = File_path.get_default_path_str (Structure.create st) in
         let base_ctxt = Expansion_context.Base.top_level ~omp_config ~file_path in
-        let attrs = map#structure base_ctxt attrs in
-        let st = map#structure base_ctxt st in
-        List.concat [ attrs; header; st; footer ]
+        let attrs = map#structure base_ctxt (Structure.create attrs) in
+        let st = map#structure base_ctxt (Structure.create st) in
+        Structure.create (List.concat [
+          Structure.to_concrete attrs;
+          header;
+          Structure.to_concrete st;
+          footer;
+        ])
       in
       match impl with
       | None -> st
@@ -190,7 +198,7 @@ module Transform = struct
     let map_intf sg_with_attrs =
       let sg =
         let attrs, sg =
-          List.split_while sg_with_attrs ~f:(function
+          List.split_while (Signature.to_concrete sg_with_attrs) ~f:(function%view
             | { psig_desc = Psig_attribute _; _ } -> true
             | _ -> false)
         in
@@ -198,14 +206,19 @@ module Transform = struct
           match enclose_intf with
           | None   -> ([], [])
           | Some f ->
-            let whole_loc = loc_of_list sg ~get_loc:(fun sg -> sg.Parsetree.psig_loc) in
+            let whole_loc = loc_of_list sg ~get_loc:Signature_item.psig_loc in
             gen_header_and_footer Signature_item whole_loc f
         in
-        let file_path = File_path.get_default_path_sig sg in
+        let file_path = File_path.get_default_path_sig (Signature.create sg) in
         let base_ctxt = Expansion_context.Base.top_level ~omp_config ~file_path in
-        let attrs = map#signature base_ctxt attrs in
-        let sg = map#signature base_ctxt sg in
-        List.concat [ attrs; header; sg; footer ]
+        let attrs = map#signature base_ctxt (Signature.create attrs) in
+        let sg = map#signature base_ctxt (Signature.create sg) in
+        Signature.create (List.concat [
+          Signature.to_concrete attrs;
+          header;
+          Signature.to_concrete sg;
+          footer;
+        ])
       in
       match intf with
       | None -> sg
@@ -289,8 +302,14 @@ let register_code_transformation ~name ?(aliases=[]) ~impl ~intf =
 ;;
 
 let register_transformation_using_ocaml_current_ast ?impl ?intf ?aliases name =
-  let impl = Option.map impl ~f:(Ppx_ast_deprecated.Selected_ast.of_ocaml_mapper Structure) in
-  let intf = Option.map intf ~f:(Ppx_ast_deprecated.Selected_ast.of_ocaml_mapper Signature) in
+  let impl =
+    Option.map impl ~f:(fun impl structure ->
+      Conversion.ast_of_structure (impl (Conversion.ast_to_structure structure)))
+  in
+  let intf =
+    Option.map intf ~f:(fun intf signature ->
+      Conversion.ast_of_signature (intf (Conversion.ast_to_signature signature)))
+  in
   register_transformation ?impl ?intf ?aliases name
 
 let debug_dropped_attribute name ~old_dropped ~new_dropped =
@@ -302,7 +321,7 @@ let debug_dropped_attribute name ~old_dropped ~new_dropped =
     if not (List.is_empty diff) then begin
       Printf.eprintf "The following attributes %s after applying %s:\n"
         what name;
-      List.iter diff ~f:(fun { Location. txt; loc } ->
+      List.iter diff ~f:(fun { Loc. txt; loc } ->
         Format.eprintf "- %a: %s\n" Location.print loc txt);
       Format.eprintf "@."
     end
@@ -473,31 +492,34 @@ let real_map_structure config cookies st =
   let { C. hook; expect_mismatch_handler } = C.find config in
   Cookies.acknoledge_cookies cookies;
   if !perform_checks then begin
-    Attribute.reset_checks ();
-    Attribute.collect#structure st
+    Attr.reset_checks ();
+    Attr.collect#structure st
   end;
   let st, lint_errors =
     apply_transforms st
       ~omp_config:config
       ~field:(fun (ct : Transform.t) -> ct.impl)
       ~lint_field:(fun (ct : Transform.t) -> ct.lint_impl)
-      ~dropped_so_far:Attribute.dropped_so_far_structure ~hook ~expect_mismatch_handler
+      ~dropped_so_far:Attr.dropped_so_far_structure ~hook ~expect_mismatch_handler
   in
   let st =
     match lint_errors with
     | [] -> st
     | _  ->
-      List.map lint_errors ~f:(fun (({ loc; _ }, _) as attr) ->
-        Ast_builder.pstr_attribute ~loc attr)
-      @ st
+      Structure.create
+        (List.map lint_errors ~f:(fun attr ->
+           match%view attr with
+           | Attribute ({ loc; _ }, _) ->
+             pstr_attribute ~loc attr)
+         @ Structure.to_concrete st)
   in
   Cookies.call_post_handlers cookies;
   if !perform_checks then begin
     (* TODO: these two passes could be merged, we now have more passes for
        checks than for actual rewriting. *)
-    Attribute.check_unused#structure st;
-    if !perform_checks_on_extensions then Extension.check_unused#structure st;
-    Attribute.check_all_seen ();
+    Attr.check_unused#structure st;
+    if !perform_checks_on_extensions then Ext.check_unused#structure st;
+    Attr.check_all_seen ();
   end;
   st
 ;;
@@ -509,38 +531,41 @@ let map_structure_gen st ~config : Migrate_parsetree.Driver.some_structure =
     st
 
 let map_structure st =
-  map_structure_gen st ~config:(as_ppx_config ())
+  map_structure_gen (Conversion.ast_to_structure st) ~config:(as_ppx_config ())
 
 (*$ str_to_sig _last_text_block *)
 let real_map_signature config cookies sg =
   let { C. hook; expect_mismatch_handler } = C.find config in
   Cookies.acknoledge_cookies cookies;
   if !perform_checks then begin
-    Attribute.reset_checks ();
-    Attribute.collect#signature sg
+    Attr.reset_checks ();
+    Attr.collect#signature sg
   end;
   let sg, lint_errors =
     apply_transforms sg
       ~omp_config:config
       ~field:(fun (ct : Transform.t) -> ct.intf)
       ~lint_field:(fun (ct : Transform.t) -> ct.lint_intf)
-      ~dropped_so_far:Attribute.dropped_so_far_signature ~hook ~expect_mismatch_handler
+      ~dropped_so_far:Attr.dropped_so_far_signature ~hook ~expect_mismatch_handler
   in
   let sg =
     match lint_errors with
     | [] -> sg
     | _  ->
-      List.map lint_errors ~f:(fun (({ loc; _ }, _) as attr) ->
-        Ast_builder.psig_attribute ~loc attr)
-      @ sg
+      Signature.create
+        (List.map lint_errors ~f:(fun attr ->
+           match%view attr with
+           | Attribute ({ loc; _ }, _) ->
+             psig_attribute ~loc attr)
+         @ Signature.to_concrete sg)
   in
   Cookies.call_post_handlers cookies;
   if !perform_checks then begin
     (* TODO: these two passes could be merged, we now have more passes for
        checks than for actual rewriting. *)
-    Attribute.check_unused#signature sg;
-    if !perform_checks_on_extensions then Extension.check_unused#signature sg;
-    Attribute.check_all_seen ();
+    Attr.check_unused#signature sg;
+    if !perform_checks_on_extensions then Ext.check_unused#signature sg;
+    Attr.check_all_seen ();
   end;
   sg
 ;;
@@ -552,7 +577,7 @@ let map_signature_gen sg ~config : Migrate_parsetree.Driver.some_signature =
     sg
 
 let map_signature sg =
-  map_signature_gen sg ~config:(as_ppx_config ())
+  map_signature_gen (Conversion.ast_to_signature sg) ~config:(as_ppx_config ())
 
 (*$*)
 
@@ -565,6 +590,7 @@ let mapper =
   (*$*)
   let structure _ st =
     Js.of_ocaml Structure st
+    |> Conversion.ast_of_structure
     |> map_structure
     |> Migrate_parsetree.Driver.migrate_some_structure
          (module Migrate_parsetree.OCaml_current)
@@ -572,6 +598,7 @@ let mapper =
   (*$ str_to_sig _last_text_block *)
   let signature _ sg =
     Js.of_ocaml Signature sg
+    |> Conversion.ast_of_signature
     |> map_signature
     |> Migrate_parsetree.Driver.migrate_some_signature
          (module Migrate_parsetree.OCaml_current)
@@ -603,8 +630,8 @@ let string_contains_binary_ast s =
   let test magic_number =
     String.is_prefix s ~prefix:(String.sub magic_number ~pos:0 ~len:9)
   in
-  test Ast_magic.ast_intf_magic_number ||
-  test Ast_magic.ast_impl_magic_number
+  test Ocaml_common.Config.ast_intf_magic_number ||
+  test Ocaml_common.Config.ast_impl_magic_number
 
 type pp_error = { filename : string; command_line : string }
 exception Pp_error of pp_error
@@ -614,7 +641,7 @@ let report_pp_error ppf e =
                            Command line: %s@." e.command_line
 
 let () =
-  Location.Error.register_error_of_exn
+  Location.Error.register_of_exn
     (function
       | Pp_error e ->
         Some (Location.Error.createf ~loc:(Location.in_file e.filename) "%a"
@@ -713,10 +740,12 @@ let load_input (kind : Kind.t) fn input_name ~relocate ic =
       ; pos_bol   = 0
       ; pos_cnum  = 0
       };
-    Lexer.skip_hash_bang lexbuf;
+    Ocaml_common.Lexer.skip_hash_bang lexbuf;
     match kind with
-    | Intf -> input_name, Intf (Parse.interface      lexbuf)
-    | Impl -> input_name, Impl (Parse.implementation lexbuf)
+    | Intf ->
+      input_name, Intf (Conversion.ast_of_signature (Ocaml_common.Parse.interface lexbuf))
+    | Impl ->
+      input_name, Impl (Conversion.ast_of_structure (Ocaml_common.Parse.implementation lexbuf))
 ;;
 
 let load_source_file fn =
@@ -736,39 +765,41 @@ type output_mode =
 
 (*$*)
 let extract_cookies_str st =
-  match st with
-  | { pstr_desc = Pstr_attribute({txt = "ocaml.ppx.context"; _}, _); _ } as prefix
-    :: st ->
-    let prefix = Ppx_ast_deprecated.Selected_ast.to_ocaml Structure [prefix] in
+  match%view st with
+  | Structure
+      ({ pstr_desc = Pstr_attribute(Attribute({txt = "ocaml.ppx.context"; _}, _)); _ } as prefix
+       :: st) ->
+    let prefix = [ Conversion.ast_to_structure_item prefix ] in
     assert (List.is_empty
               (Ocaml_common.Ast_mapper.drop_ppx_context_str ~restore:true prefix));
-    st
+    Structure.create st
   | _ -> st
 
 let add_cookies_str st =
   let prefix =
     Ocaml_common.Ast_mapper.add_ppx_context_str ~tool_name:"ppx_driver" []
-    |> Ppx_ast_deprecated.Selected_ast.of_ocaml Structure
+    |> Conversion.ast_of_structure
   in
-  prefix @ st
+  Structure.create (Structure.to_concrete prefix @ Structure.to_concrete st)
 
 (*$ str_to_sig _last_text_block *)
 let extract_cookies_sig sg =
-  match sg with
-  | { psig_desc = Psig_attribute({txt = "ocaml.ppx.context"; _}, _); _ } as prefix
-    :: sg ->
-    let prefix = Ppx_ast_deprecated.Selected_ast.to_ocaml Signature [prefix] in
+  match%view sg with
+  | Signature
+      ({ psig_desc = Psig_attribute(Attribute({txt = "ocaml.ppx.context"; _}, _)); _ } as prefix
+       :: sg) ->
+    let prefix = [ Conversion.ast_to_signature_item prefix ] in
     assert (List.is_empty
               (Ocaml_common.Ast_mapper.drop_ppx_context_sig ~restore:true prefix));
-    sg
+    Signature.create sg
   | _ -> sg
 
 let add_cookies_sig sg =
   let prefix =
     Ocaml_common.Ast_mapper.add_ppx_context_sig ~tool_name:"ppx_driver" []
-    |> Ppx_ast_deprecated.Selected_ast.of_ocaml Signature
+    |> Conversion.ast_of_signature
   in
-  prefix @ sg
+  Signature.create (Signature.to_concrete prefix @ Signature.to_concrete sg)
 
 (*$*)
 
@@ -786,7 +817,7 @@ let corrections = ref []
 
 let add_to_list r x = r := x :: !r
 
-let register_correction ~loc ~repl =
+let register_correction ~(loc : Location.t) ~repl =
   add_to_list corrections
     (Reconcile.Replacement.make_text ()
        ~start:loc.loc_start
@@ -878,24 +909,29 @@ let process_file (kind : Kind.t) fn ~input_name ~relocate ~output_mode ~embed_er
       let ast = extract_cookies ast in
       let config = config ~hook ~expect_mismatch_handler in
       match ast with
-      | Intf x -> input_name, Some_intf_or_impl.Intf (map_signature_gen x ~config)
-      | Impl x -> input_name, Some_intf_or_impl.Impl (map_structure_gen x ~config)
+      | Intf x ->
+        input_name,
+        Some_intf_or_impl.Intf (map_signature_gen (Conversion.ast_to_signature x) ~config)
+      | Impl x ->
+        input_name,
+        Some_intf_or_impl.Impl (map_structure_gen (Conversion.ast_to_structure x) ~config)
     with exn when embed_errors ->
     match Location.Error.of_exn exn with
     | None -> raise exn
     | Some error ->
       let loc = Location.none in
       let ext = Location.Error.to_extension error in
-      let open Ast_builder in
       let ast = match kind with
         | Intf ->
            Some_intf_or_impl.Intf
              (Sig ((module Ppx_ast_deprecated.Selected_ast),
-                   [ psig_extension ~loc ext [] ]))
+                   [ Conversion.ast_to_signature_item
+                       (psig_extension ~loc ext (Attributes.create [])) ]))
         | Impl ->
            Some_intf_or_impl.Impl
              (Str ((module Ppx_ast_deprecated.Selected_ast),
-                   [ pstr_extension ~loc ext [] ]))
+                   [ Conversion.ast_to_structure_item
+                       (pstr_extension ~loc ext (Attributes.create [])) ]))
       in
       input_name, ast
     in
@@ -930,12 +966,14 @@ let process_file (kind : Kind.t) fn ~input_name ~relocate ~output_mode ~embed_er
          let ppf = Format.formatter_of_out_channel oc in
          let ast = Intf_or_impl.of_some_intf_or_impl ast in
          (match ast with
-          | Intf ast -> Pprintast.signature ppf ast
-          | Impl ast -> Pprintast.structure ppf ast);
+          | Intf ast ->
+            Ocaml_common.Pprintast.signature ppf (Conversion.ast_to_signature ast)
+          | Impl ast ->
+            Ocaml_common.Pprintast.structure ppf (Conversion.ast_to_structure ast));
          let null_ast =
            match ast with
-           | Intf [] | Impl [] -> true
-           | _ -> false
+           | Intf sg -> List.is_empty (Signature.to_concrete sg)
+           | Impl st -> List.is_empty (Structure.to_concrete st)
          in
          if not null_ast then Format.pp_print_newline ppf ())
      | Dump_ast ->
@@ -1101,7 +1139,7 @@ let set_cookie s =
       ; pos_bol   = 0
       ; pos_cnum  = 0
       };
-    let expr = Parse.expression lexbuf in
+    let expr = Ocaml_common.Parse.expression lexbuf in
     Migrate_parsetree.Driver.set_global_cookie name
       (module Ppx_ast_deprecated.Selected_ast) expr
 
@@ -1149,8 +1187,7 @@ let standalone_args =
   ; "-ite-check",
     Arg.Unit (fun () ->
       Printf.eprintf
-        "Warning: the -ite-check flag is deprecated and has no effect.\n%!";
-      Extra_warnings.care_about_ite_branch := true),
+        "Warning: the -ite-check flag is deprecated and has no effect.\n%!"),
     " (no effect -- kept for compatibility)"
   ; "-pp", Arg.String (fun s -> preprocessor := Some s),
     "<command>  Pipe sources through preprocessor <command> (incompatible with -as-ppx)"
@@ -1293,9 +1330,17 @@ let () =
     ~args:shared_args
     (module Ppx_ast_deprecated.Selected_ast)
     (fun config cookies ->
-       let module A = Ppx_ast_deprecated.Selected_ast.Ast.Ast_mapper in
-       let structure _ st = real_map_structure config cookies st in
-       let signature _ sg = real_map_signature config cookies sg in
+       let module A = Ocaml_common.Ast_mapper in
+       let structure _ st =
+         Conversion.ast_to_structure
+           (real_map_structure config cookies
+              (Conversion.ast_of_structure st))
+       in
+       let signature _ sg =
+         Conversion.ast_to_signature
+           (real_map_signature config cookies
+              (Conversion.ast_of_signature sg))
+       in
        { A.default_mapper with structure; signature })
 
 let enable_checks () =

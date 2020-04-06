@@ -3,8 +3,12 @@ open Versions.V4_07
 open Builder_v4_07
 
 module Located = struct
+  let loc (x : _ Astlib.Loc.t) = x.loc
+  let map = Astlib.Loc.map
   let longident ~loc longident = Longident_loc.create { loc; txt = longident }
   let lident ~loc x = longident ~loc (Longident.lident x)
+  let map_lident ({ loc; txt } : _ Astlib.Loc.t) = lident ~loc txt
+  let mk ~loc txt = ({ loc; txt } : _ Astlib.Loc.t)
 
   let dotted ~loc list =
     match list with
@@ -31,7 +35,7 @@ let enativeint ~loc x =
   pexp_constant ~loc (Constant.pconst_integer (Nativeint.to_string x) (Some 'n'))
 
 let efloat ~loc x =
-  pexp_constant ~loc (Constant.pconst_float (Float.to_string x) None)
+  pexp_constant ~loc (Constant.pconst_float x None)
 
 let evar ~loc x = pexp_ident ~loc (Located.lident ~loc x)
 
@@ -83,7 +87,7 @@ let pnativeint ~loc x =
   ppat_constant ~loc (Constant.pconst_integer (Nativeint.to_string x) (Some 'n'))
 
 let pfloat ~loc x =
-  ppat_constant ~loc (Constant.pconst_float (Float.to_string x) None)
+  ppat_constant ~loc (Constant.pconst_float x None)
 
 let punit ~loc = ppat_construct ~loc (Located.lident ~loc "()") None
 
@@ -116,13 +120,13 @@ module Error_ext = struct
     let message = Format.asprintf "%a" Astlib.Location.Error.report error in
     Extension.create
       ({ loc; txt = "ocaml.error" },
-       Payload.pstr
+       Payload.pStr
          (Structure.create
             [pstr_eval ~loc (estring ~loc message) (Attributes.create [])]))
 
   let extension ~loc msg =
     let pp fmt = Format.pp_print_string fmt msg in
-    let error = Astlib.Location.Error.make ~loc pp in
+    let error = Astlib.Location.Error.create ~loc pp in
     extension_of_error error
 
   let build_ext : 'node 'a .

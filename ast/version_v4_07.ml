@@ -691,7 +691,7 @@ module Payload = struct
     | PTyp of core_type
     | PPat of pattern * expression option
 
-  let pstr x1 =
+  let pStr x1 =
     node "payload"
       (Variant
         { tag = "PStr"
@@ -699,7 +699,7 @@ module Payload = struct
           [| Data.of_node x1
           |]
         })
-  let psig x1 =
+  let pSig x1 =
     node "payload"
       (Variant
         { tag = "PSig"
@@ -707,7 +707,7 @@ module Payload = struct
           [| Data.of_node x1
           |]
         })
-  let ptyp x1 =
+  let pTyp x1 =
     node "payload"
       (Variant
         { tag = "PTyp"
@@ -715,7 +715,7 @@ module Payload = struct
           [| Data.of_node x1
           |]
         })
-  let ppat x1 x2 =
+  let pPat x1 x2 =
     node "payload"
       (Variant
         { tag = "PPat"
@@ -728,13 +728,13 @@ module Payload = struct
   let of_concrete c =
     match c with
     | PStr (x1) ->
-      pstr x1
+      pStr x1
     | PSig (x1) ->
-      psig x1
+      pSig x1
     | PTyp (x1) ->
-      ptyp x1
+      pTyp x1
     | PPat (x1, x2) ->
-      ppat x1 x2
+      pPat x1 x2
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
@@ -821,6 +821,13 @@ module Core_type = struct
   let ptyp_desc t = (to_concrete t).ptyp_desc
   let ptyp_loc t = (to_concrete t).ptyp_loc
   let ptyp_attributes t = (to_concrete t).ptyp_attributes
+
+  let update ?ptyp_desc ?ptyp_loc ?ptyp_attributes t =
+    let concrete = to_concrete t in
+    let ptyp_desc = Option.value ptyp_desc ~default:concrete.ptyp_desc in
+    let ptyp_loc = Option.value ptyp_loc ~default:concrete.ptyp_loc in
+    let ptyp_attributes = Option.value ptyp_attributes ~default:concrete.ptyp_attributes in
+    create ~ptyp_desc ~ptyp_loc ~ptyp_attributes
 end
 
 module Core_type_desc = struct
@@ -1246,6 +1253,13 @@ module Pattern = struct
   let ppat_desc t = (to_concrete t).ppat_desc
   let ppat_loc t = (to_concrete t).ppat_loc
   let ppat_attributes t = (to_concrete t).ppat_attributes
+
+  let update ?ppat_desc ?ppat_loc ?ppat_attributes t =
+    let concrete = to_concrete t in
+    let ppat_desc = Option.value ppat_desc ~default:concrete.ppat_desc in
+    let ppat_loc = Option.value ppat_loc ~default:concrete.ppat_loc in
+    let ppat_attributes = Option.value ppat_attributes ~default:concrete.ppat_attributes in
+    create ~ppat_desc ~ppat_loc ~ppat_attributes
 end
 
 module Pattern_desc = struct
@@ -1601,6 +1615,13 @@ module Expression = struct
   let pexp_desc t = (to_concrete t).pexp_desc
   let pexp_loc t = (to_concrete t).pexp_loc
   let pexp_attributes t = (to_concrete t).pexp_attributes
+
+  let update ?pexp_desc ?pexp_loc ?pexp_attributes t =
+    let concrete = to_concrete t in
+    let pexp_desc = Option.value pexp_desc ~default:concrete.pexp_desc in
+    let pexp_loc = Option.value pexp_loc ~default:concrete.pexp_loc in
+    let pexp_attributes = Option.value pexp_attributes ~default:concrete.pexp_attributes in
+    create ~pexp_desc ~pexp_loc ~pexp_attributes
 end
 
 module Expression_desc = struct
@@ -2278,6 +2299,13 @@ module Case = struct
   let pc_lhs t = (to_concrete t).pc_lhs
   let pc_guard t = (to_concrete t).pc_guard
   let pc_rhs t = (to_concrete t).pc_rhs
+
+  let update ?pc_lhs ?pc_guard ?pc_rhs t =
+    let concrete = to_concrete t in
+    let pc_lhs = Option.value pc_lhs ~default:concrete.pc_lhs in
+    let pc_guard = Option.value pc_guard ~default:concrete.pc_guard in
+    let pc_rhs = Option.value pc_rhs ~default:concrete.pc_rhs in
+    create ~pc_lhs ~pc_guard ~pc_rhs
 end
 
 module Value_description = struct
@@ -2335,6 +2363,15 @@ module Value_description = struct
   let pval_prim t = (to_concrete t).pval_prim
   let pval_attributes t = (to_concrete t).pval_attributes
   let pval_loc t = (to_concrete t).pval_loc
+
+  let update ?pval_name ?pval_type ?pval_prim ?pval_attributes ?pval_loc t =
+    let concrete = to_concrete t in
+    let pval_name = Option.value pval_name ~default:concrete.pval_name in
+    let pval_type = Option.value pval_type ~default:concrete.pval_type in
+    let pval_prim = Option.value pval_prim ~default:concrete.pval_prim in
+    let pval_attributes = Option.value pval_attributes ~default:concrete.pval_attributes in
+    let pval_loc = Option.value pval_loc ~default:concrete.pval_loc in
+    create ~pval_name ~pval_type ~pval_prim ~pval_attributes ~pval_loc
 end
 
 module Type_declaration = struct
@@ -2404,6 +2441,18 @@ module Type_declaration = struct
   let ptype_manifest t = (to_concrete t).ptype_manifest
   let ptype_attributes t = (to_concrete t).ptype_attributes
   let ptype_loc t = (to_concrete t).ptype_loc
+
+  let update ?ptype_name ?ptype_params ?ptype_cstrs ?ptype_kind ?ptype_private ?ptype_manifest ?ptype_attributes ?ptype_loc t =
+    let concrete = to_concrete t in
+    let ptype_name = Option.value ptype_name ~default:concrete.ptype_name in
+    let ptype_params = Option.value ptype_params ~default:concrete.ptype_params in
+    let ptype_cstrs = Option.value ptype_cstrs ~default:concrete.ptype_cstrs in
+    let ptype_kind = Option.value ptype_kind ~default:concrete.ptype_kind in
+    let ptype_private = Option.value ptype_private ~default:concrete.ptype_private in
+    let ptype_manifest = Option.value ptype_manifest ~default:concrete.ptype_manifest in
+    let ptype_attributes = Option.value ptype_attributes ~default:concrete.ptype_attributes in
+    let ptype_loc = Option.value ptype_loc ~default:concrete.ptype_loc in
+    create ~ptype_name ~ptype_params ~ptype_cstrs ~ptype_kind ~ptype_private ~ptype_manifest ~ptype_attributes ~ptype_loc
 end
 
 module Type_kind = struct
@@ -2531,6 +2580,15 @@ module Label_declaration = struct
   let pld_type t = (to_concrete t).pld_type
   let pld_loc t = (to_concrete t).pld_loc
   let pld_attributes t = (to_concrete t).pld_attributes
+
+  let update ?pld_name ?pld_mutable ?pld_type ?pld_loc ?pld_attributes t =
+    let concrete = to_concrete t in
+    let pld_name = Option.value pld_name ~default:concrete.pld_name in
+    let pld_mutable = Option.value pld_mutable ~default:concrete.pld_mutable in
+    let pld_type = Option.value pld_type ~default:concrete.pld_type in
+    let pld_loc = Option.value pld_loc ~default:concrete.pld_loc in
+    let pld_attributes = Option.value pld_attributes ~default:concrete.pld_attributes in
+    create ~pld_name ~pld_mutable ~pld_type ~pld_loc ~pld_attributes
 end
 
 module Constructor_declaration = struct
@@ -2588,6 +2646,15 @@ module Constructor_declaration = struct
   let pcd_res t = (to_concrete t).pcd_res
   let pcd_loc t = (to_concrete t).pcd_loc
   let pcd_attributes t = (to_concrete t).pcd_attributes
+
+  let update ?pcd_name ?pcd_args ?pcd_res ?pcd_loc ?pcd_attributes t =
+    let concrete = to_concrete t in
+    let pcd_name = Option.value pcd_name ~default:concrete.pcd_name in
+    let pcd_args = Option.value pcd_args ~default:concrete.pcd_args in
+    let pcd_res = Option.value pcd_res ~default:concrete.pcd_res in
+    let pcd_loc = Option.value pcd_loc ~default:concrete.pcd_loc in
+    let pcd_attributes = Option.value pcd_attributes ~default:concrete.pcd_attributes in
+    create ~pcd_name ~pcd_args ~pcd_res ~pcd_loc ~pcd_attributes
 end
 
 module Constructor_arguments = struct
@@ -2705,6 +2772,15 @@ module Type_extension = struct
   let ptyext_constructors t = (to_concrete t).ptyext_constructors
   let ptyext_private t = (to_concrete t).ptyext_private
   let ptyext_attributes t = (to_concrete t).ptyext_attributes
+
+  let update ?ptyext_path ?ptyext_params ?ptyext_constructors ?ptyext_private ?ptyext_attributes t =
+    let concrete = to_concrete t in
+    let ptyext_path = Option.value ptyext_path ~default:concrete.ptyext_path in
+    let ptyext_params = Option.value ptyext_params ~default:concrete.ptyext_params in
+    let ptyext_constructors = Option.value ptyext_constructors ~default:concrete.ptyext_constructors in
+    let ptyext_private = Option.value ptyext_private ~default:concrete.ptyext_private in
+    let ptyext_attributes = Option.value ptyext_attributes ~default:concrete.ptyext_attributes in
+    create ~ptyext_path ~ptyext_params ~ptyext_constructors ~ptyext_private ~ptyext_attributes
 end
 
 module Extension_constructor = struct
@@ -2758,6 +2834,14 @@ module Extension_constructor = struct
   let pext_kind t = (to_concrete t).pext_kind
   let pext_loc t = (to_concrete t).pext_loc
   let pext_attributes t = (to_concrete t).pext_attributes
+
+  let update ?pext_name ?pext_kind ?pext_loc ?pext_attributes t =
+    let concrete = to_concrete t in
+    let pext_name = Option.value pext_name ~default:concrete.pext_name in
+    let pext_kind = Option.value pext_kind ~default:concrete.pext_kind in
+    let pext_loc = Option.value pext_loc ~default:concrete.pext_loc in
+    let pext_attributes = Option.value pext_attributes ~default:concrete.pext_attributes in
+    create ~pext_name ~pext_kind ~pext_loc ~pext_attributes
 end
 
 module Extension_constructor_kind = struct
@@ -2869,6 +2953,13 @@ module Class_type = struct
   let pcty_desc t = (to_concrete t).pcty_desc
   let pcty_loc t = (to_concrete t).pcty_loc
   let pcty_attributes t = (to_concrete t).pcty_attributes
+
+  let update ?pcty_desc ?pcty_loc ?pcty_attributes t =
+    let concrete = to_concrete t in
+    let pcty_desc = Option.value pcty_desc ~default:concrete.pcty_desc in
+    let pcty_loc = Option.value pcty_loc ~default:concrete.pcty_loc in
+    let pcty_attributes = Option.value pcty_attributes ~default:concrete.pcty_attributes in
+    create ~pcty_desc ~pcty_loc ~pcty_attributes
 end
 
 module Class_type_desc = struct
@@ -3029,6 +3120,12 @@ module Class_signature = struct
 
   let pcsig_self t = (to_concrete t).pcsig_self
   let pcsig_fields t = (to_concrete t).pcsig_fields
+
+  let update ?pcsig_self ?pcsig_fields t =
+    let concrete = to_concrete t in
+    let pcsig_self = Option.value pcsig_self ~default:concrete.pcsig_self in
+    let pcsig_fields = Option.value pcsig_fields ~default:concrete.pcsig_fields in
+    create ~pcsig_self ~pcsig_fields
 end
 
 module Class_type_field = struct
@@ -3078,6 +3175,13 @@ module Class_type_field = struct
   let pctf_desc t = (to_concrete t).pctf_desc
   let pctf_loc t = (to_concrete t).pctf_loc
   let pctf_attributes t = (to_concrete t).pctf_attributes
+
+  let update ?pctf_desc ?pctf_loc ?pctf_attributes t =
+    let concrete = to_concrete t in
+    let pctf_desc = Option.value pctf_desc ~default:concrete.pctf_desc in
+    let pctf_loc = Option.value pctf_loc ~default:concrete.pctf_loc in
+    let pctf_attributes = Option.value pctf_attributes ~default:concrete.pctf_attributes in
+    create ~pctf_desc ~pctf_loc ~pctf_attributes
 end
 
 module Class_type_field_desc = struct
@@ -3259,6 +3363,16 @@ module Class_infos = struct
   let pci_expr t = (to_concrete t).pci_expr
   let pci_loc t = (to_concrete t).pci_loc
   let pci_attributes t = (to_concrete t).pci_attributes
+
+  let update ?pci_virt ?pci_params ?pci_name ?pci_expr ?pci_loc ?pci_attributes t =
+    let concrete = to_concrete t in
+    let pci_virt = Option.value pci_virt ~default:concrete.pci_virt in
+    let pci_params = Option.value pci_params ~default:concrete.pci_params in
+    let pci_name = Option.value pci_name ~default:concrete.pci_name in
+    let pci_expr = Option.value pci_expr ~default:concrete.pci_expr in
+    let pci_loc = Option.value pci_loc ~default:concrete.pci_loc in
+    let pci_attributes = Option.value pci_attributes ~default:concrete.pci_attributes in
+    create ~pci_virt ~pci_params ~pci_name ~pci_expr ~pci_loc ~pci_attributes
 end
 
 module Class_description = struct
@@ -3364,6 +3478,13 @@ module Class_expr = struct
   let pcl_desc t = (to_concrete t).pcl_desc
   let pcl_loc t = (to_concrete t).pcl_loc
   let pcl_attributes t = (to_concrete t).pcl_attributes
+
+  let update ?pcl_desc ?pcl_loc ?pcl_attributes t =
+    let concrete = to_concrete t in
+    let pcl_desc = Option.value pcl_desc ~default:concrete.pcl_desc in
+    let pcl_loc = Option.value pcl_loc ~default:concrete.pcl_loc in
+    let pcl_attributes = Option.value pcl_attributes ~default:concrete.pcl_attributes in
+    create ~pcl_desc ~pcl_loc ~pcl_attributes
 end
 
 module Class_expr_desc = struct
@@ -3579,6 +3700,12 @@ module Class_structure = struct
 
   let pcstr_self t = (to_concrete t).pcstr_self
   let pcstr_fields t = (to_concrete t).pcstr_fields
+
+  let update ?pcstr_self ?pcstr_fields t =
+    let concrete = to_concrete t in
+    let pcstr_self = Option.value pcstr_self ~default:concrete.pcstr_self in
+    let pcstr_fields = Option.value pcstr_fields ~default:concrete.pcstr_fields in
+    create ~pcstr_self ~pcstr_fields
 end
 
 module Class_field = struct
@@ -3628,6 +3755,13 @@ module Class_field = struct
   let pcf_desc t = (to_concrete t).pcf_desc
   let pcf_loc t = (to_concrete t).pcf_loc
   let pcf_attributes t = (to_concrete t).pcf_attributes
+
+  let update ?pcf_desc ?pcf_loc ?pcf_attributes t =
+    let concrete = to_concrete t in
+    let pcf_desc = Option.value pcf_desc ~default:concrete.pcf_desc in
+    let pcf_loc = Option.value pcf_loc ~default:concrete.pcf_loc in
+    let pcf_attributes = Option.value pcf_attributes ~default:concrete.pcf_attributes in
+    create ~pcf_desc ~pcf_loc ~pcf_attributes
 end
 
 module Class_field_desc = struct
@@ -3906,6 +4040,13 @@ module Module_type = struct
   let pmty_desc t = (to_concrete t).pmty_desc
   let pmty_loc t = (to_concrete t).pmty_loc
   let pmty_attributes t = (to_concrete t).pmty_attributes
+
+  let update ?pmty_desc ?pmty_loc ?pmty_attributes t =
+    let concrete = to_concrete t in
+    let pmty_desc = Option.value pmty_desc ~default:concrete.pmty_desc in
+    let pmty_loc = Option.value pmty_loc ~default:concrete.pmty_loc in
+    let pmty_attributes = Option.value pmty_attributes ~default:concrete.pmty_attributes in
+    create ~pmty_desc ~pmty_loc ~pmty_attributes
 end
 
 module Module_type_desc = struct
@@ -4120,6 +4261,12 @@ module Signature_item = struct
 
   let psig_desc t = (to_concrete t).psig_desc
   let psig_loc t = (to_concrete t).psig_loc
+
+  let update ?psig_desc ?psig_loc t =
+    let concrete = to_concrete t in
+    let psig_desc = Option.value psig_desc ~default:concrete.psig_desc in
+    let psig_loc = Option.value psig_loc ~default:concrete.psig_loc in
+    create ~psig_desc ~psig_loc
 end
 
 module Signature_item_desc = struct
@@ -4402,6 +4549,14 @@ module Module_declaration = struct
   let pmd_type t = (to_concrete t).pmd_type
   let pmd_attributes t = (to_concrete t).pmd_attributes
   let pmd_loc t = (to_concrete t).pmd_loc
+
+  let update ?pmd_name ?pmd_type ?pmd_attributes ?pmd_loc t =
+    let concrete = to_concrete t in
+    let pmd_name = Option.value pmd_name ~default:concrete.pmd_name in
+    let pmd_type = Option.value pmd_type ~default:concrete.pmd_type in
+    let pmd_attributes = Option.value pmd_attributes ~default:concrete.pmd_attributes in
+    let pmd_loc = Option.value pmd_loc ~default:concrete.pmd_loc in
+    create ~pmd_name ~pmd_type ~pmd_attributes ~pmd_loc
 end
 
 module Module_type_declaration = struct
@@ -4455,6 +4610,14 @@ module Module_type_declaration = struct
   let pmtd_type t = (to_concrete t).pmtd_type
   let pmtd_attributes t = (to_concrete t).pmtd_attributes
   let pmtd_loc t = (to_concrete t).pmtd_loc
+
+  let update ?pmtd_name ?pmtd_type ?pmtd_attributes ?pmtd_loc t =
+    let concrete = to_concrete t in
+    let pmtd_name = Option.value pmtd_name ~default:concrete.pmtd_name in
+    let pmtd_type = Option.value pmtd_type ~default:concrete.pmtd_type in
+    let pmtd_attributes = Option.value pmtd_attributes ~default:concrete.pmtd_attributes in
+    let pmtd_loc = Option.value pmtd_loc ~default:concrete.pmtd_loc in
+    create ~pmtd_name ~pmtd_type ~pmtd_attributes ~pmtd_loc
 end
 
 module Open_description = struct
@@ -4508,6 +4671,14 @@ module Open_description = struct
   let popen_override t = (to_concrete t).popen_override
   let popen_loc t = (to_concrete t).popen_loc
   let popen_attributes t = (to_concrete t).popen_attributes
+
+  let update ?popen_lid ?popen_override ?popen_loc ?popen_attributes t =
+    let concrete = to_concrete t in
+    let popen_lid = Option.value popen_lid ~default:concrete.popen_lid in
+    let popen_override = Option.value popen_override ~default:concrete.popen_override in
+    let popen_loc = Option.value popen_loc ~default:concrete.popen_loc in
+    let popen_attributes = Option.value popen_attributes ~default:concrete.popen_attributes in
+    create ~popen_lid ~popen_override ~popen_loc ~popen_attributes
 end
 
 module Include_infos = struct
@@ -4557,6 +4728,13 @@ module Include_infos = struct
   let pincl_mod t = (to_concrete t).pincl_mod
   let pincl_loc t = (to_concrete t).pincl_loc
   let pincl_attributes t = (to_concrete t).pincl_attributes
+
+  let update ?pincl_mod ?pincl_loc ?pincl_attributes t =
+    let concrete = to_concrete t in
+    let pincl_mod = Option.value pincl_mod ~default:concrete.pincl_mod in
+    let pincl_loc = Option.value pincl_loc ~default:concrete.pincl_loc in
+    let pincl_attributes = Option.value pincl_attributes ~default:concrete.pincl_attributes in
+    create ~pincl_mod ~pincl_loc ~pincl_attributes
 end
 
 module Include_description = struct
@@ -4760,6 +4938,13 @@ module Module_expr = struct
   let pmod_desc t = (to_concrete t).pmod_desc
   let pmod_loc t = (to_concrete t).pmod_loc
   let pmod_attributes t = (to_concrete t).pmod_attributes
+
+  let update ?pmod_desc ?pmod_loc ?pmod_attributes t =
+    let concrete = to_concrete t in
+    let pmod_desc = Option.value pmod_desc ~default:concrete.pmod_desc in
+    let pmod_loc = Option.value pmod_loc ~default:concrete.pmod_loc in
+    let pmod_attributes = Option.value pmod_attributes ~default:concrete.pmod_attributes in
+    create ~pmod_desc ~pmod_loc ~pmod_attributes
 end
 
 module Module_expr_desc = struct
@@ -4976,6 +5161,12 @@ module Structure_item = struct
 
   let pstr_desc t = (to_concrete t).pstr_desc
   let pstr_loc t = (to_concrete t).pstr_loc
+
+  let update ?pstr_desc ?pstr_loc t =
+    let concrete = to_concrete t in
+    let pstr_desc = Option.value pstr_desc ~default:concrete.pstr_desc in
+    let pstr_loc = Option.value pstr_loc ~default:concrete.pstr_loc in
+    create ~pstr_desc ~pstr_loc
 end
 
 module Structure_item_desc = struct
@@ -5292,6 +5483,14 @@ module Value_binding = struct
   let pvb_expr t = (to_concrete t).pvb_expr
   let pvb_attributes t = (to_concrete t).pvb_attributes
   let pvb_loc t = (to_concrete t).pvb_loc
+
+  let update ?pvb_pat ?pvb_expr ?pvb_attributes ?pvb_loc t =
+    let concrete = to_concrete t in
+    let pvb_pat = Option.value pvb_pat ~default:concrete.pvb_pat in
+    let pvb_expr = Option.value pvb_expr ~default:concrete.pvb_expr in
+    let pvb_attributes = Option.value pvb_attributes ~default:concrete.pvb_attributes in
+    let pvb_loc = Option.value pvb_loc ~default:concrete.pvb_loc in
+    create ~pvb_pat ~pvb_expr ~pvb_attributes ~pvb_loc
 end
 
 module Module_binding = struct
@@ -5345,6 +5544,14 @@ module Module_binding = struct
   let pmb_expr t = (to_concrete t).pmb_expr
   let pmb_attributes t = (to_concrete t).pmb_attributes
   let pmb_loc t = (to_concrete t).pmb_loc
+
+  let update ?pmb_name ?pmb_expr ?pmb_attributes ?pmb_loc t =
+    let concrete = to_concrete t in
+    let pmb_name = Option.value pmb_name ~default:concrete.pmb_name in
+    let pmb_expr = Option.value pmb_expr ~default:concrete.pmb_expr in
+    let pmb_attributes = Option.value pmb_attributes ~default:concrete.pmb_attributes in
+    let pmb_loc = Option.value pmb_loc ~default:concrete.pmb_loc in
+    create ~pmb_name ~pmb_expr ~pmb_attributes ~pmb_loc
 end
 
 module Toplevel_phrase = struct

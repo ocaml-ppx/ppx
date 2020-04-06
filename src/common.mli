@@ -36,13 +36,13 @@ class type_is_recursive : rec_flag -> type_declaration list -> object
 
     method return_true : unit -> unit
 
-    method go : unit -> rec_flag
+    method go : unit -> Rec_flag.t
   end
 
 (** [really_recursive rec_flag tds = (new type_is_recursive rec_flag tds)#go ()] *)
 val really_recursive : rec_flag -> type_declaration list -> rec_flag
 
-val loc_of_payload   : attribute -> Location.t
+val loc_of_payload   : _ Loc.t * Payload.t -> Location.t
 val loc_of_attribute : attribute -> Location.t
 
 (** convert multi-arg function applications into a cascade of 1-arg applications *)

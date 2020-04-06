@@ -6,7 +6,7 @@ let is_keyword s =
 let map_keyword s =
   if is_keyword s then s ^ "_" else s
 
-let id string = map_keyword (String.lowercase_ascii string)
+let id string = map_keyword (String.uncapitalize_ascii string)
 let tvar string = "'" ^ id string
 let module_name string = String.capitalize_ascii string
 let tag string = String.capitalize_ascii string
@@ -121,6 +121,9 @@ let print_arrow list ~f return =
 
 let print_labelled_arrow alist ~f return =
   print_arrow alist ~f:(fun (label, x) -> id label ^ ":" ^ f x) return
+
+let print_optional_arrow alist ~f return =
+  print_arrow alist ~f:(fun (label, x) -> "?" ^ id label ^ ":" ^ f x) return
 
 let class_params = function
   | [] -> ""

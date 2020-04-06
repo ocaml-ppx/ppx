@@ -4,6 +4,13 @@ type ('a, 'error) t = ('a, 'error) Ppx_caml.result =
   | Ok    of 'a
   | Error of 'error
 
+val compare
+  :  ('a -> 'a -> Ordering.t)
+  -> ('error -> 'error -> Ordering.t)
+  -> ('a, 'error) t
+  -> ('a, 'error) t
+  -> Ordering.t
+
 val ok : 'a -> ('a, _) t
 
 val is_ok    : _ t -> bool

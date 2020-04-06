@@ -6,12 +6,10 @@ let foo =
   Deriving.add "foo"
     ~str_type_decl:(Deriving.Generator.make_noarg
                       (fun ~loc ~path:_ _ ->
-                         [%str let x = 42]
-                         |> Ppx_ast.Conversion.ast_to_structure))
+                         [%str let x = 42]))
     ~sig_type_decl:(Deriving.Generator.make_noarg
                       (fun ~loc ~path:_ _ ->
-                         [%sig: val y : int]
-                         |> Ppx_ast.Conversion.ast_to_signature))
+                         [%sig: val y : int]))
 [%%expect{|
 val foo : Deriving.t = <abstr>
 |}]
@@ -20,8 +18,7 @@ let bar =
   Deriving.add "bar"
     ~str_type_decl:
       (Deriving.Generator.make_noarg ~deps:[foo] (fun ~loc ~path:_ _ ->
-         [%str let () = Printf.printf "x = %d\n" x]
-         |> Ppx_ast.Conversion.ast_to_structure))
+         [%str let () = Printf.printf "x = %d\n" x]))
 [%%expect{|
 val bar : Deriving.t = <abstr>
 |}]
@@ -31,13 +28,11 @@ let mtd =
     ~sig_module_type_decl:(
       Deriving.Generator.make_noarg
         (fun ~loc ~path:_ _ ->
-           [%sig: val y : int]
-           |> Ppx_ast.Conversion.ast_to_signature))
+           [%sig: val y : int]))
     ~str_module_type_decl:(
       Deriving.Generator.make_noarg
         (fun ~loc ~path:_ _ ->
-           [%str let y = 42]
-           |> Ppx_ast.Conversion.ast_to_structure))
+           [%str let y = 42]))
 [%%expect{|
 val mtd : Deriving.t = <abstr>
 |}]

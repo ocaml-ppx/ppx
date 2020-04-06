@@ -797,13 +797,13 @@ val ptyp_loc'match : (Astlib.Location.t, 'i, 'o) View.t -> (Core_type.t, 'i, 'o)
 
 val ptyp_desc'match : (Core_type_desc.t, 'i, 'o) View.t -> (Core_type.t, 'i, 'o) View.t
 
-val ppat'const : ((Expression.t option * Pattern.t), 'i, 'o) View.t -> (Payload.t, 'i, 'o) View.t
+val pPat'const : ((Expression.t option * Pattern.t), 'i, 'o) View.t -> (Payload.t, 'i, 'o) View.t
 
-val ptyp'const : (Core_type.t, 'i, 'o) View.t -> (Payload.t, 'i, 'o) View.t
+val pTyp'const : (Core_type.t, 'i, 'o) View.t -> (Payload.t, 'i, 'o) View.t
 
-val psig'const : (Signature.t, 'i, 'o) View.t -> (Payload.t, 'i, 'o) View.t
+val pSig'const : (Signature.t, 'i, 'o) View.t -> (Payload.t, 'i, 'o) View.t
 
-val pstr'const : (Structure.t, 'i, 'o) View.t -> (Payload.t, 'i, 'o) View.t
+val pStr'const : (Structure.t, 'i, 'o) View.t -> (Payload.t, 'i, 'o) View.t
 val attributes'const: (Attribute.t list, 'i, 'o) View.t -> (Attributes.t, 'i, 'o) View.t
 val extension'const: ((Payload.t * string Astlib.Loc.t), 'i, 'o) View.t -> (Extension.t, 'i, 'o) View.t
 val attribute'const: ((Payload.t * string Astlib.Loc.t), 'i, 'o) View.t -> (Attribute.t, 'i, 'o) View.t

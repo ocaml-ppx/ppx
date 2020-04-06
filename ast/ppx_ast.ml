@@ -8,6 +8,7 @@ module V4_07 = struct
   include Builder.V4_07
   include Viewer.V4_07
   include Traverse.V4_07
+  module Virtual = Virtual_traverse_v4_07
 end
 
 module Unstable_for_testing = struct
@@ -15,4 +16,5 @@ module Unstable_for_testing = struct
   include Builder.Unstable_for_testing
   include Viewer.Unstable_for_testing
   include Traverse.Unstable_for_testing
+  module Virtual = Virtual_traverse_unstable_for_testing
 end

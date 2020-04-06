@@ -1,5 +1,5 @@
 #require "base";;
-#require "ppx.ast_deprecated";;
+#require "ppx.ast";;
 
 open Base
 open Ppx
@@ -19,13 +19,13 @@ Error: Attribute `deprecatd' was not used.
 Hint: Did you mean deprecated?
 |}]
 
-let attr : _ Attribute.t =
-  Attribute.declare "blah"
-    Attribute.Context.type_declaration
+let attr : _ Attr.t =
+  Attr.declare "blah"
+    Attr.Context.type_declaration
     Ast_pattern.(__)
     ignore
 [%%expect{|
-val attr : (type_declaration, unit) Attribute.t = <abstr>
+val attr : (Ppx__.Import.type_declaration, unit) Attr.t = <abstr>
 |}]
 
 type t = int [@blah]
@@ -37,13 +37,13 @@ context of a core type.
 Did you put it at the wrong level?
 |}]
 
-let attr : _ Attribute.t =
-  Attribute.declare "blah"
-    Attribute.Context.expression
+let attr : _ Attr.t =
+  Attr.declare "blah"
+    Attr.Context.expression
     Ast_pattern.(__)
     ignore
 [%%expect{|
-val attr : (expression, unit) Attribute.t = <abstr>
+val attr : (Ppx__.Import.expression, unit) Attr.t = <abstr>
 |}]
 
 type t = int [@blah]
@@ -61,9 +61,9 @@ let faulty_transformation = object
   inherit Ast_traverse.map as super
 
   method! expression e =
-    match e.pexp_desc with
+    match Expression_desc.to_concrete (Expression.pexp_desc e) with
     | Pexp_constant c ->
-      Ast_builder.pexp_constant ~loc:e.pexp_loc c
+      pexp_constant ~loc:(Expression.pexp_loc e) c
     | _ -> super#expression e
 end
 [%%expect{|

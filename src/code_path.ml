@@ -3,8 +3,8 @@ open! Import
 type t =
   { file_path : string
   ; main_module_name : string
-  ; submodule_path : string loc list
-  ; value : string loc option
+  ; submodule_path : string Loc.t list
+  ; value : string Loc.t option
   ; in_expr : bool
   }
 
@@ -19,12 +19,15 @@ let top_level ~file_path =
 
 let file_path t = t.file_path
 let main_module_name t = t.main_module_name
-let submodule_path t = List.rev_map ~f:(fun located -> located.txt) t.submodule_path
-let value t = Option.map ~f:(fun located -> located.txt) t.value
+let submodule_path t =
+  List.rev_map ~f:(fun (located : _ Loc.t) -> located.txt) t.submodule_path
+let value t = Option.map ~f:(fun (located : _ Loc.t) -> located.txt) t.value
 
-let fully_qualified_path t = 
+let fully_qualified_path t =
   let rev_path = Option.fold ~f:(fun acc a -> a::acc) ~init:t.submodule_path t.value in
-  let submodule_path = List.rev_map ~f:(fun located -> located.txt) rev_path in
+  let submodule_path =
+    List.rev_map ~f:(fun (located : _ Loc.t) -> located.txt) rev_path
+  in
   let names = t.main_module_name::submodule_path in
   String.concat ~sep:"." names
 

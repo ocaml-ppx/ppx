@@ -290,11 +290,11 @@ module Registrar = struct
      listed names instead of taking an optional [white_list] parameter. *)
   let raise_errorf t context ?white_list fmt (name : string Loc.t) =
     Printf.ksprintf (fun msg ->
-      match spellcheck t context name.txt ?white_list with
+      match spellcheck t context (Loc.txt name) ?white_list with
       | None ->
-        Location.raise_errorf ~loc:name.loc "%s" msg
+        Location.raise_errorf ~loc:(Loc.loc name) "%s" msg
       | Some s ->
-        Location.raise_errorf ~loc:name.loc "%s.\n%s" msg s)
-      fmt name.txt
+        Location.raise_errorf ~loc:(Loc.loc name) "%s.\n%s" msg s)
+      fmt (Loc.txt name)
   ;;
 end
