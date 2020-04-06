@@ -41,7 +41,7 @@ val ptyp_variant :
   loc:Astlib.Location.t
   -> Row_field.t list
   -> Closed_flag.t
-  -> Label.t list option
+  -> string list option
   -> Core_type.t
 val ptyp_poly :
   loc:Astlib.Location.t
@@ -88,7 +88,7 @@ val ppat_construct :
   -> Pattern.t
 val ppat_variant :
   loc:Astlib.Location.t
-  -> Label.t
+  -> string
   -> Pattern.t option
   -> Pattern.t
 val ppat_record :
@@ -186,7 +186,7 @@ val pexp_construct :
   -> Expression.t
 val pexp_variant :
   loc:Astlib.Location.t
-  -> Label.t
+  -> string
   -> Expression.t option
   -> Expression.t
 val pexp_record :
@@ -247,7 +247,7 @@ val pexp_coerce :
 val pexp_send :
   loc:Astlib.Location.t
   -> Expression.t
-  -> Label.t Astlib.Loc.t
+  -> string Astlib.Loc.t
   -> Expression.t
 val pexp_new :
   loc:Astlib.Location.t
@@ -255,12 +255,12 @@ val pexp_new :
   -> Expression.t
 val pexp_setinstvar :
   loc:Astlib.Location.t
-  -> Label.t Astlib.Loc.t
+  -> string Astlib.Loc.t
   -> Expression.t
   -> Expression.t
 val pexp_override :
   loc:Astlib.Location.t
-  -> (Label.t Astlib.Loc.t * Expression.t) list
+  -> (string Astlib.Loc.t * Expression.t) list
   -> Expression.t
 val pexp_letmodule :
   loc:Astlib.Location.t
@@ -390,11 +390,11 @@ val pctf_inherit :
   -> Class_type_field.t
 val pctf_val :
   loc:Astlib.Location.t
-  -> (Label.t Astlib.Loc.t * Mutable_flag.t * Virtual_flag.t * Core_type.t)
+  -> (string Astlib.Loc.t * Mutable_flag.t * Virtual_flag.t * Core_type.t)
   -> Class_type_field.t
 val pctf_method :
   loc:Astlib.Location.t
-  -> (Label.t Astlib.Loc.t * Private_flag.t * Virtual_flag.t * Core_type.t)
+  -> (string Astlib.Loc.t * Private_flag.t * Virtual_flag.t * Core_type.t)
   -> Class_type_field.t
 val pctf_constraint :
   loc:Astlib.Location.t
@@ -462,11 +462,11 @@ val pcf_inherit :
   -> Class_field.t
 val pcf_val :
   loc:Astlib.Location.t
-  -> (Label.t Astlib.Loc.t * Mutable_flag.t * Class_field_kind.t)
+  -> (string Astlib.Loc.t * Mutable_flag.t * Class_field_kind.t)
   -> Class_field.t
 val pcf_method :
   loc:Astlib.Location.t
-  -> (Label.t Astlib.Loc.t * Private_flag.t * Class_field_kind.t)
+  -> (string Astlib.Loc.t * Private_flag.t * Class_field_kind.t)
   -> Class_field.t
 val pcf_constraint :
   loc:Astlib.Location.t

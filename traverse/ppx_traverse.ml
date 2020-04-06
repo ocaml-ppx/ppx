@@ -326,7 +326,7 @@ let rec type_expr_mapper ~(what:what) te =
       let mappers = map_variables ~what vars tes in
       what#abstract ~loc deconstruct (what#combine ~loc mappers ~reconstruct)
     | Ptyp_constr (Longident_loc path, params) ->
-      let f lident = Label.create (method_name lident) in
+      let f lident = method_name lident in
       let map = pexp_send ~loc (evar ~loc "self") (Loc.map path ~f) in
       (match params with
        | [] -> map
@@ -495,7 +495,7 @@ let lift_virtual_methods ~loc methods =
 
     method! expression x acc =
       match%view x with
-      | Pexp_send (_, ({ txt = Label ("tuple"|"record"|"constr"|"other" as s); loc = _; })) ->
+      | Pexp_send (_, ({ txt = ("tuple"|"record"|"constr"|"other" as s); loc = _; })) ->
         String.Set.add acc s
       | _ -> super#expression x acc
   end in
@@ -519,7 +519,7 @@ let lift_virtual_methods ~loc methods =
   in
   List.filter all_virtual_methods ~f:(fun m ->
     match%view m with
-    | Pcf_method ({txt = Label s; _}, _, _) -> String.Set.mem used s
+    | Pcf_method ({txt = s; _}, _, _) -> String.Set.mem used s
     | _ -> false)
 
 let map_lident id ~f =
@@ -549,7 +549,7 @@ let gen_class ~(what:what) ~loc tds =
     List.map (type_deps tds) ~f:(fun (id, arity) ->
       let id = Loc.create ~txt:(lident_last_exn id) ~loc () in
       pcf_method ~loc
-        (Loc.map id ~f:Label.create,
+        (id,
          Private_flag.public,
          Class_field_kind.cfk_virtual
            (mapper_type ~what ~loc id
@@ -568,7 +568,7 @@ let gen_class ~(what:what) ~loc tds =
         in
         let mapper = constrained_mapper ~what ~is_gadt mapper td in
         pcf_method ~loc
-          (Loc.map ptype_name ~f:Label.create,
+          (ptype_name,
            Private_flag.public,
            Class_field_kind.cfk_concrete Override_flag.fresh mapper))
   in

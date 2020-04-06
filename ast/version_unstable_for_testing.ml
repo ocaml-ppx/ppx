@@ -1454,8 +1454,8 @@ module Class_field_desc = struct
     | Pcf_attribute of attribute
     | Pcf_initializer of expression
     | Pcf_constraint of (core_type * core_type)
-    | Pcf_method of (class_field_kind * private_flag * label Astlib.Loc.t)
-    | Pcf_val of (class_field_kind * mutable_flag * label Astlib.Loc.t)
+    | Pcf_method of (class_field_kind * private_flag * string Astlib.Loc.t)
+    | Pcf_val of (class_field_kind * mutable_flag * string Astlib.Loc.t)
     | Pcf_inherit of string Astlib.Loc.t option * class_expr * override_flag
 
   let pcf_extension x1 =
@@ -1495,7 +1495,7 @@ module Class_field_desc = struct
       (Variant
         { tag = "Pcf_method"
         ; args =
-          [| (Data.of_tuple3 ~f1:Data.of_node ~f2:Data.of_node ~f3:(Data.of_loc ~f:Data.of_node)) x1
+          [| (Data.of_tuple3 ~f1:Data.of_node ~f2:Data.of_node ~f3:(Data.of_loc ~f:Data.of_string)) x1
           |]
         })
   let pcf_val x1 =
@@ -1503,7 +1503,7 @@ module Class_field_desc = struct
       (Variant
         { tag = "Pcf_val"
         ; args =
-          [| (Data.of_tuple3 ~f1:Data.of_node ~f2:Data.of_node ~f3:(Data.of_loc ~f:Data.of_node)) x1
+          [| (Data.of_tuple3 ~f1:Data.of_node ~f2:Data.of_node ~f3:(Data.of_loc ~f:Data.of_string)) x1
           |]
         })
   let pcf_inherit x1 x2 x3 =
@@ -1556,11 +1556,11 @@ module Class_field_desc = struct
             Some (Pcf_constraint (x1))
           )
         | Variant { tag = "Pcf_method"; args = [| x1 |] } ->
-          Option.bind ((Data.to_tuple3 ~f1:Data.to_node ~f2:Data.to_node ~f3:(Data.to_loc ~f:Data.to_node)) x1) ~f:(fun x1 ->
+          Option.bind ((Data.to_tuple3 ~f1:Data.to_node ~f2:Data.to_node ~f3:(Data.to_loc ~f:Data.to_string)) x1) ~f:(fun x1 ->
             Some (Pcf_method (x1))
           )
         | Variant { tag = "Pcf_val"; args = [| x1 |] } ->
-          Option.bind ((Data.to_tuple3 ~f1:Data.to_node ~f2:Data.to_node ~f3:(Data.to_loc ~f:Data.to_node)) x1) ~f:(fun x1 ->
+          Option.bind ((Data.to_tuple3 ~f1:Data.to_node ~f2:Data.to_node ~f3:(Data.to_loc ~f:Data.to_string)) x1) ~f:(fun x1 ->
             Some (Pcf_val (x1))
           )
         | Variant { tag = "Pcf_inherit"; args = [| x1; x2; x3 |] } ->
@@ -1916,8 +1916,8 @@ module Class_type_field_desc = struct
     | Pctf_extension of extension
     | Pctf_attribute of attribute
     | Pctf_constraint of (core_type * core_type)
-    | Pctf_method of (core_type * virtual_flag * private_flag * label Astlib.Loc.t)
-    | Pctf_val of (core_type * virtual_flag * mutable_flag * label Astlib.Loc.t)
+    | Pctf_method of (core_type * virtual_flag * private_flag * string Astlib.Loc.t)
+    | Pctf_val of (core_type * virtual_flag * mutable_flag * string Astlib.Loc.t)
     | Pctf_inherit of class_type
 
   let pctf_extension x1 =
@@ -1949,7 +1949,7 @@ module Class_type_field_desc = struct
       (Variant
         { tag = "Pctf_method"
         ; args =
-          [| (Data.of_tuple4 ~f1:Data.of_node ~f2:Data.of_node ~f3:Data.of_node ~f4:(Data.of_loc ~f:Data.of_node)) x1
+          [| (Data.of_tuple4 ~f1:Data.of_node ~f2:Data.of_node ~f3:Data.of_node ~f4:(Data.of_loc ~f:Data.of_string)) x1
           |]
         })
   let pctf_val x1 =
@@ -1957,7 +1957,7 @@ module Class_type_field_desc = struct
       (Variant
         { tag = "Pctf_val"
         ; args =
-          [| (Data.of_tuple4 ~f1:Data.of_node ~f2:Data.of_node ~f3:Data.of_node ~f4:(Data.of_loc ~f:Data.of_node)) x1
+          [| (Data.of_tuple4 ~f1:Data.of_node ~f2:Data.of_node ~f3:Data.of_node ~f4:(Data.of_loc ~f:Data.of_string)) x1
           |]
         })
   let pctf_inherit x1 =
@@ -2002,11 +2002,11 @@ module Class_type_field_desc = struct
             Some (Pctf_constraint (x1))
           )
         | Variant { tag = "Pctf_method"; args = [| x1 |] } ->
-          Option.bind ((Data.to_tuple4 ~f1:Data.to_node ~f2:Data.to_node ~f3:Data.to_node ~f4:(Data.to_loc ~f:Data.to_node)) x1) ~f:(fun x1 ->
+          Option.bind ((Data.to_tuple4 ~f1:Data.to_node ~f2:Data.to_node ~f3:Data.to_node ~f4:(Data.to_loc ~f:Data.to_string)) x1) ~f:(fun x1 ->
             Some (Pctf_method (x1))
           )
         | Variant { tag = "Pctf_val"; args = [| x1 |] } ->
-          Option.bind ((Data.to_tuple4 ~f1:Data.to_node ~f2:Data.to_node ~f3:Data.to_node ~f4:(Data.to_loc ~f:Data.to_node)) x1) ~f:(fun x1 ->
+          Option.bind ((Data.to_tuple4 ~f1:Data.to_node ~f2:Data.to_node ~f3:Data.to_node ~f4:(Data.to_loc ~f:Data.to_string)) x1) ~f:(fun x1 ->
             Some (Pctf_val (x1))
           )
         | Variant { tag = "Pctf_inherit"; args = [| x1 |] } ->
@@ -2675,10 +2675,10 @@ module Expression_desc = struct
     | Pexp_assert of expression
     | Pexp_letexception of expression * extension_constructor
     | Pexp_letmodule of expression * module_expr * string Astlib.Loc.t
-    | Pexp_override of (expression * label Astlib.Loc.t) list
-    | Pexp_setinstvar of expression * label Astlib.Loc.t
+    | Pexp_override of (expression * string Astlib.Loc.t) list
+    | Pexp_setinstvar of expression * string Astlib.Loc.t
     | Pexp_new of longident_loc
-    | Pexp_send of label Astlib.Loc.t * expression
+    | Pexp_send of string Astlib.Loc.t * expression
     | Pexp_coerce of core_type * core_type option * expression
     | Pexp_constraint of core_type * expression
     | Pexp_for of expression * direction_flag * expression * expression * pattern
@@ -2689,7 +2689,7 @@ module Expression_desc = struct
     | Pexp_setfield of expression * longident_loc * expression
     | Pexp_field of longident_loc * expression
     | Pexp_record of expression option * (expression * longident_loc) list
-    | Pexp_variant of expression option * label
+    | Pexp_variant of expression option * string
     | Pexp_construct of expression option * longident_loc
     | Pexp_tuple of expression list
     | Pexp_try of case list * expression
@@ -2795,7 +2795,7 @@ module Expression_desc = struct
       (Variant
         { tag = "Pexp_override"
         ; args =
-          [| (Data.of_list ~f:(Data.of_tuple2 ~f1:Data.of_node ~f2:(Data.of_loc ~f:Data.of_node))) x1
+          [| (Data.of_list ~f:(Data.of_tuple2 ~f1:Data.of_node ~f2:(Data.of_loc ~f:Data.of_string))) x1
           |]
         })
   let pexp_setinstvar x1 x2 =
@@ -2804,7 +2804,7 @@ module Expression_desc = struct
         { tag = "Pexp_setinstvar"
         ; args =
           [| Data.of_node x1
-           ; (Data.of_loc ~f:Data.of_node) x2
+           ; (Data.of_loc ~f:Data.of_string) x2
           |]
         })
   let pexp_new x1 =
@@ -2820,7 +2820,7 @@ module Expression_desc = struct
       (Variant
         { tag = "Pexp_send"
         ; args =
-          [| (Data.of_loc ~f:Data.of_node) x1
+          [| (Data.of_loc ~f:Data.of_string) x1
            ; Data.of_node x2
           |]
         })
@@ -2925,7 +2925,7 @@ module Expression_desc = struct
         { tag = "Pexp_variant"
         ; args =
           [| (Data.of_option ~f:Data.of_node) x1
-           ; Data.of_node x2
+           ; Data.of_string x2
           |]
         })
   let pexp_construct x1 x2 =
@@ -3146,12 +3146,12 @@ module Expression_desc = struct
                 Some (Pexp_letmodule (x1, x2, x3))
           )))
         | Variant { tag = "Pexp_override"; args = [| x1 |] } ->
-          Option.bind ((Data.to_list ~f:(Data.to_tuple2 ~f1:Data.to_node ~f2:(Data.to_loc ~f:Data.to_node))) x1) ~f:(fun x1 ->
+          Option.bind ((Data.to_list ~f:(Data.to_tuple2 ~f1:Data.to_node ~f2:(Data.to_loc ~f:Data.to_string))) x1) ~f:(fun x1 ->
             Some (Pexp_override (x1))
           )
         | Variant { tag = "Pexp_setinstvar"; args = [| x1; x2 |] } ->
           Option.bind (Data.to_node x1) ~f:(fun x1 ->
-            Option.bind ((Data.to_loc ~f:Data.to_node) x2) ~f:(fun x2 ->
+            Option.bind ((Data.to_loc ~f:Data.to_string) x2) ~f:(fun x2 ->
               Some (Pexp_setinstvar (x1, x2))
           ))
         | Variant { tag = "Pexp_new"; args = [| x1 |] } ->
@@ -3159,7 +3159,7 @@ module Expression_desc = struct
             Some (Pexp_new (x1))
           )
         | Variant { tag = "Pexp_send"; args = [| x1; x2 |] } ->
-          Option.bind ((Data.to_loc ~f:Data.to_node) x1) ~f:(fun x1 ->
+          Option.bind ((Data.to_loc ~f:Data.to_string) x1) ~f:(fun x1 ->
             Option.bind (Data.to_node x2) ~f:(fun x2 ->
               Some (Pexp_send (x1, x2))
           ))
@@ -3220,7 +3220,7 @@ module Expression_desc = struct
           ))
         | Variant { tag = "Pexp_variant"; args = [| x1; x2 |] } ->
           Option.bind ((Data.to_option ~f:Data.to_node) x1) ~f:(fun x1 ->
-            Option.bind (Data.to_node x2) ~f:(fun x2 ->
+            Option.bind (Data.to_string x2) ~f:(fun x2 ->
               Some (Pexp_variant (x1, x2))
           ))
         | Variant { tag = "Pexp_construct"; args = [| x1; x2 |] } ->
@@ -3325,7 +3325,7 @@ module Pattern_desc = struct
     | Ppat_or of pattern * pattern
     | Ppat_array of pattern list
     | Ppat_record of closed_flag * (pattern * longident_loc) list
-    | Ppat_variant of pattern option * label
+    | Ppat_variant of pattern option * string
     | Ppat_construct of pattern option * longident_loc
     | Ppat_tuple of pattern list
     | Ppat_interval of constant * constant
@@ -3424,7 +3424,7 @@ module Pattern_desc = struct
         { tag = "Ppat_variant"
         ; args =
           [| (Data.of_option ~f:Data.of_node) x1
-           ; Data.of_node x2
+           ; Data.of_string x2
           |]
         })
   let ppat_construct x1 x2 =
@@ -3570,7 +3570,7 @@ module Pattern_desc = struct
           ))
         | Variant { tag = "Ppat_variant"; args = [| x1; x2 |] } ->
           Option.bind ((Data.to_option ~f:Data.to_node) x1) ~f:(fun x1 ->
-            Option.bind (Data.to_node x2) ~f:(fun x2 ->
+            Option.bind (Data.to_string x2) ~f:(fun x2 ->
               Some (Ppat_variant (x1, x2))
           ))
         | Variant { tag = "Ppat_construct"; args = [| x1; x2 |] } ->
@@ -3645,7 +3645,7 @@ module Object_field = struct
 
   type concrete =
     | Oinherit of core_type
-    | Otag of core_type * attributes * label Astlib.Loc.t
+    | Otag of core_type * attributes * string Astlib.Loc.t
 
   let oinherit x1 =
     node "object_field"
@@ -3662,7 +3662,7 @@ module Object_field = struct
         ; args =
           [| Data.of_node x1
            ; Data.of_node x2
-           ; (Data.of_loc ~f:Data.of_node) x3
+           ; (Data.of_loc ~f:Data.of_string) x3
           |]
         })
 
@@ -3685,7 +3685,7 @@ module Object_field = struct
         | Variant { tag = "Otag"; args = [| x1; x2; x3 |] } ->
           Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Option.bind (Data.to_node x2) ~f:(fun x2 ->
-              Option.bind ((Data.to_loc ~f:Data.to_node) x3) ~f:(fun x3 ->
+              Option.bind ((Data.to_loc ~f:Data.to_string) x3) ~f:(fun x3 ->
                 Some (Otag (x1, x2, x3))
           )))
       | _ -> None
@@ -3698,7 +3698,7 @@ module Row_field = struct
 
   type concrete =
     | Rinherit of core_type
-    | Rtag of core_type list * bool * attributes * label Astlib.Loc.t
+    | Rtag of core_type list * bool * attributes * string Astlib.Loc.t
 
   let rinherit x1 =
     node "row_field"
@@ -3716,7 +3716,7 @@ module Row_field = struct
           [| (Data.of_list ~f:Data.of_node) x1
            ; Data.of_bool x2
            ; Data.of_node x3
-           ; (Data.of_loc ~f:Data.of_node) x4
+           ; (Data.of_loc ~f:Data.of_string) x4
           |]
         })
 
@@ -3740,7 +3740,7 @@ module Row_field = struct
           Option.bind ((Data.to_list ~f:Data.to_node) x1) ~f:(fun x1 ->
             Option.bind (Data.to_bool x2) ~f:(fun x2 ->
               Option.bind (Data.to_node x3) ~f:(fun x3 ->
-                Option.bind ((Data.to_loc ~f:Data.to_node) x4) ~f:(fun x4 ->
+                Option.bind ((Data.to_loc ~f:Data.to_string) x4) ~f:(fun x4 ->
                   Some (Rtag (x1, x2, x3, x4))
           ))))
       | _ -> None
@@ -3772,7 +3772,7 @@ module Core_type_desc = struct
     | Ptyp_extension of extension
     | Ptyp_package of package_type
     | Ptyp_poly of core_type * string Astlib.Loc.t list
-    | Ptyp_variant of label list option * closed_flag * row_field list
+    | Ptyp_variant of string list option * closed_flag * row_field list
     | Ptyp_alias of string * core_type
     | Ptyp_class of core_type list * longident_loc
     | Ptyp_object of closed_flag * object_field list
@@ -3812,7 +3812,7 @@ module Core_type_desc = struct
       (Variant
         { tag = "Ptyp_variant"
         ; args =
-          [| (Data.of_option ~f:(Data.of_list ~f:Data.of_node)) x1
+          [| (Data.of_option ~f:(Data.of_list ~f:Data.of_string)) x1
            ; Data.of_node x2
            ; (Data.of_list ~f:Data.of_node) x3
           |]
@@ -3927,7 +3927,7 @@ module Core_type_desc = struct
               Some (Ptyp_poly (x1, x2))
           ))
         | Variant { tag = "Ptyp_variant"; args = [| x1; x2; x3 |] } ->
-          Option.bind ((Data.to_option ~f:(Data.to_list ~f:Data.to_node)) x1) ~f:(fun x1 ->
+          Option.bind ((Data.to_option ~f:(Data.to_list ~f:Data.to_string)) x1) ~f:(fun x1 ->
             Option.bind (Data.to_node x2) ~f:(fun x2 ->
               Option.bind ((Data.to_list ~f:Data.to_node) x3) ~f:(fun x3 ->
                 Some (Ptyp_variant (x1, x2, x3))
@@ -4308,23 +4308,6 @@ module Arg_label = struct
         | Variant { tag = "Nolabel"; args = [||] } -> Some Nolabel
       | _ -> None
       end
-    | _ -> None
-end
-
-module Label = struct
-  type t = label
-
-  type concrete = string
-
-  let create =
-    let data = Data.of_string in
-    fun x -> node "label" (data x)
-
-  let of_concrete = create
-
-  let to_concrete t =
-    match Node.to_node (Unversioned.Private.transparent t) ~version with
-    | { name = "label"; data } -> Data.to_string data
     | _ -> None
 end
 

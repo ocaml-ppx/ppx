@@ -184,14 +184,6 @@ let open'const value =
   | Closed_flag.Open -> View.ok
   | _ -> View.error
 
-let label'const view value =
-  let concrete0 =
-    match Label.to_concrete value with
-    | None -> conversion_failed "label"
-    | Some n -> n
-  in
-  view concrete0
-
 let nolabel'const value =
   let concrete =
     match Arg_label.to_concrete value with

@@ -462,10 +462,10 @@ class virtual map =
           let x0 = (fun (x0, x1) -> let x0 = self#core_type x0 in let x1 = self#core_type x1 in (x0, x1)) x0 in
           Class_field_desc.of_concrete (Pcf_constraint x0)
         | Pcf_method x0 ->
-          let x0 = (fun (x0, x1, x2) -> let x0 = self#class_field_kind x0 in let x1 = self#private_flag x1 in let x2 = self#loc self#label x2 in (x0, x1, x2)) x0 in
+          let x0 = (fun (x0, x1, x2) -> let x0 = self#class_field_kind x0 in let x1 = self#private_flag x1 in let x2 = self#loc self#string x2 in (x0, x1, x2)) x0 in
           Class_field_desc.of_concrete (Pcf_method x0)
         | Pcf_val x0 ->
-          let x0 = (fun (x0, x1, x2) -> let x0 = self#class_field_kind x0 in let x1 = self#mutable_flag x1 in let x2 = self#loc self#label x2 in (x0, x1, x2)) x0 in
+          let x0 = (fun (x0, x1, x2) -> let x0 = self#class_field_kind x0 in let x1 = self#mutable_flag x1 in let x2 = self#loc self#string x2 in (x0, x1, x2)) x0 in
           Class_field_desc.of_concrete (Pcf_val x0)
         | Pcf_inherit (x0, x1, x2) ->
           let x0 = self#option (self#loc self#string) x0 in
@@ -615,10 +615,10 @@ class virtual map =
           let x0 = (fun (x0, x1) -> let x0 = self#core_type x0 in let x1 = self#core_type x1 in (x0, x1)) x0 in
           Class_type_field_desc.of_concrete (Pctf_constraint x0)
         | Pctf_method x0 ->
-          let x0 = (fun (x0, x1, x2, x3) -> let x0 = self#core_type x0 in let x1 = self#virtual_flag x1 in let x2 = self#private_flag x2 in let x3 = self#loc self#label x3 in (x0, x1, x2, x3)) x0 in
+          let x0 = (fun (x0, x1, x2, x3) -> let x0 = self#core_type x0 in let x1 = self#virtual_flag x1 in let x2 = self#private_flag x2 in let x3 = self#loc self#string x3 in (x0, x1, x2, x3)) x0 in
           Class_type_field_desc.of_concrete (Pctf_method x0)
         | Pctf_val x0 ->
-          let x0 = (fun (x0, x1, x2, x3) -> let x0 = self#core_type x0 in let x1 = self#virtual_flag x1 in let x2 = self#mutable_flag x2 in let x3 = self#loc self#label x3 in (x0, x1, x2, x3)) x0 in
+          let x0 = (fun (x0, x1, x2, x3) -> let x0 = self#core_type x0 in let x1 = self#virtual_flag x1 in let x2 = self#mutable_flag x2 in let x3 = self#loc self#string x3 in (x0, x1, x2, x3)) x0 in
           Class_type_field_desc.of_concrete (Pctf_val x0)
         | Pctf_inherit x0 ->
           let x0 = self#class_type x0 in
@@ -879,17 +879,17 @@ class virtual map =
           let x2 = self#loc self#string x2 in
           Expression_desc.of_concrete (Pexp_letmodule (x0, x1, x2))
         | Pexp_override x0 ->
-          let x0 = self#list (fun (x0, x1) -> let x0 = self#expression x0 in let x1 = self#loc self#label x1 in (x0, x1)) x0 in
+          let x0 = self#list (fun (x0, x1) -> let x0 = self#expression x0 in let x1 = self#loc self#string x1 in (x0, x1)) x0 in
           Expression_desc.of_concrete (Pexp_override x0)
         | Pexp_setinstvar (x0, x1) ->
           let x0 = self#expression x0 in
-          let x1 = self#loc self#label x1 in
+          let x1 = self#loc self#string x1 in
           Expression_desc.of_concrete (Pexp_setinstvar (x0, x1))
         | Pexp_new x0 ->
           let x0 = self#longident_loc x0 in
           Expression_desc.of_concrete (Pexp_new x0)
         | Pexp_send (x0, x1) ->
-          let x0 = self#loc self#label x0 in
+          let x0 = self#loc self#string x0 in
           let x1 = self#expression x1 in
           Expression_desc.of_concrete (Pexp_send (x0, x1))
         | Pexp_coerce (x0, x1, x2) ->
@@ -939,7 +939,7 @@ class virtual map =
           Expression_desc.of_concrete (Pexp_record (x0, x1))
         | Pexp_variant (x0, x1) ->
           let x0 = self#option self#expression x0 in
-          let x1 = self#label x1 in
+          let x1 = self#string x1 in
           Expression_desc.of_concrete (Pexp_variant (x0, x1))
         | Pexp_construct (x0, x1) ->
           let x0 = self#option self#expression x0 in
@@ -1036,7 +1036,7 @@ class virtual map =
           Pattern_desc.of_concrete (Ppat_record (x0, x1))
         | Ppat_variant (x0, x1) ->
           let x0 = self#option self#pattern x0 in
-          let x1 = self#label x1 in
+          let x1 = self#string x1 in
           Pattern_desc.of_concrete (Ppat_variant (x0, x1))
         | Ppat_construct (x0, x1) ->
           let x0 = self#option self#pattern x0 in
@@ -1087,7 +1087,7 @@ class virtual map =
         | Otag (x0, x1, x2) ->
           let x0 = self#core_type x0 in
           let x1 = self#attributes x1 in
-          let x2 = self#loc self#label x2 in
+          let x2 = self#loc self#string x2 in
           Object_field.of_concrete (Otag (x0, x1, x2))
     method row_field : Row_field.t -> Row_field.t  =
       fun row_field ->
@@ -1104,7 +1104,7 @@ class virtual map =
           let x0 = self#list self#core_type x0 in
           let x1 = self#bool x1 in
           let x2 = self#attributes x2 in
-          let x3 = self#loc self#label x3 in
+          let x3 = self#loc self#string x3 in
           Row_field.of_concrete (Rtag (x0, x1, x2, x3))
     method package_type : Package_type.t -> Package_type.t  =
       fun package_type ->
@@ -1136,7 +1136,7 @@ class virtual map =
           let x1 = self#list (self#loc self#string) x1 in
           Core_type_desc.of_concrete (Ptyp_poly (x0, x1))
         | Ptyp_variant (x0, x1, x2) ->
-          let x0 = self#option (self#list self#label) x0 in
+          let x0 = self#option (self#list self#string) x0 in
           let x1 = self#closed_flag x1 in
           let x2 = self#list self#row_field x2 in
           Core_type_desc.of_concrete (Ptyp_variant (x0, x1, x2))
@@ -1286,15 +1286,6 @@ class virtual map =
           Arg_label.of_concrete (Labelled x0)
         | Nolabel ->
           Arg_label.of_concrete Nolabel
-    method label : Label.t -> Label.t  =
-      fun label ->
-        let concrete =
-          match Label.to_concrete label with
-          | None -> conversion_failed "label"
-          | Some n -> n
-        in
-        let concrete = self#string concrete in
-        Label.of_concrete concrete
     method closed_flag : Closed_flag.t -> Closed_flag.t  =
       fun closed_flag ->
         let concrete =
@@ -1794,9 +1785,9 @@ class virtual iter =
         | Pcf_constraint x0 ->
           (fun (x0, x1) -> self#core_type x0; self#core_type x1) x0
         | Pcf_method x0 ->
-          (fun (x0, x1, x2) -> self#class_field_kind x0; self#private_flag x1; self#loc self#label x2) x0
+          (fun (x0, x1, x2) -> self#class_field_kind x0; self#private_flag x1; self#loc self#string x2) x0
         | Pcf_val x0 ->
-          (fun (x0, x1, x2) -> self#class_field_kind x0; self#mutable_flag x1; self#loc self#label x2) x0
+          (fun (x0, x1, x2) -> self#class_field_kind x0; self#mutable_flag x1; self#loc self#string x2) x0
         | Pcf_inherit (x0, x1, x2) ->
           self#option (self#loc self#string) x0;
           self#class_expr x1;
@@ -1926,9 +1917,9 @@ class virtual iter =
         | Pctf_constraint x0 ->
           (fun (x0, x1) -> self#core_type x0; self#core_type x1) x0
         | Pctf_method x0 ->
-          (fun (x0, x1, x2, x3) -> self#core_type x0; self#virtual_flag x1; self#private_flag x2; self#loc self#label x3) x0
+          (fun (x0, x1, x2, x3) -> self#core_type x0; self#virtual_flag x1; self#private_flag x2; self#loc self#string x3) x0
         | Pctf_val x0 ->
-          (fun (x0, x1, x2, x3) -> self#core_type x0; self#virtual_flag x1; self#mutable_flag x2; self#loc self#label x3) x0
+          (fun (x0, x1, x2, x3) -> self#core_type x0; self#virtual_flag x1; self#mutable_flag x2; self#loc self#string x3) x0
         | Pctf_inherit x0 ->
           self#class_type x0
     method class_type_field : Class_type_field.t -> unit  =
@@ -2156,14 +2147,14 @@ class virtual iter =
           self#module_expr x1;
           self#loc self#string x2
         | Pexp_override x0 ->
-          self#list (fun (x0, x1) -> self#expression x0; self#loc self#label x1) x0
+          self#list (fun (x0, x1) -> self#expression x0; self#loc self#string x1) x0
         | Pexp_setinstvar (x0, x1) ->
           self#expression x0;
-          self#loc self#label x1
+          self#loc self#string x1
         | Pexp_new x0 ->
           self#longident_loc x0
         | Pexp_send (x0, x1) ->
-          self#loc self#label x0;
+          self#loc self#string x0;
           self#expression x1
         | Pexp_coerce (x0, x1, x2) ->
           self#core_type x0;
@@ -2202,7 +2193,7 @@ class virtual iter =
           self#list (fun (x0, x1) -> self#expression x0; self#longident_loc x1) x1
         | Pexp_variant (x0, x1) ->
           self#option self#expression x0;
-          self#label x1
+          self#string x1
         | Pexp_construct (x0, x1) ->
           self#option self#expression x0;
           self#longident_loc x1
@@ -2277,7 +2268,7 @@ class virtual iter =
           self#list (fun (x0, x1) -> self#pattern x0; self#longident_loc x1) x1
         | Ppat_variant (x0, x1) ->
           self#option self#pattern x0;
-          self#label x1
+          self#string x1
         | Ppat_construct (x0, x1) ->
           self#option self#pattern x0;
           self#longident_loc x1
@@ -2319,7 +2310,7 @@ class virtual iter =
         | Otag (x0, x1, x2) ->
           self#core_type x0;
           self#attributes x1;
-          self#loc self#label x2
+          self#loc self#string x2
     method row_field : Row_field.t -> unit  =
       fun row_field ->
         let concrete =
@@ -2334,7 +2325,7 @@ class virtual iter =
           self#list self#core_type x0;
           self#bool x1;
           self#attributes x2;
-          self#loc self#label x3
+          self#loc self#string x3
     method package_type : Package_type.t -> unit  =
       fun package_type ->
         let concrete =
@@ -2361,7 +2352,7 @@ class virtual iter =
           self#core_type x0;
           self#list (self#loc self#string) x1
         | Ptyp_variant (x0, x1, x2) ->
-          self#option (self#list self#label) x0;
+          self#option (self#list self#string) x0;
           self#closed_flag x1;
           self#list self#row_field x2
         | Ptyp_alias (x0, x1) ->
@@ -2489,14 +2480,6 @@ class virtual iter =
           self#string x0
         | Nolabel ->
           ()
-    method label : Label.t -> unit  =
-      fun label ->
-        let concrete =
-          match Label.to_concrete label with
-          | None -> conversion_failed "label"
-          | Some n -> n
-        in
-        self#string concrete
     method closed_flag : Closed_flag.t -> unit  =
       fun closed_flag ->
         let concrete =
@@ -3066,10 +3049,10 @@ class virtual ['acc] fold =
           let acc = (fun (x0, x1) acc -> let acc = self#core_type x0 acc in let acc = self#core_type x1 acc in acc) x0 acc in
           acc
         | Pcf_method x0 ->
-          let acc = (fun (x0, x1, x2) acc -> let acc = self#class_field_kind x0 acc in let acc = self#private_flag x1 acc in let acc = self#loc self#label x2 acc in acc) x0 acc in
+          let acc = (fun (x0, x1, x2) acc -> let acc = self#class_field_kind x0 acc in let acc = self#private_flag x1 acc in let acc = self#loc self#string x2 acc in acc) x0 acc in
           acc
         | Pcf_val x0 ->
-          let acc = (fun (x0, x1, x2) acc -> let acc = self#class_field_kind x0 acc in let acc = self#mutable_flag x1 acc in let acc = self#loc self#label x2 acc in acc) x0 acc in
+          let acc = (fun (x0, x1, x2) acc -> let acc = self#class_field_kind x0 acc in let acc = self#mutable_flag x1 acc in let acc = self#loc self#string x2 acc in acc) x0 acc in
           acc
         | Pcf_inherit (x0, x1, x2) ->
           let acc = self#option (self#loc self#string) x0 acc in
@@ -3219,10 +3202,10 @@ class virtual ['acc] fold =
           let acc = (fun (x0, x1) acc -> let acc = self#core_type x0 acc in let acc = self#core_type x1 acc in acc) x0 acc in
           acc
         | Pctf_method x0 ->
-          let acc = (fun (x0, x1, x2, x3) acc -> let acc = self#core_type x0 acc in let acc = self#virtual_flag x1 acc in let acc = self#private_flag x2 acc in let acc = self#loc self#label x3 acc in acc) x0 acc in
+          let acc = (fun (x0, x1, x2, x3) acc -> let acc = self#core_type x0 acc in let acc = self#virtual_flag x1 acc in let acc = self#private_flag x2 acc in let acc = self#loc self#string x3 acc in acc) x0 acc in
           acc
         | Pctf_val x0 ->
-          let acc = (fun (x0, x1, x2, x3) acc -> let acc = self#core_type x0 acc in let acc = self#virtual_flag x1 acc in let acc = self#mutable_flag x2 acc in let acc = self#loc self#label x3 acc in acc) x0 acc in
+          let acc = (fun (x0, x1, x2, x3) acc -> let acc = self#core_type x0 acc in let acc = self#virtual_flag x1 acc in let acc = self#mutable_flag x2 acc in let acc = self#loc self#string x3 acc in acc) x0 acc in
           acc
         | Pctf_inherit x0 ->
           let acc = self#class_type x0 acc in
@@ -3483,17 +3466,17 @@ class virtual ['acc] fold =
           let acc = self#loc self#string x2 acc in
           acc
         | Pexp_override x0 ->
-          let acc = self#list (fun (x0, x1) acc -> let acc = self#expression x0 acc in let acc = self#loc self#label x1 acc in acc) x0 acc in
+          let acc = self#list (fun (x0, x1) acc -> let acc = self#expression x0 acc in let acc = self#loc self#string x1 acc in acc) x0 acc in
           acc
         | Pexp_setinstvar (x0, x1) ->
           let acc = self#expression x0 acc in
-          let acc = self#loc self#label x1 acc in
+          let acc = self#loc self#string x1 acc in
           acc
         | Pexp_new x0 ->
           let acc = self#longident_loc x0 acc in
           acc
         | Pexp_send (x0, x1) ->
-          let acc = self#loc self#label x0 acc in
+          let acc = self#loc self#string x0 acc in
           let acc = self#expression x1 acc in
           acc
         | Pexp_coerce (x0, x1, x2) ->
@@ -3543,7 +3526,7 @@ class virtual ['acc] fold =
           acc
         | Pexp_variant (x0, x1) ->
           let acc = self#option self#expression x0 acc in
-          let acc = self#label x1 acc in
+          let acc = self#string x1 acc in
           acc
         | Pexp_construct (x0, x1) ->
           let acc = self#option self#expression x0 acc in
@@ -3640,7 +3623,7 @@ class virtual ['acc] fold =
           acc
         | Ppat_variant (x0, x1) ->
           let acc = self#option self#pattern x0 acc in
-          let acc = self#label x1 acc in
+          let acc = self#string x1 acc in
           acc
         | Ppat_construct (x0, x1) ->
           let acc = self#option self#pattern x0 acc in
@@ -3691,7 +3674,7 @@ class virtual ['acc] fold =
         | Otag (x0, x1, x2) ->
           let acc = self#core_type x0 acc in
           let acc = self#attributes x1 acc in
-          let acc = self#loc self#label x2 acc in
+          let acc = self#loc self#string x2 acc in
           acc
     method row_field : Row_field.t -> 'acc -> 'acc  =
       fun row_field acc ->
@@ -3708,7 +3691,7 @@ class virtual ['acc] fold =
           let acc = self#list self#core_type x0 acc in
           let acc = self#bool x1 acc in
           let acc = self#attributes x2 acc in
-          let acc = self#loc self#label x3 acc in
+          let acc = self#loc self#string x3 acc in
           acc
     method package_type : Package_type.t -> 'acc -> 'acc  =
       fun package_type acc ->
@@ -3740,7 +3723,7 @@ class virtual ['acc] fold =
           let acc = self#list (self#loc self#string) x1 acc in
           acc
         | Ptyp_variant (x0, x1, x2) ->
-          let acc = self#option (self#list self#label) x0 acc in
+          let acc = self#option (self#list self#string) x0 acc in
           let acc = self#closed_flag x1 acc in
           let acc = self#list self#row_field x2 acc in
           acc
@@ -3890,15 +3873,6 @@ class virtual ['acc] fold =
           acc
         | Nolabel ->
           acc
-    method label : Label.t -> 'acc -> 'acc  =
-      fun label acc ->
-        let concrete =
-          match Label.to_concrete label with
-          | None -> conversion_failed "label"
-          | Some n -> n
-        in
-        let acc = self#string concrete acc in
-        acc
     method closed_flag : Closed_flag.t -> 'acc -> 'acc  =
       fun closed_flag acc ->
         let concrete =
@@ -4472,10 +4446,10 @@ class virtual ['acc] fold_map =
           let (x0, acc) = (fun (x0, x1) acc -> let (x0, acc) = self#core_type x0 acc in let (x1, acc) = self#core_type x1 acc in ((x0, x1), acc)) x0 acc in
           (Class_field_desc.of_concrete (Pcf_constraint x0), acc)
         | Pcf_method x0 ->
-          let (x0, acc) = (fun (x0, x1, x2) acc -> let (x0, acc) = self#class_field_kind x0 acc in let (x1, acc) = self#private_flag x1 acc in let (x2, acc) = self#loc self#label x2 acc in ((x0, x1, x2), acc)) x0 acc in
+          let (x0, acc) = (fun (x0, x1, x2) acc -> let (x0, acc) = self#class_field_kind x0 acc in let (x1, acc) = self#private_flag x1 acc in let (x2, acc) = self#loc self#string x2 acc in ((x0, x1, x2), acc)) x0 acc in
           (Class_field_desc.of_concrete (Pcf_method x0), acc)
         | Pcf_val x0 ->
-          let (x0, acc) = (fun (x0, x1, x2) acc -> let (x0, acc) = self#class_field_kind x0 acc in let (x1, acc) = self#mutable_flag x1 acc in let (x2, acc) = self#loc self#label x2 acc in ((x0, x1, x2), acc)) x0 acc in
+          let (x0, acc) = (fun (x0, x1, x2) acc -> let (x0, acc) = self#class_field_kind x0 acc in let (x1, acc) = self#mutable_flag x1 acc in let (x2, acc) = self#loc self#string x2 acc in ((x0, x1, x2), acc)) x0 acc in
           (Class_field_desc.of_concrete (Pcf_val x0), acc)
         | Pcf_inherit (x0, x1, x2) ->
           let (x0, acc) = self#option (self#loc self#string) x0 acc in
@@ -4625,10 +4599,10 @@ class virtual ['acc] fold_map =
           let (x0, acc) = (fun (x0, x1) acc -> let (x0, acc) = self#core_type x0 acc in let (x1, acc) = self#core_type x1 acc in ((x0, x1), acc)) x0 acc in
           (Class_type_field_desc.of_concrete (Pctf_constraint x0), acc)
         | Pctf_method x0 ->
-          let (x0, acc) = (fun (x0, x1, x2, x3) acc -> let (x0, acc) = self#core_type x0 acc in let (x1, acc) = self#virtual_flag x1 acc in let (x2, acc) = self#private_flag x2 acc in let (x3, acc) = self#loc self#label x3 acc in ((x0, x1, x2, x3), acc)) x0 acc in
+          let (x0, acc) = (fun (x0, x1, x2, x3) acc -> let (x0, acc) = self#core_type x0 acc in let (x1, acc) = self#virtual_flag x1 acc in let (x2, acc) = self#private_flag x2 acc in let (x3, acc) = self#loc self#string x3 acc in ((x0, x1, x2, x3), acc)) x0 acc in
           (Class_type_field_desc.of_concrete (Pctf_method x0), acc)
         | Pctf_val x0 ->
-          let (x0, acc) = (fun (x0, x1, x2, x3) acc -> let (x0, acc) = self#core_type x0 acc in let (x1, acc) = self#virtual_flag x1 acc in let (x2, acc) = self#mutable_flag x2 acc in let (x3, acc) = self#loc self#label x3 acc in ((x0, x1, x2, x3), acc)) x0 acc in
+          let (x0, acc) = (fun (x0, x1, x2, x3) acc -> let (x0, acc) = self#core_type x0 acc in let (x1, acc) = self#virtual_flag x1 acc in let (x2, acc) = self#mutable_flag x2 acc in let (x3, acc) = self#loc self#string x3 acc in ((x0, x1, x2, x3), acc)) x0 acc in
           (Class_type_field_desc.of_concrete (Pctf_val x0), acc)
         | Pctf_inherit x0 ->
           let (x0, acc) = self#class_type x0 acc in
@@ -4889,17 +4863,17 @@ class virtual ['acc] fold_map =
           let (x2, acc) = self#loc self#string x2 acc in
           (Expression_desc.of_concrete (Pexp_letmodule (x0, x1, x2)), acc)
         | Pexp_override x0 ->
-          let (x0, acc) = self#list (fun (x0, x1) acc -> let (x0, acc) = self#expression x0 acc in let (x1, acc) = self#loc self#label x1 acc in ((x0, x1), acc)) x0 acc in
+          let (x0, acc) = self#list (fun (x0, x1) acc -> let (x0, acc) = self#expression x0 acc in let (x1, acc) = self#loc self#string x1 acc in ((x0, x1), acc)) x0 acc in
           (Expression_desc.of_concrete (Pexp_override x0), acc)
         | Pexp_setinstvar (x0, x1) ->
           let (x0, acc) = self#expression x0 acc in
-          let (x1, acc) = self#loc self#label x1 acc in
+          let (x1, acc) = self#loc self#string x1 acc in
           (Expression_desc.of_concrete (Pexp_setinstvar (x0, x1)), acc)
         | Pexp_new x0 ->
           let (x0, acc) = self#longident_loc x0 acc in
           (Expression_desc.of_concrete (Pexp_new x0), acc)
         | Pexp_send (x0, x1) ->
-          let (x0, acc) = self#loc self#label x0 acc in
+          let (x0, acc) = self#loc self#string x0 acc in
           let (x1, acc) = self#expression x1 acc in
           (Expression_desc.of_concrete (Pexp_send (x0, x1)), acc)
         | Pexp_coerce (x0, x1, x2) ->
@@ -4949,7 +4923,7 @@ class virtual ['acc] fold_map =
           (Expression_desc.of_concrete (Pexp_record (x0, x1)), acc)
         | Pexp_variant (x0, x1) ->
           let (x0, acc) = self#option self#expression x0 acc in
-          let (x1, acc) = self#label x1 acc in
+          let (x1, acc) = self#string x1 acc in
           (Expression_desc.of_concrete (Pexp_variant (x0, x1)), acc)
         | Pexp_construct (x0, x1) ->
           let (x0, acc) = self#option self#expression x0 acc in
@@ -5046,7 +5020,7 @@ class virtual ['acc] fold_map =
           (Pattern_desc.of_concrete (Ppat_record (x0, x1)), acc)
         | Ppat_variant (x0, x1) ->
           let (x0, acc) = self#option self#pattern x0 acc in
-          let (x1, acc) = self#label x1 acc in
+          let (x1, acc) = self#string x1 acc in
           (Pattern_desc.of_concrete (Ppat_variant (x0, x1)), acc)
         | Ppat_construct (x0, x1) ->
           let (x0, acc) = self#option self#pattern x0 acc in
@@ -5097,7 +5071,7 @@ class virtual ['acc] fold_map =
         | Otag (x0, x1, x2) ->
           let (x0, acc) = self#core_type x0 acc in
           let (x1, acc) = self#attributes x1 acc in
-          let (x2, acc) = self#loc self#label x2 acc in
+          let (x2, acc) = self#loc self#string x2 acc in
           (Object_field.of_concrete (Otag (x0, x1, x2)), acc)
     method row_field : Row_field.t -> 'acc -> (Row_field.t * 'acc)  =
       fun row_field acc ->
@@ -5114,7 +5088,7 @@ class virtual ['acc] fold_map =
           let (x0, acc) = self#list self#core_type x0 acc in
           let (x1, acc) = self#bool x1 acc in
           let (x2, acc) = self#attributes x2 acc in
-          let (x3, acc) = self#loc self#label x3 acc in
+          let (x3, acc) = self#loc self#string x3 acc in
           (Row_field.of_concrete (Rtag (x0, x1, x2, x3)), acc)
     method package_type : Package_type.t -> 'acc -> (Package_type.t * 'acc)  =
       fun package_type acc ->
@@ -5146,7 +5120,7 @@ class virtual ['acc] fold_map =
           let (x1, acc) = self#list (self#loc self#string) x1 acc in
           (Core_type_desc.of_concrete (Ptyp_poly (x0, x1)), acc)
         | Ptyp_variant (x0, x1, x2) ->
-          let (x0, acc) = self#option (self#list self#label) x0 acc in
+          let (x0, acc) = self#option (self#list self#string) x0 acc in
           let (x1, acc) = self#closed_flag x1 acc in
           let (x2, acc) = self#list self#row_field x2 acc in
           (Core_type_desc.of_concrete (Ptyp_variant (x0, x1, x2)), acc)
@@ -5296,15 +5270,6 @@ class virtual ['acc] fold_map =
           (Arg_label.of_concrete (Labelled x0), acc)
         | Nolabel ->
           (Arg_label.of_concrete Nolabel, acc)
-    method label : Label.t -> 'acc -> (Label.t * 'acc)  =
-      fun label acc ->
-        let concrete =
-          match Label.to_concrete label with
-          | None -> conversion_failed "label"
-          | Some n -> n
-        in
-        let (concrete, acc) = self#string concrete acc in
-        (Label.of_concrete concrete, acc)
     method closed_flag : Closed_flag.t -> 'acc -> (Closed_flag.t * 'acc)  =
       fun closed_flag acc ->
         let concrete =
@@ -5878,10 +5843,10 @@ class virtual ['ctx] map_with_context =
           let x0 = (fun _ctx (x0, x1) -> let x0 = self#core_type _ctx x0 in let x1 = self#core_type _ctx x1 in (x0, x1)) _ctx x0 in
           Class_field_desc.of_concrete (Pcf_constraint x0)
         | Pcf_method x0 ->
-          let x0 = (fun _ctx (x0, x1, x2) -> let x0 = self#class_field_kind _ctx x0 in let x1 = self#private_flag _ctx x1 in let x2 = self#loc self#label _ctx x2 in (x0, x1, x2)) _ctx x0 in
+          let x0 = (fun _ctx (x0, x1, x2) -> let x0 = self#class_field_kind _ctx x0 in let x1 = self#private_flag _ctx x1 in let x2 = self#loc self#string _ctx x2 in (x0, x1, x2)) _ctx x0 in
           Class_field_desc.of_concrete (Pcf_method x0)
         | Pcf_val x0 ->
-          let x0 = (fun _ctx (x0, x1, x2) -> let x0 = self#class_field_kind _ctx x0 in let x1 = self#mutable_flag _ctx x1 in let x2 = self#loc self#label _ctx x2 in (x0, x1, x2)) _ctx x0 in
+          let x0 = (fun _ctx (x0, x1, x2) -> let x0 = self#class_field_kind _ctx x0 in let x1 = self#mutable_flag _ctx x1 in let x2 = self#loc self#string _ctx x2 in (x0, x1, x2)) _ctx x0 in
           Class_field_desc.of_concrete (Pcf_val x0)
         | Pcf_inherit (x0, x1, x2) ->
           let x0 = self#option (self#loc self#string) _ctx x0 in
@@ -6031,10 +5996,10 @@ class virtual ['ctx] map_with_context =
           let x0 = (fun _ctx (x0, x1) -> let x0 = self#core_type _ctx x0 in let x1 = self#core_type _ctx x1 in (x0, x1)) _ctx x0 in
           Class_type_field_desc.of_concrete (Pctf_constraint x0)
         | Pctf_method x0 ->
-          let x0 = (fun _ctx (x0, x1, x2, x3) -> let x0 = self#core_type _ctx x0 in let x1 = self#virtual_flag _ctx x1 in let x2 = self#private_flag _ctx x2 in let x3 = self#loc self#label _ctx x3 in (x0, x1, x2, x3)) _ctx x0 in
+          let x0 = (fun _ctx (x0, x1, x2, x3) -> let x0 = self#core_type _ctx x0 in let x1 = self#virtual_flag _ctx x1 in let x2 = self#private_flag _ctx x2 in let x3 = self#loc self#string _ctx x3 in (x0, x1, x2, x3)) _ctx x0 in
           Class_type_field_desc.of_concrete (Pctf_method x0)
         | Pctf_val x0 ->
-          let x0 = (fun _ctx (x0, x1, x2, x3) -> let x0 = self#core_type _ctx x0 in let x1 = self#virtual_flag _ctx x1 in let x2 = self#mutable_flag _ctx x2 in let x3 = self#loc self#label _ctx x3 in (x0, x1, x2, x3)) _ctx x0 in
+          let x0 = (fun _ctx (x0, x1, x2, x3) -> let x0 = self#core_type _ctx x0 in let x1 = self#virtual_flag _ctx x1 in let x2 = self#mutable_flag _ctx x2 in let x3 = self#loc self#string _ctx x3 in (x0, x1, x2, x3)) _ctx x0 in
           Class_type_field_desc.of_concrete (Pctf_val x0)
         | Pctf_inherit x0 ->
           let x0 = self#class_type _ctx x0 in
@@ -6295,17 +6260,17 @@ class virtual ['ctx] map_with_context =
           let x2 = self#loc self#string _ctx x2 in
           Expression_desc.of_concrete (Pexp_letmodule (x0, x1, x2))
         | Pexp_override x0 ->
-          let x0 = self#list (fun _ctx (x0, x1) -> let x0 = self#expression _ctx x0 in let x1 = self#loc self#label _ctx x1 in (x0, x1)) _ctx x0 in
+          let x0 = self#list (fun _ctx (x0, x1) -> let x0 = self#expression _ctx x0 in let x1 = self#loc self#string _ctx x1 in (x0, x1)) _ctx x0 in
           Expression_desc.of_concrete (Pexp_override x0)
         | Pexp_setinstvar (x0, x1) ->
           let x0 = self#expression _ctx x0 in
-          let x1 = self#loc self#label _ctx x1 in
+          let x1 = self#loc self#string _ctx x1 in
           Expression_desc.of_concrete (Pexp_setinstvar (x0, x1))
         | Pexp_new x0 ->
           let x0 = self#longident_loc _ctx x0 in
           Expression_desc.of_concrete (Pexp_new x0)
         | Pexp_send (x0, x1) ->
-          let x0 = self#loc self#label _ctx x0 in
+          let x0 = self#loc self#string _ctx x0 in
           let x1 = self#expression _ctx x1 in
           Expression_desc.of_concrete (Pexp_send (x0, x1))
         | Pexp_coerce (x0, x1, x2) ->
@@ -6355,7 +6320,7 @@ class virtual ['ctx] map_with_context =
           Expression_desc.of_concrete (Pexp_record (x0, x1))
         | Pexp_variant (x0, x1) ->
           let x0 = self#option self#expression _ctx x0 in
-          let x1 = self#label _ctx x1 in
+          let x1 = self#string _ctx x1 in
           Expression_desc.of_concrete (Pexp_variant (x0, x1))
         | Pexp_construct (x0, x1) ->
           let x0 = self#option self#expression _ctx x0 in
@@ -6452,7 +6417,7 @@ class virtual ['ctx] map_with_context =
           Pattern_desc.of_concrete (Ppat_record (x0, x1))
         | Ppat_variant (x0, x1) ->
           let x0 = self#option self#pattern _ctx x0 in
-          let x1 = self#label _ctx x1 in
+          let x1 = self#string _ctx x1 in
           Pattern_desc.of_concrete (Ppat_variant (x0, x1))
         | Ppat_construct (x0, x1) ->
           let x0 = self#option self#pattern _ctx x0 in
@@ -6503,7 +6468,7 @@ class virtual ['ctx] map_with_context =
         | Otag (x0, x1, x2) ->
           let x0 = self#core_type _ctx x0 in
           let x1 = self#attributes _ctx x1 in
-          let x2 = self#loc self#label _ctx x2 in
+          let x2 = self#loc self#string _ctx x2 in
           Object_field.of_concrete (Otag (x0, x1, x2))
     method row_field : 'ctx -> Row_field.t -> Row_field.t  =
       fun _ctx row_field ->
@@ -6520,7 +6485,7 @@ class virtual ['ctx] map_with_context =
           let x0 = self#list self#core_type _ctx x0 in
           let x1 = self#bool _ctx x1 in
           let x2 = self#attributes _ctx x2 in
-          let x3 = self#loc self#label _ctx x3 in
+          let x3 = self#loc self#string _ctx x3 in
           Row_field.of_concrete (Rtag (x0, x1, x2, x3))
     method package_type : 'ctx -> Package_type.t -> Package_type.t  =
       fun _ctx package_type ->
@@ -6552,7 +6517,7 @@ class virtual ['ctx] map_with_context =
           let x1 = self#list (self#loc self#string) _ctx x1 in
           Core_type_desc.of_concrete (Ptyp_poly (x0, x1))
         | Ptyp_variant (x0, x1, x2) ->
-          let x0 = self#option (self#list self#label) _ctx x0 in
+          let x0 = self#option (self#list self#string) _ctx x0 in
           let x1 = self#closed_flag _ctx x1 in
           let x2 = self#list self#row_field _ctx x2 in
           Core_type_desc.of_concrete (Ptyp_variant (x0, x1, x2))
@@ -6702,15 +6667,6 @@ class virtual ['ctx] map_with_context =
           Arg_label.of_concrete (Labelled x0)
         | Nolabel ->
           Arg_label.of_concrete Nolabel
-    method label : 'ctx -> Label.t -> Label.t  =
-      fun _ctx label ->
-        let concrete =
-          match Label.to_concrete label with
-          | None -> conversion_failed "label"
-          | Some n -> n
-        in
-        let concrete = self#string _ctx concrete in
-        Label.of_concrete concrete
     method closed_flag : 'ctx -> Closed_flag.t -> Closed_flag.t  =
       fun _ctx closed_flag ->
         let concrete =
@@ -7288,10 +7244,10 @@ class virtual ['res] lift =
           let x0 = (fun (x0, x1) -> let x0 = self#core_type x0 in let x1 = self#core_type x1 in self#node None (self#tuple [x0; x1])) x0 in
           self#constr (Some ("class_field_desc", 0)) "Pcf_constraint" [x0]
         | Pcf_method x0 ->
-          let x0 = (fun (x0, x1, x2) -> let x0 = self#class_field_kind x0 in let x1 = self#private_flag x1 in let x2 = self#loc self#label x2 in self#node None (self#tuple [x0; x1; x2])) x0 in
+          let x0 = (fun (x0, x1, x2) -> let x0 = self#class_field_kind x0 in let x1 = self#private_flag x1 in let x2 = self#loc self#string x2 in self#node None (self#tuple [x0; x1; x2])) x0 in
           self#constr (Some ("class_field_desc", 0)) "Pcf_method" [x0]
         | Pcf_val x0 ->
-          let x0 = (fun (x0, x1, x2) -> let x0 = self#class_field_kind x0 in let x1 = self#mutable_flag x1 in let x2 = self#loc self#label x2 in self#node None (self#tuple [x0; x1; x2])) x0 in
+          let x0 = (fun (x0, x1, x2) -> let x0 = self#class_field_kind x0 in let x1 = self#mutable_flag x1 in let x2 = self#loc self#string x2 in self#node None (self#tuple [x0; x1; x2])) x0 in
           self#constr (Some ("class_field_desc", 0)) "Pcf_val" [x0]
         | Pcf_inherit (x0, x1, x2) ->
           let x0 = self#option (self#loc self#string) x0 in
@@ -7441,10 +7397,10 @@ class virtual ['res] lift =
           let x0 = (fun (x0, x1) -> let x0 = self#core_type x0 in let x1 = self#core_type x1 in self#node None (self#tuple [x0; x1])) x0 in
           self#constr (Some ("class_type_field_desc", 0)) "Pctf_constraint" [x0]
         | Pctf_method x0 ->
-          let x0 = (fun (x0, x1, x2, x3) -> let x0 = self#core_type x0 in let x1 = self#virtual_flag x1 in let x2 = self#private_flag x2 in let x3 = self#loc self#label x3 in self#node None (self#tuple [x0; x1; x2; x3])) x0 in
+          let x0 = (fun (x0, x1, x2, x3) -> let x0 = self#core_type x0 in let x1 = self#virtual_flag x1 in let x2 = self#private_flag x2 in let x3 = self#loc self#string x3 in self#node None (self#tuple [x0; x1; x2; x3])) x0 in
           self#constr (Some ("class_type_field_desc", 0)) "Pctf_method" [x0]
         | Pctf_val x0 ->
-          let x0 = (fun (x0, x1, x2, x3) -> let x0 = self#core_type x0 in let x1 = self#virtual_flag x1 in let x2 = self#mutable_flag x2 in let x3 = self#loc self#label x3 in self#node None (self#tuple [x0; x1; x2; x3])) x0 in
+          let x0 = (fun (x0, x1, x2, x3) -> let x0 = self#core_type x0 in let x1 = self#virtual_flag x1 in let x2 = self#mutable_flag x2 in let x3 = self#loc self#string x3 in self#node None (self#tuple [x0; x1; x2; x3])) x0 in
           self#constr (Some ("class_type_field_desc", 0)) "Pctf_val" [x0]
         | Pctf_inherit x0 ->
           let x0 = self#class_type x0 in
@@ -7705,17 +7661,17 @@ class virtual ['res] lift =
           let x2 = self#loc self#string x2 in
           self#constr (Some ("expression_desc", 0)) "Pexp_letmodule" [x0; x1; x2]
         | Pexp_override x0 ->
-          let x0 = self#list (fun (x0, x1) -> let x0 = self#expression x0 in let x1 = self#loc self#label x1 in self#node None (self#tuple [x0; x1])) x0 in
+          let x0 = self#list (fun (x0, x1) -> let x0 = self#expression x0 in let x1 = self#loc self#string x1 in self#node None (self#tuple [x0; x1])) x0 in
           self#constr (Some ("expression_desc", 0)) "Pexp_override" [x0]
         | Pexp_setinstvar (x0, x1) ->
           let x0 = self#expression x0 in
-          let x1 = self#loc self#label x1 in
+          let x1 = self#loc self#string x1 in
           self#constr (Some ("expression_desc", 0)) "Pexp_setinstvar" [x0; x1]
         | Pexp_new x0 ->
           let x0 = self#longident_loc x0 in
           self#constr (Some ("expression_desc", 0)) "Pexp_new" [x0]
         | Pexp_send (x0, x1) ->
-          let x0 = self#loc self#label x0 in
+          let x0 = self#loc self#string x0 in
           let x1 = self#expression x1 in
           self#constr (Some ("expression_desc", 0)) "Pexp_send" [x0; x1]
         | Pexp_coerce (x0, x1, x2) ->
@@ -7765,7 +7721,7 @@ class virtual ['res] lift =
           self#constr (Some ("expression_desc", 0)) "Pexp_record" [x0; x1]
         | Pexp_variant (x0, x1) ->
           let x0 = self#option self#expression x0 in
-          let x1 = self#label x1 in
+          let x1 = self#string x1 in
           self#constr (Some ("expression_desc", 0)) "Pexp_variant" [x0; x1]
         | Pexp_construct (x0, x1) ->
           let x0 = self#option self#expression x0 in
@@ -7862,7 +7818,7 @@ class virtual ['res] lift =
           self#constr (Some ("pattern_desc", 0)) "Ppat_record" [x0; x1]
         | Ppat_variant (x0, x1) ->
           let x0 = self#option self#pattern x0 in
-          let x1 = self#label x1 in
+          let x1 = self#string x1 in
           self#constr (Some ("pattern_desc", 0)) "Ppat_variant" [x0; x1]
         | Ppat_construct (x0, x1) ->
           let x0 = self#option self#pattern x0 in
@@ -7913,7 +7869,7 @@ class virtual ['res] lift =
         | Otag (x0, x1, x2) ->
           let x0 = self#core_type x0 in
           let x1 = self#attributes x1 in
-          let x2 = self#loc self#label x2 in
+          let x2 = self#loc self#string x2 in
           self#constr (Some ("object_field", 0)) "Otag" [x0; x1; x2]
     method row_field : Row_field.t -> 'res  =
       fun row_field ->
@@ -7930,7 +7886,7 @@ class virtual ['res] lift =
           let x0 = self#list self#core_type x0 in
           let x1 = self#bool x1 in
           let x2 = self#attributes x2 in
-          let x3 = self#loc self#label x3 in
+          let x3 = self#loc self#string x3 in
           self#constr (Some ("row_field", 0)) "Rtag" [x0; x1; x2; x3]
     method package_type : Package_type.t -> 'res  =
       fun package_type ->
@@ -7962,7 +7918,7 @@ class virtual ['res] lift =
           let x1 = self#list (self#loc self#string) x1 in
           self#constr (Some ("core_type_desc", 0)) "Ptyp_poly" [x0; x1]
         | Ptyp_variant (x0, x1, x2) ->
-          let x0 = self#option (self#list self#label) x0 in
+          let x0 = self#option (self#list self#string) x0 in
           let x1 = self#closed_flag x1 in
           let x2 = self#list self#row_field x2 in
           self#constr (Some ("core_type_desc", 0)) "Ptyp_variant" [x0; x1; x2]
@@ -8112,15 +8068,6 @@ class virtual ['res] lift =
           self#constr (Some ("arg_label", 0)) "Labelled" [x0]
         | Nolabel ->
           self#constr (Some ("arg_label", 0)) "Nolabel" []
-    method label : Label.t -> 'res  =
-      fun label ->
-        let concrete =
-          match Label.to_concrete label with
-          | None -> conversion_failed "label"
-          | Some n -> n
-        in
-        let concrete = self#string concrete in
-        self#node (Some ("label", 0)) concrete
     method closed_flag : Closed_flag.t -> 'res  =
       fun closed_flag ->
         let concrete =

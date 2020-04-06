@@ -37,7 +37,6 @@ module Types = struct
   type include_declaration_
   type include_description_
   type 'a include_infos_
-  type label_
   type label_declaration_
   type longident_
   type longident_loc_
@@ -110,7 +109,6 @@ module Types = struct
   type include_declaration = include_declaration_ node
   type include_description = include_description_ node
   type 'a include_infos = 'a include_infos_ node
-  type label = label_ node
   type label_declaration = label_declaration_ node
   type longident = longident_ node
   type longident_loc = longident_loc_ node

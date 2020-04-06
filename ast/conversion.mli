@@ -71,14 +71,6 @@ val ast_to_closed_flag :
   Versions.V4_07.Closed_flag.t
   -> Compiler_types.closed_flag
 
-val ast_of_label :
-  Compiler_types.label
-  -> Versions.V4_07.Label.t
-
-val ast_to_label :
-  Versions.V4_07.Label.t
-  -> Compiler_types.label
-
 val ast_of_arg_label :
   Compiler_types.arg_label
   -> Versions.V4_07.Arg_label.t

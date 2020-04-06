@@ -26,7 +26,6 @@ let grammar : Grammar.t =
     , Mono (Variant [("Override", Empty); ("Fresh", Empty)]) )
   ; ( "closed_flag"
     , Mono (Variant [("Closed", Empty); ("Open", Empty)]) )
-  ; ("label", Mono (Wrapper String))
   ; ( "arg_label"
     , Mono
         (Variant
@@ -85,7 +84,7 @@ let grammar : Grammar.t =
                 , Tuple
                     [ List (Name "row_field")
                     ; Name "closed_flag"
-                    ; Option (List (Name "label")) ] )
+                    ; Option (List String) ] )
               ; ("Ptyp_poly", Tuple [List (Loc String); Name "core_type"])
               ; ("Ptyp_package", Tuple [Name "package_type"])
               ; ("Ptyp_extension", Tuple [Name "extension"]) ]) )
@@ -101,7 +100,7 @@ let grammar : Grammar.t =
         (Variant
               [ ( "Rtag"
                 , Tuple
-                    [ Loc (Name "label")
+                    [ Loc String
                     ; Name "attributes"
                     ; Bool
                     ; List (Name "core_type") ] )
@@ -111,7 +110,7 @@ let grammar : Grammar.t =
         (Variant
               [ ( "Otag"
                 , Tuple
-                    [Loc (Name "label"); Name "attributes"; Name "core_type"]
+                    [Loc String; Name "attributes"; Name "core_type"]
                 )
               ; ("Oinherit", Tuple [Name "core_type"]) ]) )
   ; ( "pattern"
@@ -131,7 +130,7 @@ let grammar : Grammar.t =
               ; ("Ppat_tuple", Tuple [List (Name "pattern")])
               ; ( "Ppat_construct"
                 , Tuple [Name "longident_loc"; Option (Name "pattern")] )
-              ; ("Ppat_variant", Tuple [Name "label"; Option (Name "pattern")])
+              ; ("Ppat_variant", Tuple [String; Option (Name "pattern")])
               ; ( "Ppat_record"
                 , Tuple
                     [ List (Tuple [Name "longident_loc"; Name "pattern"])
@@ -179,7 +178,7 @@ let grammar : Grammar.t =
               ; ( "Pexp_construct"
                 , Tuple [Name "longident_loc"; Option (Name "expression")] )
               ; ( "Pexp_variant"
-                , Tuple [Name "label"; Option (Name "expression")] )
+                , Tuple [String; Option (Name "expression")] )
               ; ( "Pexp_record"
                 , Tuple
                     [ List (Tuple [Name "longident_loc"; Name "expression"])
@@ -210,12 +209,12 @@ let grammar : Grammar.t =
                     [ Name "expression"
                     ; Option (Name "core_type")
                     ; Name "core_type" ] )
-              ; ("Pexp_send", Tuple [Name "expression"; Loc (Name "label")])
+              ; ("Pexp_send", Tuple [Name "expression"; Loc String])
               ; ("Pexp_new", Tuple [Name "longident_loc"])
               ; ( "Pexp_setinstvar"
-                , Tuple [Loc (Name "label"); Name "expression"] )
+                , Tuple [Loc String; Name "expression"] )
               ; ( "Pexp_override"
-                , Tuple [List (Tuple [Loc (Name "label"); Name "expression"])]
+                , Tuple [List (Tuple [Loc String; Name "expression"])]
                 )
               ; ( "Pexp_letmodule"
                 , Tuple [Loc String; Name "module_expr"; Name "expression"] )
@@ -355,14 +354,14 @@ let grammar : Grammar.t =
               ; ( "Pctf_val"
                 , Tuple
                     [ Tuple
-                        [ Loc (Name "label")
+                        [ Loc String
                         ; Name "mutable_flag"
                         ; Name "virtual_flag"
                         ; Name "core_type" ] ] )
               ; ( "Pctf_method"
                 , Tuple
                     [ Tuple
-                        [ Loc (Name "label")
+                        [ Loc String
                         ; Name "private_flag"
                         ; Name "virtual_flag"
                         ; Name "core_type" ] ] )
@@ -441,13 +440,13 @@ let grammar : Grammar.t =
               ; ( "Pcf_val"
                 , Tuple
                     [ Tuple
-                        [ Loc (Name "label")
+                        [ Loc String
                         ; Name "mutable_flag"
                         ; Name "class_field_kind" ] ] )
               ; ( "Pcf_method"
                 , Tuple
                     [ Tuple
-                        [ Loc (Name "label")
+                        [ Loc String
                         ; Name "private_flag"
                         ; Name "class_field_kind" ] ] )
               ; ( "Pcf_constraint"

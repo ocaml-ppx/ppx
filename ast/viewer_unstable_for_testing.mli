@@ -135,8 +135,8 @@ val pcf_extension'const : (Extension.t, 'i, 'o) View.t -> (Class_field.t, 'i, 'o
 val pcf_attribute'const : (Attribute.t, 'i, 'o) View.t -> (Class_field.t, 'i, 'o) View.t
 val pcf_initializer'const : (Expression.t, 'i, 'o) View.t -> (Class_field.t, 'i, 'o) View.t
 val pcf_constraint'const : ((Core_type.t * Core_type.t), 'i, 'o) View.t -> (Class_field.t, 'i, 'o) View.t
-val pcf_method'const : ((Class_field_kind.t * Private_flag.t * Label.t Astlib.Loc.t), 'i, 'o) View.t -> (Class_field.t, 'i, 'o) View.t
-val pcf_val'const : ((Class_field_kind.t * Mutable_flag.t * Label.t Astlib.Loc.t), 'i, 'o) View.t -> (Class_field.t, 'i, 'o) View.t
+val pcf_method'const : ((Class_field_kind.t * Private_flag.t * string Astlib.Loc.t), 'i, 'o) View.t -> (Class_field.t, 'i, 'o) View.t
+val pcf_val'const : ((Class_field_kind.t * Mutable_flag.t * string Astlib.Loc.t), 'i, 'o) View.t -> (Class_field.t, 'i, 'o) View.t
 val pcf_inherit'const : ((string Astlib.Loc.t option * Class_expr.t * Override_flag.t), 'i, 'o) View.t -> (Class_field.t, 'i, 'o) View.t
 
 val pcf_attributes'match : (Attributes.t, 'i, 'o) View.t -> (Class_field.t, 'i, 'o) View.t
@@ -179,8 +179,8 @@ val pci_virt'match : (Virtual_flag.t, 'i, 'o) View.t -> ('a node Class_infos.t, 
 val pctf_extension'const : (Extension.t, 'i, 'o) View.t -> (Class_type_field.t, 'i, 'o) View.t
 val pctf_attribute'const : (Attribute.t, 'i, 'o) View.t -> (Class_type_field.t, 'i, 'o) View.t
 val pctf_constraint'const : ((Core_type.t * Core_type.t), 'i, 'o) View.t -> (Class_type_field.t, 'i, 'o) View.t
-val pctf_method'const : ((Core_type.t * Virtual_flag.t * Private_flag.t * Label.t Astlib.Loc.t), 'i, 'o) View.t -> (Class_type_field.t, 'i, 'o) View.t
-val pctf_val'const : ((Core_type.t * Virtual_flag.t * Mutable_flag.t * Label.t Astlib.Loc.t), 'i, 'o) View.t -> (Class_type_field.t, 'i, 'o) View.t
+val pctf_method'const : ((Core_type.t * Virtual_flag.t * Private_flag.t * string Astlib.Loc.t), 'i, 'o) View.t -> (Class_type_field.t, 'i, 'o) View.t
+val pctf_val'const : ((Core_type.t * Virtual_flag.t * Mutable_flag.t * string Astlib.Loc.t), 'i, 'o) View.t -> (Class_type_field.t, 'i, 'o) View.t
 val pctf_inherit'const : (Class_type.t, 'i, 'o) View.t -> (Class_type_field.t, 'i, 'o) View.t
 
 val pctf_attributes'match : (Attributes.t, 'i, 'o) View.t -> (Class_type_field.t, 'i, 'o) View.t
@@ -295,10 +295,10 @@ val pexp_lazy'const : (Expression.t, 'i, 'o) View.t -> (Expression.t, 'i, 'o) Vi
 val pexp_assert'const : (Expression.t, 'i, 'o) View.t -> (Expression.t, 'i, 'o) View.t
 val pexp_letexception'const : ((Expression.t * Extension_constructor.t), 'i, 'o) View.t -> (Expression.t, 'i, 'o) View.t
 val pexp_letmodule'const : ((Expression.t * Module_expr.t * string Astlib.Loc.t), 'i, 'o) View.t -> (Expression.t, 'i, 'o) View.t
-val pexp_override'const : ((Expression.t * Label.t Astlib.Loc.t) list, 'i, 'o) View.t -> (Expression.t, 'i, 'o) View.t
-val pexp_setinstvar'const : ((Expression.t * Label.t Astlib.Loc.t), 'i, 'o) View.t -> (Expression.t, 'i, 'o) View.t
+val pexp_override'const : ((Expression.t * string Astlib.Loc.t) list, 'i, 'o) View.t -> (Expression.t, 'i, 'o) View.t
+val pexp_setinstvar'const : ((Expression.t * string Astlib.Loc.t), 'i, 'o) View.t -> (Expression.t, 'i, 'o) View.t
 val pexp_new'const : (Longident_loc.t, 'i, 'o) View.t -> (Expression.t, 'i, 'o) View.t
-val pexp_send'const : ((Label.t Astlib.Loc.t * Expression.t), 'i, 'o) View.t -> (Expression.t, 'i, 'o) View.t
+val pexp_send'const : ((string Astlib.Loc.t * Expression.t), 'i, 'o) View.t -> (Expression.t, 'i, 'o) View.t
 val pexp_coerce'const : ((Core_type.t * Core_type.t option * Expression.t), 'i, 'o) View.t -> (Expression.t, 'i, 'o) View.t
 val pexp_constraint'const : ((Core_type.t * Expression.t), 'i, 'o) View.t -> (Expression.t, 'i, 'o) View.t
 val pexp_for'const : ((Expression.t * Direction_flag.t * Expression.t * Expression.t * Pattern.t), 'i, 'o) View.t -> (Expression.t, 'i, 'o) View.t
@@ -309,7 +309,7 @@ val pexp_array'const : (Expression.t list, 'i, 'o) View.t -> (Expression.t, 'i, 
 val pexp_setfield'const : ((Expression.t * Longident_loc.t * Expression.t), 'i, 'o) View.t -> (Expression.t, 'i, 'o) View.t
 val pexp_field'const : ((Longident_loc.t * Expression.t), 'i, 'o) View.t -> (Expression.t, 'i, 'o) View.t
 val pexp_record'const : ((Expression.t option * (Expression.t * Longident_loc.t) list), 'i, 'o) View.t -> (Expression.t, 'i, 'o) View.t
-val pexp_variant'const : ((Expression.t option * Label.t), 'i, 'o) View.t -> (Expression.t, 'i, 'o) View.t
+val pexp_variant'const : ((Expression.t option * string), 'i, 'o) View.t -> (Expression.t, 'i, 'o) View.t
 val pexp_construct'const : ((Expression.t option * Longident_loc.t), 'i, 'o) View.t -> (Expression.t, 'i, 'o) View.t
 val pexp_tuple'const : (Expression.t list, 'i, 'o) View.t -> (Expression.t, 'i, 'o) View.t
 val pexp_try'const : ((Case.t list * Expression.t), 'i, 'o) View.t -> (Expression.t, 'i, 'o) View.t
@@ -336,7 +336,7 @@ val ppat_constraint'const : ((Core_type.t * Pattern.t), 'i, 'o) View.t -> (Patte
 val ppat_or'const : ((Pattern.t * Pattern.t), 'i, 'o) View.t -> (Pattern.t, 'i, 'o) View.t
 val ppat_array'const : (Pattern.t list, 'i, 'o) View.t -> (Pattern.t, 'i, 'o) View.t
 val ppat_record'const : ((Closed_flag.t * (Pattern.t * Longident_loc.t) list), 'i, 'o) View.t -> (Pattern.t, 'i, 'o) View.t
-val ppat_variant'const : ((Pattern.t option * Label.t), 'i, 'o) View.t -> (Pattern.t, 'i, 'o) View.t
+val ppat_variant'const : ((Pattern.t option * string), 'i, 'o) View.t -> (Pattern.t, 'i, 'o) View.t
 val ppat_construct'const : ((Pattern.t option * Longident_loc.t), 'i, 'o) View.t -> (Pattern.t, 'i, 'o) View.t
 val ppat_tuple'const : (Pattern.t list, 'i, 'o) View.t -> (Pattern.t, 'i, 'o) View.t
 val ppat_interval'const : ((Constant.t * Constant.t), 'i, 'o) View.t -> (Pattern.t, 'i, 'o) View.t
@@ -352,14 +352,14 @@ val ppat_loc'match : (Astlib.Location.t, 'i, 'o) View.t -> (Pattern.t, 'i, 'o) V
 
 val ppat_desc'match : (Pattern_desc.t, 'i, 'o) View.t -> (Pattern.t, 'i, 'o) View.t
 val oinherit'const : (Core_type.t, 'i, 'o) View.t -> (Object_field.t, 'i, 'o) View.t
-val otag'const : ((Core_type.t * Attributes.t * Label.t Astlib.Loc.t), 'i, 'o) View.t -> (Object_field.t, 'i, 'o) View.t
+val otag'const : ((Core_type.t * Attributes.t * string Astlib.Loc.t), 'i, 'o) View.t -> (Object_field.t, 'i, 'o) View.t
 val rinherit'const : (Core_type.t, 'i, 'o) View.t -> (Row_field.t, 'i, 'o) View.t
-val rtag'const : ((Core_type.t list * bool * Attributes.t * Label.t Astlib.Loc.t), 'i, 'o) View.t -> (Row_field.t, 'i, 'o) View.t
+val rtag'const : ((Core_type.t list * bool * Attributes.t * string Astlib.Loc.t), 'i, 'o) View.t -> (Row_field.t, 'i, 'o) View.t
 val package_type'const: (((Core_type.t * Longident_loc.t) list * Longident_loc.t), 'i, 'o) View.t -> (Package_type.t, 'i, 'o) View.t
 val ptyp_extension'const : (Extension.t, 'i, 'o) View.t -> (Core_type.t, 'i, 'o) View.t
 val ptyp_package'const : (Package_type.t, 'i, 'o) View.t -> (Core_type.t, 'i, 'o) View.t
 val ptyp_poly'const : ((Core_type.t * string Astlib.Loc.t list), 'i, 'o) View.t -> (Core_type.t, 'i, 'o) View.t
-val ptyp_variant'const : ((Label.t list option * Closed_flag.t * Row_field.t list), 'i, 'o) View.t -> (Core_type.t, 'i, 'o) View.t
+val ptyp_variant'const : ((string list option * Closed_flag.t * Row_field.t list), 'i, 'o) View.t -> (Core_type.t, 'i, 'o) View.t
 val ptyp_alias'const : ((string * Core_type.t), 'i, 'o) View.t -> (Core_type.t, 'i, 'o) View.t
 val ptyp_class'const : ((Core_type.t list * Longident_loc.t), 'i, 'o) View.t -> (Core_type.t, 'i, 'o) View.t
 val ptyp_object'const : ((Closed_flag.t * Object_field.t list), 'i, 'o) View.t -> (Core_type.t, 'i, 'o) View.t
@@ -396,7 +396,6 @@ val optional'const : (string, 'i, 'o) View.t -> (Arg_label.t, 'i, 'o) View.t
 val labelled'const : (string, 'i, 'o) View.t -> (Arg_label.t, 'i, 'o) View.t
 
 val nolabel'const : (Arg_label.t, 'a, 'a) View.t
-val label'const: (string, 'i, 'o) View.t -> (Label.t, 'i, 'o) View.t
 
 val open'const : (Closed_flag.t, 'a, 'a) View.t
 
