@@ -20,7 +20,6 @@ class virtual map :
     method virtual_flag : Virtual_flag.t -> Virtual_flag.t
     method override_flag : Override_flag.t -> Override_flag.t
     method closed_flag : Closed_flag.t -> Closed_flag.t
-    method label : Label.t -> Label.t
     method arg_label : Arg_label.t -> Arg_label.t
     method variance : Variance.t -> Variance.t
     method constant : Constant.t -> Constant.t
@@ -106,7 +105,6 @@ class virtual iter :
     method virtual_flag : Virtual_flag.t -> unit
     method override_flag : Override_flag.t -> unit
     method closed_flag : Closed_flag.t -> unit
-    method label : Label.t -> unit
     method arg_label : Arg_label.t -> unit
     method variance : Variance.t -> unit
     method constant : Constant.t -> unit
@@ -192,7 +190,6 @@ class virtual ['acc] fold :
     method virtual_flag : Virtual_flag.t -> 'acc -> 'acc
     method override_flag : Override_flag.t -> 'acc -> 'acc
     method closed_flag : Closed_flag.t -> 'acc -> 'acc
-    method label : Label.t -> 'acc -> 'acc
     method arg_label : Arg_label.t -> 'acc -> 'acc
     method variance : Variance.t -> 'acc -> 'acc
     method constant : Constant.t -> 'acc -> 'acc
@@ -278,7 +275,6 @@ class virtual ['acc] fold_map :
     method virtual_flag : Virtual_flag.t -> 'acc -> (Virtual_flag.t * 'acc)
     method override_flag : Override_flag.t -> 'acc -> (Override_flag.t * 'acc)
     method closed_flag : Closed_flag.t -> 'acc -> (Closed_flag.t * 'acc)
-    method label : Label.t -> 'acc -> (Label.t * 'acc)
     method arg_label : Arg_label.t -> 'acc -> (Arg_label.t * 'acc)
     method variance : Variance.t -> 'acc -> (Variance.t * 'acc)
     method constant : Constant.t -> 'acc -> (Constant.t * 'acc)
@@ -364,7 +360,6 @@ class virtual ['ctx] map_with_context :
     method virtual_flag : 'ctx -> Virtual_flag.t -> Virtual_flag.t
     method override_flag : 'ctx -> Override_flag.t -> Override_flag.t
     method closed_flag : 'ctx -> Closed_flag.t -> Closed_flag.t
-    method label : 'ctx -> Label.t -> Label.t
     method arg_label : 'ctx -> Arg_label.t -> Arg_label.t
     method variance : 'ctx -> Variance.t -> Variance.t
     method constant : 'ctx -> Constant.t -> Constant.t
@@ -454,7 +449,6 @@ class virtual ['res] lift :
     method virtual_flag : Virtual_flag.t -> 'res
     method override_flag : Override_flag.t -> 'res
     method closed_flag : Closed_flag.t -> 'res
-    method label : Label.t -> 'res
     method arg_label : Arg_label.t -> 'res
     method variance : Variance.t -> 'res
     method constant : Constant.t -> 'res

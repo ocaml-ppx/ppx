@@ -46,11 +46,6 @@ module Closed_flag : sig
   [@@deriving equal, quickcheck, sexp_of]
 end
 
-module Label : sig
-  type t = Compiler_types.label
-  [@@deriving equal, quickcheck, sexp_of]
-end
-
 module Arg_label : sig
   type t = Compiler_types.arg_label
   [@@deriving equal, quickcheck, sexp_of]

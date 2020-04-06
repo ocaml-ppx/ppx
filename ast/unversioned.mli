@@ -6,6 +6,8 @@ module Types : sig
   type attribute_
   type attributes_
   type case_
+  type class_declaration_
+  type class_description_
   type class_expr_
   type class_expr_desc_
   type class_field_
@@ -15,6 +17,7 @@ module Types : sig
   type class_signature_
   type class_structure_
   type class_type_
+  type class_type_declaration_
   type class_type_desc_
   type class_type_field_
   type class_type_field_desc_
@@ -31,9 +34,12 @@ module Types : sig
   type extension_
   type extension_constructor_
   type extension_constructor_kind_
+  type include_declaration_
+  type include_description_
   type 'a include_infos_
   type label_declaration_
   type longident_
+  type longident_loc_
   type module_binding_
   type module_declaration_
   type module_expr_
@@ -72,6 +78,8 @@ module Types : sig
   type attribute = attribute_ node
   type attributes = attributes_ node
   type case = case_ node
+  type class_declaration = class_declaration_ node
+  type class_description = class_description_ node
   type class_expr = class_expr_ node
   type class_expr_desc = class_expr_desc_ node
   type class_field = class_field_ node
@@ -81,6 +89,7 @@ module Types : sig
   type class_signature = class_signature_ node
   type class_structure = class_structure_ node
   type class_type = class_type_ node
+  type class_type_declaration = class_type_declaration_ node
   type class_type_desc = class_type_desc_ node
   type class_type_field = class_type_field_ node
   type class_type_field_desc = class_type_field_desc_ node
@@ -97,9 +106,12 @@ module Types : sig
   type extension = extension_ node
   type extension_constructor = extension_constructor_ node
   type extension_constructor_kind = extension_constructor_kind_ node
+  type include_declaration = include_declaration_ node
+  type include_description = include_description_ node
   type 'a include_infos = 'a include_infos_ node
   type label_declaration = label_declaration_ node
   type longident = longident_ node
+  type longident_loc = longident_loc_ node
   type module_binding = module_binding_ node
   type module_declaration = module_declaration_ node
   type module_expr = module_expr_ node
@@ -133,14 +145,6 @@ module Types : sig
   type variance = variance_ node
   type virtual_flag = virtual_flag_ node
   type with_constraint = with_constraint_ node
-
-  type class_declaration = class_expr class_infos
-  type class_description = class_type class_infos
-  type class_type_declaration = class_type class_infos
-  type include_declaration = module_expr include_infos
-  type include_description = module_type include_infos
-  type label = string
-  type longident_loc = longident Astlib.Loc.t
 (*$*)
 end
 

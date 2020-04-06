@@ -36,6 +36,14 @@ let lapply'const view value =
   | Longident.Lapply (arg0, arg1) -> view (arg0, arg1)
   | _ -> View.error
 
+let longident_loc'const view value =
+  let concrete0 =
+    match Longident_loc.to_concrete value with
+    | None -> conversion_failed "longident_loc"
+    | Some n -> n
+  in
+  view concrete0
+
 let nonrecursive'const value =
   let concrete =
     match Rec_flag.to_concrete value with
@@ -275,6 +283,30 @@ let pconst_float'const view value =
   match concrete with
   | Constant.Pconst_float (arg0, arg1) -> view (arg0, arg1)
   | _ -> View.error
+
+let attribute'const view value =
+  let concrete0 =
+    match Attribute.to_concrete value with
+    | None -> conversion_failed "attribute"
+    | Some n -> n
+  in
+  view concrete0
+
+let extension'const view value =
+  let concrete0 =
+    match Extension.to_concrete value with
+    | None -> conversion_failed "extension"
+    | Some n -> n
+  in
+  view concrete0
+
+let attributes'const view value =
+  let concrete0 =
+    match Attributes.to_concrete value with
+    | None -> conversion_failed "attributes"
+    | Some n -> n
+  in
+  view concrete0
 
 let pstr'const view value =
   let concrete =
@@ -531,6 +563,14 @@ let ptyp_extension'const view value =
   match concrete with
   | Core_type_desc.Ptyp_extension arg -> view arg
   | _ -> View.error
+
+let package_type'const view value =
+  let concrete0 =
+    match Package_type.to_concrete value with
+    | None -> conversion_failed "package_type"
+    | Some n -> n
+  in
+  view concrete0
 
 let rtag'const view value =
   let concrete =
@@ -2132,6 +2172,22 @@ let pci_attributes'match view value =
   in
   view concrete.Class_infos.pci_attributes
 
+let class_description'const view value =
+  let concrete0 =
+    match Class_description.to_concrete value with
+    | None -> conversion_failed "class_description"
+    | Some n -> n
+  in
+  view concrete0
+
+let class_type_declaration'const view value =
+  let concrete0 =
+    match Class_type_declaration.to_concrete value with
+    | None -> conversion_failed "class_type_declaration"
+    | Some n -> n
+  in
+  view concrete0
+
 let pcl_desc'match view value =
   let concrete =
     match Class_expr.to_concrete value with
@@ -2456,6 +2512,14 @@ let cfk_concrete'const view value =
   | Class_field_kind.Cfk_concrete (arg0, arg1) -> view (arg0, arg1)
   | _ -> View.error
 
+let class_declaration'const view value =
+  let concrete0 =
+    match Class_declaration.to_concrete value with
+    | None -> conversion_failed "class_declaration"
+    | Some n -> n
+  in
+  view concrete0
+
 let pmty_desc'match view value =
   let concrete =
     match Module_type.to_concrete value with
@@ -2591,6 +2655,14 @@ let pmty_alias'const view value =
   match concrete with
   | Module_type_desc.Pmty_alias arg -> view arg
   | _ -> View.error
+
+let signature'const view value =
+  let concrete0 =
+    match Signature.to_concrete value with
+    | None -> conversion_failed "signature"
+    | Some n -> n
+  in
+  view concrete0
 
 let psig_desc'match view value =
   let concrete =
@@ -2936,6 +3008,22 @@ let pincl_attributes'match view value =
   in
   view concrete.Include_infos.pincl_attributes
 
+let include_description'const view value =
+  let concrete0 =
+    match Include_description.to_concrete value with
+    | None -> conversion_failed "include_description"
+    | Some n -> n
+  in
+  view concrete0
+
+let include_declaration'const view value =
+  let concrete0 =
+    match Include_declaration.to_concrete value with
+    | None -> conversion_failed "include_declaration"
+    | Some n -> n
+  in
+  view concrete0
+
 let pwith_type'const view value =
   let concrete =
     match With_constraint.to_concrete value with
@@ -3111,6 +3199,14 @@ let pmod_extension'const view value =
   match concrete with
   | Module_expr_desc.Pmod_extension arg -> view arg
   | _ -> View.error
+
+let structure'const view value =
+  let concrete0 =
+    match Structure.to_concrete value with
+    | None -> conversion_failed "structure"
+    | Some n -> n
+  in
+  view concrete0
 
 let pstr_desc'match view value =
   let concrete =

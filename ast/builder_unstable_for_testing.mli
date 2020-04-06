@@ -224,11 +224,11 @@ val pcf_constraint :
   -> Class_field.t
 val pcf_method :
   loc:Astlib.Location.t
-  -> (Class_field_kind.t * Private_flag.t * Label.t Astlib.Loc.t)
+  -> (Class_field_kind.t * Private_flag.t * string Astlib.Loc.t)
   -> Class_field.t
 val pcf_val :
   loc:Astlib.Location.t
-  -> (Class_field_kind.t * Mutable_flag.t * Label.t Astlib.Loc.t)
+  -> (Class_field_kind.t * Mutable_flag.t * string Astlib.Loc.t)
   -> Class_field.t
 val pcf_inherit :
   loc:Astlib.Location.t
@@ -296,11 +296,11 @@ val pctf_constraint :
   -> Class_type_field.t
 val pctf_method :
   loc:Astlib.Location.t
-  -> (Core_type.t * Virtual_flag.t * Private_flag.t * Label.t Astlib.Loc.t)
+  -> (Core_type.t * Virtual_flag.t * Private_flag.t * string Astlib.Loc.t)
   -> Class_type_field.t
 val pctf_val :
   loc:Astlib.Location.t
-  -> (Core_type.t * Virtual_flag.t * Mutable_flag.t * Label.t Astlib.Loc.t)
+  -> (Core_type.t * Virtual_flag.t * Mutable_flag.t * string Astlib.Loc.t)
   -> Class_type_field.t
 val pctf_inherit :
   loc:Astlib.Location.t
@@ -430,12 +430,12 @@ val pexp_letmodule :
   -> Expression.t
 val pexp_override :
   loc:Astlib.Location.t
-  -> (Expression.t * Label.t Astlib.Loc.t) list
+  -> (Expression.t * string Astlib.Loc.t) list
   -> Expression.t
 val pexp_setinstvar :
   loc:Astlib.Location.t
   -> Expression.t
-  -> Label.t Astlib.Loc.t
+  -> string Astlib.Loc.t
   -> Expression.t
 val pexp_new :
   loc:Astlib.Location.t
@@ -443,7 +443,7 @@ val pexp_new :
   -> Expression.t
 val pexp_send :
   loc:Astlib.Location.t
-  -> Label.t Astlib.Loc.t
+  -> string Astlib.Loc.t
   -> Expression.t
   -> Expression.t
 val pexp_coerce :
@@ -504,7 +504,7 @@ val pexp_record :
 val pexp_variant :
   loc:Astlib.Location.t
   -> Expression.t option
-  -> Label.t
+  -> string
   -> Expression.t
 val pexp_construct :
   loc:Astlib.Location.t
@@ -602,7 +602,7 @@ val ppat_record :
 val ppat_variant :
   loc:Astlib.Location.t
   -> Pattern.t option
-  -> Label.t
+  -> string
   -> Pattern.t
 val ppat_construct :
   loc:Astlib.Location.t
@@ -649,7 +649,7 @@ val ptyp_poly :
   -> Core_type.t
 val ptyp_variant :
   loc:Astlib.Location.t
-  -> Label.t list option
+  -> string list option
   -> Closed_flag.t
   -> Row_field.t list
   -> Core_type.t

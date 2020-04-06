@@ -86,9 +86,6 @@ and closed_flag =
   | Closed
   | Open
 
-and label =
-  string
-
 and arg_label =
   Compiler_types.arg_label =
   | Nolabel
@@ -141,7 +138,7 @@ and core_type_desc =
   | Ptyp_object of object_field list * closed_flag
   | Ptyp_class of longident_loc * core_type list
   | Ptyp_alias of core_type * string
-  | Ptyp_variant of row_field list * closed_flag * label list option
+  | Ptyp_variant of row_field list * closed_flag * string list option
   | Ptyp_poly of string loc list * core_type
   | Ptyp_package of package_type
   | Ptyp_extension of extension
@@ -151,12 +148,12 @@ and package_type =
 
 and row_field =
   Compiler_types.row_field =
-  | Rtag of label loc * attributes * bool * core_type list
+  | Rtag of string loc * attributes * bool * core_type list
   | Rinherit of core_type
 
 and object_field =
   Compiler_types.object_field =
-  | Otag of label loc * attributes * core_type
+  | Otag of string loc * attributes * core_type
   | Oinherit of core_type
 
 and pattern =
@@ -175,7 +172,7 @@ and pattern_desc =
   | Ppat_interval of constant * constant
   | Ppat_tuple of pattern list
   | Ppat_construct of longident_loc * pattern option
-  | Ppat_variant of label * pattern option
+  | Ppat_variant of string * pattern option
   | Ppat_record of (longident_loc * pattern) list * closed_flag
   | Ppat_array of pattern list
   | Ppat_or of pattern * pattern
@@ -206,7 +203,7 @@ and expression_desc =
   | Pexp_try of expression * case list
   | Pexp_tuple of expression list
   | Pexp_construct of longident_loc * expression option
-  | Pexp_variant of label * expression option
+  | Pexp_variant of string * expression option
   | Pexp_record of (longident_loc * expression) list * expression option
   | Pexp_field of expression * longident_loc
   | Pexp_setfield of expression * longident_loc * expression
@@ -217,10 +214,10 @@ and expression_desc =
   | Pexp_for of pattern * expression * expression * direction_flag * expression
   | Pexp_constraint of expression * core_type
   | Pexp_coerce of expression * core_type option * core_type
-  | Pexp_send of expression * label loc
+  | Pexp_send of expression * string loc
   | Pexp_new of longident_loc
-  | Pexp_setinstvar of label loc * expression
-  | Pexp_override of (label loc * expression) list
+  | Pexp_setinstvar of string loc * expression
+  | Pexp_override of (string loc * expression) list
   | Pexp_letmodule of string loc * module_expr * expression
   | Pexp_letexception of extension_constructor * expression
   | Pexp_assert of expression
@@ -344,8 +341,8 @@ and class_type_field =
 and class_type_field_desc =
   Compiler_types.class_type_field_desc =
   | Pctf_inherit of class_type
-  | Pctf_val of (label loc * mutable_flag * virtual_flag * core_type)
-  | Pctf_method of (label loc * private_flag * virtual_flag * core_type)
+  | Pctf_val of (string loc * mutable_flag * virtual_flag * core_type)
+  | Pctf_method of (string loc * private_flag * virtual_flag * core_type)
   | Pctf_constraint of (core_type * core_type)
   | Pctf_attribute of attribute
   | Pctf_extension of extension
@@ -400,8 +397,8 @@ and class_field =
 and class_field_desc =
   Compiler_types.class_field_desc =
   | Pcf_inherit of override_flag * class_expr * string loc option
-  | Pcf_val of (label loc * mutable_flag * class_field_kind)
-  | Pcf_method of (label loc * private_flag * class_field_kind)
+  | Pcf_val of (string loc * mutable_flag * class_field_kind)
+  | Pcf_method of (string loc * private_flag * class_field_kind)
   | Pcf_constraint of (core_type * core_type)
   | Pcf_initializer of expression
   | Pcf_attribute of attribute
@@ -677,9 +674,6 @@ and generate_closed_flag ~size ~random =
   Generator.generate ~size ~random
     (Base_quickcheck.Generator.union
       [gen_closed; gen_open])
-and generate_label ~size ~random =
-  let gen = quickcheck_generator_string in
-  Generator.generate gen ~size ~random
 and generate_arg_label ~size ~random =
   let gen_nolabel =
     Generator.return Nolabel
@@ -872,7 +866,7 @@ and generate_core_type_desc ~size ~random =
     Generator.create (fun ~size ~random ->
       let gen0 = (quickcheck_generator_list (Generator.create generate_row_field))
       and gen1 = (Generator.create generate_closed_flag)
-      and gen2 = (quickcheck_generator_option (quickcheck_generator_list (Generator.create generate_label)))
+      and gen2 = (quickcheck_generator_option (quickcheck_generator_list quickcheck_generator_string))
       in
       Ptyp_variant
         ( Generator.generate gen0 ~size ~random
@@ -918,7 +912,7 @@ and generate_package_type ~size ~random =
 and generate_row_field ~size ~random =
   let gen_rtag =
     Generator.create (fun ~size ~random ->
-      let gen0 = (quickcheck_generator_loc (Generator.create generate_label))
+      let gen0 = (quickcheck_generator_loc quickcheck_generator_string)
       and gen1 = (Generator.create generate_attributes)
       and gen2 = quickcheck_generator_bool
       and gen3 = (quickcheck_generator_list (Generator.create generate_core_type))
@@ -943,7 +937,7 @@ and generate_row_field ~size ~random =
 and generate_object_field ~size ~random =
   let gen_otag =
     Generator.create (fun ~size ~random ->
-      let gen0 = (quickcheck_generator_loc (Generator.create generate_label))
+      let gen0 = (quickcheck_generator_loc quickcheck_generator_string)
       and gen1 = (Generator.create generate_attributes)
       and gen2 = (Generator.create generate_core_type)
       in
@@ -1025,7 +1019,7 @@ and generate_pattern_desc ~size ~random =
         ))
   and gen_ppat_variant =
     Generator.create (fun ~size ~random ->
-      let gen0 = (Generator.create generate_label)
+      let gen0 = quickcheck_generator_string
       and gen1 = (quickcheck_generator_option (Generator.create generate_pattern))
       in
       Ppat_variant
@@ -1220,7 +1214,7 @@ and generate_expression_desc ~size ~random =
         ))
   and gen_pexp_variant =
     Generator.create (fun ~size ~random ->
-      let gen0 = (Generator.create generate_label)
+      let gen0 = quickcheck_generator_string
       and gen1 = (quickcheck_generator_option (Generator.create generate_expression))
       in
       Pexp_variant
@@ -1330,7 +1324,7 @@ and generate_expression_desc ~size ~random =
   and gen_pexp_send =
     Generator.create (fun ~size ~random ->
       let gen0 = (Generator.create generate_expression)
-      and gen1 = (quickcheck_generator_loc (Generator.create generate_label))
+      and gen1 = (quickcheck_generator_loc quickcheck_generator_string)
       in
       Pexp_send
         ( Generator.generate gen0 ~size ~random
@@ -1345,7 +1339,7 @@ and generate_expression_desc ~size ~random =
         ))
   and gen_pexp_setinstvar =
     Generator.create (fun ~size ~random ->
-      let gen0 = (quickcheck_generator_loc (Generator.create generate_label))
+      let gen0 = (quickcheck_generator_loc quickcheck_generator_string)
       and gen1 = (Generator.create generate_expression)
       in
       Pexp_setinstvar
@@ -1354,7 +1348,7 @@ and generate_expression_desc ~size ~random =
         ))
   and gen_pexp_override =
     Generator.create (fun ~size ~random ->
-      let gen0 = (quickcheck_generator_list (quickcheck_generator_tuple2 (quickcheck_generator_loc (Generator.create generate_label)) (Generator.create generate_expression)))
+      let gen0 = (quickcheck_generator_list (quickcheck_generator_tuple2 (quickcheck_generator_loc quickcheck_generator_string) (Generator.create generate_expression)))
       in
       Pexp_override
         ( Generator.generate gen0 ~size ~random
@@ -1700,14 +1694,14 @@ and generate_class_type_field_desc ~size ~random =
         ))
   and gen_pctf_val =
     Generator.create (fun ~size ~random ->
-      let gen0 = (quickcheck_generator_tuple4 (quickcheck_generator_loc (Generator.create generate_label)) (Generator.create generate_mutable_flag) (Generator.create generate_virtual_flag) (Generator.create generate_core_type))
+      let gen0 = (quickcheck_generator_tuple4 (quickcheck_generator_loc quickcheck_generator_string) (Generator.create generate_mutable_flag) (Generator.create generate_virtual_flag) (Generator.create generate_core_type))
       in
       Pctf_val
         ( Generator.generate gen0 ~size ~random
         ))
   and gen_pctf_method =
     Generator.create (fun ~size ~random ->
-      let gen0 = (quickcheck_generator_tuple4 (quickcheck_generator_loc (Generator.create generate_label)) (Generator.create generate_private_flag) (Generator.create generate_virtual_flag) (Generator.create generate_core_type))
+      let gen0 = (quickcheck_generator_tuple4 (quickcheck_generator_loc quickcheck_generator_string) (Generator.create generate_private_flag) (Generator.create generate_virtual_flag) (Generator.create generate_core_type))
       in
       Pctf_method
         ( Generator.generate gen0 ~size ~random
@@ -1880,14 +1874,14 @@ and generate_class_field_desc ~size ~random =
         ))
   and gen_pcf_val =
     Generator.create (fun ~size ~random ->
-      let gen0 = (quickcheck_generator_tuple3 (quickcheck_generator_loc (Generator.create generate_label)) (Generator.create generate_mutable_flag) (Generator.create generate_class_field_kind))
+      let gen0 = (quickcheck_generator_tuple3 (quickcheck_generator_loc quickcheck_generator_string) (Generator.create generate_mutable_flag) (Generator.create generate_class_field_kind))
       in
       Pcf_val
         ( Generator.generate gen0 ~size ~random
         ))
   and gen_pcf_method =
     Generator.create (fun ~size ~random ->
-      let gen0 = (quickcheck_generator_tuple3 (quickcheck_generator_loc (Generator.create generate_label)) (Generator.create generate_private_flag) (Generator.create generate_class_field_kind))
+      let gen0 = (quickcheck_generator_tuple3 (quickcheck_generator_loc quickcheck_generator_string) (Generator.create generate_private_flag) (Generator.create generate_class_field_kind))
       in
       Pcf_method
         ( Generator.generate gen0 ~size ~random
@@ -2522,8 +2516,6 @@ let quickcheck_generator_override_flag =
   Generator.create generate_override_flag
 let quickcheck_generator_closed_flag =
   Generator.create generate_closed_flag
-let quickcheck_generator_label =
-  Generator.create generate_label
 let quickcheck_generator_arg_label =
   Generator.create generate_arg_label
 let quickcheck_generator_variance =
@@ -2658,7 +2650,6 @@ let quickcheck_observer_mutable_flag = Observer.opaque
 let quickcheck_observer_virtual_flag = Observer.opaque
 let quickcheck_observer_override_flag = Observer.opaque
 let quickcheck_observer_closed_flag = Observer.opaque
-let quickcheck_observer_label = Observer.opaque
 let quickcheck_observer_arg_label = Observer.opaque
 let quickcheck_observer_variance = Observer.opaque
 let quickcheck_observer_constant = Observer.opaque
@@ -2731,7 +2722,6 @@ let quickcheck_shrinker_mutable_flag = Shrinker.atomic
 let quickcheck_shrinker_virtual_flag = Shrinker.atomic
 let quickcheck_shrinker_override_flag = Shrinker.atomic
 let quickcheck_shrinker_closed_flag = Shrinker.atomic
-let quickcheck_shrinker_label = Shrinker.atomic
 let quickcheck_shrinker_arg_label = Shrinker.atomic
 let quickcheck_shrinker_variance = Shrinker.atomic
 let quickcheck_shrinker_constant = Shrinker.atomic
@@ -2837,11 +2827,6 @@ end
 
 module Closed_flag = struct
   type t = closed_flag
-  [@@deriving equal, quickcheck, sexp_of]
-end
-
-module Label = struct
-  type t = label
   [@@deriving equal, quickcheck, sexp_of]
 end
 

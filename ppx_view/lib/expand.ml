@@ -105,7 +105,7 @@ let rec translate_pattern ~err_loc pattern =
     | Some fields ->
       let expr, vars = translate_pattern_desc ~loc ppat_desc in
       let field_exprs_vars =
-        List.map fields ~f:translate_record_field
+        List.map fields ~f:(translate_record_field ~loc)
       in
       let field_exprs, field_vars = List.split field_exprs_vars in
       ( Builder.Exp.view_lib_sequence ~loc (field_exprs @ [expr])
@@ -138,12 +138,12 @@ and translate_pattern_desc ~loc desc =
   | Some (Ppat_tuple patts) ->
     translate_tuple ~loc patts
   | Some (Ppat_construct (ctor_ident, None)) ->
-    let ctor_loc, ctor_ident = Deconstructor.longident_loc ctor_ident in
+    let ctor_loc, ctor_ident = Deconstructor.longident_loc ~loc ctor_ident in
     let f = translate_ctor_ident ~loc:ctor_loc ctor_ident in
     ( pexp_ident ~loc f
     , [] )
   | Some (Ppat_construct (ctor_ident, Some patt)) ->
-    let ctor_loc, ctor_ident = Deconstructor.longident_loc ctor_ident in
+    let ctor_loc, ctor_ident = Deconstructor.longident_loc ~loc ctor_ident in
     let f = translate_ctor_ident ~loc:ctor_loc ctor_ident in
     let apply args = Builder.Exp.apply_lident ~loc f args in
     (match Deconstructor.pattern ~loc patt with
@@ -171,7 +171,7 @@ and translate_pattern_desc ~loc desc =
     else
       Error.or_pattern_variables_differ ~loc
   | Some (Ppat_record (fields, _closed)) ->
-    let exprs_vars = List.map ~f:translate_record_field fields in
+    let exprs_vars = List.map ~f:(translate_record_field ~loc) fields in
     let exprs, vars = List.split exprs_vars in
     ( Builder.Exp.view_lib_sequence ~loc exprs
     , List.flatten vars )
@@ -217,8 +217,8 @@ and translate_tuple ~loc patts =
     ( eapply ~loc f exprs
     , vars )
 
-and translate_record_field (label, patt) =
-  let (label_loc, label) = Deconstructor.longident_loc label in
+and translate_record_field ~loc (label, patt) =
+  let (label_loc, label) = Deconstructor.longident_loc ~loc label in
   match label with
   | Lident label ->
     let expr, vars = translate_pattern ~err_loc:label_loc patt in

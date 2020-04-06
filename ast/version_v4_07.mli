@@ -26,7 +26,14 @@ module rec Longident : sig
 end
 
 and Longident_loc : sig
-  type t = Longident.t Astlib.Loc.t
+  type t = longident_loc
+
+  type concrete = Longident.t Astlib.Loc.t
+
+  val of_concrete : concrete -> t
+  val to_concrete : t -> concrete option
+
+  val create : Longident.t Astlib.Loc.t -> t
 end
 
 and Rec_flag : sig
@@ -125,10 +132,6 @@ and Closed_flag : sig
 
   val closed : t
   val open_ : t
-end
-
-and Label : sig
-  type t = string
 end
 
 and Arg_label : sig
@@ -287,7 +290,7 @@ and Core_type_desc : sig
     | Ptyp_object of Object_field.t list * Closed_flag.t
     | Ptyp_class of Longident_loc.t * Core_type.t list
     | Ptyp_alias of Core_type.t * string
-    | Ptyp_variant of Row_field.t list * Closed_flag.t * Label.t list option
+    | Ptyp_variant of Row_field.t list * Closed_flag.t * string list option
     | Ptyp_poly of string Astlib.Loc.t list * Core_type.t
     | Ptyp_package of Package_type.t
     | Ptyp_extension of Extension.t
@@ -326,7 +329,7 @@ and Core_type_desc : sig
   val ptyp_variant :
     Row_field.t list
     -> Closed_flag.t
-    -> Label.t list option
+    -> string list option
     -> t
   val ptyp_poly :
     string Astlib.Loc.t list
@@ -355,14 +358,14 @@ and Row_field : sig
   type t = row_field
 
   type concrete =
-    | Rtag of Label.t Astlib.Loc.t * Attributes.t * bool * Core_type.t list
+    | Rtag of string Astlib.Loc.t * Attributes.t * bool * Core_type.t list
     | Rinherit of Core_type.t
 
   val of_concrete : concrete -> t
   val to_concrete : t -> concrete option
 
   val rtag :
-    Label.t Astlib.Loc.t
+    string Astlib.Loc.t
     -> Attributes.t
     -> bool
     -> Core_type.t list
@@ -376,14 +379,14 @@ and Object_field : sig
   type t = object_field
 
   type concrete =
-    | Otag of Label.t Astlib.Loc.t * Attributes.t * Core_type.t
+    | Otag of string Astlib.Loc.t * Attributes.t * Core_type.t
     | Oinherit of Core_type.t
 
   val of_concrete : concrete -> t
   val to_concrete : t -> concrete option
 
   val otag :
-    Label.t Astlib.Loc.t
+    string Astlib.Loc.t
     -> Attributes.t
     -> Core_type.t
     -> t
@@ -422,7 +425,7 @@ and Pattern_desc : sig
     | Ppat_interval of Constant.t * Constant.t
     | Ppat_tuple of Pattern.t list
     | Ppat_construct of Longident_loc.t * Pattern.t option
-    | Ppat_variant of Label.t * Pattern.t option
+    | Ppat_variant of string * Pattern.t option
     | Ppat_record of (Longident_loc.t * Pattern.t) list * Closed_flag.t
     | Ppat_array of Pattern.t list
     | Ppat_or of Pattern.t * Pattern.t
@@ -460,7 +463,7 @@ and Pattern_desc : sig
     -> Pattern.t option
     -> t
   val ppat_variant :
-    Label.t
+    string
     -> Pattern.t option
     -> t
   val ppat_record :
@@ -532,7 +535,7 @@ and Expression_desc : sig
     | Pexp_try of Expression.t * Case.t list
     | Pexp_tuple of Expression.t list
     | Pexp_construct of Longident_loc.t * Expression.t option
-    | Pexp_variant of Label.t * Expression.t option
+    | Pexp_variant of string * Expression.t option
     | Pexp_record of (Longident_loc.t * Expression.t) list * Expression.t option
     | Pexp_field of Expression.t * Longident_loc.t
     | Pexp_setfield of Expression.t * Longident_loc.t * Expression.t
@@ -543,10 +546,10 @@ and Expression_desc : sig
     | Pexp_for of Pattern.t * Expression.t * Expression.t * Direction_flag.t * Expression.t
     | Pexp_constraint of Expression.t * Core_type.t
     | Pexp_coerce of Expression.t * Core_type.t option * Core_type.t
-    | Pexp_send of Expression.t * Label.t Astlib.Loc.t
+    | Pexp_send of Expression.t * string Astlib.Loc.t
     | Pexp_new of Longident_loc.t
-    | Pexp_setinstvar of Label.t Astlib.Loc.t * Expression.t
-    | Pexp_override of (Label.t Astlib.Loc.t * Expression.t) list
+    | Pexp_setinstvar of string Astlib.Loc.t * Expression.t
+    | Pexp_override of (string Astlib.Loc.t * Expression.t) list
     | Pexp_letmodule of string Astlib.Loc.t * Module_expr.t * Expression.t
     | Pexp_letexception of Extension_constructor.t * Expression.t
     | Pexp_assert of Expression.t
@@ -602,7 +605,7 @@ and Expression_desc : sig
     -> Expression.t option
     -> t
   val pexp_variant :
-    Label.t
+    string
     -> Expression.t option
     -> t
   val pexp_record :
@@ -652,17 +655,17 @@ and Expression_desc : sig
     -> t
   val pexp_send :
     Expression.t
-    -> Label.t Astlib.Loc.t
+    -> string Astlib.Loc.t
     -> t
   val pexp_new :
     Longident_loc.t
     -> t
   val pexp_setinstvar :
-    Label.t Astlib.Loc.t
+    string Astlib.Loc.t
     -> Expression.t
     -> t
   val pexp_override :
-    (Label.t Astlib.Loc.t * Expression.t) list
+    (string Astlib.Loc.t * Expression.t) list
     -> t
   val pexp_letmodule :
     string Astlib.Loc.t
@@ -1019,8 +1022,8 @@ and Class_type_field_desc : sig
 
   type concrete =
     | Pctf_inherit of Class_type.t
-    | Pctf_val of (Label.t Astlib.Loc.t * Mutable_flag.t * Virtual_flag.t * Core_type.t)
-    | Pctf_method of (Label.t Astlib.Loc.t * Private_flag.t * Virtual_flag.t * Core_type.t)
+    | Pctf_val of (string Astlib.Loc.t * Mutable_flag.t * Virtual_flag.t * Core_type.t)
+    | Pctf_method of (string Astlib.Loc.t * Private_flag.t * Virtual_flag.t * Core_type.t)
     | Pctf_constraint of (Core_type.t * Core_type.t)
     | Pctf_attribute of Attribute.t
     | Pctf_extension of Extension.t
@@ -1032,10 +1035,10 @@ and Class_type_field_desc : sig
     Class_type.t
     -> t
   val pctf_val :
-    (Label.t Astlib.Loc.t * Mutable_flag.t * Virtual_flag.t * Core_type.t)
+    (string Astlib.Loc.t * Mutable_flag.t * Virtual_flag.t * Core_type.t)
     -> t
   val pctf_method :
-    (Label.t Astlib.Loc.t * Private_flag.t * Virtual_flag.t * Core_type.t)
+    (string Astlib.Loc.t * Private_flag.t * Virtual_flag.t * Core_type.t)
     -> t
   val pctf_constraint :
     (Core_type.t * Core_type.t)
@@ -1074,11 +1077,25 @@ and Class_infos : sig
 end
 
 and Class_description : sig
-  type t = Class_type.t Class_infos.t
+  type t = class_description
+
+  type concrete = Class_type.t Class_infos.t
+
+  val of_concrete : concrete -> t
+  val to_concrete : t -> concrete option
+
+  val create : Class_type.t Class_infos.t -> t
 end
 
 and Class_type_declaration : sig
-  type t = Class_type.t Class_infos.t
+  type t = class_type_declaration
+
+  type concrete = Class_type.t Class_infos.t
+
+  val of_concrete : concrete -> t
+  val to_concrete : t -> concrete option
+
+  val create : Class_type.t Class_infos.t -> t
 end
 
 and Class_expr : sig
@@ -1193,8 +1210,8 @@ and Class_field_desc : sig
 
   type concrete =
     | Pcf_inherit of Override_flag.t * Class_expr.t * string Astlib.Loc.t option
-    | Pcf_val of (Label.t Astlib.Loc.t * Mutable_flag.t * Class_field_kind.t)
-    | Pcf_method of (Label.t Astlib.Loc.t * Private_flag.t * Class_field_kind.t)
+    | Pcf_val of (string Astlib.Loc.t * Mutable_flag.t * Class_field_kind.t)
+    | Pcf_method of (string Astlib.Loc.t * Private_flag.t * Class_field_kind.t)
     | Pcf_constraint of (Core_type.t * Core_type.t)
     | Pcf_initializer of Expression.t
     | Pcf_attribute of Attribute.t
@@ -1209,10 +1226,10 @@ and Class_field_desc : sig
     -> string Astlib.Loc.t option
     -> t
   val pcf_val :
-    (Label.t Astlib.Loc.t * Mutable_flag.t * Class_field_kind.t)
+    (string Astlib.Loc.t * Mutable_flag.t * Class_field_kind.t)
     -> t
   val pcf_method :
-    (Label.t Astlib.Loc.t * Private_flag.t * Class_field_kind.t)
+    (string Astlib.Loc.t * Private_flag.t * Class_field_kind.t)
     -> t
   val pcf_constraint :
     (Core_type.t * Core_type.t)
@@ -1248,7 +1265,14 @@ and Class_field_kind : sig
 end
 
 and Class_declaration : sig
-  type t = Class_expr.t Class_infos.t
+  type t = class_declaration
+
+  type concrete = Class_expr.t Class_infos.t
+
+  val of_concrete : concrete -> t
+  val to_concrete : t -> concrete option
+
+  val create : Class_expr.t Class_infos.t -> t
 end
 
 and Module_type : sig
@@ -1486,11 +1510,25 @@ and Include_infos : sig
 end
 
 and Include_description : sig
-  type t = Module_type.t Include_infos.t
+  type t = include_description
+
+  type concrete = Module_type.t Include_infos.t
+
+  val of_concrete : concrete -> t
+  val to_concrete : t -> concrete option
+
+  val create : Module_type.t Include_infos.t -> t
 end
 
 and Include_declaration : sig
-  type t = Module_expr.t Include_infos.t
+  type t = include_declaration
+
+  type concrete = Module_expr.t Include_infos.t
+
+  val of_concrete : concrete -> t
+  val to_concrete : t -> concrete option
+
+  val create : Module_expr.t Include_infos.t -> t
 end
 
 and With_constraint : sig

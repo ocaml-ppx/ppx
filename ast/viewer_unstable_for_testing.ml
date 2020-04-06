@@ -396,6 +396,14 @@ let pstr_desc'match view value =
   in
   view concrete.Structure_item.pstr_desc
 
+let structure'const view value =
+  let concrete0 =
+    match Structure.to_concrete value with
+    | None -> conversion_failed "structure"
+    | Some n -> n
+  in
+  view concrete0
+
 let pmod_extension'const view value =
   let parent_concrete =
     match Module_expr.to_concrete value with
@@ -571,6 +579,22 @@ let pwith_type'const view value =
   match concrete with
   | With_constraint.Pwith_type (arg0, arg1) -> view (arg0, arg1)
   | _ -> View.error
+
+let include_declaration'const view value =
+  let concrete0 =
+    match Include_declaration.to_concrete value with
+    | None -> conversion_failed "include_declaration"
+    | Some n -> n
+  in
+  view concrete0
+
+let include_description'const view value =
+  let concrete0 =
+    match Include_description.to_concrete value with
+    | None -> conversion_failed "include_description"
+    | Some n -> n
+  in
+  view concrete0
 
 let pincl_attributes'match view value =
   let concrete =
@@ -916,6 +940,14 @@ let psig_desc'match view value =
   in
   view concrete.Signature_item.psig_desc
 
+let signature'const view value =
+  let concrete0 =
+    match Signature.to_concrete value with
+    | None -> conversion_failed "signature"
+    | Some n -> n
+  in
+  view concrete0
+
 let pmty_alias'const view value =
   let parent_concrete =
     match Module_type.to_concrete value with
@@ -1051,6 +1083,14 @@ let pmty_desc'match view value =
     | Some n -> n
   in
   view concrete.Module_type.pmty_desc
+
+let class_declaration'const view value =
+  let concrete0 =
+    match Class_declaration.to_concrete value with
+    | None -> conversion_failed "class_declaration"
+    | Some n -> n
+  in
+  view concrete0
 
 let cfk_concrete'const view value =
   let concrete =
@@ -1375,6 +1415,22 @@ let pcl_desc'match view value =
     | Some n -> n
   in
   view concrete.Class_expr.pcl_desc
+
+let class_type_declaration'const view value =
+  let concrete0 =
+    match Class_type_declaration.to_concrete value with
+    | None -> conversion_failed "class_type_declaration"
+    | Some n -> n
+  in
+  view concrete0
+
+let class_description'const view value =
+  let concrete0 =
+    match Class_description.to_concrete value with
+    | None -> conversion_failed "class_description"
+    | Some n -> n
+  in
+  view concrete0
 
 let pci_attributes'match view value =
   let concrete =
@@ -2976,6 +3032,14 @@ let rtag'const view value =
   | Row_field.Rtag (arg0, arg1, arg2, arg3) -> view (arg0, arg1, arg2, arg3)
   | _ -> View.error
 
+let package_type'const view value =
+  let concrete0 =
+    match Package_type.to_concrete value with
+    | None -> conversion_failed "package_type"
+    | Some n -> n
+  in
+  view concrete0
+
 let ptyp_extension'const view value =
   let parent_concrete =
     match Core_type.to_concrete value with
@@ -3232,6 +3296,30 @@ let pstr'const view value =
   | Payload.PStr arg -> view arg
   | _ -> View.error
 
+let attributes'const view value =
+  let concrete0 =
+    match Attributes.to_concrete value with
+    | None -> conversion_failed "attributes"
+    | Some n -> n
+  in
+  view concrete0
+
+let extension'const view value =
+  let concrete0 =
+    match Extension.to_concrete value with
+    | None -> conversion_failed "extension"
+    | Some n -> n
+  in
+  view concrete0
+
+let attribute'const view value =
+  let concrete0 =
+    match Attribute.to_concrete value with
+    | None -> conversion_failed "attribute"
+    | Some n -> n
+  in
+  view concrete0
+
 let pconst_float'const view value =
   let concrete =
     match Constant.to_concrete value with
@@ -3471,6 +3559,14 @@ let nonrecursive'const value =
   match concrete with
   | Rec_flag.Nonrecursive -> View.ok
   | _ -> View.error
+
+let longident_loc'const view value =
+  let concrete0 =
+    match Longident_loc.to_concrete value with
+    | None -> conversion_failed "longident_loc"
+    | Some n -> n
+  in
+  view concrete0
 
 let lapply'const view value =
   let concrete =

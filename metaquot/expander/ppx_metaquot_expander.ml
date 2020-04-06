@@ -183,8 +183,7 @@ module Expr (Driver : Driver) = struct
     Expression.create
       ~pexp_loc:loc
       ~pexp_attributes:(Attributes.create [])
-      ~pexp_desc:(Expression_desc.pexp_ident
-                    (Astlib.Loc.create ~loc ~txt:(Longident.lident "loc") ()))
+      ~pexp_desc:(Expression_desc.pexp_ident (Located.lident ~loc "loc"))
   let attributes = None
   class std_lifters loc = object (self)
     inherit Ppx_metaquot_lifters.expression_lifters loc

@@ -1,8 +1,8 @@
 module Located : sig
   val longident
-    : loc: Astlib.Location.t -> Versions.longident -> Versions.longident Astlib.Loc.t
-  val lident : loc: Astlib.Location.t -> string -> Versions.longident Astlib.Loc.t
-  val dotted : loc: Astlib.Location.t -> string list -> Versions.longident Astlib.Loc.t
+    : loc: Astlib.Location.t -> Versions.longident -> Versions.longident_loc
+  val lident : loc: Astlib.Location.t -> string -> Versions.longident_loc
+  val dotted : loc: Astlib.Location.t -> string list -> Versions.longident_loc
 end
 
 val echar : loc: Astlib.Location.t -> char -> Versions.expression

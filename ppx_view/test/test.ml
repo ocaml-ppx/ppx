@@ -108,7 +108,7 @@ let%expect_test "match with alias" =
 
 let%expect_test "match with record" =
   let match_ident = function%view
-    | Pexp_ident { txt = Lident id; _} -> print_string id
+    | Pexp_ident (Longident_loc { txt = Lident id; _}) -> print_string id
     | _ -> print_string "KO"
   in
   begin

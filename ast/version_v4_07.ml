@@ -74,7 +74,20 @@ module Longident = struct
 end
 
 module Longident_loc = struct
-  type t = longident Astlib.Loc.t
+  type t = longident_loc
+
+  type concrete = longident Astlib.Loc.t
+
+  let create =
+    let data = (Data.of_loc ~f:Data.of_node) in
+    fun x -> node "longident_loc" (data x)
+
+  let of_concrete = create
+
+  let to_concrete t =
+    match Node.to_node (Unversioned.Private.transparent t) ~version with
+    | { name = "longident_loc"; data } -> (Data.to_loc ~f:Data.to_node) data
+    | _ -> None
 end
 
 module Rec_flag = struct
@@ -278,10 +291,6 @@ module Closed_flag = struct
       | _ -> None
       end
     | _ -> None
-end
-
-module Label = struct
-  type t = string
 end
 
 module Arg_label = struct
@@ -635,7 +644,7 @@ module Core_type_desc = struct
     | Ptyp_object of object_field list * closed_flag
     | Ptyp_class of longident_loc * core_type list
     | Ptyp_alias of core_type * string
-    | Ptyp_variant of row_field list * closed_flag * label list option
+    | Ptyp_variant of row_field list * closed_flag * string list option
     | Ptyp_poly of string Astlib.Loc.t list * core_type
     | Ptyp_package of package_type
     | Ptyp_extension of extension
@@ -673,7 +682,7 @@ module Core_type_desc = struct
       (Variant
         { tag = "Ptyp_constr"
         ; args =
-          [| (Data.of_loc ~f:Data.of_node) x1
+          [| Data.of_node x1
            ; (Data.of_list ~f:Data.of_node) x2
           |]
         })
@@ -691,7 +700,7 @@ module Core_type_desc = struct
       (Variant
         { tag = "Ptyp_class"
         ; args =
-          [| (Data.of_loc ~f:Data.of_node) x1
+          [| Data.of_node x1
            ; (Data.of_list ~f:Data.of_node) x2
           |]
         })
@@ -787,7 +796,7 @@ module Core_type_desc = struct
             Some (Ptyp_tuple (x1))
           )
         | Variant { tag = "Ptyp_constr"; args = [| x1; x2 |] } ->
-          Option.bind ((Data.to_loc ~f:Data.to_node) x1) ~f:(fun x1 ->
+          Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Option.bind ((Data.to_list ~f:Data.to_node) x2) ~f:(fun x2 ->
               Some (Ptyp_constr (x1, x2))
           ))
@@ -797,7 +806,7 @@ module Core_type_desc = struct
               Some (Ptyp_object (x1, x2))
           ))
         | Variant { tag = "Ptyp_class"; args = [| x1; x2 |] } ->
-          Option.bind ((Data.to_loc ~f:Data.to_node) x1) ~f:(fun x1 ->
+          Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Option.bind ((Data.to_list ~f:Data.to_node) x2) ~f:(fun x2 ->
               Some (Ptyp_class (x1, x2))
           ))
@@ -836,14 +845,14 @@ module Package_type = struct
   type concrete = (longident_loc * (longident_loc * core_type) list)
 
   let create =
-    let data = (Data.of_tuple2 ~f1:(Data.of_loc ~f:Data.of_node) ~f2:(Data.of_list ~f:(Data.of_tuple2 ~f1:(Data.of_loc ~f:Data.of_node) ~f2:Data.of_node))) in
+    let data = (Data.of_tuple2 ~f1:Data.of_node ~f2:(Data.of_list ~f:(Data.of_tuple2 ~f1:Data.of_node ~f2:Data.of_node))) in
     fun x -> node "package_type" (data x)
 
   let of_concrete = create
 
   let to_concrete t =
     match Node.to_node (Unversioned.Private.transparent t) ~version with
-    | { name = "package_type"; data } -> (Data.to_tuple2 ~f1:(Data.to_loc ~f:Data.to_node) ~f2:(Data.to_list ~f:(Data.to_tuple2 ~f1:(Data.to_loc ~f:Data.to_node) ~f2:Data.to_node))) data
+    | { name = "package_type"; data } -> (Data.to_tuple2 ~f1:Data.to_node ~f2:(Data.to_list ~f:(Data.to_tuple2 ~f1:Data.to_node ~f2:Data.to_node))) data
     | _ -> None
 end
 
@@ -851,7 +860,7 @@ module Row_field = struct
   type t = row_field
 
   type concrete =
-    | Rtag of label Astlib.Loc.t * attributes * bool * core_type list
+    | Rtag of string Astlib.Loc.t * attributes * bool * core_type list
     | Rinherit of core_type
 
   let rtag x1 x2 x3 x4 =
@@ -906,7 +915,7 @@ module Object_field = struct
   type t = object_field
 
   type concrete =
-    | Otag of label Astlib.Loc.t * attributes * core_type
+    | Otag of string Astlib.Loc.t * attributes * core_type
     | Oinherit of core_type
 
   let otag x1 x2 x3 =
@@ -1000,7 +1009,7 @@ module Pattern_desc = struct
     | Ppat_interval of constant * constant
     | Ppat_tuple of pattern list
     | Ppat_construct of longident_loc * pattern option
-    | Ppat_variant of label * pattern option
+    | Ppat_variant of string * pattern option
     | Ppat_record of (longident_loc * pattern) list * closed_flag
     | Ppat_array of pattern list
     | Ppat_or of pattern * pattern
@@ -1061,7 +1070,7 @@ module Pattern_desc = struct
       (Variant
         { tag = "Ppat_construct"
         ; args =
-          [| (Data.of_loc ~f:Data.of_node) x1
+          [| Data.of_node x1
            ; (Data.of_option ~f:Data.of_node) x2
           |]
         })
@@ -1079,7 +1088,7 @@ module Pattern_desc = struct
       (Variant
         { tag = "Ppat_record"
         ; args =
-          [| (Data.of_list ~f:(Data.of_tuple2 ~f1:(Data.of_loc ~f:Data.of_node) ~f2:Data.of_node)) x1
+          [| (Data.of_list ~f:(Data.of_tuple2 ~f1:Data.of_node ~f2:Data.of_node)) x1
            ; Data.of_node x2
           |]
         })
@@ -1114,7 +1123,7 @@ module Pattern_desc = struct
       (Variant
         { tag = "Ppat_type"
         ; args =
-          [| (Data.of_loc ~f:Data.of_node) x1
+          [| Data.of_node x1
           |]
         })
   let ppat_lazy x1 =
@@ -1154,7 +1163,7 @@ module Pattern_desc = struct
       (Variant
         { tag = "Ppat_open"
         ; args =
-          [| (Data.of_loc ~f:Data.of_node) x1
+          [| Data.of_node x1
            ; Data.of_node x2
           |]
         })
@@ -1226,7 +1235,7 @@ module Pattern_desc = struct
             Some (Ppat_tuple (x1))
           )
         | Variant { tag = "Ppat_construct"; args = [| x1; x2 |] } ->
-          Option.bind ((Data.to_loc ~f:Data.to_node) x1) ~f:(fun x1 ->
+          Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Option.bind ((Data.to_option ~f:Data.to_node) x2) ~f:(fun x2 ->
               Some (Ppat_construct (x1, x2))
           ))
@@ -1236,7 +1245,7 @@ module Pattern_desc = struct
               Some (Ppat_variant (x1, x2))
           ))
         | Variant { tag = "Ppat_record"; args = [| x1; x2 |] } ->
-          Option.bind ((Data.to_list ~f:(Data.to_tuple2 ~f1:(Data.to_loc ~f:Data.to_node) ~f2:Data.to_node)) x1) ~f:(fun x1 ->
+          Option.bind ((Data.to_list ~f:(Data.to_tuple2 ~f1:Data.to_node ~f2:Data.to_node)) x1) ~f:(fun x1 ->
             Option.bind (Data.to_node x2) ~f:(fun x2 ->
               Some (Ppat_record (x1, x2))
           ))
@@ -1255,7 +1264,7 @@ module Pattern_desc = struct
               Some (Ppat_constraint (x1, x2))
           ))
         | Variant { tag = "Ppat_type"; args = [| x1 |] } ->
-          Option.bind ((Data.to_loc ~f:Data.to_node) x1) ~f:(fun x1 ->
+          Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Some (Ppat_type (x1))
           )
         | Variant { tag = "Ppat_lazy"; args = [| x1 |] } ->
@@ -1275,7 +1284,7 @@ module Pattern_desc = struct
             Some (Ppat_extension (x1))
           )
         | Variant { tag = "Ppat_open"; args = [| x1; x2 |] } ->
-          Option.bind ((Data.to_loc ~f:Data.to_node) x1) ~f:(fun x1 ->
+          Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Option.bind (Data.to_node x2) ~f:(fun x2 ->
               Some (Ppat_open (x1, x2))
           ))
@@ -1332,7 +1341,7 @@ module Expression_desc = struct
     | Pexp_try of expression * case list
     | Pexp_tuple of expression list
     | Pexp_construct of longident_loc * expression option
-    | Pexp_variant of label * expression option
+    | Pexp_variant of string * expression option
     | Pexp_record of (longident_loc * expression) list * expression option
     | Pexp_field of expression * longident_loc
     | Pexp_setfield of expression * longident_loc * expression
@@ -1343,10 +1352,10 @@ module Expression_desc = struct
     | Pexp_for of pattern * expression * expression * direction_flag * expression
     | Pexp_constraint of expression * core_type
     | Pexp_coerce of expression * core_type option * core_type
-    | Pexp_send of expression * label Astlib.Loc.t
+    | Pexp_send of expression * string Astlib.Loc.t
     | Pexp_new of longident_loc
-    | Pexp_setinstvar of label Astlib.Loc.t * expression
-    | Pexp_override of (label Astlib.Loc.t * expression) list
+    | Pexp_setinstvar of string Astlib.Loc.t * expression
+    | Pexp_override of (string Astlib.Loc.t * expression) list
     | Pexp_letmodule of string Astlib.Loc.t * module_expr * expression
     | Pexp_letexception of extension_constructor * expression
     | Pexp_assert of expression
@@ -1364,7 +1373,7 @@ module Expression_desc = struct
       (Variant
         { tag = "Pexp_ident"
         ; args =
-          [| (Data.of_loc ~f:Data.of_node) x1
+          [| Data.of_node x1
           |]
         })
   let pexp_constant x1 =
@@ -1444,7 +1453,7 @@ module Expression_desc = struct
       (Variant
         { tag = "Pexp_construct"
         ; args =
-          [| (Data.of_loc ~f:Data.of_node) x1
+          [| Data.of_node x1
            ; (Data.of_option ~f:Data.of_node) x2
           |]
         })
@@ -1462,7 +1471,7 @@ module Expression_desc = struct
       (Variant
         { tag = "Pexp_record"
         ; args =
-          [| (Data.of_list ~f:(Data.of_tuple2 ~f1:(Data.of_loc ~f:Data.of_node) ~f2:Data.of_node)) x1
+          [| (Data.of_list ~f:(Data.of_tuple2 ~f1:Data.of_node ~f2:Data.of_node)) x1
            ; (Data.of_option ~f:Data.of_node) x2
           |]
         })
@@ -1472,7 +1481,7 @@ module Expression_desc = struct
         { tag = "Pexp_field"
         ; args =
           [| Data.of_node x1
-           ; (Data.of_loc ~f:Data.of_node) x2
+           ; Data.of_node x2
           |]
         })
   let pexp_setfield x1 x2 x3 =
@@ -1481,7 +1490,7 @@ module Expression_desc = struct
         { tag = "Pexp_setfield"
         ; args =
           [| Data.of_node x1
-           ; (Data.of_loc ~f:Data.of_node) x2
+           ; Data.of_node x2
            ; Data.of_node x3
           |]
         })
@@ -1566,7 +1575,7 @@ module Expression_desc = struct
       (Variant
         { tag = "Pexp_new"
         ; args =
-          [| (Data.of_loc ~f:Data.of_node) x1
+          [| Data.of_node x1
           |]
         })
   let pexp_setinstvar x1 x2 =
@@ -1661,7 +1670,7 @@ module Expression_desc = struct
         { tag = "Pexp_open"
         ; args =
           [| Data.of_node x1
-           ; (Data.of_loc ~f:Data.of_node) x2
+           ; Data.of_node x2
            ; Data.of_node x3
           |]
         })
@@ -1756,7 +1765,7 @@ module Expression_desc = struct
       begin
         match data with
         | Variant { tag = "Pexp_ident"; args = [| x1 |] } ->
-          Option.bind ((Data.to_loc ~f:Data.to_node) x1) ~f:(fun x1 ->
+          Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Some (Pexp_ident (x1))
           )
         | Variant { tag = "Pexp_constant"; args = [| x1 |] } ->
@@ -1800,7 +1809,7 @@ module Expression_desc = struct
             Some (Pexp_tuple (x1))
           )
         | Variant { tag = "Pexp_construct"; args = [| x1; x2 |] } ->
-          Option.bind ((Data.to_loc ~f:Data.to_node) x1) ~f:(fun x1 ->
+          Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Option.bind ((Data.to_option ~f:Data.to_node) x2) ~f:(fun x2 ->
               Some (Pexp_construct (x1, x2))
           ))
@@ -1810,18 +1819,18 @@ module Expression_desc = struct
               Some (Pexp_variant (x1, x2))
           ))
         | Variant { tag = "Pexp_record"; args = [| x1; x2 |] } ->
-          Option.bind ((Data.to_list ~f:(Data.to_tuple2 ~f1:(Data.to_loc ~f:Data.to_node) ~f2:Data.to_node)) x1) ~f:(fun x1 ->
+          Option.bind ((Data.to_list ~f:(Data.to_tuple2 ~f1:Data.to_node ~f2:Data.to_node)) x1) ~f:(fun x1 ->
             Option.bind ((Data.to_option ~f:Data.to_node) x2) ~f:(fun x2 ->
               Some (Pexp_record (x1, x2))
           ))
         | Variant { tag = "Pexp_field"; args = [| x1; x2 |] } ->
           Option.bind (Data.to_node x1) ~f:(fun x1 ->
-            Option.bind ((Data.to_loc ~f:Data.to_node) x2) ~f:(fun x2 ->
+            Option.bind (Data.to_node x2) ~f:(fun x2 ->
               Some (Pexp_field (x1, x2))
           ))
         | Variant { tag = "Pexp_setfield"; args = [| x1; x2; x3 |] } ->
           Option.bind (Data.to_node x1) ~f:(fun x1 ->
-            Option.bind ((Data.to_loc ~f:Data.to_node) x2) ~f:(fun x2 ->
+            Option.bind (Data.to_node x2) ~f:(fun x2 ->
               Option.bind (Data.to_node x3) ~f:(fun x3 ->
                 Some (Pexp_setfield (x1, x2, x3))
           )))
@@ -1870,7 +1879,7 @@ module Expression_desc = struct
               Some (Pexp_send (x1, x2))
           ))
         | Variant { tag = "Pexp_new"; args = [| x1 |] } ->
-          Option.bind ((Data.to_loc ~f:Data.to_node) x1) ~f:(fun x1 ->
+          Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Some (Pexp_new (x1))
           )
         | Variant { tag = "Pexp_setinstvar"; args = [| x1; x2 |] } ->
@@ -1921,7 +1930,7 @@ module Expression_desc = struct
           )
         | Variant { tag = "Pexp_open"; args = [| x1; x2; x3 |] } ->
           Option.bind (Data.to_node x1) ~f:(fun x1 ->
-            Option.bind ((Data.to_loc ~f:Data.to_node) x2) ~f:(fun x2 ->
+            Option.bind (Data.to_node x2) ~f:(fun x2 ->
               Option.bind (Data.to_node x3) ~f:(fun x3 ->
                 Some (Pexp_open (x1, x2, x3))
           )))
@@ -2259,7 +2268,7 @@ module Type_extension = struct
 
   let create ~ptyext_path ~ptyext_params ~ptyext_constructors ~ptyext_private ~ptyext_attributes =
     let fields =
-      [| (Data.of_loc ~f:Data.of_node) ptyext_path
+      [| Data.of_node ptyext_path
        ; (Data.of_list ~f:(Data.of_tuple2 ~f1:Data.of_node ~f2:Data.of_node)) ptyext_params
        ; (Data.of_list ~f:Data.of_node) ptyext_constructors
        ; Data.of_node ptyext_private
@@ -2276,7 +2285,7 @@ module Type_extension = struct
     | { name = "type_extension"
       ; data = Record [| ptyext_path; ptyext_params; ptyext_constructors; ptyext_private; ptyext_attributes |]
       } ->
-        Option.bind ((Data.to_loc ~f:Data.to_node) ptyext_path) ~f:(fun ptyext_path ->
+        Option.bind (Data.to_node ptyext_path) ~f:(fun ptyext_path ->
           Option.bind ((Data.to_list ~f:(Data.to_tuple2 ~f1:Data.to_node ~f2:Data.to_node)) ptyext_params) ~f:(fun ptyext_params ->
             Option.bind ((Data.to_list ~f:Data.to_node) ptyext_constructors) ~f:(fun ptyext_constructors ->
               Option.bind (Data.to_node ptyext_private) ~f:(fun ptyext_private ->
@@ -2344,7 +2353,7 @@ module Extension_constructor_kind = struct
       (Variant
         { tag = "Pext_rebind"
         ; args =
-          [| (Data.of_loc ~f:Data.of_node) x1
+          [| Data.of_node x1
           |]
         })
 
@@ -2366,7 +2375,7 @@ module Extension_constructor_kind = struct
               Some (Pext_decl (x1, x2))
           ))
         | Variant { tag = "Pext_rebind"; args = [| x1 |] } ->
-          Option.bind ((Data.to_loc ~f:Data.to_node) x1) ~f:(fun x1 ->
+          Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Some (Pext_rebind (x1))
           )
       | _ -> None
@@ -2423,7 +2432,7 @@ module Class_type_desc = struct
       (Variant
         { tag = "Pcty_constr"
         ; args =
-          [| (Data.of_loc ~f:Data.of_node) x1
+          [| Data.of_node x1
            ; (Data.of_list ~f:Data.of_node) x2
           |]
         })
@@ -2459,7 +2468,7 @@ module Class_type_desc = struct
         { tag = "Pcty_open"
         ; args =
           [| Data.of_node x1
-           ; (Data.of_loc ~f:Data.of_node) x2
+           ; Data.of_node x2
            ; Data.of_node x3
           |]
         })
@@ -2483,7 +2492,7 @@ module Class_type_desc = struct
       begin
         match data with
         | Variant { tag = "Pcty_constr"; args = [| x1; x2 |] } ->
-          Option.bind ((Data.to_loc ~f:Data.to_node) x1) ~f:(fun x1 ->
+          Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Option.bind ((Data.to_list ~f:Data.to_node) x2) ~f:(fun x2 ->
               Some (Pcty_constr (x1, x2))
           ))
@@ -2503,7 +2512,7 @@ module Class_type_desc = struct
           )
         | Variant { tag = "Pcty_open"; args = [| x1; x2; x3 |] } ->
           Option.bind (Data.to_node x1) ~f:(fun x1 ->
-            Option.bind ((Data.to_loc ~f:Data.to_node) x2) ~f:(fun x2 ->
+            Option.bind (Data.to_node x2) ~f:(fun x2 ->
               Option.bind (Data.to_node x3) ~f:(fun x3 ->
                 Some (Pcty_open (x1, x2, x3))
           )))
@@ -2582,8 +2591,8 @@ module Class_type_field_desc = struct
 
   type concrete =
     | Pctf_inherit of class_type
-    | Pctf_val of (label Astlib.Loc.t * mutable_flag * virtual_flag * core_type)
-    | Pctf_method of (label Astlib.Loc.t * private_flag * virtual_flag * core_type)
+    | Pctf_val of (string Astlib.Loc.t * mutable_flag * virtual_flag * core_type)
+    | Pctf_method of (string Astlib.Loc.t * private_flag * virtual_flag * core_type)
     | Pctf_constraint of (core_type * core_type)
     | Pctf_attribute of attribute
     | Pctf_extension of extension
@@ -2730,11 +2739,37 @@ module Class_infos = struct
 end
 
 module Class_description = struct
-  type t = class_type class_infos
+  type t = class_description
+
+  type concrete = class_type class_infos
+
+  let create =
+    let data = Data.of_node in
+    fun x -> node "class_description" (data x)
+
+  let of_concrete = create
+
+  let to_concrete t =
+    match Node.to_node (Unversioned.Private.transparent t) ~version with
+    | { name = "class_description"; data } -> Data.to_node data
+    | _ -> None
 end
 
 module Class_type_declaration = struct
-  type t = class_type class_infos
+  type t = class_type_declaration
+
+  type concrete = class_type class_infos
+
+  let create =
+    let data = Data.of_node in
+    fun x -> node "class_type_declaration" (data x)
+
+  let of_concrete = create
+
+  let to_concrete t =
+    match Node.to_node (Unversioned.Private.transparent t) ~version with
+    | { name = "class_type_declaration"; data } -> Data.to_node data
+    | _ -> None
 end
 
 module Class_expr = struct
@@ -2789,7 +2824,7 @@ module Class_expr_desc = struct
       (Variant
         { tag = "Pcl_constr"
         ; args =
-          [| (Data.of_loc ~f:Data.of_node) x1
+          [| Data.of_node x1
            ; (Data.of_list ~f:Data.of_node) x2
           |]
         })
@@ -2854,7 +2889,7 @@ module Class_expr_desc = struct
         { tag = "Pcl_open"
         ; args =
           [| Data.of_node x1
-           ; (Data.of_loc ~f:Data.of_node) x2
+           ; Data.of_node x2
            ; Data.of_node x3
           |]
         })
@@ -2884,7 +2919,7 @@ module Class_expr_desc = struct
       begin
         match data with
         | Variant { tag = "Pcl_constr"; args = [| x1; x2 |] } ->
-          Option.bind ((Data.to_loc ~f:Data.to_node) x1) ~f:(fun x1 ->
+          Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Option.bind ((Data.to_list ~f:Data.to_node) x2) ~f:(fun x2 ->
               Some (Pcl_constr (x1, x2))
           ))
@@ -2921,7 +2956,7 @@ module Class_expr_desc = struct
           )
         | Variant { tag = "Pcl_open"; args = [| x1; x2; x3 |] } ->
           Option.bind (Data.to_node x1) ~f:(fun x1 ->
-            Option.bind ((Data.to_loc ~f:Data.to_node) x2) ~f:(fun x2 ->
+            Option.bind (Data.to_node x2) ~f:(fun x2 ->
               Option.bind (Data.to_node x3) ~f:(fun x3 ->
                 Some (Pcl_open (x1, x2, x3))
           )))
@@ -3000,8 +3035,8 @@ module Class_field_desc = struct
 
   type concrete =
     | Pcf_inherit of override_flag * class_expr * string Astlib.Loc.t option
-    | Pcf_val of (label Astlib.Loc.t * mutable_flag * class_field_kind)
-    | Pcf_method of (label Astlib.Loc.t * private_flag * class_field_kind)
+    | Pcf_val of (string Astlib.Loc.t * mutable_flag * class_field_kind)
+    | Pcf_method of (string Astlib.Loc.t * private_flag * class_field_kind)
     | Pcf_constraint of (core_type * core_type)
     | Pcf_initializer of expression
     | Pcf_attribute of attribute
@@ -3175,7 +3210,20 @@ module Class_field_kind = struct
 end
 
 module Class_declaration = struct
-  type t = class_expr class_infos
+  type t = class_declaration
+
+  type concrete = class_expr class_infos
+
+  let create =
+    let data = Data.of_node in
+    fun x -> node "class_declaration" (data x)
+
+  let of_concrete = create
+
+  let to_concrete t =
+    match Node.to_node (Unversioned.Private.transparent t) ~version with
+    | { name = "class_declaration"; data } -> Data.to_node data
+    | _ -> None
 end
 
 module Module_type = struct
@@ -3229,7 +3277,7 @@ module Module_type_desc = struct
       (Variant
         { tag = "Pmty_ident"
         ; args =
-          [| (Data.of_loc ~f:Data.of_node) x1
+          [| Data.of_node x1
           |]
         })
   let pmty_signature x1 =
@@ -3280,7 +3328,7 @@ module Module_type_desc = struct
       (Variant
         { tag = "Pmty_alias"
         ; args =
-          [| (Data.of_loc ~f:Data.of_node) x1
+          [| Data.of_node x1
           |]
         })
 
@@ -3307,7 +3355,7 @@ module Module_type_desc = struct
       begin
         match data with
         | Variant { tag = "Pmty_ident"; args = [| x1 |] } ->
-          Option.bind ((Data.to_loc ~f:Data.to_node) x1) ~f:(fun x1 ->
+          Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Some (Pmty_ident (x1))
           )
         | Variant { tag = "Pmty_signature"; args = [| x1 |] } ->
@@ -3334,7 +3382,7 @@ module Module_type_desc = struct
             Some (Pmty_extension (x1))
           )
         | Variant { tag = "Pmty_alias"; args = [| x1 |] } ->
-          Option.bind ((Data.to_loc ~f:Data.to_node) x1) ~f:(fun x1 ->
+          Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Some (Pmty_alias (x1))
           )
       | _ -> None
@@ -3694,7 +3742,7 @@ module Open_description = struct
 
   let create ~popen_lid ~popen_override ~popen_loc ~popen_attributes =
     let fields =
-      [| (Data.of_loc ~f:Data.of_node) popen_lid
+      [| Data.of_node popen_lid
        ; Data.of_node popen_override
        ; Data.of_location popen_loc
        ; Data.of_node popen_attributes
@@ -3710,7 +3758,7 @@ module Open_description = struct
     | { name = "open_description"
       ; data = Record [| popen_lid; popen_override; popen_loc; popen_attributes |]
       } ->
-        Option.bind ((Data.to_loc ~f:Data.to_node) popen_lid) ~f:(fun popen_lid ->
+        Option.bind (Data.to_node popen_lid) ~f:(fun popen_lid ->
           Option.bind (Data.to_node popen_override) ~f:(fun popen_override ->
             Option.bind (Data.to_location popen_loc) ~f:(fun popen_loc ->
               Option.bind (Data.to_node popen_attributes) ~f:(fun popen_attributes ->
@@ -3754,11 +3802,37 @@ module Include_infos = struct
 end
 
 module Include_description = struct
-  type t = module_type include_infos
+  type t = include_description
+
+  type concrete = module_type include_infos
+
+  let create =
+    let data = Data.of_node in
+    fun x -> node "include_description" (data x)
+
+  let of_concrete = create
+
+  let to_concrete t =
+    match Node.to_node (Unversioned.Private.transparent t) ~version with
+    | { name = "include_description"; data } -> Data.to_node data
+    | _ -> None
 end
 
 module Include_declaration = struct
-  type t = module_expr include_infos
+  type t = include_declaration
+
+  type concrete = module_expr include_infos
+
+  let create =
+    let data = Data.of_node in
+    fun x -> node "include_declaration" (data x)
+
+  let of_concrete = create
+
+  let to_concrete t =
+    match Node.to_node (Unversioned.Private.transparent t) ~version with
+    | { name = "include_declaration"; data } -> Data.to_node data
+    | _ -> None
 end
 
 module With_constraint = struct
@@ -3775,7 +3849,7 @@ module With_constraint = struct
       (Variant
         { tag = "Pwith_type"
         ; args =
-          [| (Data.of_loc ~f:Data.of_node) x1
+          [| Data.of_node x1
            ; Data.of_node x2
           |]
         })
@@ -3784,8 +3858,8 @@ module With_constraint = struct
       (Variant
         { tag = "Pwith_module"
         ; args =
-          [| (Data.of_loc ~f:Data.of_node) x1
-           ; (Data.of_loc ~f:Data.of_node) x2
+          [| Data.of_node x1
+           ; Data.of_node x2
           |]
         })
   let pwith_typesubst x1 x2 =
@@ -3793,7 +3867,7 @@ module With_constraint = struct
       (Variant
         { tag = "Pwith_typesubst"
         ; args =
-          [| (Data.of_loc ~f:Data.of_node) x1
+          [| Data.of_node x1
            ; Data.of_node x2
           |]
         })
@@ -3802,8 +3876,8 @@ module With_constraint = struct
       (Variant
         { tag = "Pwith_modsubst"
         ; args =
-          [| (Data.of_loc ~f:Data.of_node) x1
-           ; (Data.of_loc ~f:Data.of_node) x2
+          [| Data.of_node x1
+           ; Data.of_node x2
           |]
         })
 
@@ -3824,23 +3898,23 @@ module With_constraint = struct
       begin
         match data with
         | Variant { tag = "Pwith_type"; args = [| x1; x2 |] } ->
-          Option.bind ((Data.to_loc ~f:Data.to_node) x1) ~f:(fun x1 ->
+          Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Option.bind (Data.to_node x2) ~f:(fun x2 ->
               Some (Pwith_type (x1, x2))
           ))
         | Variant { tag = "Pwith_module"; args = [| x1; x2 |] } ->
-          Option.bind ((Data.to_loc ~f:Data.to_node) x1) ~f:(fun x1 ->
-            Option.bind ((Data.to_loc ~f:Data.to_node) x2) ~f:(fun x2 ->
+          Option.bind (Data.to_node x1) ~f:(fun x1 ->
+            Option.bind (Data.to_node x2) ~f:(fun x2 ->
               Some (Pwith_module (x1, x2))
           ))
         | Variant { tag = "Pwith_typesubst"; args = [| x1; x2 |] } ->
-          Option.bind ((Data.to_loc ~f:Data.to_node) x1) ~f:(fun x1 ->
+          Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Option.bind (Data.to_node x2) ~f:(fun x2 ->
               Some (Pwith_typesubst (x1, x2))
           ))
         | Variant { tag = "Pwith_modsubst"; args = [| x1; x2 |] } ->
-          Option.bind ((Data.to_loc ~f:Data.to_node) x1) ~f:(fun x1 ->
-            Option.bind ((Data.to_loc ~f:Data.to_node) x2) ~f:(fun x2 ->
+          Option.bind (Data.to_node x1) ~f:(fun x1 ->
+            Option.bind (Data.to_node x2) ~f:(fun x2 ->
               Some (Pwith_modsubst (x1, x2))
           ))
       | _ -> None
@@ -3899,7 +3973,7 @@ module Module_expr_desc = struct
       (Variant
         { tag = "Pmod_ident"
         ; args =
-          [| (Data.of_loc ~f:Data.of_node) x1
+          [| Data.of_node x1
           |]
         })
   let pmod_structure x1 =
@@ -3978,7 +4052,7 @@ module Module_expr_desc = struct
       begin
         match data with
         | Variant { tag = "Pmod_ident"; args = [| x1 |] } ->
-          Option.bind ((Data.to_loc ~f:Data.to_node) x1) ~f:(fun x1 ->
+          Option.bind (Data.to_node x1) ~f:(fun x1 ->
             Some (Pmod_ident (x1))
           )
         | Variant { tag = "Pmod_structure"; args = [| x1 |] } ->

@@ -35,7 +35,7 @@ class expression_lifters loc =
       | None ->
         pexp_record ~loc
           (List.map flds ~f:(fun (lab, e) ->
-             (Astlib.Loc.create ~loc ~txt:(Longident.lident (Ml.id lab)) ()), e))
+             (Located.lident ~loc (Ml.id lab)), e))
           None
     method constr typ id args =
       match typ with
@@ -47,7 +47,7 @@ class expression_lifters loc =
                (List.map args ~f:(fun e -> Arg_label.nolabel, e))
       | None ->
         pexp_construct ~loc
-          (Astlib.Loc.create ~loc ~txt:(Longident.lident (Ml.tag id)) ())
+          (Located.lident ~loc (Ml.tag id))
           (match args with
            | [] -> None
            | l  -> Some (etuple ~loc l))
