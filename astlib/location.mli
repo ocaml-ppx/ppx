@@ -41,11 +41,21 @@ val update
 
 val none : t
 
+(** {1 Errors} *)
+
 type location = t
 
 module Error : sig
   (** The type for located errors *)
   type t
+
+  (** {2 Conversions} It should always be possible to convert to/from
+      [Ocaml_common.Location.error]. *)
+
+  val of_error : Ocaml_common.Location.error -> t
+  val to_error : t -> Ocaml_common.Location.error
+
+  (** {2 Constructors} *)
 
   (** [make ~loc pp_msg] returns the error located at [loc] with the message
       formatted by [pp_msg] *)
@@ -54,10 +64,16 @@ module Error : sig
     (Format.formatter -> unit) ->
     t
 
-  (** Report the error on the given formatter *)
+  (** {2 Accessors} *)
+
+  val location : t -> location
   val report : Format.formatter -> t -> unit
 
-  (** Convert the given error to a [[%ocaml.error ...]] extension point so that
-      it can later be reported by the compiler just as [report] would. *)
-  val to_extension : t -> Parsetree.extension
+  (** {2 Exceptions} *)
+
+  (** Add a conversion for a new exception constructor. *)
+  val register_of_exn : (exn -> t option) -> unit
+
+  (** Extract a [t] from an exception using registered conversions. *)
+  val of_exn : exn -> t option
 end
