@@ -111,10 +111,19 @@ let plist ~loc exprs =
 module Error_ext = struct
   open Versions
 
+  let extension_of_error error =
+    let loc = Astlib.Location.Error.location error in
+    let message = Format.asprintf "%a" Astlib.Location.Error.report error in
+    Extension.create
+      (Astlib.Loc.create ~loc ~txt:"ocaml.error" (),
+       Payload.pstr
+         (Structure.create
+            [pstr_eval ~loc (estring ~loc message) (Attributes.create [])]))
+
   let extension ~loc msg =
     let pp fmt = Format.pp_print_string fmt msg in
     let error = Astlib.Location.Error.make ~loc pp in
-    Conversion.ast_of_extension (Astlib.Location.Error.to_extension error)
+    extension_of_error error
 
   let build_ext : 'node 'a .
     (loc: Astlib.Location.t -> extension -> 'node) ->

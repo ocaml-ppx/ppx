@@ -49,6 +49,8 @@ module Error_ext : sig
       the required context, [exprf] for [expression], [patf] for [pattern],
       etc. *)
 
+  val extension_of_error : Astlib.Location.Error.t -> Versions.extension
+
   val exprf :
     loc:Astlib.Location.t ->
     ('a, unit, string, Versions.expression) format4 ->

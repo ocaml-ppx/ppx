@@ -27,31 +27,18 @@ let update ?start ?end_ ?ghost t = update_internal t ?start ?end_ ?ghost ()
 type location = t
 
 module Error = struct
-  type nonrec t =
-    { loc : t
-    ; fmt_msg : (Format.formatter -> unit)
-    }
+  type t = Ocaml_common.Location.error
 
-  let make ~loc fmt_msg = {loc; fmt_msg}
+  let of_error (t : t) = t
+  let to_error (t : t) = t
+  let make ~loc f = Ocaml_common.Location.error_of_printer loc (fun fmt () -> f fmt) ()
+  let location (t : t) = t.loc
+  let report fmt t = Ocaml_common.Location.report_error fmt t
+  let register_of_exn f = Ocaml_common.Location.register_error_of_exn f
 
-  let report fmt {loc; fmt_msg} =
-    let msg = Format.asprintf "%t" fmt_msg in
-    let err = Ocaml_common.Location.error ~loc msg in
-    Ocaml_common.Location.(report_exception fmt (Error err))
-
-  let to_extension {loc; fmt_msg} =
-    let msg = Format.asprintf "%t" fmt_msg in
-    let open Parsetree in
-    let ext_name = {Ocaml_common.Location.txt = "ocaml.error"; loc} in
-    let msg_item =
-      let expr =
-        { pexp_loc = loc
-        ; pexp_attributes = []
-        ; pexp_desc = Pexp_constant (Pconst_string (msg, None))
-        }
-      in
-      {pstr_loc = loc; pstr_desc = Pstr_eval (expr, [])}
-    in
-    let payload = PStr [msg_item] in
-    ext_name, payload
+  let of_exn exn =
+    match Ocaml_common.Location.error_of_exn exn with
+    | None -> None
+    | Some `Already_displayed -> None
+    | Some (`Ok t) -> Some t
 end
