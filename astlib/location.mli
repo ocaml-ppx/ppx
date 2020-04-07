@@ -69,11 +69,16 @@ module Error : sig
   val location : t -> location
   val report : Format.formatter -> t -> unit
 
-  (** {2 Exceptions} *)
+  (** {2 Exceptions}
+
+      TODO: we probably want to cut the entire exceptions section before upstreaming. *)
 
   (** Add a conversion for a new exception constructor. *)
   val register_of_exn : (exn -> t option) -> unit
 
   (** Extract a [t] from an exception using registered conversions. *)
   val of_exn : exn -> t option
+
+  (** Used to raise/catch [t] as an exception. *)
+  exception Error of t
 end
