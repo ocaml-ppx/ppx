@@ -41,4 +41,6 @@ module Error = struct
     | None -> None
     | Some `Already_displayed -> None
     | Some (`Ok t) -> Some t
+
+  exception Error = Ocaml_common.Location.Error
 end
