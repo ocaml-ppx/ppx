@@ -6,12 +6,10 @@ let foo =
   Deriving.add "foo"
     ~str_type_decl:(Deriving.Generator.make_noarg
                       (fun ~loc ~path:_ _ ->
-                         let loc = Astlib.Location.of_location loc in
                          [%str let x = 42]
                          |> Ppx_ast.Conversion.ast_to_structure))
     ~sig_type_decl:(Deriving.Generator.make_noarg
                       (fun ~loc ~path:_ _ ->
-                         let loc = Astlib.Location.of_location loc in
                          [%sig: val y : int]
                          |> Ppx_ast.Conversion.ast_to_signature))
 [%%expect{|
@@ -22,7 +20,6 @@ let bar =
   Deriving.add "bar"
     ~str_type_decl:
       (Deriving.Generator.make_noarg ~deps:[foo] (fun ~loc ~path:_ _ ->
-         let loc = Astlib.Location.of_location loc in
          [%str let () = Printf.printf "x = %d\n" x]
          |> Ppx_ast.Conversion.ast_to_structure))
 [%%expect{|
@@ -34,13 +31,11 @@ let mtd =
     ~sig_module_type_decl:(
       Deriving.Generator.make_noarg
         (fun ~loc ~path:_ _ ->
-           let loc = Astlib.Location.of_location loc in
            [%sig: val y : int]
            |> Ppx_ast.Conversion.ast_to_signature))
     ~str_module_type_decl:(
       Deriving.Generator.make_noarg
         (fun ~loc ~path:_ _ ->
-           let loc = Astlib.Location.of_location loc in
            [%str let y = 42]
            |> Ppx_ast.Conversion.ast_to_structure))
 [%%expect{|

@@ -4,7 +4,14 @@
 let loc = Astlib.Location.none
 let () = Clflags.dump_source := true
 [%%expect{|
-val loc : Astlib.Location.t = <abstr>
+val loc : Location.t =
+  {Astlib.Location.loc_start =
+    {Astlib__.Position.pos_fname = "_none_"; pos_lnum = 1; pos_bol = 0;
+     pos_cnum = -1};
+   loc_end =
+    {Astlib__.Position.pos_fname = "_none_"; pos_lnum = 1; pos_bol = 0;
+     pos_cnum = -1};
+   loc_ghost = true}
 |}]
 
 

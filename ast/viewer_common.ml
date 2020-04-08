@@ -1,11 +1,20 @@
-let txt'match view value = view (Astlib.Loc.txt value)
-let loc'match view value = view (Astlib.Loc.loc value)
+include struct
+  open Astlib.Loc
+  let txt'match view value = view value.txt
+  let loc'match view value = view value.loc
+end
 
-let loc_start'match view value = view (Astlib.Location.start value)
-let loc_end'match view value = view (Astlib.Location.end_ value)
-let loc_ghost'match view value = view (Astlib.Location.ghost value)
+include struct
+  open Astlib.Location
+  let loc_start'match view value = view value.loc_start
+  let loc_end'match view value = view value.loc_end
+  let loc_ghost'match view value = view value.loc_ghost
+end
 
-let pos_fname'match view value = view (Astlib.Position.fname value)
-let pos_lnum'match view value = view (Astlib.Position.lnum value)
-let pos_bol'match view value = view (Astlib.Position.bol value)
-let pos_cnum'match view value = view (Astlib.Position.cnum value)
+include struct
+  open Astlib.Position
+  let pos_fname'match view value = view value.pos_fname
+  let pos_lnum'match view value = view value.pos_lnum
+  let pos_bol'match view value = view value.pos_bol
+  let pos_cnum'match view value = view value.pos_cnum
+end

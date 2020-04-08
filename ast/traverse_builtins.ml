@@ -24,24 +24,24 @@ class map =
 
     method position : Astlib.Position.t T.map = fun x ->
       let open Astlib.Position in
-      let fname = self#string (fname x) in
-      let lnum = self#int (lnum x) in
-      let bol = self#int (bol x) in
-      let cnum = self#int (cnum x) in
-      create ~fname ~lnum ~bol ~cnum ()
+      let pos_fname = self#string x.pos_fname in
+      let pos_lnum = self#int x.pos_lnum in
+      let pos_bol = self#int x.pos_bol in
+      let pos_cnum = self#int x.pos_cnum in
+      { pos_fname; pos_lnum; pos_bol; pos_cnum }
 
     method location : Astlib.Location.t T.map = fun x ->
       let open Astlib.Location in
-      let start = self#position (start x) in
-      let end_ = self#position (end_ x) in
-      let ghost = self#bool (ghost x) in
-      create ~start ~end_ ~ghost ()
+      let loc_start = self#position x.loc_start in
+      let loc_end = self#position x.loc_end in
+      let loc_ghost = self#bool x.loc_ghost in
+      { loc_start; loc_end; loc_ghost }
 
     method loc : 'a. 'a T.map -> 'a Astlib.Loc.t T.map = fun f x ->
       let open Astlib.Loc in
-      let txt = f (txt x) in
-      let loc = self#location (loc x) in
-      create ~txt ~loc ()
+      let txt = f x.txt in
+      let loc = self#location x.loc in
+      { txt; loc }
   end
 
 class iter =
@@ -61,21 +61,21 @@ class iter =
 
     method position : Astlib.Position.t T.iter = fun x ->
       let open Astlib.Position in
-      self#string (fname x);
-      self#int (lnum x);
-      self#int (bol x);
-      self#int (cnum x)
+      self#string x.pos_fname;
+      self#int x.pos_lnum;
+      self#int x.pos_bol;
+      self#int x.pos_cnum
 
     method location : Astlib.Location.t T.iter = fun x ->
       let open Astlib.Location in
-      self#position (start x);
-      self#position (end_ x);
-      self#bool (ghost x)
+      self#position x.loc_start;
+      self#position x.loc_end;
+      self#bool x.loc_ghost
 
     method loc : 'a. 'a T.iter -> 'a Astlib.Loc.t T.iter = fun f x ->
       let open Astlib.Loc in
-      f (txt x);
-      self#location (loc x)
+      f x.txt;
+      self#location x.loc
   end
 
 class ['acc] fold =
@@ -108,21 +108,21 @@ class ['acc] fold =
 
     method position : (Astlib.Position.t, 'acc) T.fold = fun x acc ->
       let open Astlib.Position in
-      let acc = self#string (fname x) acc in
-      let acc = self#int (lnum x) acc in
-      let acc = self#int (bol x) acc in
-      self#int (cnum x) acc
+      let acc = self#string x.pos_fname acc in
+      let acc = self#int x.pos_lnum acc in
+      let acc = self#int x.pos_bol acc in
+      self#int x.pos_cnum acc
 
     method location : (Astlib.Location.t, 'acc) T.fold = fun x acc ->
       let open Astlib.Location in
-      let acc = self#position (start x) acc in
-      let acc = self#position (end_ x) acc in
-      self#bool (ghost x) acc
+      let acc = self#position x.loc_start acc in
+      let acc = self#position x.loc_end acc in
+      self#bool x.loc_ghost acc
 
     method loc : 'a. ('a, 'acc) T.fold -> ('a Astlib.Loc.t, 'acc) T.fold = fun f x acc ->
       let open Astlib.Loc in
-      let acc = f (txt x) acc in
-      self#location (loc x) acc
+      let acc = f x.txt acc in
+      self#location x.loc acc
   end
 
 class ['acc] fold_map =
@@ -169,26 +169,26 @@ class ['acc] fold_map =
 
     method position : (Astlib.Position.t, 'acc) T.fold_map = fun x acc ->
       let open Astlib.Position in
-      let (fname, acc) = self#string (fname x) acc in
-      let (lnum, acc) = self#int (lnum x) acc in
-      let (bol, acc) = self#int (bol x) acc in
-      let (cnum, acc) = self#int (cnum x) acc in
-      (create ~fname ~lnum ~bol ~cnum (), acc)
+      let (pos_fname, acc) = self#string x.pos_fname acc in
+      let (pos_lnum, acc) = self#int x.pos_lnum acc in
+      let (pos_bol, acc) = self#int x.pos_bol acc in
+      let (pos_cnum, acc) = self#int x.pos_cnum acc in
+      ({ pos_fname; pos_lnum; pos_bol; pos_cnum }, acc)
 
     method location : (Astlib.Location.t, 'acc) T.fold_map = fun x acc ->
       let open Astlib.Location in
-      let (start, acc) = self#position (start x) acc in
-      let (end_, acc) = self#position (end_ x) acc in
-      let (ghost, acc) = self#bool (ghost x) acc in
-      (create ~start ~end_ ~ghost (), acc)
+      let (loc_start, acc) = self#position x.loc_start acc in
+      let (loc_end, acc) = self#position x.loc_end acc in
+      let (loc_ghost, acc) = self#bool x.loc_ghost acc in
+      ({ loc_start; loc_end; loc_ghost }, acc)
 
     method loc :
       'a. ('a, 'acc) T.fold_map -> ('a Astlib.Loc.t, 'acc) T.fold_map =
       fun f x acc ->
       let open Astlib.Loc in
-      let (txt, acc) = f (txt x) acc in
-      let (loc, acc) = self#location (loc x) acc in
-      (create ~txt ~loc (), acc)
+      let (txt, acc) = f x.txt acc in
+      let (loc, acc) = self#location x.loc acc in
+      ({ txt; loc }, acc)
   end
 
 class ['ctx] map_with_context =
@@ -216,27 +216,27 @@ class ['ctx] map_with_context =
 
     method position : ('ctx, Astlib.Position.t) T.map_with_context = fun ctx x ->
       let open Astlib.Position in
-      let fname = self#string ctx (fname x) in
-      let lnum = self#int ctx (lnum x) in
-      let bol = self#int ctx (bol x) in
-      let cnum = self#int ctx (cnum x) in
-      create ~fname ~lnum ~bol ~cnum ()
+      let pos_fname = self#string ctx x.pos_fname in
+      let pos_lnum = self#int ctx x.pos_lnum in
+      let pos_bol = self#int ctx x.pos_bol in
+      let pos_cnum = self#int ctx x.pos_cnum in
+      { pos_fname; pos_lnum; pos_bol; pos_cnum }
 
     method location : ('ctx, Astlib.Location.t) T.map_with_context = fun ctx x ->
       let open Astlib.Location in
-      let start = self#position ctx (start x) in
-      let end_ = self#position ctx (end_ x) in
-      let ghost = self#bool ctx (ghost x) in
-      create ~start ~end_ ~ghost ()
+      let loc_start = self#position ctx x.loc_start in
+      let loc_end = self#position ctx x.loc_end in
+      let loc_ghost = self#bool ctx x.loc_ghost in
+      { loc_start; loc_end; loc_ghost }
 
     method loc
       : 'a. ('ctx, 'a) T.map_with_context ->
         ('ctx, 'a Astlib.Loc.t) T.map_with_context
       = fun f ctx x ->
       let open Astlib.Loc in
-      let txt = f ctx (txt x) in
-      let loc = self#location ctx (loc x) in
-      create ~txt ~loc ()
+      let txt = f ctx x.txt in
+      let loc = self#location ctx x.loc in
+      { txt; loc }
   end
 
 class virtual ['res] lift =
@@ -270,26 +270,31 @@ class virtual ['res] lift =
 
     method position : (Astlib.Position.t, 'res) T.lift = fun x ->
       let open Astlib.Position in
-      let fname = self#string (fname x) in
-      let lnum = self#int (lnum x) in
-      let bol = self#int (bol x) in
-      let cnum = self#int (cnum x) in
+      let pos_fname = self#string x.pos_fname in
+      let pos_lnum = self#int x.pos_lnum in
+      let pos_bol = self#int x.pos_bol in
+      let pos_cnum = self#int x.pos_cnum in
       self#record
         None
-        [("fname", fname); ("lnum", lnum); ("bol", bol); ("cnum", cnum)]
+        [ ("pos_fname", pos_fname)
+        ; ("pos_lnum", pos_lnum)
+        ; ("pos_bol", pos_bol)
+        ; ("pos_cnum", pos_cnum) ]
 
     method location : (Astlib.Location.t, 'res) T.lift = fun x ->
       let open Astlib.Location in
-      let start = self#position (start x) in
-      let end_ = self#position (end_ x) in
-      let ghost = self#bool (ghost x) in
-      self#record None [("start", start); ("end_", end_); ("ghost", ghost)]
+      let loc_start = self#position x.loc_start in
+      let loc_end = self#position x.loc_end in
+      let loc_ghost = self#bool x.loc_ghost in
+      self#record
+        None
+        [("loc_start", loc_start); ("loc_end", loc_end); ("loc_ghost", loc_ghost)]
 
     method loc : 'a. ('a, 'res) T.lift -> ('a Astlib.Loc.t, 'res) T.lift
       = fun f x ->
       let open Astlib.Loc in
-      let txt = f (txt x) in
-      let loc = self#location (loc x) in
+      let txt = f x.txt in
+      let loc = self#location x.loc in
       self#record None [("txt", txt); ("loc", loc)]
   end
 

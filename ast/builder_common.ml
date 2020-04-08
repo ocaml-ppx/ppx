@@ -3,7 +3,7 @@ open Versions.V4_07
 open Builder_v4_07
 
 module Located = struct
-  let longident ~loc longident = Longident_loc.create (Astlib.Loc.create ~loc ~txt:longident ())
+  let longident ~loc longident = Longident_loc.create { loc; txt = longident }
   let lident ~loc x = longident ~loc (Longident.lident x)
 
   let dotted ~loc list =
@@ -91,7 +91,7 @@ let pbool ~loc x = ppat_construct ~loc (Located.lident ~loc (Bool.to_string x)) 
 
 let pnil ~loc = ppat_construct ~loc (Located.lident ~loc "[]") None
 
-let pvar ~loc x = ppat_var ~loc (Astlib.Loc.create ~loc ~txt:x ())
+let pvar ~loc x = ppat_var ~loc { loc; txt = x }
 
 let ptuple ~loc list =
   match list with
@@ -115,7 +115,7 @@ module Error_ext = struct
     let loc = Astlib.Location.Error.location error in
     let message = Format.asprintf "%a" Astlib.Location.Error.report error in
     Extension.create
-      (Astlib.Loc.create ~loc ~txt:"ocaml.error" (),
+      ({ loc; txt = "ocaml.error" },
        Payload.pstr
          (Structure.create
             [pstr_eval ~loc (estring ~loc message) (Attributes.create [])]))

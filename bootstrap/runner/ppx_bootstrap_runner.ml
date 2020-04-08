@@ -58,13 +58,11 @@ let t =
 let unsupported_extension extension =
   match Extension.to_concrete extension with
   | None -> assert false
-  | Some (name_loc, _) ->
-    let loc = Astlib.Loc.loc name_loc in
-    let name = Astlib.Loc.txt name_loc in
+  | Some ({ loc; txt = name }, _) ->
     let expr = estring ~loc ("unsupported bootstrap extension " ^ name) in
     let item = pstr_eval ~loc expr (Attributes.create []) in
     let payload = Payload.pstr (Structure.create [item]) in
-    Extension.create (Astlib.Loc.create ~txt:"error" ~loc (), payload)
+    Extension.create ({ txt = "error"; loc }, payload)
 ;;
 
 let expression_extension expr =
@@ -98,9 +96,7 @@ let rewriter =
     method! expression expr =
       match expression_extension expr with
       | None -> super#expression expr
-      | Some (name_loc, payload, ext) ->
-        let loc = Astlib.Loc.loc name_loc in
-        let txt = Astlib.Loc.txt name_loc in
+      | Some ({ loc; txt }, payload, ext) ->
         (match Label_map.find t.expr txt with
          | Some entry -> self#expression (entry.callback ~loc payload)
          | None -> pexp_extension ~loc (unsupported_extension ext))
@@ -108,9 +104,7 @@ let rewriter =
     method! pattern pat =
       match pattern_extension pat with
       | None -> super#pattern pat
-      | Some (name_loc, payload, ext) ->
-        let loc = Astlib.Loc.loc name_loc in
-        let txt = Astlib.Loc.txt name_loc in
+      | Some ({ loc; txt }, payload, ext) ->
         (match Label_map.find t.patt txt with
          | Some entry -> self#pattern (entry.callback ~loc payload)
          | None -> ppat_extension ~loc (unsupported_extension ext))

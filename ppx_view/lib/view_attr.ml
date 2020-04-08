@@ -20,9 +20,7 @@ let fields_from_payload ~loc payload =
 let fields_from_attribute ~loc attribute =
   match Attribute.to_concrete attribute with
   | None -> Error.conversion_failed ~loc "attribute"
-  | Some (name, payload) ->
-    let loc = Astlib.Loc.loc name in
-    let name = Astlib.Loc.txt name in
+  | Some ({ loc; txt = name }, payload) ->
     match name with
     | "view" -> Some (fields_from_payload ~loc payload)
     | _ -> None

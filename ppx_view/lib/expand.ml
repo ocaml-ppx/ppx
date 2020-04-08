@@ -89,9 +89,7 @@ let same_variables ~err_loc vl vl' =
       let (_, desc') = Deconstructor.pattern ~loc:err_loc v' in
       match desc, desc' with
       | Ppat_var loc_name, Ppat_var loc_name' ->
-        let name = Astlib.Loc.txt loc_name in
-        let name' = Astlib.Loc.txt loc_name' in
-        name = name'
+        loc_name.txt = loc_name'.txt
       | _ -> false)
 
 let rec translate_pattern ~err_loc pattern =
@@ -272,13 +270,12 @@ let translate_case ~loc ~err_loc match_case =
     let f = Builder.view_lib_ident ~loc "case" in
     Builder.Exp.apply_lident ~loc f [pattern; body]
 
-let pos_argument loc =
-  let start = Astlib.Location.start loc in
-  let bol = Astlib.Position.bol start in
-  let lnum = Astlib.Position.lnum start in
-  let cnum = Astlib.Position.cnum start in
-  let fname = Astlib.Position.fname start in
-  pexp_tuple ~loc [estring ~loc fname; eint ~loc lnum; eint ~loc (cnum - bol)]
+let pos_argument (loc : Astlib.Location.t) =
+  let pos = loc.loc_start in
+  pexp_tuple ~loc
+    [ estring ~loc pos.pos_fname
+    ; eint ~loc pos.pos_lnum
+    ; eint ~loc (pos.pos_cnum - pos.pos_bol) ]
 
 let translate_match ~loc ~err_loc ?match_expr match_cases =
   let pos = pos_argument loc in
