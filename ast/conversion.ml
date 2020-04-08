@@ -1,31 +1,4 @@
-open StdLabels
-
-module Helpers = struct
-  module Tuple = struct
-    let map2 (x1, x2) ~f1 ~f2 = (f1 x1, f2 x2)
-    let map3 (x1, x2, x3) ~f1 ~f2 ~f3 = (f1 x1, f2 x2, f3 x3)
-    let map4 (x1, x2, x3, x4) ~f1 ~f2 ~f3 ~f4 = (f1 x1, f2 x2, f3 x3, f4 x4)
-  end
-
-  module Option = struct
-    let map t ~f =
-      match t with
-      | None -> None
-      | Some x -> Some (f x)
-
-    let value_exn option ~message =
-      match option with
-      | Some x -> x
-      | None -> failwith message
-  end
-
-  module Fn = struct
-    let id x = x
-    [@@warning "-32"]
-
-    let compose f g x = f (g x)
-  end
-end
+open Stdppx
 
 (*$ Ppx_ast_cinaps.print_conversion_ml () *)
 let rec ast_of_longident x =
@@ -46,8 +19,9 @@ and concrete_of_longident x : Versions.V4_07.Longident.concrete =
 and ast_to_longident x =
   let option = Versions.V4_07.Longident.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_longident: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_longident: conversion failed"
   in
   concrete_to_longident concrete
 
@@ -67,18 +41,19 @@ and ast_of_longident_loc x =
   Versions.V4_07.Longident_loc.of_concrete (concrete_of_longident_loc x)
 
 and concrete_of_longident_loc x =
-  (Helpers.Fn.compose (Astlib.Loc.map ~f:ast_of_longident) Astlib.Loc.of_loc) x
+  (Fn.compose (Astlib.Loc.map ~f:ast_of_longident) Astlib.Loc.of_loc) x
 
 and ast_to_longident_loc x =
   let option = Versions.V4_07.Longident_loc.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_longident_loc: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_longident_loc: conversion failed"
   in
   concrete_to_longident_loc concrete
 
 and concrete_to_longident_loc x =
-  (Helpers.Fn.compose Astlib.Loc.to_loc (Astlib.Loc.map ~f:ast_to_longident)) x
+  (Fn.compose Astlib.Loc.to_loc (Astlib.Loc.map ~f:ast_to_longident)) x
 
 and ast_of_rec_flag x =
   Versions.V4_07.Rec_flag.of_concrete (concrete_of_rec_flag x)
@@ -91,8 +66,9 @@ and concrete_of_rec_flag x : Versions.V4_07.Rec_flag.concrete =
 and ast_to_rec_flag x =
   let option = Versions.V4_07.Rec_flag.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_rec_flag: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_rec_flag: conversion failed"
   in
   concrete_to_rec_flag concrete
 
@@ -112,8 +88,9 @@ and concrete_of_direction_flag x : Versions.V4_07.Direction_flag.concrete =
 and ast_to_direction_flag x =
   let option = Versions.V4_07.Direction_flag.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_direction_flag: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_direction_flag: conversion failed"
   in
   concrete_to_direction_flag concrete
 
@@ -133,8 +110,9 @@ and concrete_of_private_flag x : Versions.V4_07.Private_flag.concrete =
 and ast_to_private_flag x =
   let option = Versions.V4_07.Private_flag.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_private_flag: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_private_flag: conversion failed"
   in
   concrete_to_private_flag concrete
 
@@ -154,8 +132,9 @@ and concrete_of_mutable_flag x : Versions.V4_07.Mutable_flag.concrete =
 and ast_to_mutable_flag x =
   let option = Versions.V4_07.Mutable_flag.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_mutable_flag: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_mutable_flag: conversion failed"
   in
   concrete_to_mutable_flag concrete
 
@@ -175,8 +154,9 @@ and concrete_of_virtual_flag x : Versions.V4_07.Virtual_flag.concrete =
 and ast_to_virtual_flag x =
   let option = Versions.V4_07.Virtual_flag.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_virtual_flag: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_virtual_flag: conversion failed"
   in
   concrete_to_virtual_flag concrete
 
@@ -196,8 +176,9 @@ and concrete_of_override_flag x : Versions.V4_07.Override_flag.concrete =
 and ast_to_override_flag x =
   let option = Versions.V4_07.Override_flag.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_override_flag: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_override_flag: conversion failed"
   in
   concrete_to_override_flag concrete
 
@@ -217,8 +198,9 @@ and concrete_of_closed_flag x : Versions.V4_07.Closed_flag.concrete =
 and ast_to_closed_flag x =
   let option = Versions.V4_07.Closed_flag.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_closed_flag: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_closed_flag: conversion failed"
   in
   concrete_to_closed_flag concrete
 
@@ -241,8 +223,9 @@ and concrete_of_arg_label x : Versions.V4_07.Arg_label.concrete =
 and ast_to_arg_label x =
   let option = Versions.V4_07.Arg_label.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_arg_label: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_arg_label: conversion failed"
   in
   concrete_to_arg_label concrete
 
@@ -266,8 +249,9 @@ and concrete_of_variance x : Versions.V4_07.Variance.concrete =
 and ast_to_variance x =
   let option = Versions.V4_07.Variance.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_variance: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_variance: conversion failed"
   in
   concrete_to_variance concrete
 
@@ -294,8 +278,9 @@ and concrete_of_constant x : Versions.V4_07.Constant.concrete =
 and ast_to_constant x =
   let option = Versions.V4_07.Constant.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_constant: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_constant: conversion failed"
   in
   concrete_to_constant concrete
 
@@ -314,35 +299,37 @@ and ast_of_attribute x =
   Versions.V4_07.Attribute.of_concrete (concrete_of_attribute x)
 
 and concrete_of_attribute x =
-  (Helpers.Tuple.map2 ~f1:Astlib.Loc.of_loc ~f2:ast_of_payload) x
+  (Tuple.map2 ~f1:Astlib.Loc.of_loc ~f2:ast_of_payload) x
 
 and ast_to_attribute x =
   let option = Versions.V4_07.Attribute.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_attribute: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_attribute: conversion failed"
   in
   concrete_to_attribute concrete
 
 and concrete_to_attribute x =
-  (Helpers.Tuple.map2 ~f1:Astlib.Loc.to_loc ~f2:ast_to_payload) x
+  (Tuple.map2 ~f1:Astlib.Loc.to_loc ~f2:ast_to_payload) x
 
 and ast_of_extension x =
   Versions.V4_07.Extension.of_concrete (concrete_of_extension x)
 
 and concrete_of_extension x =
-  (Helpers.Tuple.map2 ~f1:Astlib.Loc.of_loc ~f2:ast_of_payload) x
+  (Tuple.map2 ~f1:Astlib.Loc.of_loc ~f2:ast_of_payload) x
 
 and ast_to_extension x =
   let option = Versions.V4_07.Extension.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_extension: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_extension: conversion failed"
   in
   concrete_to_extension concrete
 
 and concrete_to_extension x =
-  (Helpers.Tuple.map2 ~f1:Astlib.Loc.to_loc ~f2:ast_to_payload) x
+  (Tuple.map2 ~f1:Astlib.Loc.to_loc ~f2:ast_to_payload) x
 
 and ast_of_attributes x =
   Versions.V4_07.Attributes.of_concrete (concrete_of_attributes x)
@@ -353,8 +340,9 @@ and concrete_of_attributes x =
 and ast_to_attributes x =
   let option = Versions.V4_07.Attributes.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_attributes: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_attributes: conversion failed"
   in
   concrete_to_attributes concrete
 
@@ -377,14 +365,15 @@ and concrete_of_payload x : Versions.V4_07.Payload.concrete =
     PTyp (x1)
   | PPat (x1, x2) ->
     let x1 = ast_of_pattern x1 in
-    let x2 = (Helpers.Option.map ~f:ast_of_expression) x2 in
+    let x2 = (Option.map ~f:ast_of_expression) x2 in
     PPat (x1, x2)
 
 and ast_to_payload x =
   let option = Versions.V4_07.Payload.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_payload: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_payload: conversion failed"
   in
   concrete_to_payload concrete
 
@@ -401,7 +390,7 @@ and concrete_to_payload x : Compiler_types.payload =
     PTyp (x1)
   | PPat (x1, x2) ->
     let x1 = ast_to_pattern x1 in
-    let x2 = (Helpers.Option.map ~f:ast_to_expression) x2 in
+    let x2 = (Option.map ~f:ast_to_expression) x2 in
     PPat (x1, x2)
 
 and ast_of_core_type x =
@@ -418,8 +407,9 @@ and concrete_of_core_type
 and ast_to_core_type x =
   let option = Versions.V4_07.Core_type.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_core_type: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_core_type: conversion failed"
   in
   concrete_to_core_type concrete
 
@@ -480,8 +470,9 @@ and concrete_of_core_type_desc x : Versions.V4_07.Core_type_desc.concrete =
 and ast_to_core_type_desc x =
   let option = Versions.V4_07.Core_type_desc.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_core_type_desc: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_core_type_desc: conversion failed"
   in
   concrete_to_core_type_desc concrete
 
@@ -532,18 +523,19 @@ and ast_of_package_type x =
   Versions.V4_07.Package_type.of_concrete (concrete_of_package_type x)
 
 and concrete_of_package_type x =
-  (Helpers.Tuple.map2 ~f1:ast_of_longident_loc ~f2:(List.map ~f:(Helpers.Tuple.map2 ~f1:ast_of_longident_loc ~f2:ast_of_core_type))) x
+  (Tuple.map2 ~f1:ast_of_longident_loc ~f2:(List.map ~f:(Tuple.map2 ~f1:ast_of_longident_loc ~f2:ast_of_core_type))) x
 
 and ast_to_package_type x =
   let option = Versions.V4_07.Package_type.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_package_type: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_package_type: conversion failed"
   in
   concrete_to_package_type concrete
 
 and concrete_to_package_type x =
-  (Helpers.Tuple.map2 ~f1:ast_to_longident_loc ~f2:(List.map ~f:(Helpers.Tuple.map2 ~f1:ast_to_longident_loc ~f2:ast_to_core_type))) x
+  (Tuple.map2 ~f1:ast_to_longident_loc ~f2:(List.map ~f:(Tuple.map2 ~f1:ast_to_longident_loc ~f2:ast_to_core_type))) x
 
 and ast_of_row_field x =
   Versions.V4_07.Row_field.of_concrete (concrete_of_row_field x)
@@ -562,8 +554,9 @@ and concrete_of_row_field x : Versions.V4_07.Row_field.concrete =
 and ast_to_row_field x =
   let option = Versions.V4_07.Row_field.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_row_field: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_row_field: conversion failed"
   in
   concrete_to_row_field concrete
 
@@ -595,8 +588,9 @@ and concrete_of_object_field x : Versions.V4_07.Object_field.concrete =
 and ast_to_object_field x =
   let option = Versions.V4_07.Object_field.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_object_field: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_object_field: conversion failed"
   in
   concrete_to_object_field concrete
 
@@ -625,8 +619,9 @@ and concrete_of_pattern
 and ast_to_pattern x =
   let option = Versions.V4_07.Pattern.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_pattern: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_pattern: conversion failed"
   in
   concrete_to_pattern concrete
 
@@ -663,13 +658,13 @@ and concrete_of_pattern_desc x : Versions.V4_07.Pattern_desc.concrete =
     Ppat_tuple (x1)
   | Ppat_construct (x1, x2) ->
     let x1 = ast_of_longident_loc x1 in
-    let x2 = (Helpers.Option.map ~f:ast_of_pattern) x2 in
+    let x2 = (Option.map ~f:ast_of_pattern) x2 in
     Ppat_construct (x1, x2)
   | Ppat_variant (x1, x2) ->
-    let x2 = (Helpers.Option.map ~f:ast_of_pattern) x2 in
+    let x2 = (Option.map ~f:ast_of_pattern) x2 in
     Ppat_variant (x1, x2)
   | Ppat_record (x1, x2) ->
-    let x1 = (List.map ~f:(Helpers.Tuple.map2 ~f1:ast_of_longident_loc ~f2:ast_of_pattern)) x1 in
+    let x1 = (List.map ~f:(Tuple.map2 ~f1:ast_of_longident_loc ~f2:ast_of_pattern)) x1 in
     let x2 = ast_of_closed_flag x2 in
     Ppat_record (x1, x2)
   | Ppat_array (x1) ->
@@ -706,8 +701,9 @@ and concrete_of_pattern_desc x : Versions.V4_07.Pattern_desc.concrete =
 and ast_to_pattern_desc x =
   let option = Versions.V4_07.Pattern_desc.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_pattern_desc: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_pattern_desc: conversion failed"
   in
   concrete_to_pattern_desc concrete
 
@@ -733,13 +729,13 @@ and concrete_to_pattern_desc x : Compiler_types.pattern_desc =
     Ppat_tuple (x1)
   | Ppat_construct (x1, x2) ->
     let x1 = ast_to_longident_loc x1 in
-    let x2 = (Helpers.Option.map ~f:ast_to_pattern) x2 in
+    let x2 = (Option.map ~f:ast_to_pattern) x2 in
     Ppat_construct (x1, x2)
   | Ppat_variant (x1, x2) ->
-    let x2 = (Helpers.Option.map ~f:ast_to_pattern) x2 in
+    let x2 = (Option.map ~f:ast_to_pattern) x2 in
     Ppat_variant (x1, x2)
   | Ppat_record (x1, x2) ->
-    let x1 = (List.map ~f:(Helpers.Tuple.map2 ~f1:ast_to_longident_loc ~f2:ast_to_pattern)) x1 in
+    let x1 = (List.map ~f:(Tuple.map2 ~f1:ast_to_longident_loc ~f2:ast_to_pattern)) x1 in
     let x2 = ast_to_closed_flag x2 in
     Ppat_record (x1, x2)
   | Ppat_array (x1) ->
@@ -787,8 +783,9 @@ and concrete_of_expression
 and ast_to_expression x =
   let option = Versions.V4_07.Expression.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_expression: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_expression: conversion failed"
   in
   concrete_to_expression concrete
 
@@ -821,13 +818,13 @@ and concrete_of_expression_desc x : Versions.V4_07.Expression_desc.concrete =
     Pexp_function (x1)
   | Pexp_fun (x1, x2, x3, x4) ->
     let x1 = ast_of_arg_label x1 in
-    let x2 = (Helpers.Option.map ~f:ast_of_expression) x2 in
+    let x2 = (Option.map ~f:ast_of_expression) x2 in
     let x3 = ast_of_pattern x3 in
     let x4 = ast_of_expression x4 in
     Pexp_fun (x1, x2, x3, x4)
   | Pexp_apply (x1, x2) ->
     let x1 = ast_of_expression x1 in
-    let x2 = (List.map ~f:(Helpers.Tuple.map2 ~f1:ast_of_arg_label ~f2:ast_of_expression)) x2 in
+    let x2 = (List.map ~f:(Tuple.map2 ~f1:ast_of_arg_label ~f2:ast_of_expression)) x2 in
     Pexp_apply (x1, x2)
   | Pexp_match (x1, x2) ->
     let x1 = ast_of_expression x1 in
@@ -842,14 +839,14 @@ and concrete_of_expression_desc x : Versions.V4_07.Expression_desc.concrete =
     Pexp_tuple (x1)
   | Pexp_construct (x1, x2) ->
     let x1 = ast_of_longident_loc x1 in
-    let x2 = (Helpers.Option.map ~f:ast_of_expression) x2 in
+    let x2 = (Option.map ~f:ast_of_expression) x2 in
     Pexp_construct (x1, x2)
   | Pexp_variant (x1, x2) ->
-    let x2 = (Helpers.Option.map ~f:ast_of_expression) x2 in
+    let x2 = (Option.map ~f:ast_of_expression) x2 in
     Pexp_variant (x1, x2)
   | Pexp_record (x1, x2) ->
-    let x1 = (List.map ~f:(Helpers.Tuple.map2 ~f1:ast_of_longident_loc ~f2:ast_of_expression)) x1 in
-    let x2 = (Helpers.Option.map ~f:ast_of_expression) x2 in
+    let x1 = (List.map ~f:(Tuple.map2 ~f1:ast_of_longident_loc ~f2:ast_of_expression)) x1 in
+    let x2 = (Option.map ~f:ast_of_expression) x2 in
     Pexp_record (x1, x2)
   | Pexp_field (x1, x2) ->
     let x1 = ast_of_expression x1 in
@@ -866,7 +863,7 @@ and concrete_of_expression_desc x : Versions.V4_07.Expression_desc.concrete =
   | Pexp_ifthenelse (x1, x2, x3) ->
     let x1 = ast_of_expression x1 in
     let x2 = ast_of_expression x2 in
-    let x3 = (Helpers.Option.map ~f:ast_of_expression) x3 in
+    let x3 = (Option.map ~f:ast_of_expression) x3 in
     Pexp_ifthenelse (x1, x2, x3)
   | Pexp_sequence (x1, x2) ->
     let x1 = ast_of_expression x1 in
@@ -889,7 +886,7 @@ and concrete_of_expression_desc x : Versions.V4_07.Expression_desc.concrete =
     Pexp_constraint (x1, x2)
   | Pexp_coerce (x1, x2, x3) ->
     let x1 = ast_of_expression x1 in
-    let x2 = (Helpers.Option.map ~f:ast_of_core_type) x2 in
+    let x2 = (Option.map ~f:ast_of_core_type) x2 in
     let x3 = ast_of_core_type x3 in
     Pexp_coerce (x1, x2, x3)
   | Pexp_send (x1, x2) ->
@@ -904,7 +901,7 @@ and concrete_of_expression_desc x : Versions.V4_07.Expression_desc.concrete =
     let x2 = ast_of_expression x2 in
     Pexp_setinstvar (x1, x2)
   | Pexp_override (x1) ->
-    let x1 = (List.map ~f:(Helpers.Tuple.map2 ~f1:Astlib.Loc.of_loc ~f2:ast_of_expression)) x1 in
+    let x1 = (List.map ~f:(Tuple.map2 ~f1:Astlib.Loc.of_loc ~f2:ast_of_expression)) x1 in
     Pexp_override (x1)
   | Pexp_letmodule (x1, x2, x3) ->
     let x1 = Astlib.Loc.of_loc x1 in
@@ -923,7 +920,7 @@ and concrete_of_expression_desc x : Versions.V4_07.Expression_desc.concrete =
     Pexp_lazy (x1)
   | Pexp_poly (x1, x2) ->
     let x1 = ast_of_expression x1 in
-    let x2 = (Helpers.Option.map ~f:ast_of_core_type) x2 in
+    let x2 = (Option.map ~f:ast_of_core_type) x2 in
     Pexp_poly (x1, x2)
   | Pexp_object (x1) ->
     let x1 = ast_of_class_structure x1 in
@@ -948,8 +945,9 @@ and concrete_of_expression_desc x : Versions.V4_07.Expression_desc.concrete =
 and ast_to_expression_desc x =
   let option = Versions.V4_07.Expression_desc.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_expression_desc: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_expression_desc: conversion failed"
   in
   concrete_to_expression_desc concrete
 
@@ -971,13 +969,13 @@ and concrete_to_expression_desc x : Compiler_types.expression_desc =
     Pexp_function (x1)
   | Pexp_fun (x1, x2, x3, x4) ->
     let x1 = ast_to_arg_label x1 in
-    let x2 = (Helpers.Option.map ~f:ast_to_expression) x2 in
+    let x2 = (Option.map ~f:ast_to_expression) x2 in
     let x3 = ast_to_pattern x3 in
     let x4 = ast_to_expression x4 in
     Pexp_fun (x1, x2, x3, x4)
   | Pexp_apply (x1, x2) ->
     let x1 = ast_to_expression x1 in
-    let x2 = (List.map ~f:(Helpers.Tuple.map2 ~f1:ast_to_arg_label ~f2:ast_to_expression)) x2 in
+    let x2 = (List.map ~f:(Tuple.map2 ~f1:ast_to_arg_label ~f2:ast_to_expression)) x2 in
     Pexp_apply (x1, x2)
   | Pexp_match (x1, x2) ->
     let x1 = ast_to_expression x1 in
@@ -992,14 +990,14 @@ and concrete_to_expression_desc x : Compiler_types.expression_desc =
     Pexp_tuple (x1)
   | Pexp_construct (x1, x2) ->
     let x1 = ast_to_longident_loc x1 in
-    let x2 = (Helpers.Option.map ~f:ast_to_expression) x2 in
+    let x2 = (Option.map ~f:ast_to_expression) x2 in
     Pexp_construct (x1, x2)
   | Pexp_variant (x1, x2) ->
-    let x2 = (Helpers.Option.map ~f:ast_to_expression) x2 in
+    let x2 = (Option.map ~f:ast_to_expression) x2 in
     Pexp_variant (x1, x2)
   | Pexp_record (x1, x2) ->
-    let x1 = (List.map ~f:(Helpers.Tuple.map2 ~f1:ast_to_longident_loc ~f2:ast_to_expression)) x1 in
-    let x2 = (Helpers.Option.map ~f:ast_to_expression) x2 in
+    let x1 = (List.map ~f:(Tuple.map2 ~f1:ast_to_longident_loc ~f2:ast_to_expression)) x1 in
+    let x2 = (Option.map ~f:ast_to_expression) x2 in
     Pexp_record (x1, x2)
   | Pexp_field (x1, x2) ->
     let x1 = ast_to_expression x1 in
@@ -1016,7 +1014,7 @@ and concrete_to_expression_desc x : Compiler_types.expression_desc =
   | Pexp_ifthenelse (x1, x2, x3) ->
     let x1 = ast_to_expression x1 in
     let x2 = ast_to_expression x2 in
-    let x3 = (Helpers.Option.map ~f:ast_to_expression) x3 in
+    let x3 = (Option.map ~f:ast_to_expression) x3 in
     Pexp_ifthenelse (x1, x2, x3)
   | Pexp_sequence (x1, x2) ->
     let x1 = ast_to_expression x1 in
@@ -1039,7 +1037,7 @@ and concrete_to_expression_desc x : Compiler_types.expression_desc =
     Pexp_constraint (x1, x2)
   | Pexp_coerce (x1, x2, x3) ->
     let x1 = ast_to_expression x1 in
-    let x2 = (Helpers.Option.map ~f:ast_to_core_type) x2 in
+    let x2 = (Option.map ~f:ast_to_core_type) x2 in
     let x3 = ast_to_core_type x3 in
     Pexp_coerce (x1, x2, x3)
   | Pexp_send (x1, x2) ->
@@ -1054,7 +1052,7 @@ and concrete_to_expression_desc x : Compiler_types.expression_desc =
     let x2 = ast_to_expression x2 in
     Pexp_setinstvar (x1, x2)
   | Pexp_override (x1) ->
-    let x1 = (List.map ~f:(Helpers.Tuple.map2 ~f1:Astlib.Loc.to_loc ~f2:ast_to_expression)) x1 in
+    let x1 = (List.map ~f:(Tuple.map2 ~f1:Astlib.Loc.to_loc ~f2:ast_to_expression)) x1 in
     Pexp_override (x1)
   | Pexp_letmodule (x1, x2, x3) ->
     let x1 = Astlib.Loc.to_loc x1 in
@@ -1073,7 +1071,7 @@ and concrete_to_expression_desc x : Compiler_types.expression_desc =
     Pexp_lazy (x1)
   | Pexp_poly (x1, x2) ->
     let x1 = ast_to_expression x1 in
-    let x2 = (Helpers.Option.map ~f:ast_to_core_type) x2 in
+    let x2 = (Option.map ~f:ast_to_core_type) x2 in
     Pexp_poly (x1, x2)
   | Pexp_object (x1) ->
     let x1 = ast_to_class_structure x1 in
@@ -1102,15 +1100,16 @@ and concrete_of_case
   ({ pc_lhs; pc_guard; pc_rhs } : Compiler_types.case)
 =
   let pc_lhs = ast_of_pattern pc_lhs in
-  let pc_guard = (Helpers.Option.map ~f:ast_of_expression) pc_guard in
+  let pc_guard = (Option.map ~f:ast_of_expression) pc_guard in
   let pc_rhs = ast_of_expression pc_rhs in
   ({ pc_lhs; pc_guard; pc_rhs } : Versions.V4_07.Case.concrete)
 
 and ast_to_case x =
   let option = Versions.V4_07.Case.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_case: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_case: conversion failed"
   in
   concrete_to_case concrete
 
@@ -1118,7 +1117,7 @@ and concrete_to_case
   ({ pc_lhs; pc_guard; pc_rhs } : Versions.V4_07.Case.concrete)
 =
   let pc_lhs = ast_to_pattern pc_lhs in
-  let pc_guard = (Helpers.Option.map ~f:ast_to_expression) pc_guard in
+  let pc_guard = (Option.map ~f:ast_to_expression) pc_guard in
   let pc_rhs = ast_to_expression pc_rhs in
   ({ pc_lhs; pc_guard; pc_rhs } : Compiler_types.case)
 
@@ -1137,8 +1136,9 @@ and concrete_of_value_description
 and ast_to_value_description x =
   let option = Versions.V4_07.Value_description.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_value_description: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_value_description: conversion failed"
   in
   concrete_to_value_description concrete
 
@@ -1158,11 +1158,11 @@ and concrete_of_type_declaration
   ({ ptype_name; ptype_params; ptype_cstrs; ptype_kind; ptype_private; ptype_manifest; ptype_attributes; ptype_loc } : Compiler_types.type_declaration)
 =
   let ptype_name = Astlib.Loc.of_loc ptype_name in
-  let ptype_params = (List.map ~f:(Helpers.Tuple.map2 ~f1:ast_of_core_type ~f2:ast_of_variance)) ptype_params in
-  let ptype_cstrs = (List.map ~f:(Helpers.Tuple.map3 ~f1:ast_of_core_type ~f2:ast_of_core_type ~f3:Astlib.Location.of_location)) ptype_cstrs in
+  let ptype_params = (List.map ~f:(Tuple.map2 ~f1:ast_of_core_type ~f2:ast_of_variance)) ptype_params in
+  let ptype_cstrs = (List.map ~f:(Tuple.map3 ~f1:ast_of_core_type ~f2:ast_of_core_type ~f3:Astlib.Location.of_location)) ptype_cstrs in
   let ptype_kind = ast_of_type_kind ptype_kind in
   let ptype_private = ast_of_private_flag ptype_private in
-  let ptype_manifest = (Helpers.Option.map ~f:ast_of_core_type) ptype_manifest in
+  let ptype_manifest = (Option.map ~f:ast_of_core_type) ptype_manifest in
   let ptype_attributes = ast_of_attributes ptype_attributes in
   let ptype_loc = Astlib.Location.of_location ptype_loc in
   ({ ptype_name; ptype_params; ptype_cstrs; ptype_kind; ptype_private; ptype_manifest; ptype_attributes; ptype_loc } : Versions.V4_07.Type_declaration.concrete)
@@ -1170,8 +1170,9 @@ and concrete_of_type_declaration
 and ast_to_type_declaration x =
   let option = Versions.V4_07.Type_declaration.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_type_declaration: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_type_declaration: conversion failed"
   in
   concrete_to_type_declaration concrete
 
@@ -1179,11 +1180,11 @@ and concrete_to_type_declaration
   ({ ptype_name; ptype_params; ptype_cstrs; ptype_kind; ptype_private; ptype_manifest; ptype_attributes; ptype_loc } : Versions.V4_07.Type_declaration.concrete)
 =
   let ptype_name = Astlib.Loc.to_loc ptype_name in
-  let ptype_params = (List.map ~f:(Helpers.Tuple.map2 ~f1:ast_to_core_type ~f2:ast_to_variance)) ptype_params in
-  let ptype_cstrs = (List.map ~f:(Helpers.Tuple.map3 ~f1:ast_to_core_type ~f2:ast_to_core_type ~f3:Astlib.Location.to_location)) ptype_cstrs in
+  let ptype_params = (List.map ~f:(Tuple.map2 ~f1:ast_to_core_type ~f2:ast_to_variance)) ptype_params in
+  let ptype_cstrs = (List.map ~f:(Tuple.map3 ~f1:ast_to_core_type ~f2:ast_to_core_type ~f3:Astlib.Location.to_location)) ptype_cstrs in
   let ptype_kind = ast_to_type_kind ptype_kind in
   let ptype_private = ast_to_private_flag ptype_private in
-  let ptype_manifest = (Helpers.Option.map ~f:ast_to_core_type) ptype_manifest in
+  let ptype_manifest = (Option.map ~f:ast_to_core_type) ptype_manifest in
   let ptype_attributes = ast_to_attributes ptype_attributes in
   let ptype_loc = Astlib.Location.to_location ptype_loc in
   ({ ptype_name; ptype_params; ptype_cstrs; ptype_kind; ptype_private; ptype_manifest; ptype_attributes; ptype_loc } : Compiler_types.type_declaration)
@@ -1205,8 +1206,9 @@ and concrete_of_type_kind x : Versions.V4_07.Type_kind.concrete =
 and ast_to_type_kind x =
   let option = Versions.V4_07.Type_kind.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_type_kind: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_type_kind: conversion failed"
   in
   concrete_to_type_kind concrete
 
@@ -1237,8 +1239,9 @@ and concrete_of_label_declaration
 and ast_to_label_declaration x =
   let option = Versions.V4_07.Label_declaration.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_label_declaration: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_label_declaration: conversion failed"
   in
   concrete_to_label_declaration concrete
 
@@ -1260,7 +1263,7 @@ and concrete_of_constructor_declaration
 =
   let pcd_name = Astlib.Loc.of_loc pcd_name in
   let pcd_args = ast_of_constructor_arguments pcd_args in
-  let pcd_res = (Helpers.Option.map ~f:ast_of_core_type) pcd_res in
+  let pcd_res = (Option.map ~f:ast_of_core_type) pcd_res in
   let pcd_loc = Astlib.Location.of_location pcd_loc in
   let pcd_attributes = ast_of_attributes pcd_attributes in
   ({ pcd_name; pcd_args; pcd_res; pcd_loc; pcd_attributes } : Versions.V4_07.Constructor_declaration.concrete)
@@ -1268,8 +1271,9 @@ and concrete_of_constructor_declaration
 and ast_to_constructor_declaration x =
   let option = Versions.V4_07.Constructor_declaration.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_constructor_declaration: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_constructor_declaration: conversion failed"
   in
   concrete_to_constructor_declaration concrete
 
@@ -1278,7 +1282,7 @@ and concrete_to_constructor_declaration
 =
   let pcd_name = Astlib.Loc.to_loc pcd_name in
   let pcd_args = ast_to_constructor_arguments pcd_args in
-  let pcd_res = (Helpers.Option.map ~f:ast_to_core_type) pcd_res in
+  let pcd_res = (Option.map ~f:ast_to_core_type) pcd_res in
   let pcd_loc = Astlib.Location.to_location pcd_loc in
   let pcd_attributes = ast_to_attributes pcd_attributes in
   ({ pcd_name; pcd_args; pcd_res; pcd_loc; pcd_attributes } : Compiler_types.constructor_declaration)
@@ -1298,8 +1302,9 @@ and concrete_of_constructor_arguments x : Versions.V4_07.Constructor_arguments.c
 and ast_to_constructor_arguments x =
   let option = Versions.V4_07.Constructor_arguments.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_constructor_arguments: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_constructor_arguments: conversion failed"
   in
   concrete_to_constructor_arguments concrete
 
@@ -1319,7 +1324,7 @@ and concrete_of_type_extension
   ({ ptyext_path; ptyext_params; ptyext_constructors; ptyext_private; ptyext_attributes } : Compiler_types.type_extension)
 =
   let ptyext_path = ast_of_longident_loc ptyext_path in
-  let ptyext_params = (List.map ~f:(Helpers.Tuple.map2 ~f1:ast_of_core_type ~f2:ast_of_variance)) ptyext_params in
+  let ptyext_params = (List.map ~f:(Tuple.map2 ~f1:ast_of_core_type ~f2:ast_of_variance)) ptyext_params in
   let ptyext_constructors = (List.map ~f:ast_of_extension_constructor) ptyext_constructors in
   let ptyext_private = ast_of_private_flag ptyext_private in
   let ptyext_attributes = ast_of_attributes ptyext_attributes in
@@ -1328,8 +1333,9 @@ and concrete_of_type_extension
 and ast_to_type_extension x =
   let option = Versions.V4_07.Type_extension.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_type_extension: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_type_extension: conversion failed"
   in
   concrete_to_type_extension concrete
 
@@ -1337,7 +1343,7 @@ and concrete_to_type_extension
   ({ ptyext_path; ptyext_params; ptyext_constructors; ptyext_private; ptyext_attributes } : Versions.V4_07.Type_extension.concrete)
 =
   let ptyext_path = ast_to_longident_loc ptyext_path in
-  let ptyext_params = (List.map ~f:(Helpers.Tuple.map2 ~f1:ast_to_core_type ~f2:ast_to_variance)) ptyext_params in
+  let ptyext_params = (List.map ~f:(Tuple.map2 ~f1:ast_to_core_type ~f2:ast_to_variance)) ptyext_params in
   let ptyext_constructors = (List.map ~f:ast_to_extension_constructor) ptyext_constructors in
   let ptyext_private = ast_to_private_flag ptyext_private in
   let ptyext_attributes = ast_to_attributes ptyext_attributes in
@@ -1358,8 +1364,9 @@ and concrete_of_extension_constructor
 and ast_to_extension_constructor x =
   let option = Versions.V4_07.Extension_constructor.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_extension_constructor: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_extension_constructor: conversion failed"
   in
   concrete_to_extension_constructor concrete
 
@@ -1379,7 +1386,7 @@ and concrete_of_extension_constructor_kind x : Versions.V4_07.Extension_construc
   match (x : Compiler_types.extension_constructor_kind) with
   | Pext_decl (x1, x2) ->
     let x1 = ast_of_constructor_arguments x1 in
-    let x2 = (Helpers.Option.map ~f:ast_of_core_type) x2 in
+    let x2 = (Option.map ~f:ast_of_core_type) x2 in
     Pext_decl (x1, x2)
   | Pext_rebind (x1) ->
     let x1 = ast_of_longident_loc x1 in
@@ -1388,8 +1395,9 @@ and concrete_of_extension_constructor_kind x : Versions.V4_07.Extension_construc
 and ast_to_extension_constructor_kind x =
   let option = Versions.V4_07.Extension_constructor_kind.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_extension_constructor_kind: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_extension_constructor_kind: conversion failed"
   in
   concrete_to_extension_constructor_kind concrete
 
@@ -1397,7 +1405,7 @@ and concrete_to_extension_constructor_kind x : Compiler_types.extension_construc
   match (x : Versions.V4_07.Extension_constructor_kind.concrete) with
   | Pext_decl (x1, x2) ->
     let x1 = ast_to_constructor_arguments x1 in
-    let x2 = (Helpers.Option.map ~f:ast_to_core_type) x2 in
+    let x2 = (Option.map ~f:ast_to_core_type) x2 in
     Pext_decl (x1, x2)
   | Pext_rebind (x1) ->
     let x1 = ast_to_longident_loc x1 in
@@ -1417,8 +1425,9 @@ and concrete_of_class_type
 and ast_to_class_type x =
   let option = Versions.V4_07.Class_type.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_class_type: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_class_type: conversion failed"
   in
   concrete_to_class_type concrete
 
@@ -1459,8 +1468,9 @@ and concrete_of_class_type_desc x : Versions.V4_07.Class_type_desc.concrete =
 and ast_to_class_type_desc x =
   let option = Versions.V4_07.Class_type_desc.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_class_type_desc: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_class_type_desc: conversion failed"
   in
   concrete_to_class_type_desc concrete
 
@@ -1500,8 +1510,9 @@ and concrete_of_class_signature
 and ast_to_class_signature x =
   let option = Versions.V4_07.Class_signature.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_class_signature: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_class_signature: conversion failed"
   in
   concrete_to_class_signature concrete
 
@@ -1526,8 +1537,9 @@ and concrete_of_class_type_field
 and ast_to_class_type_field x =
   let option = Versions.V4_07.Class_type_field.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_class_type_field: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_class_type_field: conversion failed"
   in
   concrete_to_class_type_field concrete
 
@@ -1548,13 +1560,13 @@ and concrete_of_class_type_field_desc x : Versions.V4_07.Class_type_field_desc.c
     let x1 = ast_of_class_type x1 in
     Pctf_inherit (x1)
   | Pctf_val (x1) ->
-    let x1 = (Helpers.Tuple.map4 ~f1:Astlib.Loc.of_loc ~f2:ast_of_mutable_flag ~f3:ast_of_virtual_flag ~f4:ast_of_core_type) x1 in
+    let x1 = (Tuple.map4 ~f1:Astlib.Loc.of_loc ~f2:ast_of_mutable_flag ~f3:ast_of_virtual_flag ~f4:ast_of_core_type) x1 in
     Pctf_val (x1)
   | Pctf_method (x1) ->
-    let x1 = (Helpers.Tuple.map4 ~f1:Astlib.Loc.of_loc ~f2:ast_of_private_flag ~f3:ast_of_virtual_flag ~f4:ast_of_core_type) x1 in
+    let x1 = (Tuple.map4 ~f1:Astlib.Loc.of_loc ~f2:ast_of_private_flag ~f3:ast_of_virtual_flag ~f4:ast_of_core_type) x1 in
     Pctf_method (x1)
   | Pctf_constraint (x1) ->
-    let x1 = (Helpers.Tuple.map2 ~f1:ast_of_core_type ~f2:ast_of_core_type) x1 in
+    let x1 = (Tuple.map2 ~f1:ast_of_core_type ~f2:ast_of_core_type) x1 in
     Pctf_constraint (x1)
   | Pctf_attribute (x1) ->
     let x1 = ast_of_attribute x1 in
@@ -1566,8 +1578,9 @@ and concrete_of_class_type_field_desc x : Versions.V4_07.Class_type_field_desc.c
 and ast_to_class_type_field_desc x =
   let option = Versions.V4_07.Class_type_field_desc.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_class_type_field_desc: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_class_type_field_desc: conversion failed"
   in
   concrete_to_class_type_field_desc concrete
 
@@ -1577,13 +1590,13 @@ and concrete_to_class_type_field_desc x : Compiler_types.class_type_field_desc =
     let x1 = ast_to_class_type x1 in
     Pctf_inherit (x1)
   | Pctf_val (x1) ->
-    let x1 = (Helpers.Tuple.map4 ~f1:Astlib.Loc.to_loc ~f2:ast_to_mutable_flag ~f3:ast_to_virtual_flag ~f4:ast_to_core_type) x1 in
+    let x1 = (Tuple.map4 ~f1:Astlib.Loc.to_loc ~f2:ast_to_mutable_flag ~f3:ast_to_virtual_flag ~f4:ast_to_core_type) x1 in
     Pctf_val (x1)
   | Pctf_method (x1) ->
-    let x1 = (Helpers.Tuple.map4 ~f1:Astlib.Loc.to_loc ~f2:ast_to_private_flag ~f3:ast_to_virtual_flag ~f4:ast_to_core_type) x1 in
+    let x1 = (Tuple.map4 ~f1:Astlib.Loc.to_loc ~f2:ast_to_private_flag ~f3:ast_to_virtual_flag ~f4:ast_to_core_type) x1 in
     Pctf_method (x1)
   | Pctf_constraint (x1) ->
-    let x1 = (Helpers.Tuple.map2 ~f1:ast_to_core_type ~f2:ast_to_core_type) x1 in
+    let x1 = (Tuple.map2 ~f1:ast_to_core_type ~f2:ast_to_core_type) x1 in
     Pctf_constraint (x1)
   | Pctf_attribute (x1) ->
     let x1 = ast_to_attribute x1 in
@@ -1599,7 +1612,7 @@ and concrete_of_class_infos_class_expr
   ({ pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Compiler_types.class_expr Compiler_types.class_infos)
 =
   let pci_virt = ast_of_virtual_flag pci_virt in
-  let pci_params = (List.map ~f:(Helpers.Tuple.map2 ~f1:ast_of_core_type ~f2:ast_of_variance)) pci_params in
+  let pci_params = (List.map ~f:(Tuple.map2 ~f1:ast_of_core_type ~f2:ast_of_variance)) pci_params in
   let pci_name = Astlib.Loc.of_loc pci_name in
   let pci_expr = ast_of_class_expr pci_expr in
   let pci_loc = Astlib.Location.of_location pci_loc in
@@ -1609,8 +1622,9 @@ and concrete_of_class_infos_class_expr
 and ast_to_class_infos_class_expr x =
   let option = Versions.V4_07.Class_infos.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_class_infos_class_expr: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_class_infos_class_expr: conversion failed"
   in
   concrete_to_class_infos_class_expr concrete
 
@@ -1618,7 +1632,7 @@ and concrete_to_class_infos_class_expr
   ({ pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Versions.V4_07.Class_expr.t Versions.V4_07.Class_infos.concrete)
 =
   let pci_virt = ast_to_virtual_flag pci_virt in
-  let pci_params = (List.map ~f:(Helpers.Tuple.map2 ~f1:ast_to_core_type ~f2:ast_to_variance)) pci_params in
+  let pci_params = (List.map ~f:(Tuple.map2 ~f1:ast_to_core_type ~f2:ast_to_variance)) pci_params in
   let pci_name = Astlib.Loc.to_loc pci_name in
   let pci_expr = ast_to_class_expr pci_expr in
   let pci_loc = Astlib.Location.to_location pci_loc in
@@ -1632,7 +1646,7 @@ and concrete_of_class_infos_class_type
   ({ pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Compiler_types.class_type Compiler_types.class_infos)
 =
   let pci_virt = ast_of_virtual_flag pci_virt in
-  let pci_params = (List.map ~f:(Helpers.Tuple.map2 ~f1:ast_of_core_type ~f2:ast_of_variance)) pci_params in
+  let pci_params = (List.map ~f:(Tuple.map2 ~f1:ast_of_core_type ~f2:ast_of_variance)) pci_params in
   let pci_name = Astlib.Loc.of_loc pci_name in
   let pci_expr = ast_of_class_type pci_expr in
   let pci_loc = Astlib.Location.of_location pci_loc in
@@ -1642,8 +1656,9 @@ and concrete_of_class_infos_class_type
 and ast_to_class_infos_class_type x =
   let option = Versions.V4_07.Class_infos.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_class_infos_class_type: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_class_infos_class_type: conversion failed"
   in
   concrete_to_class_infos_class_type concrete
 
@@ -1651,7 +1666,7 @@ and concrete_to_class_infos_class_type
   ({ pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Versions.V4_07.Class_type.t Versions.V4_07.Class_infos.concrete)
 =
   let pci_virt = ast_to_virtual_flag pci_virt in
-  let pci_params = (List.map ~f:(Helpers.Tuple.map2 ~f1:ast_to_core_type ~f2:ast_to_variance)) pci_params in
+  let pci_params = (List.map ~f:(Tuple.map2 ~f1:ast_to_core_type ~f2:ast_to_variance)) pci_params in
   let pci_name = Astlib.Loc.to_loc pci_name in
   let pci_expr = ast_to_class_type pci_expr in
   let pci_loc = Astlib.Location.to_location pci_loc in
@@ -1667,8 +1682,9 @@ and concrete_of_class_description x =
 and ast_to_class_description x =
   let option = Versions.V4_07.Class_description.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_class_description: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_class_description: conversion failed"
   in
   concrete_to_class_description concrete
 
@@ -1684,8 +1700,9 @@ and concrete_of_class_type_declaration x =
 and ast_to_class_type_declaration x =
   let option = Versions.V4_07.Class_type_declaration.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_class_type_declaration: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_class_type_declaration: conversion failed"
   in
   concrete_to_class_type_declaration concrete
 
@@ -1706,8 +1723,9 @@ and concrete_of_class_expr
 and ast_to_class_expr x =
   let option = Versions.V4_07.Class_expr.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_class_expr: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_class_expr: conversion failed"
   in
   concrete_to_class_expr concrete
 
@@ -1733,13 +1751,13 @@ and concrete_of_class_expr_desc x : Versions.V4_07.Class_expr_desc.concrete =
     Pcl_structure (x1)
   | Pcl_fun (x1, x2, x3, x4) ->
     let x1 = ast_of_arg_label x1 in
-    let x2 = (Helpers.Option.map ~f:ast_of_expression) x2 in
+    let x2 = (Option.map ~f:ast_of_expression) x2 in
     let x3 = ast_of_pattern x3 in
     let x4 = ast_of_class_expr x4 in
     Pcl_fun (x1, x2, x3, x4)
   | Pcl_apply (x1, x2) ->
     let x1 = ast_of_class_expr x1 in
-    let x2 = (List.map ~f:(Helpers.Tuple.map2 ~f1:ast_of_arg_label ~f2:ast_of_expression)) x2 in
+    let x2 = (List.map ~f:(Tuple.map2 ~f1:ast_of_arg_label ~f2:ast_of_expression)) x2 in
     Pcl_apply (x1, x2)
   | Pcl_let (x1, x2, x3) ->
     let x1 = ast_of_rec_flag x1 in
@@ -1762,8 +1780,9 @@ and concrete_of_class_expr_desc x : Versions.V4_07.Class_expr_desc.concrete =
 and ast_to_class_expr_desc x =
   let option = Versions.V4_07.Class_expr_desc.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_class_expr_desc: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_class_expr_desc: conversion failed"
   in
   concrete_to_class_expr_desc concrete
 
@@ -1778,13 +1797,13 @@ and concrete_to_class_expr_desc x : Compiler_types.class_expr_desc =
     Pcl_structure (x1)
   | Pcl_fun (x1, x2, x3, x4) ->
     let x1 = ast_to_arg_label x1 in
-    let x2 = (Helpers.Option.map ~f:ast_to_expression) x2 in
+    let x2 = (Option.map ~f:ast_to_expression) x2 in
     let x3 = ast_to_pattern x3 in
     let x4 = ast_to_class_expr x4 in
     Pcl_fun (x1, x2, x3, x4)
   | Pcl_apply (x1, x2) ->
     let x1 = ast_to_class_expr x1 in
-    let x2 = (List.map ~f:(Helpers.Tuple.map2 ~f1:ast_to_arg_label ~f2:ast_to_expression)) x2 in
+    let x2 = (List.map ~f:(Tuple.map2 ~f1:ast_to_arg_label ~f2:ast_to_expression)) x2 in
     Pcl_apply (x1, x2)
   | Pcl_let (x1, x2, x3) ->
     let x1 = ast_to_rec_flag x1 in
@@ -1817,8 +1836,9 @@ and concrete_of_class_structure
 and ast_to_class_structure x =
   let option = Versions.V4_07.Class_structure.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_class_structure: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_class_structure: conversion failed"
   in
   concrete_to_class_structure concrete
 
@@ -1843,8 +1863,9 @@ and concrete_of_class_field
 and ast_to_class_field x =
   let option = Versions.V4_07.Class_field.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_class_field: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_class_field: conversion failed"
   in
   concrete_to_class_field concrete
 
@@ -1864,16 +1885,16 @@ and concrete_of_class_field_desc x : Versions.V4_07.Class_field_desc.concrete =
   | Pcf_inherit (x1, x2, x3) ->
     let x1 = ast_of_override_flag x1 in
     let x2 = ast_of_class_expr x2 in
-    let x3 = (Helpers.Option.map ~f:Astlib.Loc.of_loc) x3 in
+    let x3 = (Option.map ~f:Astlib.Loc.of_loc) x3 in
     Pcf_inherit (x1, x2, x3)
   | Pcf_val (x1) ->
-    let x1 = (Helpers.Tuple.map3 ~f1:Astlib.Loc.of_loc ~f2:ast_of_mutable_flag ~f3:ast_of_class_field_kind) x1 in
+    let x1 = (Tuple.map3 ~f1:Astlib.Loc.of_loc ~f2:ast_of_mutable_flag ~f3:ast_of_class_field_kind) x1 in
     Pcf_val (x1)
   | Pcf_method (x1) ->
-    let x1 = (Helpers.Tuple.map3 ~f1:Astlib.Loc.of_loc ~f2:ast_of_private_flag ~f3:ast_of_class_field_kind) x1 in
+    let x1 = (Tuple.map3 ~f1:Astlib.Loc.of_loc ~f2:ast_of_private_flag ~f3:ast_of_class_field_kind) x1 in
     Pcf_method (x1)
   | Pcf_constraint (x1) ->
-    let x1 = (Helpers.Tuple.map2 ~f1:ast_of_core_type ~f2:ast_of_core_type) x1 in
+    let x1 = (Tuple.map2 ~f1:ast_of_core_type ~f2:ast_of_core_type) x1 in
     Pcf_constraint (x1)
   | Pcf_initializer (x1) ->
     let x1 = ast_of_expression x1 in
@@ -1888,8 +1909,9 @@ and concrete_of_class_field_desc x : Versions.V4_07.Class_field_desc.concrete =
 and ast_to_class_field_desc x =
   let option = Versions.V4_07.Class_field_desc.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_class_field_desc: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_class_field_desc: conversion failed"
   in
   concrete_to_class_field_desc concrete
 
@@ -1898,16 +1920,16 @@ and concrete_to_class_field_desc x : Compiler_types.class_field_desc =
   | Pcf_inherit (x1, x2, x3) ->
     let x1 = ast_to_override_flag x1 in
     let x2 = ast_to_class_expr x2 in
-    let x3 = (Helpers.Option.map ~f:Astlib.Loc.to_loc) x3 in
+    let x3 = (Option.map ~f:Astlib.Loc.to_loc) x3 in
     Pcf_inherit (x1, x2, x3)
   | Pcf_val (x1) ->
-    let x1 = (Helpers.Tuple.map3 ~f1:Astlib.Loc.to_loc ~f2:ast_to_mutable_flag ~f3:ast_to_class_field_kind) x1 in
+    let x1 = (Tuple.map3 ~f1:Astlib.Loc.to_loc ~f2:ast_to_mutable_flag ~f3:ast_to_class_field_kind) x1 in
     Pcf_val (x1)
   | Pcf_method (x1) ->
-    let x1 = (Helpers.Tuple.map3 ~f1:Astlib.Loc.to_loc ~f2:ast_to_private_flag ~f3:ast_to_class_field_kind) x1 in
+    let x1 = (Tuple.map3 ~f1:Astlib.Loc.to_loc ~f2:ast_to_private_flag ~f3:ast_to_class_field_kind) x1 in
     Pcf_method (x1)
   | Pcf_constraint (x1) ->
-    let x1 = (Helpers.Tuple.map2 ~f1:ast_to_core_type ~f2:ast_to_core_type) x1 in
+    let x1 = (Tuple.map2 ~f1:ast_to_core_type ~f2:ast_to_core_type) x1 in
     Pcf_constraint (x1)
   | Pcf_initializer (x1) ->
     let x1 = ast_to_expression x1 in
@@ -1935,8 +1957,9 @@ and concrete_of_class_field_kind x : Versions.V4_07.Class_field_kind.concrete =
 and ast_to_class_field_kind x =
   let option = Versions.V4_07.Class_field_kind.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_class_field_kind: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_class_field_kind: conversion failed"
   in
   concrete_to_class_field_kind concrete
 
@@ -1959,8 +1982,9 @@ and concrete_of_class_declaration x =
 and ast_to_class_declaration x =
   let option = Versions.V4_07.Class_declaration.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_class_declaration: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_class_declaration: conversion failed"
   in
   concrete_to_class_declaration concrete
 
@@ -1981,8 +2005,9 @@ and concrete_of_module_type
 and ast_to_module_type x =
   let option = Versions.V4_07.Module_type.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_module_type: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_module_type: conversion failed"
   in
   concrete_to_module_type concrete
 
@@ -2007,7 +2032,7 @@ and concrete_of_module_type_desc x : Versions.V4_07.Module_type_desc.concrete =
     Pmty_signature (x1)
   | Pmty_functor (x1, x2, x3) ->
     let x1 = Astlib.Loc.of_loc x1 in
-    let x2 = (Helpers.Option.map ~f:ast_of_module_type) x2 in
+    let x2 = (Option.map ~f:ast_of_module_type) x2 in
     let x3 = ast_of_module_type x3 in
     Pmty_functor (x1, x2, x3)
   | Pmty_with (x1, x2) ->
@@ -2027,8 +2052,9 @@ and concrete_of_module_type_desc x : Versions.V4_07.Module_type_desc.concrete =
 and ast_to_module_type_desc x =
   let option = Versions.V4_07.Module_type_desc.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_module_type_desc: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_module_type_desc: conversion failed"
   in
   concrete_to_module_type_desc concrete
 
@@ -2042,7 +2068,7 @@ and concrete_to_module_type_desc x : Compiler_types.module_type_desc =
     Pmty_signature (x1)
   | Pmty_functor (x1, x2, x3) ->
     let x1 = Astlib.Loc.to_loc x1 in
-    let x2 = (Helpers.Option.map ~f:ast_to_module_type) x2 in
+    let x2 = (Option.map ~f:ast_to_module_type) x2 in
     let x3 = ast_to_module_type x3 in
     Pmty_functor (x1, x2, x3)
   | Pmty_with (x1, x2) ->
@@ -2068,8 +2094,9 @@ and concrete_of_signature x =
 and ast_to_signature x =
   let option = Versions.V4_07.Signature.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_signature: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_signature: conversion failed"
   in
   concrete_to_signature concrete
 
@@ -2089,8 +2116,9 @@ and concrete_of_signature_item
 and ast_to_signature_item x =
   let option = Versions.V4_07.Signature_item.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_signature_item: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_signature_item: conversion failed"
   in
   concrete_to_signature_item concrete
 
@@ -2151,8 +2179,9 @@ and concrete_of_signature_item_desc x : Versions.V4_07.Signature_item_desc.concr
 and ast_to_signature_item_desc x =
   let option = Versions.V4_07.Signature_item_desc.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_signature_item_desc: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_signature_item_desc: conversion failed"
   in
   concrete_to_signature_item_desc concrete
 
@@ -2215,8 +2244,9 @@ and concrete_of_module_declaration
 and ast_to_module_declaration x =
   let option = Versions.V4_07.Module_declaration.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_module_declaration: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_module_declaration: conversion failed"
   in
   concrete_to_module_declaration concrete
 
@@ -2236,7 +2266,7 @@ and concrete_of_module_type_declaration
   ({ pmtd_name; pmtd_type; pmtd_attributes; pmtd_loc } : Compiler_types.module_type_declaration)
 =
   let pmtd_name = Astlib.Loc.of_loc pmtd_name in
-  let pmtd_type = (Helpers.Option.map ~f:ast_of_module_type) pmtd_type in
+  let pmtd_type = (Option.map ~f:ast_of_module_type) pmtd_type in
   let pmtd_attributes = ast_of_attributes pmtd_attributes in
   let pmtd_loc = Astlib.Location.of_location pmtd_loc in
   ({ pmtd_name; pmtd_type; pmtd_attributes; pmtd_loc } : Versions.V4_07.Module_type_declaration.concrete)
@@ -2244,8 +2274,9 @@ and concrete_of_module_type_declaration
 and ast_to_module_type_declaration x =
   let option = Versions.V4_07.Module_type_declaration.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_module_type_declaration: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_module_type_declaration: conversion failed"
   in
   concrete_to_module_type_declaration concrete
 
@@ -2253,7 +2284,7 @@ and concrete_to_module_type_declaration
   ({ pmtd_name; pmtd_type; pmtd_attributes; pmtd_loc } : Versions.V4_07.Module_type_declaration.concrete)
 =
   let pmtd_name = Astlib.Loc.to_loc pmtd_name in
-  let pmtd_type = (Helpers.Option.map ~f:ast_to_module_type) pmtd_type in
+  let pmtd_type = (Option.map ~f:ast_to_module_type) pmtd_type in
   let pmtd_attributes = ast_to_attributes pmtd_attributes in
   let pmtd_loc = Astlib.Location.to_location pmtd_loc in
   ({ pmtd_name; pmtd_type; pmtd_attributes; pmtd_loc } : Compiler_types.module_type_declaration)
@@ -2273,8 +2304,9 @@ and concrete_of_open_description
 and ast_to_open_description x =
   let option = Versions.V4_07.Open_description.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_open_description: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_open_description: conversion failed"
   in
   concrete_to_open_description concrete
 
@@ -2301,8 +2333,9 @@ and concrete_of_include_infos_module_expr
 and ast_to_include_infos_module_expr x =
   let option = Versions.V4_07.Include_infos.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_include_infos_module_expr: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_include_infos_module_expr: conversion failed"
   in
   concrete_to_include_infos_module_expr concrete
 
@@ -2328,8 +2361,9 @@ and concrete_of_include_infos_module_type
 and ast_to_include_infos_module_type x =
   let option = Versions.V4_07.Include_infos.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_include_infos_module_type: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_include_infos_module_type: conversion failed"
   in
   concrete_to_include_infos_module_type concrete
 
@@ -2350,8 +2384,9 @@ and concrete_of_include_description x =
 and ast_to_include_description x =
   let option = Versions.V4_07.Include_description.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_include_description: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_include_description: conversion failed"
   in
   concrete_to_include_description concrete
 
@@ -2367,8 +2402,9 @@ and concrete_of_include_declaration x =
 and ast_to_include_declaration x =
   let option = Versions.V4_07.Include_declaration.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_include_declaration: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_include_declaration: conversion failed"
   in
   concrete_to_include_declaration concrete
 
@@ -2400,8 +2436,9 @@ and concrete_of_with_constraint x : Versions.V4_07.With_constraint.concrete =
 and ast_to_with_constraint x =
   let option = Versions.V4_07.With_constraint.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_with_constraint: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_with_constraint: conversion failed"
   in
   concrete_to_with_constraint concrete
 
@@ -2438,8 +2475,9 @@ and concrete_of_module_expr
 and ast_to_module_expr x =
   let option = Versions.V4_07.Module_expr.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_module_expr: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_module_expr: conversion failed"
   in
   concrete_to_module_expr concrete
 
@@ -2464,7 +2502,7 @@ and concrete_of_module_expr_desc x : Versions.V4_07.Module_expr_desc.concrete =
     Pmod_structure (x1)
   | Pmod_functor (x1, x2, x3) ->
     let x1 = Astlib.Loc.of_loc x1 in
-    let x2 = (Helpers.Option.map ~f:ast_of_module_type) x2 in
+    let x2 = (Option.map ~f:ast_of_module_type) x2 in
     let x3 = ast_of_module_expr x3 in
     Pmod_functor (x1, x2, x3)
   | Pmod_apply (x1, x2) ->
@@ -2485,8 +2523,9 @@ and concrete_of_module_expr_desc x : Versions.V4_07.Module_expr_desc.concrete =
 and ast_to_module_expr_desc x =
   let option = Versions.V4_07.Module_expr_desc.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_module_expr_desc: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_module_expr_desc: conversion failed"
   in
   concrete_to_module_expr_desc concrete
 
@@ -2500,7 +2539,7 @@ and concrete_to_module_expr_desc x : Compiler_types.module_expr_desc =
     Pmod_structure (x1)
   | Pmod_functor (x1, x2, x3) ->
     let x1 = Astlib.Loc.to_loc x1 in
-    let x2 = (Helpers.Option.map ~f:ast_to_module_type) x2 in
+    let x2 = (Option.map ~f:ast_to_module_type) x2 in
     let x3 = ast_to_module_expr x3 in
     Pmod_functor (x1, x2, x3)
   | Pmod_apply (x1, x2) ->
@@ -2527,8 +2566,9 @@ and concrete_of_structure x =
 and ast_to_structure x =
   let option = Versions.V4_07.Structure.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_structure: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_structure: conversion failed"
   in
   concrete_to_structure concrete
 
@@ -2548,8 +2588,9 @@ and concrete_of_structure_item
 and ast_to_structure_item x =
   let option = Versions.V4_07.Structure_item.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_structure_item: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_structure_item: conversion failed"
   in
   concrete_to_structure_item concrete
 
@@ -2618,8 +2659,9 @@ and concrete_of_structure_item_desc x : Versions.V4_07.Structure_item_desc.concr
 and ast_to_structure_item_desc x =
   let option = Versions.V4_07.Structure_item_desc.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_structure_item_desc: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_structure_item_desc: conversion failed"
   in
   concrete_to_structure_item_desc concrete
 
@@ -2690,8 +2732,9 @@ and concrete_of_value_binding
 and ast_to_value_binding x =
   let option = Versions.V4_07.Value_binding.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_value_binding: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_value_binding: conversion failed"
   in
   concrete_to_value_binding concrete
 
@@ -2719,8 +2762,9 @@ and concrete_of_module_binding
 and ast_to_module_binding x =
   let option = Versions.V4_07.Module_binding.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_module_binding: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_module_binding: conversion failed"
   in
   concrete_to_module_binding concrete
 
@@ -2748,8 +2792,9 @@ and concrete_of_toplevel_phrase x : Versions.V4_07.Toplevel_phrase.concrete =
 and ast_to_toplevel_phrase x =
   let option = Versions.V4_07.Toplevel_phrase.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_toplevel_phrase: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_toplevel_phrase: conversion failed"
   in
   concrete_to_toplevel_phrase concrete
 
@@ -2781,8 +2826,9 @@ and concrete_of_directive_argument x : Versions.V4_07.Directive_argument.concret
 and ast_to_directive_argument x =
   let option = Versions.V4_07.Directive_argument.to_concrete x in
   let concrete =
-    Helpers.Option.value_exn option
-      ~message:"concrete_to_directive_argument: conversion failed"
+    match option with
+    | Some concrete -> concrete
+    | None -> failwith "concrete_to_directive_argument: conversion failed"
   in
   concrete_to_directive_argument concrete
 

@@ -1,4 +1,4 @@
-open StdLabels
+open Stdppx
 
 let name_of_targ targ =
   match (targ : Astlib.Grammar.targ) with

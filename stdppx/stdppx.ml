@@ -20,6 +20,7 @@ module Result     = Result
 module Set        = Set
 module Staged     = Staged
 module String     = String
+module Tuple      = Tuple
 module Char       = Char
 module Bool       = Bool
 module Sexp_intf  = Sexp_intf
