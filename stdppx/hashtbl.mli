@@ -27,6 +27,8 @@ val find_or_add : ('a, 'b) t -> 'a -> f:('a -> 'b) -> 'b
 val fold  : ('a, 'b) t -> init:'c -> f:(      'b -> 'c -> 'c) -> 'c
 val foldi : ('a, 'b) t -> init:'c -> f:('a -> 'b -> 'c -> 'c) -> 'c
 
+val map : ('a, 'b) t -> f:('b -> 'c) -> ('a, 'c) t
+
 val mem : ('a, _) t -> 'a -> bool
 
 val keys : ('a, _) t -> 'a list
@@ -35,4 +37,5 @@ val to_sexp : ('a -> Sexp.t) -> ('b -> Sexp.t) -> ('a, 'b) t -> Sexp.t
 val to_dyn : ('a -> Dyn.t) -> ('b -> Dyn.t) -> ('a, 'b) t -> Dyn.t
 
 val of_list : ?size: int -> ('a * 'b) list -> [`Ok of ('a, 'b) t | `Duplicate_key of 'a]
+val of_list_multi : ?size:int -> ('a * 'b) list -> ('a, 'b list) t
 val of_list_exn : ?size:int -> ('a * 'b) list -> ('a, 'b) t

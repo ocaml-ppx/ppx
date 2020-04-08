@@ -92,6 +92,12 @@ let iter t ~f = iter ~f t
 
 let keys t = foldi t ~init:[] ~f:(fun key _ acc -> key :: acc)
 
+let map src ~f =
+  let dst = create (length src) in
+  iter src ~f:(fun ~key ~data ->
+    add dst key (f data));
+  dst
+
 let to_dyn (type key) f g t =
   let module M =
     Map.Make(struct
@@ -124,6 +130,18 @@ let of_list ?size l =
       )
   in
   go l
+
+let of_list_multi ?size l =
+  let size =
+    match size with
+    | Some s -> s
+    | None -> List.length l
+  in
+  let tbl = create size in
+  List.iter l ~f:(fun (key, data) ->
+    let rest = Option.value (find tbl key) ~default:[] in
+    replace tbl ~key ~data:(data :: rest));
+  tbl
 
 let of_list_exn ?size l =
   match of_list ?size l with

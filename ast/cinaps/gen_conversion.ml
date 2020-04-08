@@ -1,17 +1,4 @@
-open StdLabels
-
-module Helpers = struct
-  module Option = struct
-    let is_none = function
-      | None -> true
-      | Some _ -> false
-
-    let map t ~f =
-      match t with
-      | None -> None
-      | Some x -> Some (f x)
-  end
-end
+open Stdppx
 
 let version = Astlib.current_version
 
@@ -91,7 +78,7 @@ let print_conversion_intf ~node_name ~env =
 let fn_value option =
   match option with
   | Some fn -> fn
-  | None -> "Helpers.Fn.id"
+  | None -> "Fn.id"
 
 let conversion_prefix ~conv =
   match conv with
@@ -120,34 +107,34 @@ let rec ty_conversion ty ~conv =
         | `concrete_to -> "Astlib.Loc.to_loc"
       in
       let loc_map =
-        Helpers.Option.map (ty_conversion ty ~conv) ~f:(fun ty_conv ->
+        Option.map (ty_conversion ty ~conv) ~f:(fun ty_conv ->
           Printf.sprintf "(Astlib.Loc.map ~f:%s)" ty_conv)
       in
       match loc_map with
       | None -> loc_conv
       | Some loc_map ->
         (match conv with
-         | `concrete_of -> Printf.sprintf "(Helpers.Fn.compose %s %s)" loc_map loc_conv
-         | `concrete_to -> Printf.sprintf "(Helpers.Fn.compose %s %s)" loc_conv loc_map)
+         | `concrete_of -> Printf.sprintf "(Fn.compose %s %s)" loc_map loc_conv
+         | `concrete_to -> Printf.sprintf "(Fn.compose %s %s)" loc_conv loc_map)
     in
     Some conv_string
   | List ty ->
-    Helpers.Option.map (ty_conversion ty ~conv)
+    Option.map (ty_conversion ty ~conv)
       ~f:(Printf.sprintf "(List.map ~f:%s)")
   | Option ty ->
-    Helpers.Option.map (ty_conversion ty ~conv)
-      ~f:(Printf.sprintf "(Helpers.Option.map ~f:%s)")
+    Option.map (ty_conversion ty ~conv)
+      ~f:(Printf.sprintf "(Option.map ~f:%s)")
   | Tuple tuple -> tuple_conversion tuple ~conv
   | Instance (poly, args) ->
     Some (Name.make [conversion_prefix ~conv; poly] args)
 
 and tuple_conversion tuple ~conv =
   let conversions = List.map tuple ~f:(ty_conversion ~conv) in
-  if List.for_all conversions ~f:Helpers.Option.is_none
+  if List.for_all conversions ~f:Option.is_none
   then None
   else
     Some
-      (Printf.sprintf "(Helpers.Tuple.map%d %s)"
+      (Printf.sprintf "(Tuple.map%d %s)"
          (List.length tuple)
          (String.concat ~sep:" "
             (List.mapi conversions ~f:(fun i option ->
@@ -248,11 +235,11 @@ let print_conversion_impl decl ~node_name ~env ~is_initial =
         "to_concrete";
       Print.println "let concrete =";
       Print.indented (fun () ->
-        Print.println "Helpers.Option.value_exn option";
-        Print.indented (fun () ->
-          Print.println "~message:%S"
-            (Printf.sprintf "%s: conversion failed"
-               (Name.make ["concrete_to"; node_name] (Poly_env.args env)))));
+        Print.println "match option with";
+        Print.println "| Some concrete -> concrete";
+        Print.println "| None -> failwith %S"
+          (Printf.sprintf "%s: conversion failed"
+             (Name.make ["concrete_to"; node_name] (Poly_env.args env))));
       Print.println "in";
       Print.println "%s concrete"
         (Name.make ["concrete_to"; node_name] (Poly_env.args env)));

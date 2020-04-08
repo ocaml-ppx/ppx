@@ -1,36 +1,5 @@
 open Stdppx
 
-module Helpers = struct
-  module Hashtbl = struct
-    let mapi table ~f =
-      let mapped = Hashtbl.create (Hashtbl.length table) in
-      Hashtbl.iter
-        ~f:(fun ~key ~data -> Hashtbl.add mapped key (f key data))
-        table;
-      mapped
-
-    let map table ~f = mapi table ~f:(fun _ x -> f x)
-
-    let of_alist_multi alist =
-      let table = Hashtbl.create (List.length alist) in
-      List.iter (List.rev alist) ~f:(fun (key, data) ->
-        let data =
-          match Hashtbl.find table key with
-          | None -> [data]
-          | Some rest -> data :: rest
-        in
-        Hashtbl.replace table ~key ~data);
-      table
-
-    let of_alist_exn alist =
-      mapi (of_alist_multi alist) ~f:(fun key list ->
-        match list with
-        | [] -> assert false
-        | [data] -> data
-        | _ -> failwith (Printf.sprintf "multiple values for key %s" key))
-  end
-end
-
 type env = (string * Astlib.Grammar.targ) list
 type env_table = (string, env list) Hashtbl.t
 
@@ -156,7 +125,7 @@ let grammar_envs grammar ~grammar_table =
     poly, List.combine vars args)
 
 let env_table grammar =
-  let grammar_table = Helpers.Hashtbl.of_alist_exn grammar in
-  Helpers.Hashtbl.map ~f:(List.sort_uniq ~compare)
-    (Helpers.Hashtbl.of_alist_multi
+  let grammar_table = Hashtbl.of_list_exn grammar in
+  Hashtbl.map ~f:(List.sort_uniq ~compare)
+    (Hashtbl.of_list_multi
        (grammar_envs grammar ~grammar_table))

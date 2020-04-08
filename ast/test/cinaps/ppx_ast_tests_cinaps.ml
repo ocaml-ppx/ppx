@@ -1,4 +1,4 @@
-open StdLabels
+open Stdppx
 open Ppx_ast_cinaps
 
 let string_of_targ targ =
