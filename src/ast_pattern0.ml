@@ -2,9 +2,7 @@ open! Import
 
 include Ppx_bootstrap.Expected
 
-let fail loc expected =
-  raise (Expected (Astlib.Location.of_location loc, expected))
-;;
+let fail loc expected = raise (Expected (loc, expected))
 
 type context =
   { (* [matched] counts how many constructors have been matched. This is used to find what

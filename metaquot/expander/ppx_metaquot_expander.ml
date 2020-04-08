@@ -40,7 +40,7 @@ module Make (Driver : Driver) (Non_terminal : Non_terminal) = struct
           (match Expression_desc.to_concrete e.pexp_desc with
            | Some (Pexp_extension ext) ->
              (match Extension.to_concrete ext with
-              | Some (loc, _) when String.equal "e" (Astlib.Loc.txt loc) -> Some ext
+              | Some (loc, _) when String.equal "e" loc.txt -> Some ext
               | Some _ | None -> None)
            | Some _ | None -> None)
         | None -> None
@@ -56,7 +56,7 @@ module Make (Driver : Driver) (Non_terminal : Non_terminal) = struct
           (match Pattern_desc.to_concrete p.ppat_desc with
            | Some (Ppat_extension ext) ->
              (match Extension.to_concrete ext with
-              | Some (loc, _) when String.equal "p" (Astlib.Loc.txt loc) -> Some ext
+              | Some (loc, _) when String.equal "p" loc.txt -> Some ext
               | Some _ | None -> None)
            | Some _ | None -> None)
         | None -> None
@@ -72,7 +72,7 @@ module Make (Driver : Driver) (Non_terminal : Non_terminal) = struct
           (match Core_type_desc.to_concrete t.ptyp_desc with
            | Some (Ptyp_extension ext) ->
              (match Extension.to_concrete ext with
-              | Some (loc, _) when String.equal "t" (Astlib.Loc.txt loc) -> Some ext
+              | Some (loc, _) when String.equal "t" loc.txt -> Some ext
               | Some _ | None -> None)
            | Some _ | None -> None)
         | None -> None
@@ -88,7 +88,7 @@ module Make (Driver : Driver) (Non_terminal : Non_terminal) = struct
           (match Module_expr_desc.to_concrete m.pmod_desc with
            | Some (Pmod_extension ext) ->
              (match Extension.to_concrete ext with
-              | Some (loc, _) when String.equal "m" (Astlib.Loc.txt loc) -> Some ext
+              | Some (loc, _) when String.equal "m" loc.txt -> Some ext
               | Some _ | None -> None)
            | Some _ | None -> None)
         | None -> None
@@ -104,7 +104,7 @@ module Make (Driver : Driver) (Non_terminal : Non_terminal) = struct
           (match Module_type_desc.to_concrete m.pmty_desc with
            | Some (Pmty_extension ext) ->
              (match Extension.to_concrete ext with
-              | Some (loc, _) when String.equal "m" (Astlib.Loc.txt loc) -> Some ext
+              | Some (loc, _) when String.equal "m" loc.txt -> Some ext
               | Some _ | None -> None)
            | Some _ | None -> None)
         | None -> None
@@ -120,7 +120,7 @@ module Make (Driver : Driver) (Non_terminal : Non_terminal) = struct
           (match Structure_item_desc.to_concrete i.pstr_desc with
            | Some (Pstr_extension (ext, attrs)) ->
              (match Extension.to_concrete ext with
-              | Some (loc, _) when String.equal "i" (Astlib.Loc.txt loc) ->
+              | Some (loc, _) when String.equal "i" loc.txt ->
                 Some (ext, attrs)
               | Some _ | None -> None)
            | Some _ | None -> None)
@@ -139,7 +139,7 @@ module Make (Driver : Driver) (Non_terminal : Non_terminal) = struct
           (match Signature_item_desc.to_concrete i.psig_desc with
            | Some (Psig_extension (ext, attrs)) ->
              (match Extension.to_concrete ext with
-              | Some (loc, _) when String.equal "i" (Astlib.Loc.txt loc) ->
+              | Some (loc, _) when String.equal "i" loc.txt ->
                 Some (ext, attrs)
               | Some _ | None -> None)
            | Some _ | None -> None)
@@ -174,7 +174,7 @@ let expr_payload_of ext =
 
 let loc_of_extension attr =
   match Extension.to_concrete attr with
-  | Some (x, _) -> Some (Astlib.Location.to_location (Astlib.Loc.loc x))
+  | Some (x, _) -> Some x.loc
   | None -> None
 
 module Expr (Driver : Driver) = struct
@@ -185,36 +185,7 @@ module Expr (Driver : Driver) = struct
       ~pexp_attributes:(Attributes.create [])
       ~pexp_desc:(Expression_desc.pexp_ident (Located.lident ~loc "loc"))
   let attributes = None
-  class std_lifters loc = object (self)
-    inherit Ppx_metaquot_lifters.expression_lifters loc
-
-    method! position pos =
-      pexp_apply ~loc
-        (pexp_ident ~loc (Located.dotted ~loc ["Astlib"; "Position"; "create"]))
-        [ Arg_label.labelled "fname", estring ~loc (Astlib.Position.fname pos)
-        ; Arg_label.labelled "lnum", eint ~loc (Astlib.Position.lnum pos)
-        ; Arg_label.labelled "bol", eint ~loc (Astlib.Position.bol pos)
-        ; Arg_label.labelled "cnum", eint ~loc (Astlib.Position.cnum pos)
-        ; Arg_label.nolabel, eunit ~loc
-        ]
-
-    method! location loc =
-      pexp_apply ~loc
-        (pexp_ident ~loc (Located.dotted ~loc ["Astlib"; "Location"; "create"]))
-        [ Arg_label.labelled "start", self#position (Astlib.Location.start loc)
-        ; Arg_label.labelled "end_", self#position (Astlib.Location.end_ loc)
-        ; Arg_label.labelled "ghost", self#bool (Astlib.Location.ghost loc)
-        ; Arg_label.nolabel, eunit ~loc
-        ]
-
-    method! loc : 'a. ('a -> t) -> 'a Astlib.Loc.t -> t = fun f loc_ ->
-      pexp_apply ~loc
-        (pexp_ident ~loc (Located.dotted ~loc ["Astlib"; "Loc"; "create"]))
-        [ Arg_label.labelled "txt", f (Astlib.Loc.txt loc_)
-        ; Arg_label.labelled "loc", self#location (Astlib.Loc.loc loc_)
-        ; Arg_label.nolabel, eunit ~loc
-        ]
-  end
+  class std_lifters loc = Ppx_metaquot_lifters.expression_lifters loc
   let cast ext =
     match expr_payload_of ext with
     | Some (e, attrs) ->

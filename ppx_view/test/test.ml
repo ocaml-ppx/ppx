@@ -1,7 +1,7 @@
 open Ppx_ast
 open V4_07
 
-let loc = Astlib.Location.of_location Ocaml_common.Location.none
+let loc = Ocaml_common.Location.none
 [@@warning "-3"]
 
 let int x = eint ~loc x
@@ -11,14 +11,12 @@ let ident x = pexp_ident ~loc (Located.lident ~loc x)
 
 let class_infos =
   let extension =
-    Extension.create
-      ( Astlib.Loc.create ~txt:"ext" ~loc ()
-      , Payload.pstr (Structure.create []) )
+    Extension.create ({ loc; txt = "ext" } , Payload.pstr (Structure.create []) )
   in
   Class_infos.create
     ~pci_virt:Virtual_flag.virtual_
     ~pci_params:[]
-    ~pci_name:(Astlib.Loc.create ~txt:"name" ~loc ())
+    ~pci_name:{ loc; txt = "name" }
     ~pci_loc:loc
     ~pci_attributes:(Attributes.create [])
     ~pci_expr:(pcty_extension ~loc extension)
@@ -29,7 +27,7 @@ let%expect_test "match failure" =
       print_string "matched"
   with e ->
     print_string (Printexc.to_string e)
-  end;[%expect {|"Match_failure ppx_view/test/test.ml:27:12"|}]
+  end;[%expect {|"Match_failure ppx_view/test/test.ml:25:12"|}]
 
 let%expect_test "match simple" =
   let match_3 = function%view

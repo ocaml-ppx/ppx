@@ -3,7 +3,7 @@ open Stdppx
 module Optional = struct
   module Loc = struct
     let map (loc : _ Astlib.Loc.t) ~f =
-      Option.map (f (Astlib.Loc.txt loc)) ~f:(fun txt -> Astlib.Loc.update_txt loc ~txt)
+      Option.map (f loc.txt) ~f:(fun txt -> { loc with txt })
   end
 
   module List = struct

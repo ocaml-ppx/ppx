@@ -1,7 +1,6 @@
 let ast_version = "4.07"
 
 let errorf ~loc fmt =
-  let loc = Astlib.Location.to_location loc in
   Ocaml_common.Location.raise_errorf ~loc
     ("ppx_view: " ^^ fmt)
 

@@ -19,9 +19,7 @@ let pattern ~loc pat =
 let longident_loc ~loc longident_loc =
   match Longident_loc.to_concrete longident_loc with
   | None -> Error.conversion_failed ~loc "longident_loc"
-  | Some longident_loc ->
-    let loc = Astlib.Loc.loc longident_loc in
-    let longident = Astlib.Loc.txt longident_loc in
+  | Some { loc; txt = longident } ->
     match Longident.to_concrete longident with
     | None -> Error.conversion_failed ~loc "longident"
     | Some longident -> (loc, longident)

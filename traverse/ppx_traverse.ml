@@ -10,7 +10,7 @@ let alphabet =
 ;;
 
 let vars_of_list ~get_loc l =
-  List.mapi l ~f:(fun i x -> Loc.create ~txt:alphabet.(i) ~loc:(get_loc x) ())
+  List.mapi l ~f:(fun i x -> { txt = alphabet.(i); loc = get_loc x })
 
 let evar_of_var = function%view { txt; loc } -> evar ~loc txt
 let pvar_of_var = function%view { txt; loc } -> pvar ~loc txt
@@ -232,7 +232,7 @@ module Backends = struct
           (List.map flds ~f:(function%view
              | Longident_loc {loc; txt}, ({ pexp_loc; _ } as e) ->
                etuple
-                 ~loc:(Location.update loc ~end_:(Location.end_ pexp_loc))
+                 ~loc:{ loc with loc_end = pexp_loc.loc_end }
                  [ estring ~loc (string_of_lid txt)
                  ; e
                  ]))
@@ -291,11 +291,11 @@ let constrained_mapper ~(what:what) ?(is_gadt=false) mapper td =
       if false || is_gadt then
         let typs =
           List.map vars ~f:(fun v ->
-            ptyp_constr ~loc:(Loc.loc v) (longident_loc v) [])
+            ptyp_constr ~loc:v.loc (longident_loc v) [])
         in
         List.fold_right vars
           ~init:(pexp_constraint ~loc:pexp_loc mapper (make_type typs))
-          ~f:(fun v e -> pexp_newtype ~loc:(Loc.loc v) v e)
+          ~f:(fun v e -> pexp_newtype ~loc:v.loc v e)
       else
         mapper
     in
@@ -465,7 +465,7 @@ let type_deps =
       let acc =
         match%view t with
         | Tconstr (Longident_loc id, vars) ->
-          Longident_map.add acc (Loc.txt id) (List.length vars)
+          Longident_map.add acc id.txt (List.length vars)
         | _ -> acc
       in
       super#core_type t acc
@@ -485,7 +485,7 @@ let type_deps =
       List.fold_left tds ~init:map ~f:(fun map td ->
         match%view td with
         | { ptype_name; _ } ->
-          Longident_map.remove map (Longident.lident (Loc.txt ptype_name)))
+          Longident_map.remove map (Longident.lident ptype_name.txt))
     in
     Longident_map.to_list map
 
@@ -518,7 +518,7 @@ let lift_virtual_methods ~loc methods =
   in
   List.filter all_virtual_methods ~f:(fun m ->
     match%view m with
-    | Cfmethod (s, _, _) -> String.Set.mem used (Loc.txt s)
+    | Cfmethod (s, _, _) -> String.Set.mem used s.txt
     | _ -> false)
 
 let map_lident id ~f =
@@ -538,7 +538,7 @@ let class_constr ~what ~class_params id =
     Longident_loc.create
       (Loc.map id ~f:(map_lident ~f:(fun s -> what#name ^ "_" ^ s)))
   in
-  pcl_constr ~loc:(Loc.loc id)
+  pcl_constr ~loc:id.loc
     longident_loc
     (List.map class_params ~f:fst)
 
@@ -546,7 +546,7 @@ let gen_class ~(what:what) ~loc tds =
   let class_params = what#class_params ~loc in
   let virtual_methods =
     List.map (type_deps tds) ~f:(fun (id, arity) ->
-      let id = Loc.create ~txt:(lident_last_exn id) ~loc () in
+      let id = { txt = lident_last_exn id; loc } in
       pcf_method ~loc
         (id,
          Private_flag.public,
@@ -586,14 +586,13 @@ let gen_class ~(what:what) ~loc tds =
     ~pci_loc:loc
     ~pci_virt:virt
     ~pci_params:class_params
-    ~pci_name:(Loc.create ~loc ~txt:what#name ())
+    ~pci_name:{ loc; txt = what#name }
     ~pci_expr:(pcl_structure ~loc
              (class_structure
-                ~self:(ppat_var ~loc (Loc.create ~txt:"self" ~loc ()))
+                ~self:(ppat_var ~loc { txt = "self"; loc })
                 ~fields:(virtual_methods @ methods)))
 
 let gen_str ~what ~loc ~path:_ (rf, tds) =
-  let loc = Location.of_location loc in
   let rf = Conversion.ast_of_rec_flag rf in
   let tds = List.map tds ~f:Conversion.ast_of_type_declaration in
   (match%view rf with

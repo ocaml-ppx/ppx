@@ -315,8 +315,7 @@ let declare_inline_with_path_arg name context pattern k =
 
 let of_bootstrap_extension ext =
   let wrap f of_ast ~loc ~path:_ x =
-    of_ast
-      (f ~loc:(Astlib.Location.of_location loc) (Ppx_ast.Conversion.ast_of_payload x))
+    of_ast (f ~loc (Ppx_ast.Conversion.ast_of_payload x))
   in
   match (ext : Ppx_bootstrap.Extension.t) with
   | Patt { name; callback } ->

@@ -95,29 +95,10 @@ let rec ty_conversion ty ~conv =
   | Var var -> Some (Ml.id (conversion_prefix ~conv ^ "_" ^ var))
   | Name name -> Some (Ml.id (conversion_prefix ~conv ^ "_" ^ name))
   | Bool | Char | Int | String -> None
-  | Location ->
-    (match conv with
-     | `concrete_of -> Some "Astlib.Location.of_location"
-     | `concrete_to -> Some "Astlib.Location.to_location")
+  | Location -> None
   | Loc ty ->
-    let conv_string =
-      let loc_conv =
-        match conv with
-        | `concrete_of -> "Astlib.Loc.of_loc"
-        | `concrete_to -> "Astlib.Loc.to_loc"
-      in
-      let loc_map =
-        Option.map (ty_conversion ty ~conv) ~f:(fun ty_conv ->
-          Printf.sprintf "(Astlib.Loc.map ~f:%s)" ty_conv)
-      in
-      match loc_map with
-      | None -> loc_conv
-      | Some loc_map ->
-        (match conv with
-         | `concrete_of -> Printf.sprintf "(Fn.compose %s %s)" loc_map loc_conv
-         | `concrete_to -> Printf.sprintf "(Fn.compose %s %s)" loc_conv loc_map)
-    in
-    Some conv_string
+    Option.map (ty_conversion ty ~conv) ~f:(fun ty_conv ->
+      Printf.sprintf "(Astlib.Loc.map ~f:%s)" ty_conv)
   | List ty ->
     Option.map (ty_conversion ty ~conv)
       ~f:(Printf.sprintf "(List.map ~f:%s)")
