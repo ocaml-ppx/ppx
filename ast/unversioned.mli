@@ -151,4 +151,10 @@ end
 module Private : sig
   val opaque : Node.t -> _ Types.node
   val transparent : _ Types.node -> Node.t
+
+  exception Cannot_interpret_ast of {
+    version : Astlib.Version.t;
+    node_name : string;
+    node : Node.t;
+  }
 end

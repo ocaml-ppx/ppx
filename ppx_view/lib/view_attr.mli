@@ -7,8 +7,7 @@ type field = Longident_loc.t * Pattern.t
 
 (** Extracts the extra field information from the [[@view? ...]] attributes
     amongst the given pattern attributes. Returns [None] if there is no
-    such attribute. The given location is only used to report errors. *)
+    such attribute. *)
 val extract_fields :
-  err_loc: Astlib.Location.t ->
   Attributes.t ->
   (field list) option

@@ -58,13 +58,19 @@ module Structure : VIEWER_PRINTER = struct
   let print_to_concrete ~shortcut node_name expr =
     match (shortcut : Shortcut.t option) with
     | None ->
-      To_concrete.print_to_concrete_exn ~node_name expr
+      Print.println "let concrete = %s.to_concrete %s in"
+        (Ml.module_name node_name)
+        expr
     | Some {outer_record; desc_field; _} ->
-      To_concrete.print_to_concrete_exn
-        ~var_name:"parent_concrete" ~node_name:outer_record expr;
+      Print.println "let parent_concrete = %s.to_concrete %s in"
+        (Ml.module_name outer_record)
+        expr;
       Print.println "let desc = parent_concrete.%s.%s in"
-        (Ml.module_name outer_record) desc_field;
-      To_concrete.print_to_concrete_exn ~node_name "desc"
+        (Ml.module_name outer_record)
+        desc_field;
+      Print.println "let concrete = %s.to_concrete %s in"
+        (Ml.module_name node_name)
+        "desc"
 
   let tuple tyl =
     match tyl with
@@ -106,8 +112,10 @@ module Structure : VIEWER_PRINTER = struct
     Print.indented (fun () ->
       let concrete i = Printf.sprintf "concrete%d" i in
       List.iteri unwrap_chain ~f:(fun i node_name ->
-        let input = if i = 0 then "value" else concrete (i - 1) in
-        To_concrete.print_to_concrete_exn ~node_name ~var_name:(concrete i) input);
+        Print.println "let %s = %s.to_concrete %s in"
+          (concrete i)
+          (Ml.module_name node_name)
+          (if i = 0 then "value" else concrete (i - 1)));
       Print.println "view %s" (concrete (List.length unwrap_chain - 1)))
 
   let print_field_viewer ~targs:_ ~name (fname, _ty) =
@@ -327,7 +335,6 @@ let print_viewer_ml version =
   let version = Ml.module_name (Astlib.Version.to_string version) in
   Print.println "open Versions.%s" version;
   Print.println "include Viewer_common";
-  To_concrete.define_conversion_failed ~version;
   List.iter grammar ~f:(print_viewer ~what:`Impl ~shortcuts ~wrapper_types)
 
 let print_viewer_mli version =

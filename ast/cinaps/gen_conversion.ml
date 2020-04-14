@@ -210,18 +210,9 @@ let print_conversion_impl decl ~node_name ~env ~is_initial =
     Print.newline ();
     Print.println "and %s x =" (Name.make ["ast_to"; node_name] (Poly_env.args env));
     Print.indented (fun () ->
-      Print.println "let option = Versions.%s.%s.%s x in"
+      Print.println "let concrete = Versions.%s.%s.to_concrete x in"
         (Ml.module_name (Astlib.Version.to_string version))
-        (Ml.module_name node_name)
-        "to_concrete";
-      Print.println "let concrete =";
-      Print.indented (fun () ->
-        Print.println "match option with";
-        Print.println "| Some concrete -> concrete";
-        Print.println "| None -> failwith %S"
-          (Printf.sprintf "%s: conversion failed"
-             (Name.make ["concrete_to"; node_name] (Poly_env.args env))));
-      Print.println "in";
+        (Ml.module_name node_name);
       Print.println "%s concrete"
         (Name.make ["concrete_to"; node_name] (Poly_env.args env)));
     Print.newline ();

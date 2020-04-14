@@ -1,11 +1,6 @@
-let ast_version = "4.07"
-
 let errorf ~loc fmt =
   Ocaml_common.Location.raise_errorf ~loc
     ("ppx_view: " ^^ fmt)
-
-let conversion_failed ~loc node_name =
-  errorf ~loc "Couldn't convert %s AST node to %s" node_name ast_version
 
 let invalid_payload ~loc =
   errorf ~loc "Invalid payload, should be a 'match' or a 'function'"

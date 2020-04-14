@@ -485,7 +485,9 @@ let traversal_classes =
   ]
 
 let print_to_concrete node_name =
-  To_concrete.print_to_concrete_exn ~node_name (Ml.id node_name)
+  Print.println "let concrete = %s.to_concrete %s in"
+    (Ml.module_name node_name)
+    (Ml.id node_name)
 
 let print_method_value ~traversal ~targs ~node_name decl =
   let args = traversal.args (Ml.id node_name) in
@@ -559,7 +561,6 @@ let print_virtual_traverse_ml version =
   let grammar = Astlib.History.find_grammar Astlib.history ~version in
   let version = Ml.module_name (Astlib.Version.to_string version) in
   Print.println "open Versions.%s" version;
-  To_concrete.define_conversion_failed ~version;
   define_virtual_traversal_classes grammar
 
 let print_virtual_traverse_mli version =

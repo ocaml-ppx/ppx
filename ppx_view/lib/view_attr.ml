@@ -3,30 +3,26 @@ open Ppx_ast.V4_07
 
 type field = Longident_loc.t * Pattern.t
 
-let fields_from_pattern ~loc pattern =
-  let ppat_loc, ppat_desc = Deconstructor.pattern ~loc pattern in
+let fields_from_pattern pattern =
+  let ppat_loc, ppat_desc = Deconstructor.pattern pattern in
   match ppat_desc with
   | Ppat_record (fields, _closed) -> fields
   | _ -> Error.invalid_attribute_payload ~loc:ppat_loc
 
 let fields_from_payload ~loc payload =
   match Payload.to_concrete payload with
-  | None -> Error.conversion_failed ~loc "payload"
-  | Some (PSig _ | PTyp _ | PStr _ | PPat (_, Some _)) ->
+  | PSig _ | PTyp _ | PStr _ | PPat (_, Some _) ->
     Error.invalid_attribute_payload ~loc
-  | Some (PPat (pattern, None)) ->
-    fields_from_pattern ~loc pattern
+  | PPat (pattern, None) ->
+    fields_from_pattern pattern
 
-let fields_from_attribute ~loc attribute =
+let fields_from_attribute attribute =
   match Attribute.to_concrete attribute with
-  | None -> Error.conversion_failed ~loc "attribute"
-  | Some ({ loc; txt = name }, payload) ->
+  | { loc; txt = name }, payload ->
     match name with
     | "view" -> Some (fields_from_payload ~loc payload)
     | _ -> None
 
-let extract_fields ~err_loc:loc attributes =
-  match Attributes.to_concrete attributes with
-  | None -> Error.conversion_failed ~loc "attributes"
-  | Some attributes ->
-    List.find_map attributes ~f:(fields_from_attribute ~loc)
+let extract_fields attributes =
+  let attributes = Attributes.to_concrete attributes in
+  List.find_map attributes ~f:fields_from_attribute
