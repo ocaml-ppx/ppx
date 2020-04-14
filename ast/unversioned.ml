@@ -151,4 +151,10 @@ end
 module Private = struct
   let opaque node = node
   let transparent node = node
+
+  exception Cannot_interpret_ast of {
+    version : Astlib.Version.t;
+    node_name : string;
+    node : Node.t;
+  }
 end

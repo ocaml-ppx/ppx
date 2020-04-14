@@ -1,9 +1,5 @@
 (** Error reporting functions *)
 
-(** [conversion_failed loc "x"] reports an AST node conversion failure as:
-    ["Coudln't convert x AST node to <ppx-view-ast-version>"]. *)
-val conversion_failed : loc: Astlib.Location.t -> string -> 'a
-
 (** Reports that the [[%view ...]] payload is neither a [match] nor a [function]
     expression. *)
 val invalid_payload : loc: Astlib.Location.t -> 'a

@@ -80,6 +80,12 @@ module Signature = struct
     Ml.declare_val
       "to_concrete"
       (Line
+         (Printf.sprintf "%s -> %s"
+            (inst_node "t" ~tvars)
+            (inst_node "concrete" ~tvars)));
+    Ml.declare_val
+      "to_concrete_opt"
+      (Line
          (Printf.sprintf "%s -> %s option"
             (inst_node "t" ~tvars)
             (inst_node "concrete" ~tvars)));
@@ -245,10 +251,10 @@ module Structure = struct
       loop alist;
       Print.println "%s" (String.make (List.length alist) ')')
 
-  let define_to_concrete decl ~node_name ~grammar =
+  let define_to_concrete_opt decl ~node_name ~grammar =
     match (decl : Astlib.Grammar.decl) with
     | Wrapper ty ->
-      Print.println "let to_concrete t =";
+      Print.println "let to_concrete_opt t =";
       Print.indented (fun () ->
         Print.println
           "match Node.to_node (Unversioned.Private.transparent t) ~version with";
@@ -257,7 +263,7 @@ module Structure = struct
           (ast_to_ty ~grammar ty);
         Print.println "| _ -> None")
     | Record record ->
-      Print.println "let to_concrete t =";
+      Print.println "let to_concrete_opt t =";
       Print.indented (fun () ->
         Print.println
           "match Node.to_node (Unversioned.Private.transparent t) ~version with";
@@ -274,7 +280,7 @@ module Structure = struct
                    (List.map record ~f:(fun (field, _) -> Ml.id field))))));
         Print.println "| _ -> None")
     | Variant variant ->
-      Print.println "let to_concrete t =";
+      Print.println "let to_concrete_opt t =";
       Print.indented (fun () ->
         Print.println
           "match Node.to_node (Unversioned.Private.transparent t) ~version with";
@@ -318,6 +324,22 @@ module Structure = struct
           Print.println "end");
         Print.println "| _ -> None")
 
+  let define_to_concrete ~node_name =
+    Print.println "let to_concrete node =";
+    Print.indented (fun () ->
+      Print.println "match to_concrete_opt node with";
+      Print.println "| Some concrete -> concrete";
+      Print.println "| None ->";
+      Print.indented (fun () ->
+        Print.println "raise";
+        Print.indented (fun () ->
+          Print.println "(Unversioned.Private.Cannot_interpret_ast {";
+          Print.indented (fun () ->
+            Print.println "version;";
+            Print.println "node_name = %S;" node_name;
+            Print.println "node = Unversioned.Private.transparent node;");
+          Print.println "})")))
+
   let print decl ~node_name ~tvars ~grammar =
       Ml.declare_type "t" ~tvars (Line (Ml.poly_type node_name ~tvars));
       Print.newline ();
@@ -327,7 +349,9 @@ module Structure = struct
       Print.newline ();
       define_of_concrete decl;
       Print.newline ();
-      define_to_concrete decl ~node_name ~grammar
+      define_to_concrete_opt decl ~node_name ~grammar;
+      Print.newline ();
+      define_to_concrete ~node_name
 end
 
 module Unversioned = struct

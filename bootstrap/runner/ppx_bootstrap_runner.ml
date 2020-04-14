@@ -57,8 +57,7 @@ let t =
 
 let unsupported_extension extension =
   match Extension.to_concrete extension with
-  | None -> assert false
-  | Some ({ loc; txt = name }, _) ->
+  | { loc; txt = name }, _ ->
     let expr = estring ~loc ("unsupported bootstrap extension " ^ name) in
     let item = pstr_eval ~loc expr (Attributes.create []) in
     let payload = Payload.pstr (Structure.create [item]) in
@@ -66,23 +65,23 @@ let unsupported_extension extension =
 ;;
 
 let expression_extension expr =
-  match Expression.to_concrete expr with
+  match Expression.to_concrete_opt expr with
   | None -> None
   | Some expr ->
-    match Expression_desc.to_concrete expr.pexp_desc with
+    match Expression_desc.to_concrete_opt expr.pexp_desc with
     | Some (Pexp_extension ext) ->
-      (match Extension.to_concrete ext with
+      (match Extension.to_concrete_opt ext with
        | None -> None
        | Some (name_loc, payload) -> Some (name_loc, payload, ext))
     | None | Some _ -> None
 
 let pattern_extension pat =
-  match Pattern.to_concrete pat with
+  match Pattern.to_concrete_opt pat with
   | None -> None
   | Some pat ->
-    match Pattern_desc.to_concrete pat.ppat_desc with
+    match Pattern_desc.to_concrete_opt pat.ppat_desc with
     | Some (Ppat_extension ext) ->
-      (match Extension.to_concrete ext with
+      (match Extension.to_concrete_opt ext with
        | None -> None
        | Some (name_loc, payload) -> Some (name_loc, payload, ext))
     | None | Some _ -> None

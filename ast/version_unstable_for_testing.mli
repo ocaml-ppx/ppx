@@ -12,7 +12,8 @@ module rec Directive_argument : sig
     | Pdir_none
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val pdir_bool :
     bool
@@ -38,7 +39,8 @@ and Toplevel_phrase : sig
     | Ptop_def of Structure.t
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val ptop_dir :
     Directive_argument.t
@@ -60,7 +62,8 @@ and Module_binding : sig
     }
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create :
     pmb_loc:Astlib.Location.t
@@ -81,7 +84,8 @@ and Value_binding : sig
     }
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create :
     pvb_loc:Astlib.Location.t
@@ -112,7 +116,8 @@ and Structure_item_desc : sig
     | Pstr_eval of Attributes.t * Expression.t
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val pstr_extension :
     Attributes.t
@@ -174,7 +179,8 @@ and Structure_item : sig
     }
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create :
     pstr_loc:Astlib.Location.t
@@ -188,7 +194,8 @@ and Structure : sig
   type concrete = Structure_item.t list
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create : Structure_item.t list -> t
 end
@@ -206,7 +213,8 @@ and Module_expr_desc : sig
     | Pmod_ident of Longident_loc.t
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val pmod_extension :
     Extension.t
@@ -245,7 +253,8 @@ and Module_expr : sig
     }
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create :
     pmod_attributes:Attributes.t
@@ -264,7 +273,8 @@ and With_constraint : sig
     | Pwith_type of Type_declaration.t * Longident_loc.t
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val pwith_modsubst :
     Longident_loc.t
@@ -290,7 +300,8 @@ and Include_declaration : sig
   type concrete = Module_expr.t Include_infos.t
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create : Module_expr.t Include_infos.t -> t
 end
@@ -301,7 +312,8 @@ and Include_description : sig
   type concrete = Module_type.t Include_infos.t
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create : Module_type.t Include_infos.t -> t
 end
@@ -316,7 +328,8 @@ and Include_infos : sig
     }
 
   val of_concrete : 'a node concrete -> 'a node t
-  val to_concrete : 'a node t -> 'a node concrete option
+  val to_concrete : 'a node t -> 'a node concrete
+  val to_concrete_opt : 'a node t -> 'a node concrete option
 
   val create :
     pincl_attributes:Attributes.t
@@ -336,7 +349,8 @@ and Open_description : sig
     }
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create :
     popen_attributes:Attributes.t
@@ -357,7 +371,8 @@ and Module_type_declaration : sig
     }
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create :
     pmtd_loc:Astlib.Location.t
@@ -378,7 +393,8 @@ and Module_declaration : sig
     }
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create :
     pmd_loc:Astlib.Location.t
@@ -407,7 +423,8 @@ and Signature_item_desc : sig
     | Psig_value of Value_description.t
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val psig_extension :
     Attributes.t
@@ -461,7 +478,8 @@ and Signature_item : sig
     }
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create :
     psig_loc:Astlib.Location.t
@@ -475,7 +493,8 @@ and Signature : sig
   type concrete = Signature_item.t list
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create : Signature_item.t list -> t
 end
@@ -493,7 +512,8 @@ and Module_type_desc : sig
     | Pmty_ident of Longident_loc.t
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val pmty_alias :
     Longident_loc.t
@@ -531,7 +551,8 @@ and Module_type : sig
     }
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create :
     pmty_attributes:Attributes.t
@@ -546,7 +567,8 @@ and Class_declaration : sig
   type concrete = Class_expr.t Class_infos.t
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create : Class_expr.t Class_infos.t -> t
 end
@@ -559,7 +581,8 @@ and Class_field_kind : sig
     | Cfk_virtual of Core_type.t
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val cfk_concrete :
     Expression.t
@@ -583,7 +606,8 @@ and Class_field_desc : sig
     | Pcf_inherit of string Astlib.Loc.t option * Class_expr.t * Override_flag.t
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val pcf_extension :
     Extension.t
@@ -620,7 +644,8 @@ and Class_field : sig
     }
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create :
     pcf_attributes:Attributes.t
@@ -638,7 +663,8 @@ and Class_structure : sig
     }
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create :
     pcstr_fields:Class_field.t list
@@ -660,7 +686,8 @@ and Class_expr_desc : sig
     | Pcl_constr of Core_type.t list * Longident_loc.t
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val pcl_open :
     Class_expr.t
@@ -708,7 +735,8 @@ and Class_expr : sig
     }
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create :
     pcl_attributes:Attributes.t
@@ -723,7 +751,8 @@ and Class_type_declaration : sig
   type concrete = Class_type.t Class_infos.t
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create : Class_type.t Class_infos.t -> t
 end
@@ -734,7 +763,8 @@ and Class_description : sig
   type concrete = Class_type.t Class_infos.t
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create : Class_type.t Class_infos.t -> t
 end
@@ -752,7 +782,8 @@ and Class_infos : sig
     }
 
   val of_concrete : 'a node concrete -> 'a node t
-  val to_concrete : 'a node t -> 'a node concrete option
+  val to_concrete : 'a node t -> 'a node concrete
+  val to_concrete_opt : 'a node t -> 'a node concrete option
 
   val create :
     pci_attributes:Attributes.t
@@ -776,7 +807,8 @@ and Class_type_field_desc : sig
     | Pctf_inherit of Class_type.t
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val pctf_extension :
     Extension.t
@@ -808,7 +840,8 @@ and Class_type_field : sig
     }
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create :
     pctf_attributes:Attributes.t
@@ -826,7 +859,8 @@ and Class_signature : sig
     }
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create :
     pcsig_fields:Class_type_field.t list
@@ -845,7 +879,8 @@ and Class_type_desc : sig
     | Pcty_constr of Core_type.t list * Longident_loc.t
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val pcty_open :
     Class_type.t
@@ -879,7 +914,8 @@ and Class_type : sig
     }
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create :
     pcty_attributes:Attributes.t
@@ -896,7 +932,8 @@ and Extension_constructor_kind : sig
     | Pext_decl of Core_type.t option * Constructor_arguments.t
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val pext_rebind :
     Longident_loc.t
@@ -918,7 +955,8 @@ and Extension_constructor : sig
     }
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create :
     pext_attributes:Attributes.t
@@ -940,7 +978,8 @@ and Type_extension : sig
     }
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create :
     ptyext_attributes:Attributes.t
@@ -959,7 +998,8 @@ and Constructor_arguments : sig
     | Pcstr_tuple of Core_type.t list
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val pcstr_record :
     Label_declaration.t list
@@ -981,7 +1021,8 @@ and Constructor_declaration : sig
     }
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create :
     pcd_attributes:Attributes.t
@@ -1004,7 +1045,8 @@ and Label_declaration : sig
     }
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create :
     pld_attributes:Attributes.t
@@ -1025,7 +1067,8 @@ and Type_kind : sig
     | Ptype_abstract
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val ptype_open : t
   val ptype_record :
@@ -1052,7 +1095,8 @@ and Type_declaration : sig
     }
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create :
     ptype_loc:Astlib.Location.t
@@ -1078,7 +1122,8 @@ and Value_description : sig
     }
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create :
     pval_loc:Astlib.Location.t
@@ -1099,7 +1144,8 @@ and Case : sig
     }
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create :
     pc_rhs:Expression.t
@@ -1150,7 +1196,8 @@ and Expression_desc : sig
     | Pexp_ident of Longident_loc.t
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val pexp_unreachable : t
   val pexp_extension :
@@ -1304,7 +1351,8 @@ and Expression : sig
     }
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create :
     pexp_attributes:Attributes.t
@@ -1337,7 +1385,8 @@ and Pattern_desc : sig
     | Ppat_any
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val ppat_open :
     Pattern.t
@@ -1411,7 +1460,8 @@ and Pattern : sig
     }
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create :
     ppat_attributes:Attributes.t
@@ -1428,7 +1478,8 @@ and Object_field : sig
     | Otag of Core_type.t * Attributes.t * string Astlib.Loc.t
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val oinherit :
     Core_type.t
@@ -1448,7 +1499,8 @@ and Row_field : sig
     | Rtag of Core_type.t list * bool * Attributes.t * string Astlib.Loc.t
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val rinherit :
     Core_type.t
@@ -1467,7 +1519,8 @@ and Package_type : sig
   type concrete = ((Core_type.t * Longident_loc.t) list * Longident_loc.t)
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create : ((Core_type.t * Longident_loc.t) list * Longident_loc.t) -> t
 end
@@ -1490,7 +1543,8 @@ and Core_type_desc : sig
     | Ptyp_any
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val ptyp_extension :
     Extension.t
@@ -1547,7 +1601,8 @@ and Core_type : sig
     }
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create :
     ptyp_attributes:Attributes.t
@@ -1566,7 +1621,8 @@ and Payload : sig
     | PStr of Structure.t
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val ppat :
     Expression.t option
@@ -1589,7 +1645,8 @@ and Attributes : sig
   type concrete = Attribute.t list
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create : Attribute.t list -> t
 end
@@ -1600,7 +1657,8 @@ and Extension : sig
   type concrete = (Payload.t * string Astlib.Loc.t)
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create : (Payload.t * string Astlib.Loc.t) -> t
 end
@@ -1611,7 +1669,8 @@ and Attribute : sig
   type concrete = (Payload.t * string Astlib.Loc.t)
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create : (Payload.t * string Astlib.Loc.t) -> t
 end
@@ -1626,7 +1685,8 @@ and Constant : sig
     | Pconst_integer of char option * string
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val pconst_float :
     char option
@@ -1654,7 +1714,8 @@ and Variance : sig
     | Covariant
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val invariant : t
   val contravariant : t
@@ -1670,7 +1731,8 @@ and Arg_label : sig
     | Nolabel
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val optional :
     string
@@ -1689,7 +1751,8 @@ and Closed_flag : sig
     | Closed
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val open_ : t
   val closed : t
@@ -1703,7 +1766,8 @@ and Override_flag : sig
     | Override
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val fresh : t
   val override : t
@@ -1717,7 +1781,8 @@ and Virtual_flag : sig
     | Virtual
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val concrete : t
   val virtual_ : t
@@ -1731,7 +1796,8 @@ and Mutable_flag : sig
     | Immutable
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val mutable_ : t
   val immutable : t
@@ -1745,7 +1811,8 @@ and Private_flag : sig
     | Private
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val public : t
   val private_ : t
@@ -1759,7 +1826,8 @@ and Direction_flag : sig
     | Upto
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val downto_ : t
   val upto : t
@@ -1773,7 +1841,8 @@ and Rec_flag : sig
     | Nonrecursive
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val recursive : t
   val nonrecursive : t
@@ -1785,7 +1854,8 @@ and Longident_loc : sig
   type concrete = Longident.t Astlib.Loc.t
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val create : Longident.t Astlib.Loc.t -> t
 end
@@ -1799,7 +1869,8 @@ and Longident : sig
     | Lident of string
 
   val of_concrete : concrete -> t
-  val to_concrete : t -> concrete option
+  val to_concrete : t -> concrete
+  val to_concrete_opt : t -> concrete option
 
   val lapply :
     Longident.t
