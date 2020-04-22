@@ -77,13 +77,13 @@ let update_node (node : _ Ast.node) =
 let to_stable : History.conversion =
   { src_version = version
   ; dst_version = Stable.version
-  ; f = fun node ~to_node:_ ~of_node:_ -> update_node node
+  ; f = fun node ~of_src_node:_ ~to_dst_node:_ -> update_node node
   }
 
 let of_stable : History.conversion =
   { src_version = Stable.version
   ; dst_version = version
-  ; f = fun node ~to_node:_ ~of_node:_ -> update_node node
+  ; f = fun node ~of_src_node:_ ~to_dst_node:_ -> update_node node
   }
 
 let conversions = [ to_stable; of_stable ]

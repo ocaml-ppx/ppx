@@ -18,8 +18,8 @@ module type History = sig
     -> 'a Ast.node
     -> src_version:Version.t
     -> dst_version:Version.t
-    -> to_node:('a -> version:Version.t -> 'a Ast.node)
-    -> of_node:('a Ast.node -> version:Version.t -> 'a)
+    -> to_node:(version:Version.t -> 'a -> 'a Ast.node)
+    -> of_node:(version:Version.t -> 'a Ast.node -> 'a)
     -> 'a Ast.node
 end
 

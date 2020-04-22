@@ -1,9 +1,9 @@
 open StdLabels
 
 type 'a conversion_function
-  =  'a Ast.node
-  -> to_node:('a -> version:Version.t -> 'a Ast.node)
-  -> of_node:('a Ast.node -> version:Version.t -> 'a)
+  = 'a Ast.node
+  -> of_src_node:('a Ast.node -> 'a)
+  -> to_dst_node:('a -> 'a Ast.node)
   -> 'a Ast.node
 
 type conversion =
@@ -104,14 +104,18 @@ let convert t node ~src_version ~dst_version ~to_node ~of_node =
   then (
     let node = ref node in
     for index = src_index to dst_index - 1 do
-      node := t.to_nexts.(index).f !node ~to_node ~of_node
+      node := t.to_nexts.(index).f !node
+                ~of_src_node:(of_node ~version:t.versions.(index))
+                ~to_dst_node:(to_node ~version:t.versions.(index+1))
     done;
     !node)
   else if src_index > dst_index
   then (
     let node = ref node in
     for index = src_index - 1 downto dst_index do
-      node := t.of_nexts.(index).f !node ~to_node ~of_node
+      node := t.of_nexts.(index).f !node
+                ~of_src_node:(of_node ~version:t.versions.(index+1))
+                ~to_dst_node:(to_node ~version:t.versions.(index))
     done;
     !node)
   else

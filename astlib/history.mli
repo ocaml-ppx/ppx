@@ -2,8 +2,8 @@ include Astlib_intf.History
 
 type 'a conversion_function
   = 'a Ast.node
-  -> to_node:('a -> version:Version.t -> 'a Ast.node)
-  -> of_node:('a Ast.node -> version:Version.t -> 'a)
+  -> of_src_node:('a Ast.node -> 'a)
+  -> to_dst_node:('a -> 'a Ast.node)
   -> 'a Ast.node
 
 type conversion =
