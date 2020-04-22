@@ -1,10 +1,10 @@
 open StdLabels
 
-type 'a conversion_function
-  =  'a Ast.t
-  -> to_ast:('a -> version:Version.t -> 'a Ast.t)
-  -> of_ast:('a Ast.t -> version:Version.t -> 'a)
-  -> 'a Ast.t
+type 'node conversion_function
+  = 'node Ast.t
+  -> to_src_ast:('node -> 'node Ast.t)
+  -> of_dst_ast:('node Ast.t -> 'node)
+  -> 'node Ast.t
 
 type conversion =
   { src_version : Version.t
@@ -97,6 +97,11 @@ let create ~versioned_grammars ~conversions =
 let versioned_grammars t =
   Array.to_list (Array.map2 t.versions t.grammars ~f:(fun v g -> v, g))
 
+let apply_conversion conversion ast ~to_ast ~of_ast =
+  conversion.f ast
+    ~to_src_ast:(to_ast ~version:conversion.src_version)
+    ~of_dst_ast:(of_ast ~version:conversion.dst_version)
+
 let convert t ast ~src_version ~dst_version ~to_ast ~of_ast =
   let src_index = version_index t ~version:src_version in
   let dst_index = version_index t ~version:dst_version in
@@ -104,14 +109,14 @@ let convert t ast ~src_version ~dst_version ~to_ast ~of_ast =
   then (
     let ast = ref ast in
     for index = src_index to dst_index - 1 do
-      ast := t.to_nexts.(index).f !ast ~to_ast ~of_ast
+      ast := apply_conversion t.to_nexts.(index) !ast ~to_ast ~of_ast
     done;
     !ast)
   else if src_index > dst_index
   then (
     let ast = ref ast in
     for index = src_index - 1 downto dst_index do
-      ast := t.of_nexts.(index).f !ast ~to_ast ~of_ast
+      ast := apply_conversion t.of_nexts.(index) !ast ~to_ast ~of_ast
     done;
     !ast)
   else

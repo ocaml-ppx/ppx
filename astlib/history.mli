@@ -17,8 +17,8 @@ val convert
   -> 'node Ast.t
   -> src_version:Version.t
   -> dst_version:Version.t
-  -> to_ast:('node -> version:Version.t -> 'node Ast.t)
-  -> of_ast:('node Ast.t -> version:Version.t -> 'node)
+  -> to_ast:(version:Version.t -> 'node -> 'node Ast.t)
+  -> of_ast:(version:Version.t -> 'node Ast.t -> 'node)
   -> 'node Ast.t
 
 (**/**)
@@ -27,8 +27,8 @@ val convert
 
 type 'node conversion_function
   = 'node Ast.t
-  -> to_ast:('node -> version:Version.t -> 'node Ast.t)
-  -> of_ast:('node Ast.t -> version:Version.t -> 'node)
+  -> to_src_ast:('node -> 'node Ast.t)
+  -> of_dst_ast:('node Ast.t -> 'node)
   -> 'node Ast.t
 
 type conversion =

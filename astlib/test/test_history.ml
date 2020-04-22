@@ -4,9 +4,9 @@ open Astlib_base
 module Versioned_node = struct
   type t = { version : Version.t; ast : t Ast.t }
 
-  let of_ast ast ~version = { version; ast }
+  let of_ast ~version ast = { version; ast }
 
-  let rec to_ast { version = src_version; ast } ~version:dst_version ~history =
+  let rec to_ast ~version:dst_version { version = src_version; ast } ~history =
     let to_ast = to_ast ~history in
     Astlib.History.convert history ast ~src_version ~dst_version ~to_ast ~of_ast
 end
@@ -63,26 +63,26 @@ let (v3_grammar : Astlib.Grammar.t) = [
   ]);
 ]
 
-let v2_of_v1 x ~to_ast:_ ~of_ast:_ = x
-let v1_of_v2 x ~to_ast:_ ~of_ast:_ = x
+let v2_of_v1 x ~to_src_ast:_ ~of_dst_ast:_ = x
+let v1_of_v2 x ~to_src_ast:_ ~of_dst_ast:_ = x
 
-let rec v3_addends_of_v2 ast ~to_ast ~of_ast : _ Ast.data list =
+let rec v3_addends_of_v2 ast ~to_src_ast ~of_dst_ast : _ Ast.data list =
   match (ast : _ Ast.t) with
   | { name = "expr"; data = Variant { tag; args } } ->
     (match tag with
-     | "var" | "int" -> [ Node (of_ast ast ~version:v3) ]
+     | "var" | "int" -> [ Node (of_dst_ast ast) ]
      | "add" ->
        (match args with
         | [| Node x; Node y |] ->
-          v3_addends_of_v2 (to_ast x ~version:v2) ~to_ast ~of_ast @
-          v3_addends_of_v2 (to_ast y ~version:v2) ~to_ast ~of_ast
+          v3_addends_of_v2 (to_src_ast x) ~to_src_ast ~of_dst_ast @
+          v3_addends_of_v2 (to_src_ast y) ~to_src_ast ~of_dst_ast
         | [| List _ |] -> assert false
         | _ -> assert false)
      | _ -> assert false)
   | _ -> assert false
 
-let v3_of_v2 ast ~to_ast ~of_ast =
-  match v3_addends_of_v2 ast ~to_ast ~of_ast with
+let v3_of_v2 ast ~to_src_ast ~of_dst_ast =
+  match v3_addends_of_v2 ast ~to_src_ast ~of_dst_ast with
   | [ _ ] -> ast
   | list -> { name = "expr" ; data = Variant { tag = "add" ; args = [| List list |] } }
 
@@ -100,7 +100,7 @@ let v2_add x y : _ Ast.t =
         }
   }
 
-let v2_of_v3 ast ~to_ast:_ ~of_ast =
+let v2_of_v3 ast ~to_src_ast:_ ~of_dst_ast =
   match (ast : _ Ast.t) with
   | { name = "expr"; data = Variant { tag; args } } ->
     (match tag with
@@ -114,7 +114,7 @@ let v2_of_v3 ast ~to_ast:_ ~of_ast =
               | _ -> assert false)
           in
           List.fold_right nodes ~init:(v2_zero ()) ~f:(fun node acc ->
-            v2_add node (of_ast acc ~version:v2))
+            v2_add node (of_dst_ast acc))
         | [| Node _; Node _ |] -> assert false
         | _ -> assert false)
      | _ -> assert false)
