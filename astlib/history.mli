@@ -21,6 +21,10 @@ val convert
   -> of_ast:('node Ast.t -> version:Version.t -> 'node)
   -> 'node Ast.t
 
+(**/**)
+
+(** Constructors for internal use and for testing. *)
+
 type 'node conversion_function
   = 'node Ast.t
   -> to_ast:('node -> version:Version.t -> 'node Ast.t)
