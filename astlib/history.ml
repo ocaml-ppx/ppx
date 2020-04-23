@@ -97,6 +97,11 @@ let create ~versioned_grammars ~conversions =
 let versioned_grammars t =
   Array.to_list (Array.map2 t.versions t.grammars ~f:(fun v g -> v, g))
 
+let apply_conversion conversion node ~to_node ~of_node =
+  conversion.f node
+    ~of_src_node:(of_node ~version:conversion.src_version)
+    ~to_dst_node:(to_node ~version:conversion.dst_version)
+
 let convert t node ~src_version ~dst_version ~to_node ~of_node =
   let src_index = version_index t ~version:src_version in
   let dst_index = version_index t ~version:dst_version in
@@ -104,18 +109,14 @@ let convert t node ~src_version ~dst_version ~to_node ~of_node =
   then (
     let node = ref node in
     for index = src_index to dst_index - 1 do
-      node := t.to_nexts.(index).f !node
-                ~of_src_node:(of_node ~version:t.versions.(index))
-                ~to_dst_node:(to_node ~version:t.versions.(index+1))
+      node := apply_conversion t.to_nexts.(index) !node ~to_node ~of_node
     done;
     !node)
   else if src_index > dst_index
   then (
     let node = ref node in
     for index = src_index - 1 downto dst_index do
-      node := t.of_nexts.(index).f !node
-                ~of_src_node:(of_node ~version:t.versions.(index+1))
-                ~to_dst_node:(to_node ~version:t.versions.(index))
+      node := apply_conversion t.of_nexts.(index) !node ~to_node ~of_node
     done;
     !node)
   else
