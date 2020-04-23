@@ -77,9 +77,9 @@ let translate_constant ~loc constant =
   | Pconst_string _ -> make "string"
   | Pconst_float (_, None) -> make "float"
   | Pconst_integer (_, Some suffix) ->
-    Error.unsupported_num_const ~loc ~kind:"int" ~suffix
+    Error.(to_expr (unsupported_num_const ~loc ~kind:"int" ~suffix))
   | Pconst_float (_, Some suffix) ->
-    Error.unsupported_num_const ~loc ~kind:"float" ~suffix
+    Error.(to_expr (unsupported_num_const ~loc ~kind:"float" ~suffix))
 
 let same_variables vl vl' =
   List.for_all2 vl vl'
@@ -91,19 +91,31 @@ let same_variables vl vl' =
         loc_name.txt = loc_name'.txt
       | _ -> false)
 
+let error_to_expr_and_vars error =
+  (Error.to_expr error, [Error.to_pat error])
+
 let rec translate_pattern pattern =
   match Pattern.to_concrete pattern with
   | {ppat_desc; ppat_loc; ppat_attributes} ->
     let loc = ppat_loc in
     let fields = View_attr.extract_fields ppat_attributes in
     match fields with
-    | None -> translate_pattern_desc ~loc ppat_desc
-    | Some fields ->
+    | Ok None -> translate_pattern_desc ~loc ppat_desc
+    | Ok (Some fields) ->
       let expr, vars = translate_pattern_desc ~loc ppat_desc in
       let field_exprs_vars = List.map fields ~f:translate_record_field in
       let field_exprs, field_vars = List.split field_exprs_vars in
       ( Builder.Exp.view_lib_sequence ~loc (field_exprs @ [expr])
       , List.flatten field_vars @ vars )
+    | Error err ->
+      (* Insert error extension points in place of the above [field_vars]
+         and [field_expr] so that errors from the pattern translation
+         can also be reported. *)
+      let expr, vars = translate_pattern_desc ~loc ppat_desc in
+      let field_var = Error.to_pat err in
+      let field_expr = Error.to_expr err in
+      ( Builder.Exp.view_lib_sequence ~loc [field_expr; expr]
+      , field_var::vars )
 
 and translate_pattern_desc ~loc desc =
   match Pattern_desc.to_concrete desc with
@@ -161,7 +173,10 @@ and translate_pattern_desc ~loc desc =
       ( Builder.Exp.apply_lident ~loc f [expr_first; expr_second]
       , vars_first )
     else
-      Error.or_pattern_variables_differ ~loc
+      (* Might be worth considering appending the below errors instead of
+         replacing it all so that users also get errors for the inner
+         patterns *)
+      error_to_expr_and_vars (Error.or_pattern_variables_differ ~loc)
   | Ppat_record (fields, _closed) ->
     let exprs_vars = List.map ~f:translate_record_field fields in
     let exprs, vars = List.split exprs_vars in
@@ -178,17 +193,19 @@ and translate_pattern_desc ~loc desc =
     ( pexp_open ~loc Override_flag.override lid expr
     , vars )
   | Ppat_variant _ ->
-    Error.unsupported_pattern ~loc "polymorphic variants"
+    error_to_expr_and_vars
+      (Error.unsupported_pattern ~loc "polymorphic variants")
   | Ppat_type _ ->
-    Error.unsupported_pattern ~loc "sub types"
+    error_to_expr_and_vars (Error.unsupported_pattern ~loc "sub types")
   | Ppat_lazy _ ->
-    Error.unsupported_pattern ~loc "lazy values"
+    error_to_expr_and_vars (Error.unsupported_pattern ~loc "lazy values")
   | Ppat_unpack _ ->
-    Error.unsupported_pattern ~loc "first class modules"
+    error_to_expr_and_vars
+      (Error.unsupported_pattern ~loc "first class modules")
   | Ppat_exception _ ->
-    Error.unsupported_pattern ~loc "exceptions"
+    error_to_expr_and_vars (Error.unsupported_pattern ~loc "exceptions")
   | Ppat_extension _ ->
-    Error.unsupported_pattern ~loc "extension points"
+    error_to_expr_and_vars (Error.unsupported_pattern ~loc "extension points")
 
 and translate_patterns patts =
   let exprs, vars =
@@ -218,7 +235,7 @@ and translate_record_field (label, patt) =
     ( Builder.Exp.apply_lident ~loc:label_loc f [expr]
     , vars )
   | _ ->
-    Error.invalid_record_field ~loc:label_loc
+    error_to_expr_and_vars (Error.invalid_record_field ~loc:label_loc)
 
 and translate_array ~loc patts =
   match patts with
@@ -290,4 +307,4 @@ let payload ~loc payload_expr =
   | Pexp_function match_cases ->
     translate_match ~loc match_cases
   | _ ->
-    Error.invalid_payload ~loc:pexp_loc
+    Error.(to_expr (invalid_payload ~loc:pexp_loc))

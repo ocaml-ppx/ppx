@@ -1,6 +1,10 @@
+open Import
+open Astlib
+
+type t = string Loc.t
+
 let errorf ~loc fmt =
-  Ocaml_common.Location.raise_errorf ~loc
-    ("ppx_view: " ^^ fmt)
+  Printf.ksprintf (fun msg -> Loc.{txt = msg; loc}) ("ppx_view: " ^^ fmt)
 
 let invalid_payload ~loc =
   errorf ~loc "Invalid payload, should be a 'match' or a 'function'"
@@ -22,3 +26,9 @@ let invalid_record_field ~loc =
 
 let unsupported_num_const ~loc ~kind ~suffix =
   errorf ~loc "Unsupported %s litteral suffix %C" kind suffix
+
+let to_expr Loc.{loc; txt} =
+  Error_ext.exprf ~loc "%s" txt
+
+let to_pat Loc.{loc; txt} =
+  Error_ext.patf ~loc "%s" txt

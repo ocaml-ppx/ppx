@@ -10,4 +10,4 @@ type field = Longident_loc.t * Pattern.t
     such attribute. *)
 val extract_fields :
   Attributes.t ->
-  (field list) option
+  ((field list) option, Error.t) result

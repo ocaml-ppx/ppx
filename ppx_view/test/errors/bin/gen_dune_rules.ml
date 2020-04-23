@@ -29,6 +29,7 @@ let output_stanzas filename =
 
 let is_error_test filename =
   Filename.check_suffix filename ".ml"
+  && not (Filename.check_suffix filename ".pp.ml")
 
 let () =
   Sys.readdir "."
