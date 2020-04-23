@@ -1,0 +1,5 @@
+(library
+ (name astlib_base)
+ (libraries astlib base base_quickcheck)
+ (preprocess (pps ppx_base))
+ (flags (:standard -safe-string)))

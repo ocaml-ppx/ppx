@@ -1,6 +1,6 @@
 (** Compile-time representation of ASTs; i.e., their types.
 
-    Lists in these types are always non-empty Tuples and records always have at least one
+    Lists in these types are always non-empty. Tuples and records always have at least one
     field; AST variants always have at least one clause; polymorphic types always have at
     least one argument. *)
 

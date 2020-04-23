@@ -1,0 +1,9 @@
+(library
+ (name astlib_tests)
+ (libraries
+  astlib
+  astlib_base
+  expect_test_helpers_kernel.expect_test_helpers_base)
+ (preprocess (pps ppx_base ppx_expect ppx_sexp_value))
+ (flags (:standard -safe-string))
+ (inline_tests))
