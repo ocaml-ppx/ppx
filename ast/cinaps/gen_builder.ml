@@ -263,7 +263,7 @@ let builders name (grammar : Astlib.Grammar.kind) shortcut =
   | Poly (_, _) -> []
   | Mono decl ->
     match decl with
-    | Wrapper _ -> []
+    | Ty _ -> []
     | Record r ->
       begin match Builder.of_record name r shortcut with
       | None -> []

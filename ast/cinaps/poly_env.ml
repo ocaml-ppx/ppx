@@ -62,7 +62,7 @@ let subst_variants variants ~env =
 let subst_decl decl ~env =
   let open Astlib.Grammar in
   match decl with
-  | Wrapper ty -> Wrapper (subst_ty ~env ty)
+  | Ty ty -> Ty (subst_ty ~env ty)
   | Record fields -> Record (subst_fields ~env fields)
   | Variant variants -> Variant (subst_variants ~env variants)
 
@@ -90,7 +90,7 @@ let variant_instances variant =
 
 let decl_instances decl =
   match (decl : Astlib.Grammar.decl) with
-  | Wrapper ty -> ty_instances ty
+  | Ty ty -> ty_instances ty
   | Record record -> record_instances record
   | Variant variant -> variant_instances variant
 

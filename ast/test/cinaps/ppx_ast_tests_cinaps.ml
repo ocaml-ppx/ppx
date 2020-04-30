@@ -52,7 +52,7 @@ let print_deriving_type decl ~index ~name ~tvars =
     (Ml.poly_type name ~tvars);
   Print.indented (fun () ->
     match (decl : Astlib.Grammar.decl) with
-    | Wrapper ty -> Print.println "%s" (string_of_ty ty)
+    | Ty ty -> Print.println "%s" (string_of_ty ty)
     | Record record ->
       Print.println "%s =" (Ml.poly_type ("Compiler_types." ^ name) ~tvars);
       Ml.print_record_type record ~f:string_of_ty
@@ -150,7 +150,7 @@ let print_quickcheck_generator decl ~index ~name ~tvars =
   Print.indented (fun () ->
     let gen_id name = Ml.id ("gen_" ^ name) in
     match (decl : Astlib.Grammar.decl) with
-    | Wrapper ty ->
+    | Ty ty ->
       Print.println "let gen = %s in" (generator_string ty);
       Print.println "Generator.generate gen ~size ~random"
     | Record record ->

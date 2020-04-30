@@ -9,7 +9,7 @@ let grammar : Grammar.t =
            [ ("Lident", Tuple [String])
            ; ("Ldot", Tuple [Name "longident"; String])
            ; ("Lapply", Tuple [Name "longident"; Name "longident"]) ]))
-  ; ("longident_loc", Mono (Wrapper (Loc (Name "longident"))))
+  ; ("longident_loc", Mono (Ty (Loc (Name "longident"))))
   ; ( "rec_flag"
     , Mono
         (Variant [("Nonrecursive", Empty); ("Recursive", Empty)])
@@ -46,10 +46,10 @@ let grammar : Grammar.t =
               ; ("Pconst_string", Tuple [String; Option String])
               ; ("Pconst_float", Tuple [String; Option Char]) ]) )
   ; ( "attribute"
-    , Mono (Wrapper (Tuple [Loc String; Name "payload"])) )
+    , Mono (Ty (Tuple [Loc String; Name "payload"])) )
   ; ( "extension"
-    , Mono (Wrapper (Tuple [Loc String; Name "payload"])) )
-  ; ("attributes", Mono (Wrapper (List (Name "attribute"))))
+    , Mono (Ty (Tuple [Loc String; Name "payload"])) )
+  ; ("attributes", Mono (Ty (List (Name "attribute"))))
   ; ( "payload"
     , Mono
         (Variant
@@ -90,7 +90,7 @@ let grammar : Grammar.t =
               ; ("Ptyp_extension", Tuple [Name "extension"]) ]) )
   ; ( "package_type"
     , Mono
-        (Wrapper
+        (Ty
               (Tuple
                  [ Name "longident_loc"
                  ; List (Tuple [Name "longident_loc"; Name "core_type"]) ]))
@@ -381,9 +381,9 @@ let grammar : Grammar.t =
                ; ("pci_loc", Location)
                ; ("pci_attributes", Name "attributes") ]) ) )
   ; ( "class_description"
-    , Mono (Wrapper (Instance ("class_infos", [Tname "class_type"]))) )
+    , Mono (Ty (Instance ("class_infos", [Tname "class_type"]))) )
   ; ( "class_type_declaration"
-    , Mono (Wrapper (Instance ("class_infos", [Tname "class_type"]))) )
+    , Mono (Ty (Instance ("class_infos", [Tname "class_type"]))) )
   ; ( "class_expr"
     , Mono
         (Record
@@ -461,7 +461,7 @@ let grammar : Grammar.t =
               ; ( "Cfk_concrete"
                 , Tuple [Name "override_flag"; Name "expression"] ) ]) )
   ; ( "class_declaration"
-    , Mono (Wrapper (Instance ("class_infos", [Tname "class_expr"]))) )
+    , Mono (Ty (Instance ("class_infos", [Tname "class_expr"]))) )
   ; ( "module_type"
     , Mono
         (Record
@@ -483,7 +483,7 @@ let grammar : Grammar.t =
               ; ("Pmty_typeof", Tuple [Name "module_expr"])
               ; ("Pmty_extension", Tuple [Name "extension"])
               ; ("Pmty_alias", Tuple [Name "longident_loc"]) ]) )
-  ; ("signature", Mono (Wrapper (List (Name "signature_item"))))
+  ; ("signature", Mono (Ty (List (Name "signature_item"))))
   ; ( "signature_item"
     , Mono
         (Record
@@ -537,9 +537,9 @@ let grammar : Grammar.t =
              ; ("pincl_loc", Location)
              ; ("pincl_attributes", Name "attributes") ]) ) )
   ; ( "include_description"
-    , Mono (Wrapper (Instance ("include_infos", [Tname "module_type"]))) )
+    , Mono (Ty (Instance ("include_infos", [Tname "module_type"]))) )
   ; ( "include_declaration"
-    , Mono (Wrapper (Instance ("include_infos", [Tname "module_expr"]))) )
+    , Mono (Ty (Instance ("include_infos", [Tname "module_expr"]))) )
   ; ( "with_constraint"
     , Mono
         (Variant
@@ -572,7 +572,7 @@ let grammar : Grammar.t =
              , Tuple [Name "module_expr"; Name "module_type"] )
            ; ("Pmod_unpack", Tuple [Name "expression"])
            ; ("Pmod_extension", Tuple [Name "extension"]) ]) )
-  ; ("structure", Mono (Wrapper (List (Name "structure_item"))))
+  ; ("structure", Mono (Ty (List (Name "structure_item"))))
   ; ( "structure_item"
     , Mono
         (Record

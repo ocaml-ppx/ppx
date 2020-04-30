@@ -62,9 +62,9 @@ type clause =
 
 type variant = (string * clause) list
 
-(** A nominal type may contain a structural type, a record type, or a variant type. *)
+(** A type declaration may contain a structural type, a record type, or a variant type. *)
 type decl =
-  | Wrapper of ty
+  | Ty of ty
   | Record of record
   | Variant of variant
 

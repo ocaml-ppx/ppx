@@ -21,7 +21,7 @@ module Render (Config : sig val internal : bool end) = struct
 
   let type_element decl : Ml.element =
     match (decl : Astlib.Grammar.decl) with
-    | Wrapper ty -> Line (string_of_ty ty)
+    | Ty ty -> Line (string_of_ty ty)
     | Record record -> Block (fun () -> print_record_type record)
     | Variant variant -> Block (fun () -> print_variant_type variant)
 end
@@ -41,7 +41,7 @@ module Signature = struct
     let env = Poly_env.uninstantiated tvars in
     let string_of_ty ty = Render.string_of_ty ~nodify:true (Poly_env.subst_ty ty ~env) in
     match (decl : Astlib.Grammar.decl) with
-    | Wrapper ty ->
+    | Ty ty ->
       Ml.declare_val
         "create"
         (Line (Printf.sprintf "%s -> %s"
@@ -140,7 +140,7 @@ module Structure = struct
 
   let define_constructors decl ~node_name ~grammar =
     match (decl : Astlib.Grammar.decl) with
-    | Wrapper ty ->
+    | Ty ty ->
       Print.println "let create =";
       Print.indented (fun () ->
         Print.println "let data = %s in" (ast_of_ty ~grammar ty);
@@ -199,7 +199,7 @@ module Structure = struct
 
   let define_of_concrete decl =
     match (decl : Astlib.Grammar.decl) with
-    | Wrapper _ -> Print.println "let of_concrete = create"
+    | Ty _ -> Print.println "let of_concrete = create"
     | Record record ->
       Print.println "let of_concrete { %s } ="
         (String.concat ~sep:"; "
@@ -253,7 +253,7 @@ module Structure = struct
 
   let define_to_concrete_opt decl ~node_name ~grammar =
     match (decl : Astlib.Grammar.decl) with
-    | Wrapper ty ->
+    | Ty ty ->
       Print.println "let to_concrete_opt t =";
       Print.indented (fun () ->
         Print.println

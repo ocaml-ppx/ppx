@@ -10,8 +10,8 @@ let wrapper_types grammar =
   List.fold_left ~init grammar
     ~f:(fun acc (name, kind) ->
       match (kind : Astlib.Grammar.kind) with
-      | Mono (Wrapper ty) -> String.Map.add acc name ([], ty)
-      | Poly (targs, Wrapper ty) -> String.Map.add acc name (targs, ty)
+      | Mono (Ty ty) -> String.Map.add acc name ([], ty)
+      | Poly (targs, Ty ty) -> String.Map.add acc name (targs, ty)
       | _ -> acc)
 
 let shortcut_viewer_name ~shortcut cname =
@@ -324,7 +324,7 @@ let print_viewer ~what ~shortcuts ~wrapper_types (name, kind) =
     assert false
   | _, Record fields ->
     List.iter fields ~f:(M.print_field_viewer ~targs ~name)
-  | _, Wrapper ty ->
+  | _, Ty ty ->
     M.print_wrapper_viewer ~wrapper_types ~targs ~name ty
 
 let print_viewer_ml version =
