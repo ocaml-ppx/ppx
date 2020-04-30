@@ -71,19 +71,19 @@ and update_array array =
   Array.init len ~f:(fun i ->
     update_data array.(len - i - 1))
 
-let update_node (node : _ Ast.node) =
-  { node with data = update_data node.data }
+let update_ast (ast : _ Ast.t) =
+  { ast with data = update_data ast.data }
 
 let to_stable : History.conversion =
   { src_version = version
   ; dst_version = Stable.version
-  ; f = fun node ~to_node:_ ~of_node:_ -> update_node node
+  ; f = fun ast ~to_ast:_ ~of_ast:_ -> update_ast ast
   }
 
 let of_stable : History.conversion =
   { src_version = Stable.version
   ; dst_version = version
-  ; f = fun node ~to_node:_ ~of_node:_ -> update_node node
+  ; f = fun ast ~to_ast:_ ~of_ast:_ -> update_ast ast
   }
 
 let conversions = [ to_stable; of_stable ]
