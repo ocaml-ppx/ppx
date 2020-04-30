@@ -137,7 +137,7 @@ let define_conversion decl ~node_name ~env ~conv =
   let name = Name.make [concrete_prefix ~conv; node_name] (Poly_env.args env) in
   let node_ty = node_ty ~node_name ~env in
   match (decl : Astlib.Grammar.decl) with
-  | Wrapper ty ->
+  | Ty ty ->
     Print.println "and %s x =" name;
     Print.indented (fun () ->
       Print.println "%s x" (fn_value (ty_conversion ~conv (Poly_env.subst_ty ty ~env))))

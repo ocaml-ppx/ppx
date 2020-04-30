@@ -207,7 +207,7 @@ let print_method_body
   =
   let value_kind = Ast_type {node_name; targs} in
   match decl with
-  | Wrapper ty -> print_method_for_alias ~traversal ~value_kind ~var ty
+  | Ty ty -> print_method_for_alias ~traversal ~value_kind ~var ty
   | Record fields ->
     let deconstructed = deconstruct_record ~traversal fields in
     let concrete_type = (node_type ~type_:Concrete ~args:targs node_name) in

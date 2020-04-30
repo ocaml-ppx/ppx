@@ -35,7 +35,7 @@ let update_variant variant =
 
 let update_decl decl : Grammar.decl =
   match (decl : Grammar.decl) with
-  | Wrapper ty -> Wrapper (update_ty ty)
+  | Ty ty -> Ty (update_ty ty)
   | Record record -> Record (update_record record)
   | Variant variant -> Variant (update_variant variant)
 
