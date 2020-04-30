@@ -302,6 +302,7 @@ module Node = struct
             let data = Variant { tag; args = [| override; lident; cl |] } in
             Some { node with data }
           | None -> None )
+      | Variant { tag = "Pcl_open"; _ } -> None
       | _ -> Some node
 
     let ext_ctor_from_type_exc ~unwrap type_exc =
@@ -343,6 +344,14 @@ module Node = struct
       | Variant { tag = ("Pstr_exception" | "Pstr_open"); _} -> None
       | _ -> Some node
 
+    let downgrade_open_description ~unwrap node =
+      match node.data with
+      | Node open_infos ->
+        ( match unwrap open_infos with
+          | Some { name = "open_infos"; data } -> Some { node with data }
+          | _ -> None )
+      | _ -> None
+
     let dir_arg ~wrap ~unwrap pdir_arg =
       let wrap data =
         Node (wrap { name = "directive_argument"; data })
@@ -352,7 +361,9 @@ module Node = struct
         Some (wrap (Variant { tag = "Pdir_none"; args = [||] }))
       | Option (Some (Node dir_arg)) ->
         ( match unwrap dir_arg with
-          | Some { name = "directive_argument"; data = Node desc } ->
+          | Some
+              { name = "directive_argument"
+              ; data = Record [| Node desc; _loc |] } ->
             ( match unwrap desc with
               | Some { name = "directive_argument_desc"; data } ->
                 Some (wrap data)
@@ -391,6 +402,7 @@ module Node = struct
       | "class_expr_desc" -> downgrade_class_expr_desc ~unwrap node
       | "signature_item_desc" ->
         downgrade_signature_item_desc ~unwrap node
+      | "open_description" -> downgrade_open_description ~unwrap node
       | "structure_item_desc" ->
         downgrade_structure_item_desc ~wrap ~unwrap node
       | "toplevel_phrase" -> downgrade_toplevel_phrase ~wrap ~unwrap node
@@ -454,66 +466,81 @@ module Node = struct
           | _ -> None )
       | _ -> None
 
-    let od_pmod_ident ~wrap ~override ~lident ?popen_loc ?popen_attr () =
-      let loc = lident.Loc.loc in
-      let attr = empty_attr ~wrap in
-      let data = Variant {tag = "Pmod_ident"; args = [|Loc lident|]} in
-      let desc = wrap {name = "module_expr_desc"; data} in
-      let data = Record [| Node desc; Location loc; attr |] in
-      let mod_exp = wrap {name = "module_expr"; data} in
-      let popen_loc = Option.value ~default:(Location loc) popen_loc in
-      let popen_attr = Option.value ~default:attr popen_attr in
-      let data = Record [| Node mod_exp; override; popen_loc; popen_attr |] in
-      let open_infos = wrap {name = "open_infos"; data} in
-      let data = Node open_infos in
-      Node (wrap {name = "open_declaration"; data})
+    let od_pmod_ident
+          ~wrap ~unwrap ~override ~lident_loc ?popen_loc ?popen_attr () =
+      match unwrap lident_loc with
+      | Some { name = "longident_loc"; data = (Loc {loc; _}) } ->
+        let attr = empty_attr ~wrap in
+        let data = Variant {tag = "Pmod_ident"; args = [|Node lident_loc|]} in
+        let desc = wrap {name = "module_expr_desc"; data} in
+        let data = Record [| Node desc; Location loc; attr |] in
+        let mod_exp = wrap {name = "module_expr"; data} in
+        let popen_loc = Option.value ~default:(Location loc) popen_loc in
+        let popen_attr = Option.value ~default:attr popen_attr in
+        let data = Record [| Node mod_exp; override; popen_loc; popen_attr |] in
+        let open_infos = wrap {name = "open_infos"; data} in
+        let data = Node open_infos in
+        Some (Node (wrap {name = "open_declaration"; data}))
+      | _ -> None
 
-    let upgrade_expression_desc ~wrap node =
+    let upgrade_expression_desc ~wrap ~unwrap node =
       match node.data with
       | Variant
           { tag = "Pexp_open" as tag
-          ; args = [|override; Loc lident; expr|] } ->
-        let open_declaration = od_pmod_ident ~wrap ~override ~lident () in
-        let data = Variant {tag; args = [|open_declaration; expr|]} in
-        Some { node with data }
+          ; args = [|override; Node lident_loc; expr|] } ->
+        ( match od_pmod_ident ~wrap ~unwrap ~override ~lident_loc () with
+          | Some open_declaration ->
+            let data = Variant {tag; args = [|open_declaration; expr|]} in
+            Some { node with data }
+          | _ -> None )
+      | Variant { tag = "Pexp_open"; _ } -> None
       | _ -> Some node
 
-    let upgrade_type_extension node =
+    let upgrade_type_extension ~unwrap node =
       match node.data with
-      | Record [| Loc x as path; params; ctors; private_; attr |] ->
-        let data =
-          Record [| path; params; ctors; private_; Location x.loc; attr |]
-        in
-        Some { node with data }
+      | Record [| Node li as path; params; ctors; private_; attr |] ->
+        ( match unwrap li with
+          | Some { name = "longident_loc"; data = Loc x } ->
+            let data =
+              Record [| path; params; ctors; private_; Location x.loc; attr |]
+            in
+            Some { node with data }
+          | _ -> None )
       | _ -> None
 
-    let open_desc ~wrap ~override ~lident =
-      let loc = lident.Loc.loc in
-      let attr = empty_attr ~wrap in
-      let data = Record [| Loc lident; override; Location loc; attr |] in
-      let open_infos = wrap {name = "open_infos"; data} in
-      let data = Node open_infos in
-      Node (wrap {name = "open_description"; data})
+    let open_desc ~wrap ~unwrap ~override ~lident_loc =
+      match unwrap lident_loc with
+      | Some { name = "longident_loc"; data = Loc {loc; _} } ->
+        let attr = empty_attr ~wrap in
+        let data = Record [| Node lident_loc; override; Location loc; attr |] in
+        let open_infos = wrap {name = "open_infos"; data} in
+        let data = Node open_infos in
+        Some (Node (wrap {name = "open_description"; data}))
+      | _ -> None
 
-    let upgrade_class_type_desc ~wrap node =
+    let upgrade_class_type_desc ~wrap ~unwrap node =
       match node.data with
       | Variant
-          { tag = "Pcty_open" as tag; args = [| override; Loc lident; cty |] } ->
-        let data =
-          Variant {tag; args = [| open_desc ~wrap ~override ~lident; cty |]}
-        in
-        Some { node with data }
+          { tag = "Pcty_open" as tag
+          ; args = [| override; Node lident_loc; cty |] } ->
+        let open_desc = open_desc ~wrap ~unwrap ~override ~lident_loc in
+        Option.map
+          (fun odesc ->
+             { node with data = Variant { tag; args = [| odesc; cty |] } })
+          open_desc
+      | Variant { tag = "Pcty_open"; _ } -> None
       | _ -> Some node
 
-    let upgrade_class_expr_desc ~wrap node =
+    let upgrade_class_expr_desc ~wrap ~unwrap node =
       match node.data with
       | Variant
-          { tag = "Pcl_open" as tag; args = [| override; Loc lident; cl |] } ->
-        let data =
-          Variant
-            { tag; args = [| open_desc ~wrap ~override ~lident; cl |] }
-        in
-        Some { node with data }
+          { tag = "Pcl_open" as tag
+          ; args = [| override; Node lident_loc; cl |] } ->
+        let open_desc = open_desc ~wrap ~unwrap ~override ~lident_loc in
+        Option.map
+          (fun odesc ->
+             { node with data = Variant { tag; args = [| odesc; cl |] } })
+          open_desc
       | _ -> Some node
 
     let type_exc ~wrap ~unwrap ext_ctor =
@@ -532,7 +559,12 @@ module Node = struct
           | Some type_exc ->
             Some { node with data = Variant {tag; args = [| type_exc |]} }
           | None -> None )
+      | Variant { tag = "Psig_exception"; _ } -> None
       | _ -> Some node
+
+    let upgrade_open_description ~wrap node =
+      let data = Node (wrap {name = "open_infos"; data = node.data}) in
+      Some { node with data }
 
     let upgrade_structure_item_desc ~wrap ~unwrap node =
       match node.data with
@@ -546,12 +578,18 @@ module Node = struct
           | Some
               { name = "open_description"
               ; data =
-                  Record [| Loc lident; override; popen_loc; popen_attr |] } ->
+                  Record
+                    [| Node lident_loc; override; popen_loc; popen_attr |] } ->
             let open_decl =
-              od_pmod_ident ~wrap ~lident ~override ~popen_loc ~popen_attr ()
+              od_pmod_ident
+                ~wrap ~unwrap ~lident_loc ~override ~popen_loc ~popen_attr ()
             in
-            Some { node with data = Variant { tag; args = [| open_decl |] } }
+            Option.map
+              (fun open_decl ->
+                 { node with data = Variant { tag; args = [| open_decl |] }})
+              open_decl
           | _ -> None )
+      | Variant { tag = ("Pstr_exception" | "Pstr_open"); _ } -> None
       | _ -> Some node
 
     let pdir_arg ~wrap ~unwrap dir_arg =
@@ -588,11 +626,12 @@ module Node = struct
       | "expression" -> add_loc_stack node
       | "row_field" -> upgrade_row_field ~wrap ~unwrap node
       | "object_field" -> upgrade_object_field ~wrap ~unwrap node
-      | "expression_desc" -> upgrade_expression_desc ~wrap node
-      | "type_extension" -> upgrade_type_extension node
-      | "class_type_desc" -> upgrade_class_type_desc ~wrap node
-      | "class_expr_desc" -> upgrade_class_expr_desc ~wrap node
+      | "expression_desc" -> upgrade_expression_desc ~wrap ~unwrap node
+      | "type_extension" -> upgrade_type_extension ~unwrap node
+      | "class_type_desc" -> upgrade_class_type_desc ~wrap ~unwrap node
+      | "class_expr_desc" -> upgrade_class_expr_desc ~wrap ~unwrap node
       | "signature_item_desc" -> upgrade_signature_item_desc ~wrap ~unwrap node
+      | "open_description" -> upgrade_open_description ~wrap node
       | "structure_item_desc" -> upgrade_structure_item_desc ~wrap ~unwrap node
       | "toplevel_phrase" -> upgrade_toplevel_phrase ~wrap ~unwrap node
       | _ -> Some node
