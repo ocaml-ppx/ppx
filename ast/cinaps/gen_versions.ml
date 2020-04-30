@@ -257,7 +257,7 @@ module Structure = struct
       Print.println "let to_concrete_opt t =";
       Print.indented (fun () ->
         Print.println
-          "match Node.to_node (Unversioned.Private.transparent t) ~version with";
+          "match Node.to_ast (Unversioned.Private.transparent t) ~version with";
         Print.println "| { name = %S; data } -> %s data"
           node_name
           (ast_to_ty ~grammar ty);
@@ -266,7 +266,7 @@ module Structure = struct
       Print.println "let to_concrete_opt t =";
       Print.indented (fun () ->
         Print.println
-          "match Node.to_node (Unversioned.Private.transparent t) ~version with";
+          "match Node.to_ast (Unversioned.Private.transparent t) ~version with";
         Print.println "| { name = %S" node_name;
         Print.indented (fun () ->
           Print.println "; data = Record [| %s |]"
@@ -283,7 +283,7 @@ module Structure = struct
       Print.println "let to_concrete_opt t =";
       Print.indented (fun () ->
         Print.println
-          "match Node.to_node (Unversioned.Private.transparent t) ~version with";
+          "match Node.to_ast (Unversioned.Private.transparent t) ~version with";
         Print.println "| { name = %S; data } ->" node_name;
         Print.indented (fun () ->
           Print.println "begin";
@@ -411,7 +411,7 @@ let print_version_ml version =
     "let version = Astlib.Version.of_string %S"
     (Astlib.Version.to_string version);
   Print.println
-    "let node name data = Unversioned.Private.opaque (Node.of_node ~version { name; data })";
+    "let node name data = Unversioned.Private.opaque (Node.of_ast ~version { name; data })";
   Print.newline ();
   Ml.define_modules grammar ~f:(fun node_name kind ->
     match (kind : Astlib.Grammar.kind) with

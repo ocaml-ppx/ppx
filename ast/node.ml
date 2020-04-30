@@ -1,8 +1,8 @@
-type t = { version : Astlib.Version.t; node : t Astlib.Ast.node }
+type t = { version : Astlib.Version.t; ast : t Astlib.Ast.t }
 
 let version t = t.version
 
-let of_node node ~version = { version; node }
+let of_ast ast ~version = { version; ast }
 
-let rec to_node { node; version = src_version } ~version:dst_version =
-  Astlib.History.convert Astlib.history node ~src_version ~dst_version ~to_node ~of_node
+let rec to_ast { ast; version = src_version } ~version:dst_version =
+  Astlib.History.convert Astlib.history ast ~src_version ~dst_version ~to_ast ~of_ast
