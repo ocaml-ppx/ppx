@@ -1,14 +1,35 @@
 open! Base
 open Astlib_base
 
-module Node = struct
+module Versioned_node = struct
+  type t = { version : Version.t; ast : t Ast.t }
+
+  let of_ast ast ~version = { version; ast }
+
+  let rec to_ast { version = src_version; ast } ~version:dst_version ~history =
+    let to_ast = to_ast ~history in
+    Astlib.History.convert history ast ~src_version ~dst_version ~to_ast ~of_ast
+end
+
+module Unversioned_node = struct
   type t = { ast : t Ast.t } [@@deriving equal, sexp_of]
 
-  let of_ast ast = { ast }
-  let to_ast { ast } = ast
+  let of_versioned_node node ~version ~history =
+    let rec f node =
+      { ast = Ast.map (Versioned_node.to_ast node ~version ~history) ~f }
+    in
+    f node
 
-  let matches t ~grammar = Ast.matches t ~grammar ~to_ast
-  let generator grammar = Ast.generator grammar ~of_ast
+  let to_versioned_node t ~version =
+    let rec f { ast } = Versioned_node.of_ast ~version (Ast.map ast ~f) in
+    f t
+
+  let matches t ~grammar = Ast.matches t.ast ~grammar ~to_ast:(fun { ast } -> ast)
+
+  let generator grammar =
+    Base_quickcheck.Generator.map ~f:(fun ast -> { ast })
+      (Ast.generator grammar ~of_ast:(fun ast -> { ast }))
+
   let shrinker = Base_quickcheck.Shrinker.atomic
 end
 
@@ -47,39 +68,57 @@ let v1_of_v2 x ~to_ast:_ ~of_ast:_ = x
 
 let rec v3_addends_of_v2 ast ~to_ast ~of_ast : _ Ast.data list =
   match (ast : _ Ast.t) with
-  | { name = "expr"; data = Variant { tag = "add"; args = [| Node x; Node y |] } } ->
-    v3_addends_of_v2 (to_ast x ~version:v2) ~to_ast ~of_ast @
-    v3_addends_of_v2 (to_ast y ~version:v2) ~to_ast ~of_ast
-  | _ -> [ Node (of_ast ast ~version:v3) ]
+  | { name = "expr"; data = Variant { tag; args } } ->
+    (match tag with
+     | "var" | "int" -> [ Node (of_ast ast ~version:v3) ]
+     | "add" ->
+       (match args with
+        | [| Node x; Node y |] ->
+          v3_addends_of_v2 (to_ast x ~version:v2) ~to_ast ~of_ast @
+          v3_addends_of_v2 (to_ast y ~version:v2) ~to_ast ~of_ast
+        | [| List _ |] -> assert false
+        | _ -> assert false)
+     | _ -> assert false)
+  | _ -> assert false
 
 let v3_of_v2 ast ~to_ast ~of_ast =
   match v3_addends_of_v2 ast ~to_ast ~of_ast with
   | [ _ ] -> ast
   | list -> { name = "expr" ; data = Variant { tag = "add" ; args = [| List list |] } }
 
-let v2_add x y ~of_ast : _ Ast.t =
+let v2_zero () : _ Ast.t =
+  { name = "expr"
+  ; data = Variant { tag = "int"; args = [| Int 0 |] }
+  }
+
+let v2_add x y : _ Ast.t =
   { name = "expr"
   ; data =
       Variant
         { tag = "add"
-        ; args = [| Node (of_ast x ~version:v2); Node (of_ast y ~version:v2) |]
+        ; args = [| Node x; Node y |]
         }
   }
 
-let v2_of_v3 ast ~to_ast ~of_ast =
+let v2_of_v3 ast ~to_ast:_ ~of_ast =
   match (ast : _ Ast.t) with
-  | { name = "expr"; data = Variant { tag = "add"; args = [| List data |] } } ->
-    (match
-       Option.all (List.map data ~f:(function
-         | Node node -> Some (to_ast node ~version:v3)
-         | _ -> None))
-     with
-     | None -> ast
-     | Some asts ->
-       (match List.reduce asts ~f:(v2_add ~of_ast) with
-        | Some ast -> ast
-        | None -> { name = "expr"; data = Variant { tag = "int"; args = [| Int 0 |] } }))
-  | _ -> ast
+  | { name = "expr"; data = Variant { tag; args } } ->
+    (match tag with
+     | "var" | "int" -> ast
+     | "add" ->
+       (match args with
+        | [| List data |] ->
+          let nodes =
+            List.map data ~f:(function
+              | Node node -> node
+              | _ -> assert false)
+          in
+          List.fold_right nodes ~init:(v2_zero ()) ~f:(fun node acc ->
+            v2_add node (of_ast acc ~version:v2))
+        | [| Node _; Node _ |] -> assert false
+        | _ -> assert false)
+     | _ -> assert false)
+  | _ -> assert false
 
 let versioned_grammars = [
   v1, v1_grammar;
@@ -100,13 +139,13 @@ let%expect_test "generator consistency" =
   List.iter versioned_grammars ~f:(fun (version, grammar) ->
     Base_quickcheck.Test.run_exn
       (module struct
-        type t = Node.t
-        let sexp_of_t = Node.sexp_of_t
-        let quickcheck_generator = Node.generator grammar
-        let quickcheck_shrinker = Node.shrinker
+        type t = Unversioned_node.t
+        let sexp_of_t = Unversioned_node.sexp_of_t
+        let quickcheck_generator = Unversioned_node.generator grammar
+        let quickcheck_shrinker = Unversioned_node.shrinker
       end)
       ~f:(fun node ->
-        if not (Node.matches node ~grammar)
+        if not (Unversioned_node.matches node ~grammar)
         then raise_s [%sexp "invalid AST", { version : Version.t }]));
   [%expect {| |}]
 
@@ -118,28 +157,27 @@ let%expect_test "history up-conversions always work" =
       if dst_index >= src_index then
         Base_quickcheck.Test.run_exn
           (module struct
-            type t = Node.t
-            let sexp_of_t = Node.sexp_of_t
-            let quickcheck_generator = Node.generator src_grammar
-            let quickcheck_shrinker = Node.shrinker
+            type t = Unversioned_node.t
+            let sexp_of_t = Unversioned_node.sexp_of_t
+            let quickcheck_shrinker = Unversioned_node.shrinker
+            let quickcheck_generator = Unversioned_node.generator src_grammar
           end)
           ~f:(fun src ->
             let dst =
               src
-              |> Node.to_ast
-              |> Astlib.History.convert history
-                   ~src_version
-                   ~dst_version
-                   ~to_ast:(fun x ~version:_ -> Node.to_ast x)
-                   ~of_ast:(fun x ~version:_ -> Node.of_ast x)
-              |> Node.of_ast
+              |> Unversioned_node.to_versioned_node ~version:src_version
+              |> Unversioned_node.of_versioned_node ~version:dst_version ~history
             in
-            if not (Node.matches dst ~grammar:dst_grammar) then
+            if not (Unversioned_node.matches dst ~grammar:dst_grammar)
+            then
               raise_s
                 [%sexp
                   "invalid conversion"
-                , { src_version : Version.t; dst_version : Version.t; dst : Node.t }])));
-  [%expect{||}]
+                , { src_version : Version.t
+                  ; dst_version : Version.t
+                  ; dst : Unversioned_node.t
+                  }])));
+  [%expect {| |}]
 
 (* Round-trips aren't guaranteed to end up at the same AST, case in point, here a tree of
    addends round-tripping through the list version might come back to a
@@ -150,32 +188,51 @@ let%expect_test "history round-trips always work" =
     List.iter versioned_grammars ~f:(fun (dst_version, _) ->
       Base_quickcheck.Test.run_exn
         (module struct
-          type t = Node.t
-          let sexp_of_t = Node.sexp_of_t
-          let quickcheck_generator = Node.generator src_grammar
-          let quickcheck_shrinker = Node.shrinker
+          type t = Unversioned_node.t
+          let sexp_of_t = Unversioned_node.sexp_of_t
+          let quickcheck_generator = Unversioned_node.generator src_grammar
+          let quickcheck_shrinker = Unversioned_node.shrinker
         end)
         ~f:(fun original ->
-          let round_trip =
-            original
-            |> Node.to_ast
-            |> Astlib.History.convert history
-                 ~src_version
-                 ~dst_version
-                 ~to_ast:(fun x ~version:_ -> Node.to_ast x)
-                 ~of_ast:(fun x ~version:_ -> Node.of_ast x)
-            |> Astlib.History.convert history
-                 ~src_version:dst_version
-                 ~dst_version:src_version
-                 ~to_ast:(fun x ~version:_ -> Node.to_ast x)
-                 ~of_ast:(fun x ~version:_ -> Node.of_ast x)
-            |> Node.of_ast
+          let converted =
+            try
+              original
+              |> Unversioned_node.to_versioned_node ~version:src_version
+              |> Unversioned_node.of_versioned_node ~version:dst_version ~history
+            with exn ->
+              raise_s
+                [%sexp
+                  "first conversion failed"
+                , { src_version : Version.t
+                  ; dst_version : Version.t
+                  ; exn : exn
+                  }]
           in
-          if not (Node.matches round_trip ~grammar:src_grammar) then
+          let round_trip =
+            try
+              converted
+              |> Unversioned_node.to_versioned_node ~version:dst_version
+              |> Unversioned_node.of_versioned_node ~version:src_version ~history
+            with exn ->
+              raise_s
+                [%sexp
+                  "second conversion failed"
+                , { src_version : Version.t
+                  ; dst_version : Version.t
+                  ; converted : Unversioned_node.t
+                  ; exn : exn
+                  }]
+          in
+          if
+            not
+              (Unversioned_node.matches round_trip ~grammar:src_grammar)
+          then
             raise_s
               [%sexp
                 "round-trip failed"
               , { src_version : Version.t
                 ; dst_version : Version.t
-                ; round_trip : Node.t }])));
+                ; converted : Unversioned_node.t
+                ; round_trip : Unversioned_node.t
+                }])));
   [%expect {| |}]

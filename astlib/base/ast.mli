@@ -18,8 +18,13 @@ type 'node data = 'node Astlib.Ast.data =
 type 'node t = 'node Astlib.Ast.t = { name : string; data : 'node data }
 [@@deriving compare, equal, sexp_of]
 
+val map
+  :  'a t
+  -> f:('a -> 'b)
+  -> 'b t
+
 val matches
-  :  'node
+  :  'node t
   -> grammar:Grammar.t
   -> to_ast:('node -> 'node t)
   -> bool
@@ -27,4 +32,4 @@ val matches
 val generator
   :  Grammar.t
   -> of_ast:('node t -> 'node)
-  -> 'node Base_quickcheck.Generator.t
+  -> 'node t Base_quickcheck.Generator.t

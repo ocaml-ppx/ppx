@@ -18,8 +18,20 @@ type 'node data = 'node Astlib.Ast.data =
 type 'node t = 'node Astlib.Ast.t = { name : string; data : 'node data }
 [@@deriving compare, equal, sexp_of]
 
-let rec matches node ~grammar ~to_ast =
-  let ast : _ t = to_ast node in
+let rec map { name; data } ~f = { name; data = map_data data ~f }
+
+and map_data data ~f =
+  match data with
+  | Node node -> Node (f node)
+  | Bool _ | Char _ | Int _ | String _ | Location _ as data -> data
+  | Loc loc -> Loc (Astlib.Loc.map loc ~f:(map_data ~f))
+  | List list -> List (List.map list ~f:(map_data ~f))
+  | Option option -> Option (Option.map option ~f:(map_data ~f))
+  | Tuple array -> Tuple (Array.map array ~f:(map_data ~f))
+  | Record array -> Record (Array.map array ~f:(map_data ~f))
+  | Variant { tag; args } -> Variant { tag; args = Array.map args ~f:(map_data ~f) }
+
+let rec matches ast ~grammar ~to_ast =
   match Grammar.lookup_mono grammar ~name:ast.name with
   | Some decl -> data_matches_decl ast.data ~decl ~grammar ~to_ast
   | None -> false
@@ -84,7 +96,7 @@ and data_matches_name data ~name ~grammar ~to_ast =
   match data with
   | Node node ->
     let ast : _ t = to_ast node in
-    String.equal ast.name name && matches node ~grammar ~to_ast
+    String.equal ast.name name && matches ast ~grammar ~to_ast
   | _ -> false
 
 and data_matches_bool     = function Bool     _ -> true | _ -> false
@@ -130,7 +142,7 @@ let rec generator_of_name name ~grammar ~of_ast =
 
 and generator_of_decl decl ~name ~grammar ~of_ast =
   Base_quickcheck.Generator.map
-    ~f:(fun data -> of_ast { data; name })
+    ~f:(fun data -> { data; name })
     (data_generator_of_decl decl ~grammar ~of_ast)
 
 and data_generator_of_decl decl ~grammar ~of_ast =
@@ -194,7 +206,7 @@ and data_generator_of_ty ty ~grammar ~of_ast =
 
 and data_generator_of_name name ~grammar ~of_ast =
   Base_quickcheck.Generator.map
-    ~f:(fun node -> Node node)
+    ~f:(fun ast -> Node (of_ast ast))
     (generator_of_name name ~grammar ~of_ast)
 
 and data_generator_for_bool () =
