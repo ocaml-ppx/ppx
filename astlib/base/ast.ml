@@ -31,6 +31,44 @@ and map_data data ~f =
   | Record array -> Record (Array.map array ~f:(map_data ~f))
   | Variant { tag; args } -> Variant { tag; args = Array.map args ~f:(map_data ~f) }
 
+module Optional = struct
+  let rec map { name; data } ~f =
+    Option.map (map_data data ~f) ~f:(fun data -> { name; data })
+
+  and map_data data ~f =
+    match data with
+    | Node node -> Option.map (f node) ~f:(fun node -> Node node)
+    | Bool _ | Char _ | Int _ | String _ | Location _ as data -> Some data
+    | Loc { loc; txt } -> Option.map (map_data txt ~f) ~f:(fun txt -> Loc { loc; txt })
+    | List list ->
+      list
+      |> List.map ~f:(map_data ~f)
+      |> Option.all
+      |> Option.map ~f:(fun list -> List list)
+    | Option option ->
+      (match option with
+       | None -> Some (Option None)
+       | Some data -> Option.map (map_data data ~f) ~f:(fun data -> Option (Some data)))
+    | Tuple array ->
+      array
+      |> Array.to_list
+      |> List.map ~f:(map_data ~f)
+      |> Option.all
+      |> Option.map ~f:(fun list -> Tuple (Array.of_list list))
+    | Record array ->
+      array
+      |> Array.to_list
+      |> List.map ~f:(map_data ~f)
+      |> Option.all
+      |> Option.map ~f:(fun list -> Record (Array.of_list list))
+    | Variant { tag; args } ->
+      args
+      |> Array.to_list
+      |> List.map ~f:(map_data ~f)
+      |> Option.all
+      |> Option.map ~f:(fun list -> Variant { tag; args = Array.of_list list })
+end
+
 let rec matches ast ~grammar ~unwrap =
   match Grammar.lookup_mono grammar ~name:ast.name with
   | Some decl -> data_matches_decl ast.data ~decl ~grammar ~unwrap

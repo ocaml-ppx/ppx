@@ -2,9 +2,9 @@ open StdLabels
 
 type 'node conversion_function
   = 'node Ast.t
-  -> unwrap:('node -> 'node Ast.t)
+  -> unwrap:('node -> 'node Ast.t option)
   -> wrap:('node Ast.t -> 'node)
-  -> 'node Ast.t
+  -> 'node Ast.t option
 
 type conversion =
   { src_version : Version.t
@@ -102,22 +102,31 @@ let apply_conversion conversion ast ~unwrap ~wrap =
     ~unwrap:(unwrap ~version:conversion.src_version)
     ~wrap:(wrap ~version:conversion.dst_version)
 
+let rec convert_loop ast ~unwrap ~wrap ~array ~index ~final ~delta =
+  let conversion = array.(index) in
+  match apply_conversion conversion ast ~unwrap ~wrap with
+  | None -> conversion.src_version, ast
+  | Some ast ->
+    if index = final
+    then conversion.dst_version, ast
+    else convert_loop ast ~unwrap ~wrap ~array ~index:(index + delta) ~final ~delta
+
 let convert t ast ~src_version ~dst_version ~unwrap ~wrap =
   let src_index = version_index t ~version:src_version in
   let dst_index = version_index t ~version:dst_version in
   if src_index < dst_index
-  then (
-    let ast = ref ast in
-    for index = src_index to dst_index - 1 do
-      ast := apply_conversion t.to_nexts.(index) !ast ~unwrap ~wrap
-    done;
-    !ast)
+  then
+    convert_loop ast ~unwrap ~wrap
+      ~array:t.to_nexts
+      ~index:src_index
+      ~final:(dst_index - 1)
+      ~delta:1
   else if src_index > dst_index
-  then (
-    let ast = ref ast in
-    for index = src_index - 1 downto dst_index do
-      ast := apply_conversion t.of_nexts.(index) !ast ~unwrap ~wrap
-    done;
-    !ast)
+  then
+    convert_loop ast ~unwrap ~wrap
+      ~array:t.of_nexts
+      ~index:(src_index - 1)
+      ~final:dst_index
+      ~delta:(-1)
   else
-    ast
+    src_version, ast

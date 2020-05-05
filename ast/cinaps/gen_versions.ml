@@ -258,7 +258,7 @@ module Structure = struct
       Print.indented (fun () ->
         Print.println
           "match Node.unwrap (Unversioned.Private.transparent t) ~version with";
-        Print.println "| { name = %S; data } -> %s data"
+        Print.println "| Some { name = %S; data } -> %s data"
           node_name
           (ast_to_ty ~grammar ty);
         Print.println "| _ -> None")
@@ -267,7 +267,7 @@ module Structure = struct
       Print.indented (fun () ->
         Print.println
           "match Node.unwrap (Unversioned.Private.transparent t) ~version with";
-        Print.println "| { name = %S" node_name;
+        Print.println "| Some { name = %S" node_name;
         Print.indented (fun () ->
           Print.println "; data = Record [| %s |]"
             (String.concat ~sep:"; "
@@ -284,7 +284,7 @@ module Structure = struct
       Print.indented (fun () ->
         Print.println
           "match Node.unwrap (Unversioned.Private.transparent t) ~version with";
-        Print.println "| { name = %S; data } ->" node_name;
+        Print.println "| Some { name = %S; data } ->" node_name;
         Print.indented (fun () ->
           Print.println "begin";
           Print.indented (fun () ->

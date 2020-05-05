@@ -77,13 +77,13 @@ let update_ast (ast : _ Ast.t) =
 let to_stable : History.conversion =
   { src_version = version
   ; dst_version = Stable.version
-  ; f = fun ast ~unwrap:_ ~wrap:_ -> update_ast ast
+  ; f = fun ast ~unwrap:_ ~wrap:_ -> Some (update_ast ast)
   }
 
 let of_stable : History.conversion =
   { src_version = Stable.version
   ; dst_version = version
-  ; f = fun ast ~unwrap:_ ~wrap:_ -> update_ast ast
+  ; f = fun ast ~unwrap:_ ~wrap:_ -> Some (update_ast ast)
   }
 
 let conversions = [ to_stable; of_stable ]
