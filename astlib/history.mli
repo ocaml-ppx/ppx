@@ -10,16 +10,16 @@ val find_grammar : t -> version:Version.t -> Grammar.t
 
 (** Converts the given AST from [src_version]'s grammar to [dst_version]'s grammar, using
     the conversion functions stored in [t]. Converts ['node] to traverse and/or construct
-    subtrees using [to_ast] and [of_ast], which may themselves call [convert] as
+    subtrees using [unwrap] and [wrap], which may themselves call [convert] as
     appropriate. *)
 val convert
   :  t
   -> 'node Ast.t
   -> src_version:Version.t
   -> dst_version:Version.t
-  -> unwrap:(version:Version.t -> 'node -> 'node Ast.t)
+  -> unwrap:(version:Version.t -> 'node -> 'node Ast.t option)
   -> wrap:(version:Version.t -> 'node Ast.t -> 'node)
-  -> 'node Ast.t
+  -> Version.t * 'node Ast.t
 
 (**/**)
 
@@ -27,9 +27,9 @@ val convert
 
 type 'node conversion_function
   = 'node Ast.t
-  -> unwrap:('node -> 'node Ast.t)
+  -> unwrap:('node -> 'node Ast.t option)
   -> wrap:('node Ast.t -> 'node)
-  -> 'node Ast.t
+  -> 'node Ast.t option
 
 type conversion =
   { src_version : Version.t

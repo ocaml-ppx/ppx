@@ -33,3 +33,10 @@ val generator
   :  Grammar.t
   -> wrap:('node t -> 'node)
   -> 'node t Base_quickcheck.Generator.t
+
+module Optional : sig
+  val map
+    :  'a t
+    -> f:('a -> 'b option)
+    -> 'b t option
+end

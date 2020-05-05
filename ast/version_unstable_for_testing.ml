@@ -65,7 +65,7 @@ module Directive_argument = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "directive_argument"; data } ->
+    | Some { name = "directive_argument"; data } ->
       begin
         match data with
         | Variant { tag = "Pdir_bool"; args = [| x1 |] } ->
@@ -136,7 +136,7 @@ module Toplevel_phrase = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "toplevel_phrase"; data } ->
+    | Some { name = "toplevel_phrase"; data } ->
       begin
         match data with
         | Variant { tag = "Ptop_dir"; args = [| x1; x2 |] } ->
@@ -189,7 +189,7 @@ module Module_binding = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "module_binding"
+    | Some { name = "module_binding"
       ; data = Record [| pmb_loc; pmb_attributes; pmb_expr; pmb_name |]
       } ->
         Option.bind (Data.to_location pmb_loc) ~f:(fun pmb_loc ->
@@ -242,7 +242,7 @@ module Value_binding = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "value_binding"
+    | Some { name = "value_binding"
       ; data = Record [| pvb_loc; pvb_attributes; pvb_expr; pvb_pat |]
       } ->
         Option.bind (Data.to_location pvb_loc) ~f:(fun pvb_loc ->
@@ -450,7 +450,7 @@ module Structure_item_desc = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "structure_item_desc"; data } ->
+    | Some { name = "structure_item_desc"; data } ->
       begin
         match data with
         | Variant { tag = "Pstr_extension"; args = [| x1; x2 |] } ->
@@ -554,7 +554,7 @@ module Structure_item = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "structure_item"
+    | Some { name = "structure_item"
       ; data = Record [| pstr_loc; pstr_desc |]
       } ->
         Option.bind (Data.to_location pstr_loc) ~f:(fun pstr_loc ->
@@ -591,7 +591,7 @@ module Structure = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "structure"; data } -> (Data.to_list ~f:Data.to_node) data
+    | Some { name = "structure"; data } -> (Data.to_list ~f:Data.to_node) data
     | _ -> None
 
   let to_concrete node =
@@ -698,7 +698,7 @@ module Module_expr_desc = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "module_expr_desc"; data } ->
+    | Some { name = "module_expr_desc"; data } ->
       begin
         match data with
         | Variant { tag = "Pmod_extension"; args = [| x1 |] } ->
@@ -772,7 +772,7 @@ module Module_expr = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "module_expr"
+    | Some { name = "module_expr"
       ; data = Record [| pmod_attributes; pmod_loc; pmod_desc |]
       } ->
         Option.bind (Data.to_node pmod_attributes) ~f:(fun pmod_attributes ->
@@ -857,7 +857,7 @@ module With_constraint = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "with_constraint"; data } ->
+    | Some { name = "with_constraint"; data } ->
       begin
         match data with
         | Variant { tag = "Pwith_modsubst"; args = [| x1; x2 |] } ->
@@ -909,7 +909,7 @@ module Include_declaration = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "include_declaration"; data } -> Data.to_node data
+    | Some { name = "include_declaration"; data } -> Data.to_node data
     | _ -> None
 
   let to_concrete node =
@@ -937,7 +937,7 @@ module Include_description = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "include_description"; data } -> Data.to_node data
+    | Some { name = "include_description"; data } -> Data.to_node data
     | _ -> None
 
   let to_concrete node =
@@ -975,7 +975,7 @@ module Include_infos = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "include_infos"
+    | Some { name = "include_infos"
       ; data = Record [| pincl_attributes; pincl_loc; pincl_mod |]
       } ->
         Option.bind (Data.to_node pincl_attributes) ~f:(fun pincl_attributes ->
@@ -1026,7 +1026,7 @@ module Open_description = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "open_description"
+    | Some { name = "open_description"
       ; data = Record [| popen_attributes; popen_loc; popen_override; popen_lid |]
       } ->
         Option.bind (Data.to_node popen_attributes) ~f:(fun popen_attributes ->
@@ -1079,7 +1079,7 @@ module Module_type_declaration = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "module_type_declaration"
+    | Some { name = "module_type_declaration"
       ; data = Record [| pmtd_loc; pmtd_attributes; pmtd_type; pmtd_name |]
       } ->
         Option.bind (Data.to_location pmtd_loc) ~f:(fun pmtd_loc ->
@@ -1132,7 +1132,7 @@ module Module_declaration = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "module_declaration"
+    | Some { name = "module_declaration"
       ; data = Record [| pmd_loc; pmd_attributes; pmd_type; pmd_name |]
       } ->
         Option.bind (Data.to_location pmd_loc) ~f:(fun pmd_loc ->
@@ -1316,7 +1316,7 @@ module Signature_item_desc = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "signature_item_desc"; data } ->
+    | Some { name = "signature_item_desc"; data } ->
       begin
         match data with
         | Variant { tag = "Psig_extension"; args = [| x1; x2 |] } ->
@@ -1410,7 +1410,7 @@ module Signature_item = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "signature_item"
+    | Some { name = "signature_item"
       ; data = Record [| psig_loc; psig_desc |]
       } ->
         Option.bind (Data.to_location psig_loc) ~f:(fun psig_loc ->
@@ -1447,7 +1447,7 @@ module Signature = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "signature"; data } -> (Data.to_list ~f:Data.to_node) data
+    | Some { name = "signature"; data } -> (Data.to_list ~f:Data.to_node) data
     | _ -> None
 
   let to_concrete node =
@@ -1553,7 +1553,7 @@ module Module_type_desc = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "module_type_desc"; data } ->
+    | Some { name = "module_type_desc"; data } ->
       begin
         match data with
         | Variant { tag = "Pmty_alias"; args = [| x1 |] } ->
@@ -1626,7 +1626,7 @@ module Module_type = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "module_type"
+    | Some { name = "module_type"
       ; data = Record [| pmty_attributes; pmty_loc; pmty_desc |]
       } ->
         Option.bind (Data.to_node pmty_attributes) ~f:(fun pmty_attributes ->
@@ -1665,7 +1665,7 @@ module Class_declaration = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "class_declaration"; data } -> Data.to_node data
+    | Some { name = "class_declaration"; data } -> Data.to_node data
     | _ -> None
 
   let to_concrete node =
@@ -1714,7 +1714,7 @@ module Class_field_kind = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "class_field_kind"; data } ->
+    | Some { name = "class_field_kind"; data } ->
       begin
         match data with
         | Variant { tag = "Cfk_concrete"; args = [| x1; x2 |] } ->
@@ -1832,7 +1832,7 @@ module Class_field_desc = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "class_field_desc"; data } ->
+    | Some { name = "class_field_desc"; data } ->
       begin
         match data with
         | Variant { tag = "Pcf_extension"; args = [| x1 |] } ->
@@ -1904,7 +1904,7 @@ module Class_field = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "class_field"
+    | Some { name = "class_field"
       ; data = Record [| pcf_attributes; pcf_loc; pcf_desc |]
       } ->
         Option.bind (Data.to_node pcf_attributes) ~f:(fun pcf_attributes ->
@@ -1951,7 +1951,7 @@ module Class_structure = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "class_structure"
+    | Some { name = "class_structure"
       ; data = Record [| pcstr_fields; pcstr_self |]
       } ->
         Option.bind ((Data.to_list ~f:Data.to_node) pcstr_fields) ~f:(fun pcstr_fields ->
@@ -2084,7 +2084,7 @@ module Class_expr_desc = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "class_expr_desc"; data } ->
+    | Some { name = "class_expr_desc"; data } ->
       begin
         match data with
         | Variant { tag = "Pcl_open"; args = [| x1; x2; x3 |] } ->
@@ -2168,7 +2168,7 @@ module Class_expr = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "class_expr"
+    | Some { name = "class_expr"
       ; data = Record [| pcl_attributes; pcl_loc; pcl_desc |]
       } ->
         Option.bind (Data.to_node pcl_attributes) ~f:(fun pcl_attributes ->
@@ -2207,7 +2207,7 @@ module Class_type_declaration = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "class_type_declaration"; data } -> Data.to_node data
+    | Some { name = "class_type_declaration"; data } -> Data.to_node data
     | _ -> None
 
   let to_concrete node =
@@ -2235,7 +2235,7 @@ module Class_description = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "class_description"; data } -> Data.to_node data
+    | Some { name = "class_description"; data } -> Data.to_node data
     | _ -> None
 
   let to_concrete node =
@@ -2279,7 +2279,7 @@ module Class_infos = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "class_infos"
+    | Some { name = "class_infos"
       ; data = Record [| pci_attributes; pci_loc; pci_expr; pci_name; pci_params; pci_virt |]
       } ->
         Option.bind (Data.to_node pci_attributes) ~f:(fun pci_attributes ->
@@ -2388,7 +2388,7 @@ module Class_type_field_desc = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "class_type_field_desc"; data } ->
+    | Some { name = "class_type_field_desc"; data } ->
       begin
         match data with
         | Variant { tag = "Pctf_extension"; args = [| x1 |] } ->
@@ -2454,7 +2454,7 @@ module Class_type_field = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "class_type_field"
+    | Some { name = "class_type_field"
       ; data = Record [| pctf_attributes; pctf_loc; pctf_desc |]
       } ->
         Option.bind (Data.to_node pctf_attributes) ~f:(fun pctf_attributes ->
@@ -2501,7 +2501,7 @@ module Class_signature = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "class_signature"
+    | Some { name = "class_signature"
       ; data = Record [| pcsig_fields; pcsig_self |]
       } ->
         Option.bind ((Data.to_list ~f:Data.to_node) pcsig_fields) ~f:(fun pcsig_fields ->
@@ -2596,7 +2596,7 @@ module Class_type_desc = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "class_type_desc"; data } ->
+    | Some { name = "class_type_desc"; data } ->
       begin
         match data with
         | Variant { tag = "Pcty_open"; args = [| x1; x2; x3 |] } ->
@@ -2663,7 +2663,7 @@ module Class_type = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "class_type"
+    | Some { name = "class_type"
       ; data = Record [| pcty_attributes; pcty_loc; pcty_desc |]
       } ->
         Option.bind (Data.to_node pcty_attributes) ~f:(fun pcty_attributes ->
@@ -2723,7 +2723,7 @@ module Extension_constructor_kind = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "extension_constructor_kind"; data } ->
+    | Some { name = "extension_constructor_kind"; data } ->
       begin
         match data with
         | Variant { tag = "Pext_rebind"; args = [| x1 |] } ->
@@ -2776,7 +2776,7 @@ module Extension_constructor = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "extension_constructor"
+    | Some { name = "extension_constructor"
       ; data = Record [| pext_attributes; pext_loc; pext_kind; pext_name |]
       } ->
         Option.bind (Data.to_node pext_attributes) ~f:(fun pext_attributes ->
@@ -2831,7 +2831,7 @@ module Type_extension = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "type_extension"
+    | Some { name = "type_extension"
       ; data = Record [| ptyext_attributes; ptyext_private; ptyext_constructors; ptyext_params; ptyext_path |]
       } ->
         Option.bind (Data.to_node ptyext_attributes) ~f:(fun ptyext_attributes ->
@@ -2894,7 +2894,7 @@ module Constructor_arguments = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "constructor_arguments"; data } ->
+    | Some { name = "constructor_arguments"; data } ->
       begin
         match data with
         | Variant { tag = "Pcstr_record"; args = [| x1 |] } ->
@@ -2948,7 +2948,7 @@ module Constructor_declaration = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "constructor_declaration"
+    | Some { name = "constructor_declaration"
       ; data = Record [| pcd_attributes; pcd_loc; pcd_res; pcd_args; pcd_name |]
       } ->
         Option.bind (Data.to_node pcd_attributes) ~f:(fun pcd_attributes ->
@@ -3005,7 +3005,7 @@ module Label_declaration = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "label_declaration"
+    | Some { name = "label_declaration"
       ; data = Record [| pld_attributes; pld_loc; pld_type; pld_mutable; pld_name |]
       } ->
         Option.bind (Data.to_node pld_attributes) ~f:(fun pld_attributes ->
@@ -3076,7 +3076,7 @@ module Type_kind = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "type_kind"; data } ->
+    | Some { name = "type_kind"; data } ->
       begin
         match data with
         | Variant { tag = "Ptype_open"; args = [||] } -> Some Ptype_open
@@ -3138,7 +3138,7 @@ module Type_declaration = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "type_declaration"
+    | Some { name = "type_declaration"
       ; data = Record [| ptype_loc; ptype_attributes; ptype_manifest; ptype_private; ptype_kind; ptype_cstrs; ptype_params; ptype_name |]
       } ->
         Option.bind (Data.to_location ptype_loc) ~f:(fun ptype_loc ->
@@ -3201,7 +3201,7 @@ module Value_description = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "value_description"
+    | Some { name = "value_description"
       ; data = Record [| pval_loc; pval_attributes; pval_prim; pval_type; pval_name |]
       } ->
         Option.bind (Data.to_location pval_loc) ~f:(fun pval_loc ->
@@ -3254,7 +3254,7 @@ module Case = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "case"
+    | Some { name = "case"
       ; data = Record [| pc_rhs; pc_guard; pc_lhs |]
       } ->
         Option.bind (Data.to_node pc_rhs) ~f:(fun pc_rhs ->
@@ -3714,7 +3714,7 @@ module Expression_desc = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "expression_desc"; data } ->
+    | Some { name = "expression_desc"; data } ->
       begin
         match data with
         | Variant { tag = "Pexp_unreachable"; args = [||] } -> Some Pexp_unreachable
@@ -3931,7 +3931,7 @@ module Expression = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "expression"
+    | Some { name = "expression"
       ; data = Record [| pexp_attributes; pexp_loc; pexp_desc |]
       } ->
         Option.bind (Data.to_node pexp_attributes) ~f:(fun pexp_attributes ->
@@ -4167,7 +4167,7 @@ module Pattern_desc = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "pattern_desc"; data } ->
+    | Some { name = "pattern_desc"; data } ->
       begin
         match data with
         | Variant { tag = "Ppat_open"; args = [| x1; x2 |] } ->
@@ -4286,7 +4286,7 @@ module Pattern = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "pattern"
+    | Some { name = "pattern"
       ; data = Record [| ppat_attributes; ppat_loc; ppat_desc |]
       } ->
         Option.bind (Data.to_node ppat_attributes) ~f:(fun ppat_attributes ->
@@ -4347,7 +4347,7 @@ module Object_field = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "object_field"; data } ->
+    | Some { name = "object_field"; data } ->
       begin
         match data with
         | Variant { tag = "Oinherit"; args = [| x1 |] } ->
@@ -4412,7 +4412,7 @@ module Row_field = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "row_field"; data } ->
+    | Some { name = "row_field"; data } ->
       begin
         match data with
         | Variant { tag = "Rinherit"; args = [| x1 |] } ->
@@ -4455,7 +4455,7 @@ module Package_type = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "package_type"; data } -> (Data.to_tuple2 ~f1:(Data.to_list ~f:(Data.to_tuple2 ~f1:Data.to_node ~f2:Data.to_node)) ~f2:Data.to_node) data
+    | Some { name = "package_type"; data } -> (Data.to_tuple2 ~f1:(Data.to_list ~f:(Data.to_tuple2 ~f1:Data.to_node ~f2:Data.to_node)) ~f2:Data.to_node) data
     | _ -> None
 
   let to_concrete node =
@@ -4615,7 +4615,7 @@ module Core_type_desc = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "core_type_desc"; data } ->
+    | Some { name = "core_type_desc"; data } ->
       begin
         match data with
         | Variant { tag = "Ptyp_extension"; args = [| x1 |] } ->
@@ -4711,7 +4711,7 @@ module Core_type = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "core_type"
+    | Some { name = "core_type"
       ; data = Record [| ptyp_attributes; ptyp_loc; ptyp_desc |]
       } ->
         Option.bind (Data.to_node ptyp_attributes) ~f:(fun ptyp_attributes ->
@@ -4793,7 +4793,7 @@ module Payload = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "payload"; data } ->
+    | Some { name = "payload"; data } ->
       begin
         match data with
         | Variant { tag = "PPat"; args = [| x1; x2 |] } ->
@@ -4842,7 +4842,7 @@ module Attributes = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "attributes"; data } -> (Data.to_list ~f:Data.to_node) data
+    | Some { name = "attributes"; data } -> (Data.to_list ~f:Data.to_node) data
     | _ -> None
 
   let to_concrete node =
@@ -4870,7 +4870,7 @@ module Extension = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "extension"; data } -> (Data.to_tuple2 ~f1:Data.to_node ~f2:(Data.to_loc ~f:Data.to_string)) data
+    | Some { name = "extension"; data } -> (Data.to_tuple2 ~f1:Data.to_node ~f2:(Data.to_loc ~f:Data.to_string)) data
     | _ -> None
 
   let to_concrete node =
@@ -4898,7 +4898,7 @@ module Attribute = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "attribute"; data } -> (Data.to_tuple2 ~f1:Data.to_node ~f2:(Data.to_loc ~f:Data.to_string)) data
+    | Some { name = "attribute"; data } -> (Data.to_tuple2 ~f1:Data.to_node ~f2:(Data.to_loc ~f:Data.to_string)) data
     | _ -> None
 
   let to_concrete node =
@@ -4971,7 +4971,7 @@ module Constant = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "constant"; data } ->
+    | Some { name = "constant"; data } ->
       begin
         match data with
         | Variant { tag = "Pconst_float"; args = [| x1; x2 |] } ->
@@ -5032,7 +5032,7 @@ module Variance = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "variance"; data } ->
+    | Some { name = "variance"; data } ->
       begin
         match data with
         | Variant { tag = "Invariant"; args = [||] } -> Some Invariant
@@ -5091,7 +5091,7 @@ module Arg_label = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "arg_label"; data } ->
+    | Some { name = "arg_label"; data } ->
       begin
         match data with
         | Variant { tag = "Optional"; args = [| x1 |] } ->
@@ -5138,7 +5138,7 @@ module Closed_flag = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "closed_flag"; data } ->
+    | Some { name = "closed_flag"; data } ->
       begin
         match data with
         | Variant { tag = "Open"; args = [||] } -> Some Open
@@ -5178,7 +5178,7 @@ module Override_flag = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "override_flag"; data } ->
+    | Some { name = "override_flag"; data } ->
       begin
         match data with
         | Variant { tag = "Fresh"; args = [||] } -> Some Fresh
@@ -5218,7 +5218,7 @@ module Virtual_flag = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "virtual_flag"; data } ->
+    | Some { name = "virtual_flag"; data } ->
       begin
         match data with
         | Variant { tag = "Concrete"; args = [||] } -> Some Concrete
@@ -5258,7 +5258,7 @@ module Mutable_flag = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "mutable_flag"; data } ->
+    | Some { name = "mutable_flag"; data } ->
       begin
         match data with
         | Variant { tag = "Mutable"; args = [||] } -> Some Mutable
@@ -5298,7 +5298,7 @@ module Private_flag = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "private_flag"; data } ->
+    | Some { name = "private_flag"; data } ->
       begin
         match data with
         | Variant { tag = "Public"; args = [||] } -> Some Public
@@ -5338,7 +5338,7 @@ module Direction_flag = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "direction_flag"; data } ->
+    | Some { name = "direction_flag"; data } ->
       begin
         match data with
         | Variant { tag = "Downto"; args = [||] } -> Some Downto
@@ -5378,7 +5378,7 @@ module Rec_flag = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "rec_flag"; data } ->
+    | Some { name = "rec_flag"; data } ->
       begin
         match data with
         | Variant { tag = "Recursive"; args = [||] } -> Some Recursive
@@ -5412,7 +5412,7 @@ module Longident_loc = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "longident_loc"; data } -> (Data.to_loc ~f:Data.to_node) data
+    | Some { name = "longident_loc"; data } -> (Data.to_loc ~f:Data.to_node) data
     | _ -> None
 
   let to_concrete node =
@@ -5473,7 +5473,7 @@ module Longident = struct
 
   let to_concrete_opt t =
     match Node.unwrap (Unversioned.Private.transparent t) ~version with
-    | { name = "longident"; data } ->
+    | Some { name = "longident"; data } ->
       begin
         match data with
         | Variant { tag = "Lapply"; args = [| x1; x2 |] } ->
