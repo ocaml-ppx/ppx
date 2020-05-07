@@ -4,11 +4,11 @@ open Astlib_base
 module Versioned_node = struct
   type t = { version : Version.t; ast : t Ast.t }
 
-  let of_ast ~version ast = { version; ast }
+  let wrap ~version ast = { version; ast }
 
-  let rec to_ast ~version:dst_version { version = src_version; ast } ~history =
-    let to_ast = to_ast ~history in
-    Astlib.History.convert history ast ~src_version ~dst_version ~to_ast ~of_ast
+  let rec unwrap ~version:dst_version { version = src_version; ast } ~history =
+    let unwrap = unwrap ~history in
+    Astlib.History.convert history ast ~src_version ~dst_version ~unwrap ~wrap
 end
 
 module Unversioned_node = struct
@@ -16,19 +16,19 @@ module Unversioned_node = struct
 
   let of_versioned_node node ~version ~history =
     let rec f node =
-      { ast = Ast.map (Versioned_node.to_ast node ~version ~history) ~f }
+      { ast = Ast.map (Versioned_node.unwrap node ~version ~history) ~f }
     in
     f node
 
   let to_versioned_node t ~version =
-    let rec f { ast } = Versioned_node.of_ast ~version (Ast.map ast ~f) in
+    let rec f { ast } = Versioned_node.wrap ~version (Ast.map ast ~f) in
     f t
 
-  let matches t ~grammar = Ast.matches t.ast ~grammar ~to_ast:(fun { ast } -> ast)
+  let matches t ~grammar = Ast.matches t.ast ~grammar ~unwrap:(fun { ast } -> ast)
 
   let generator grammar =
     Base_quickcheck.Generator.map ~f:(fun ast -> { ast })
-      (Ast.generator grammar ~of_ast:(fun ast -> { ast }))
+      (Ast.generator grammar ~wrap:(fun ast -> { ast }))
 
   let shrinker = Base_quickcheck.Shrinker.atomic
 end
@@ -63,26 +63,26 @@ let (v3_grammar : Astlib.Grammar.t) = [
   ]);
 ]
 
-let v2_of_v1 x ~to_src_ast:_ ~of_dst_ast:_ = x
-let v1_of_v2 x ~to_src_ast:_ ~of_dst_ast:_ = x
+let v2_of_v1 x ~unwrap:_ ~wrap:_ = x
+let v1_of_v2 x ~unwrap:_ ~wrap:_ = x
 
-let rec v3_addends_of_v2 ast ~to_src_ast ~of_dst_ast : _ Ast.data list =
+let rec v3_addends_of_v2 ast ~unwrap ~wrap : _ Ast.data list =
   match (ast : _ Ast.t) with
   | { name = "expr"; data = Variant { tag; args } } ->
     (match tag with
-     | "var" | "int" -> [ Node (of_dst_ast ast) ]
+     | "var" | "int" -> [ Node (wrap ast) ]
      | "add" ->
        (match args with
         | [| Node x; Node y |] ->
-          v3_addends_of_v2 (to_src_ast x) ~to_src_ast ~of_dst_ast @
-          v3_addends_of_v2 (to_src_ast y) ~to_src_ast ~of_dst_ast
+          v3_addends_of_v2 (unwrap x) ~unwrap ~wrap @
+          v3_addends_of_v2 (unwrap y) ~unwrap ~wrap
         | [| List _ |] -> assert false
         | _ -> assert false)
      | _ -> assert false)
   | _ -> assert false
 
-let v3_of_v2 ast ~to_src_ast ~of_dst_ast =
-  match v3_addends_of_v2 ast ~to_src_ast ~of_dst_ast with
+let v3_of_v2 ast ~unwrap ~wrap =
+  match v3_addends_of_v2 ast ~unwrap ~wrap with
   | [ _ ] -> ast
   | list -> { name = "expr" ; data = Variant { tag = "add" ; args = [| List list |] } }
 
@@ -100,7 +100,7 @@ let v2_add x y : _ Ast.t =
         }
   }
 
-let v2_of_v3 ast ~to_src_ast:_ ~of_dst_ast =
+let v2_of_v3 ast ~unwrap:_ ~wrap =
   match (ast : _ Ast.t) with
   | { name = "expr"; data = Variant { tag; args } } ->
     (match tag with
@@ -114,7 +114,7 @@ let v2_of_v3 ast ~to_src_ast:_ ~of_dst_ast =
               | _ -> assert false)
           in
           List.fold_right nodes ~init:(v2_zero ()) ~f:(fun node acc ->
-            v2_add node (of_dst_ast acc))
+            v2_add node (wrap acc))
         | [| Node _; Node _ |] -> assert false
         | _ -> assert false)
      | _ -> assert false)
