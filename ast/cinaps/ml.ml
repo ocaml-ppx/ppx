@@ -92,7 +92,7 @@ let declare_type ?(tvars = []) name element =
   print_with_element "type %s" (poly_type name ~tvars) ~between:"=" ~element
 
 let declare_val name element =
-  print_with_element "val %s" name ~between:":" ~element
+  print_with_element "val %s" (id name) ~between:":" ~element
 
 let print_record_type alist ~f =
   List.iteri alist ~f:(fun i (name, x) ->

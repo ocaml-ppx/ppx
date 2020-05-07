@@ -817,6 +817,10 @@ module Core_type = struct
           node_name = "core_type";
           node = Unversioned.Private.transparent node;
         })
+
+  let ptyp_desc t = (to_concrete t).ptyp_desc
+  let ptyp_loc t = (to_concrete t).ptyp_loc
+  let ptyp_attributes t = (to_concrete t).ptyp_attributes
 end
 
 module Core_type_desc = struct
@@ -1238,6 +1242,10 @@ module Pattern = struct
           node_name = "pattern";
           node = Unversioned.Private.transparent node;
         })
+
+  let ppat_desc t = (to_concrete t).ppat_desc
+  let ppat_loc t = (to_concrete t).ppat_loc
+  let ppat_attributes t = (to_concrete t).ppat_attributes
 end
 
 module Pattern_desc = struct
@@ -1589,6 +1597,10 @@ module Expression = struct
           node_name = "expression";
           node = Unversioned.Private.transparent node;
         })
+
+  let pexp_desc t = (to_concrete t).pexp_desc
+  let pexp_loc t = (to_concrete t).pexp_loc
+  let pexp_attributes t = (to_concrete t).pexp_attributes
 end
 
 module Expression_desc = struct
@@ -2262,6 +2274,10 @@ module Case = struct
           node_name = "case";
           node = Unversioned.Private.transparent node;
         })
+
+  let pc_lhs t = (to_concrete t).pc_lhs
+  let pc_guard t = (to_concrete t).pc_guard
+  let pc_rhs t = (to_concrete t).pc_rhs
 end
 
 module Value_description = struct
@@ -2313,6 +2329,12 @@ module Value_description = struct
           node_name = "value_description";
           node = Unversioned.Private.transparent node;
         })
+
+  let pval_name t = (to_concrete t).pval_name
+  let pval_type t = (to_concrete t).pval_type
+  let pval_prim t = (to_concrete t).pval_prim
+  let pval_attributes t = (to_concrete t).pval_attributes
+  let pval_loc t = (to_concrete t).pval_loc
 end
 
 module Type_declaration = struct
@@ -2373,6 +2395,15 @@ module Type_declaration = struct
           node_name = "type_declaration";
           node = Unversioned.Private.transparent node;
         })
+
+  let ptype_name t = (to_concrete t).ptype_name
+  let ptype_params t = (to_concrete t).ptype_params
+  let ptype_cstrs t = (to_concrete t).ptype_cstrs
+  let ptype_kind t = (to_concrete t).ptype_kind
+  let ptype_private t = (to_concrete t).ptype_private
+  let ptype_manifest t = (to_concrete t).ptype_manifest
+  let ptype_attributes t = (to_concrete t).ptype_attributes
+  let ptype_loc t = (to_concrete t).ptype_loc
 end
 
 module Type_kind = struct
@@ -2494,6 +2525,12 @@ module Label_declaration = struct
           node_name = "label_declaration";
           node = Unversioned.Private.transparent node;
         })
+
+  let pld_name t = (to_concrete t).pld_name
+  let pld_mutable t = (to_concrete t).pld_mutable
+  let pld_type t = (to_concrete t).pld_type
+  let pld_loc t = (to_concrete t).pld_loc
+  let pld_attributes t = (to_concrete t).pld_attributes
 end
 
 module Constructor_declaration = struct
@@ -2545,6 +2582,12 @@ module Constructor_declaration = struct
           node_name = "constructor_declaration";
           node = Unversioned.Private.transparent node;
         })
+
+  let pcd_name t = (to_concrete t).pcd_name
+  let pcd_args t = (to_concrete t).pcd_args
+  let pcd_res t = (to_concrete t).pcd_res
+  let pcd_loc t = (to_concrete t).pcd_loc
+  let pcd_attributes t = (to_concrete t).pcd_attributes
 end
 
 module Constructor_arguments = struct
@@ -2656,6 +2699,12 @@ module Type_extension = struct
           node_name = "type_extension";
           node = Unversioned.Private.transparent node;
         })
+
+  let ptyext_path t = (to_concrete t).ptyext_path
+  let ptyext_params t = (to_concrete t).ptyext_params
+  let ptyext_constructors t = (to_concrete t).ptyext_constructors
+  let ptyext_private t = (to_concrete t).ptyext_private
+  let ptyext_attributes t = (to_concrete t).ptyext_attributes
 end
 
 module Extension_constructor = struct
@@ -2704,6 +2753,11 @@ module Extension_constructor = struct
           node_name = "extension_constructor";
           node = Unversioned.Private.transparent node;
         })
+
+  let pext_name t = (to_concrete t).pext_name
+  let pext_kind t = (to_concrete t).pext_kind
+  let pext_loc t = (to_concrete t).pext_loc
+  let pext_attributes t = (to_concrete t).pext_attributes
 end
 
 module Extension_constructor_kind = struct
@@ -2811,6 +2865,10 @@ module Class_type = struct
           node_name = "class_type";
           node = Unversioned.Private.transparent node;
         })
+
+  let pcty_desc t = (to_concrete t).pcty_desc
+  let pcty_loc t = (to_concrete t).pcty_loc
+  let pcty_attributes t = (to_concrete t).pcty_attributes
 end
 
 module Class_type_desc = struct
@@ -2968,6 +3026,9 @@ module Class_signature = struct
           node_name = "class_signature";
           node = Unversioned.Private.transparent node;
         })
+
+  let pcsig_self t = (to_concrete t).pcsig_self
+  let pcsig_fields t = (to_concrete t).pcsig_fields
 end
 
 module Class_type_field = struct
@@ -3013,6 +3074,10 @@ module Class_type_field = struct
           node_name = "class_type_field";
           node = Unversioned.Private.transparent node;
         })
+
+  let pctf_desc t = (to_concrete t).pctf_desc
+  let pctf_loc t = (to_concrete t).pctf_loc
+  let pctf_attributes t = (to_concrete t).pctf_attributes
 end
 
 module Class_type_field_desc = struct
@@ -3187,6 +3252,13 @@ module Class_infos = struct
           node_name = "class_infos";
           node = Unversioned.Private.transparent node;
         })
+
+  let pci_virt t = (to_concrete t).pci_virt
+  let pci_params t = (to_concrete t).pci_params
+  let pci_name t = (to_concrete t).pci_name
+  let pci_expr t = (to_concrete t).pci_expr
+  let pci_loc t = (to_concrete t).pci_loc
+  let pci_attributes t = (to_concrete t).pci_attributes
 end
 
 module Class_description = struct
@@ -3288,6 +3360,10 @@ module Class_expr = struct
           node_name = "class_expr";
           node = Unversioned.Private.transparent node;
         })
+
+  let pcl_desc t = (to_concrete t).pcl_desc
+  let pcl_loc t = (to_concrete t).pcl_loc
+  let pcl_attributes t = (to_concrete t).pcl_attributes
 end
 
 module Class_expr_desc = struct
@@ -3500,6 +3576,9 @@ module Class_structure = struct
           node_name = "class_structure";
           node = Unversioned.Private.transparent node;
         })
+
+  let pcstr_self t = (to_concrete t).pcstr_self
+  let pcstr_fields t = (to_concrete t).pcstr_fields
 end
 
 module Class_field = struct
@@ -3545,6 +3624,10 @@ module Class_field = struct
           node_name = "class_field";
           node = Unversioned.Private.transparent node;
         })
+
+  let pcf_desc t = (to_concrete t).pcf_desc
+  let pcf_loc t = (to_concrete t).pcf_loc
+  let pcf_attributes t = (to_concrete t).pcf_attributes
 end
 
 module Class_field_desc = struct
@@ -3819,6 +3902,10 @@ module Module_type = struct
           node_name = "module_type";
           node = Unversioned.Private.transparent node;
         })
+
+  let pmty_desc t = (to_concrete t).pmty_desc
+  let pmty_loc t = (to_concrete t).pmty_loc
+  let pmty_attributes t = (to_concrete t).pmty_attributes
 end
 
 module Module_type_desc = struct
@@ -4030,6 +4117,9 @@ module Signature_item = struct
           node_name = "signature_item";
           node = Unversioned.Private.transparent node;
         })
+
+  let psig_desc t = (to_concrete t).psig_desc
+  let psig_loc t = (to_concrete t).psig_loc
 end
 
 module Signature_item_desc = struct
@@ -4307,6 +4397,11 @@ module Module_declaration = struct
           node_name = "module_declaration";
           node = Unversioned.Private.transparent node;
         })
+
+  let pmd_name t = (to_concrete t).pmd_name
+  let pmd_type t = (to_concrete t).pmd_type
+  let pmd_attributes t = (to_concrete t).pmd_attributes
+  let pmd_loc t = (to_concrete t).pmd_loc
 end
 
 module Module_type_declaration = struct
@@ -4355,6 +4450,11 @@ module Module_type_declaration = struct
           node_name = "module_type_declaration";
           node = Unversioned.Private.transparent node;
         })
+
+  let pmtd_name t = (to_concrete t).pmtd_name
+  let pmtd_type t = (to_concrete t).pmtd_type
+  let pmtd_attributes t = (to_concrete t).pmtd_attributes
+  let pmtd_loc t = (to_concrete t).pmtd_loc
 end
 
 module Open_description = struct
@@ -4403,6 +4503,11 @@ module Open_description = struct
           node_name = "open_description";
           node = Unversioned.Private.transparent node;
         })
+
+  let popen_lid t = (to_concrete t).popen_lid
+  let popen_override t = (to_concrete t).popen_override
+  let popen_loc t = (to_concrete t).popen_loc
+  let popen_attributes t = (to_concrete t).popen_attributes
 end
 
 module Include_infos = struct
@@ -4448,6 +4553,10 @@ module Include_infos = struct
           node_name = "include_infos";
           node = Unversioned.Private.transparent node;
         })
+
+  let pincl_mod t = (to_concrete t).pincl_mod
+  let pincl_loc t = (to_concrete t).pincl_loc
+  let pincl_attributes t = (to_concrete t).pincl_attributes
 end
 
 module Include_description = struct
@@ -4647,6 +4756,10 @@ module Module_expr = struct
           node_name = "module_expr";
           node = Unversioned.Private.transparent node;
         })
+
+  let pmod_desc t = (to_concrete t).pmod_desc
+  let pmod_loc t = (to_concrete t).pmod_loc
+  let pmod_attributes t = (to_concrete t).pmod_attributes
 end
 
 module Module_expr_desc = struct
@@ -4860,6 +4973,9 @@ module Structure_item = struct
           node_name = "structure_item";
           node = Unversioned.Private.transparent node;
         })
+
+  let pstr_desc t = (to_concrete t).pstr_desc
+  let pstr_loc t = (to_concrete t).pstr_loc
 end
 
 module Structure_item_desc = struct
@@ -5171,6 +5287,11 @@ module Value_binding = struct
           node_name = "value_binding";
           node = Unversioned.Private.transparent node;
         })
+
+  let pvb_pat t = (to_concrete t).pvb_pat
+  let pvb_expr t = (to_concrete t).pvb_expr
+  let pvb_attributes t = (to_concrete t).pvb_attributes
+  let pvb_loc t = (to_concrete t).pvb_loc
 end
 
 module Module_binding = struct
@@ -5219,6 +5340,11 @@ module Module_binding = struct
           node_name = "module_binding";
           node = Unversioned.Private.transparent node;
         })
+
+  let pmb_name t = (to_concrete t).pmb_name
+  let pmb_expr t = (to_concrete t).pmb_expr
+  let pmb_attributes t = (to_concrete t).pmb_attributes
+  let pmb_loc t = (to_concrete t).pmb_loc
 end
 
 module Toplevel_phrase = struct
