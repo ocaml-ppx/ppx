@@ -2,8 +2,8 @@ open StdLabels
 
 type 'node conversion_function
   = 'node Ast.t
-  -> to_src_ast:('node -> 'node Ast.t)
-  -> of_dst_ast:('node Ast.t -> 'node)
+  -> unwrap:('node -> 'node Ast.t)
+  -> wrap:('node Ast.t -> 'node)
   -> 'node Ast.t
 
 type conversion =
@@ -97,26 +97,26 @@ let create ~versioned_grammars ~conversions =
 let versioned_grammars t =
   Array.to_list (Array.map2 t.versions t.grammars ~f:(fun v g -> v, g))
 
-let apply_conversion conversion ast ~to_ast ~of_ast =
+let apply_conversion conversion ast ~unwrap ~wrap =
   conversion.f ast
-    ~to_src_ast:(to_ast ~version:conversion.src_version)
-    ~of_dst_ast:(of_ast ~version:conversion.dst_version)
+    ~unwrap:(unwrap ~version:conversion.src_version)
+    ~wrap:(wrap ~version:conversion.dst_version)
 
-let convert t ast ~src_version ~dst_version ~to_ast ~of_ast =
+let convert t ast ~src_version ~dst_version ~unwrap ~wrap =
   let src_index = version_index t ~version:src_version in
   let dst_index = version_index t ~version:dst_version in
   if src_index < dst_index
   then (
     let ast = ref ast in
     for index = src_index to dst_index - 1 do
-      ast := apply_conversion t.to_nexts.(index) !ast ~to_ast ~of_ast
+      ast := apply_conversion t.to_nexts.(index) !ast ~unwrap ~wrap
     done;
     !ast)
   else if src_index > dst_index
   then (
     let ast = ref ast in
     for index = src_index - 1 downto dst_index do
-      ast := apply_conversion t.of_nexts.(index) !ast ~to_ast ~of_ast
+      ast := apply_conversion t.of_nexts.(index) !ast ~unwrap ~wrap
     done;
     !ast)
   else
