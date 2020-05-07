@@ -1,12 +1,3 @@
-(rule
- (target dune.inc.gen)
- (deps (source_tree .))
- (action
-  (with-stdout-to %{target}
-   (run ./bin/gen_dune_rules.exe))))
-
-(alias
- (name runtest)
- (action (diff dune.inc dune.inc.gen)))
-
-(include dune.inc)
+(library
+ (name test)
+ (preprocess (pps ppx_view_test_rewriter)))

@@ -1,8 +1,0 @@
-(executable
- (name pp)
- (modules pp)
- (libraries ppx ppx.ppx_view))
-
-(executable
- (name gen_dune_rules)
- (modules gen_dune_rules))
