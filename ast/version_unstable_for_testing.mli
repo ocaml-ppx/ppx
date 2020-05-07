@@ -71,6 +71,11 @@ and Module_binding : sig
     -> pmb_expr:Module_expr.t
     -> pmb_name:string Astlib.Loc.t
     -> t
+
+  val pmb_loc : t -> Astlib.Location.t
+  val pmb_attributes : t -> Attributes.t
+  val pmb_expr : t -> Module_expr.t
+  val pmb_name : t -> string Astlib.Loc.t
 end
 
 and Value_binding : sig
@@ -93,6 +98,11 @@ and Value_binding : sig
     -> pvb_expr:Expression.t
     -> pvb_pat:Pattern.t
     -> t
+
+  val pvb_loc : t -> Astlib.Location.t
+  val pvb_attributes : t -> Attributes.t
+  val pvb_expr : t -> Expression.t
+  val pvb_pat : t -> Pattern.t
 end
 
 and Structure_item_desc : sig
@@ -186,6 +196,9 @@ and Structure_item : sig
     pstr_loc:Astlib.Location.t
     -> pstr_desc:Structure_item_desc.t
     -> t
+
+  val pstr_loc : t -> Astlib.Location.t
+  val pstr_desc : t -> Structure_item_desc.t
 end
 
 and Structure : sig
@@ -261,6 +274,10 @@ and Module_expr : sig
     -> pmod_loc:Astlib.Location.t
     -> pmod_desc:Module_expr_desc.t
     -> t
+
+  val pmod_attributes : t -> Attributes.t
+  val pmod_loc : t -> Astlib.Location.t
+  val pmod_desc : t -> Module_expr_desc.t
 end
 
 and With_constraint : sig
@@ -336,6 +353,10 @@ and Include_infos : sig
     -> pincl_loc:Astlib.Location.t
     -> pincl_mod:'a node
     -> 'a node t
+
+  val pincl_attributes : 'a node t -> Attributes.t
+  val pincl_loc : 'a node t -> Astlib.Location.t
+  val pincl_mod : 'a node t -> 'a node
 end
 
 and Open_description : sig
@@ -358,6 +379,11 @@ and Open_description : sig
     -> popen_override:Override_flag.t
     -> popen_lid:Longident_loc.t
     -> t
+
+  val popen_attributes : t -> Attributes.t
+  val popen_loc : t -> Astlib.Location.t
+  val popen_override : t -> Override_flag.t
+  val popen_lid : t -> Longident_loc.t
 end
 
 and Module_type_declaration : sig
@@ -380,6 +406,11 @@ and Module_type_declaration : sig
     -> pmtd_type:Module_type.t option
     -> pmtd_name:string Astlib.Loc.t
     -> t
+
+  val pmtd_loc : t -> Astlib.Location.t
+  val pmtd_attributes : t -> Attributes.t
+  val pmtd_type : t -> Module_type.t option
+  val pmtd_name : t -> string Astlib.Loc.t
 end
 
 and Module_declaration : sig
@@ -402,6 +433,11 @@ and Module_declaration : sig
     -> pmd_type:Module_type.t
     -> pmd_name:string Astlib.Loc.t
     -> t
+
+  val pmd_loc : t -> Astlib.Location.t
+  val pmd_attributes : t -> Attributes.t
+  val pmd_type : t -> Module_type.t
+  val pmd_name : t -> string Astlib.Loc.t
 end
 
 and Signature_item_desc : sig
@@ -485,6 +521,9 @@ and Signature_item : sig
     psig_loc:Astlib.Location.t
     -> psig_desc:Signature_item_desc.t
     -> t
+
+  val psig_loc : t -> Astlib.Location.t
+  val psig_desc : t -> Signature_item_desc.t
 end
 
 and Signature : sig
@@ -559,6 +598,10 @@ and Module_type : sig
     -> pmty_loc:Astlib.Location.t
     -> pmty_desc:Module_type_desc.t
     -> t
+
+  val pmty_attributes : t -> Attributes.t
+  val pmty_loc : t -> Astlib.Location.t
+  val pmty_desc : t -> Module_type_desc.t
 end
 
 and Class_declaration : sig
@@ -652,6 +695,10 @@ and Class_field : sig
     -> pcf_loc:Astlib.Location.t
     -> pcf_desc:Class_field_desc.t
     -> t
+
+  val pcf_attributes : t -> Attributes.t
+  val pcf_loc : t -> Astlib.Location.t
+  val pcf_desc : t -> Class_field_desc.t
 end
 
 and Class_structure : sig
@@ -670,6 +717,9 @@ and Class_structure : sig
     pcstr_fields:Class_field.t list
     -> pcstr_self:Pattern.t
     -> t
+
+  val pcstr_fields : t -> Class_field.t list
+  val pcstr_self : t -> Pattern.t
 end
 
 and Class_expr_desc : sig
@@ -743,6 +793,10 @@ and Class_expr : sig
     -> pcl_loc:Astlib.Location.t
     -> pcl_desc:Class_expr_desc.t
     -> t
+
+  val pcl_attributes : t -> Attributes.t
+  val pcl_loc : t -> Astlib.Location.t
+  val pcl_desc : t -> Class_expr_desc.t
 end
 
 and Class_type_declaration : sig
@@ -793,6 +847,13 @@ and Class_infos : sig
     -> pci_params:(Variance.t * Core_type.t) list
     -> pci_virt:Virtual_flag.t
     -> 'a node t
+
+  val pci_attributes : 'a node t -> Attributes.t
+  val pci_loc : 'a node t -> Astlib.Location.t
+  val pci_expr : 'a node t -> 'a node
+  val pci_name : 'a node t -> string Astlib.Loc.t
+  val pci_params : 'a node t -> (Variance.t * Core_type.t) list
+  val pci_virt : 'a node t -> Virtual_flag.t
 end
 
 and Class_type_field_desc : sig
@@ -848,6 +909,10 @@ and Class_type_field : sig
     -> pctf_loc:Astlib.Location.t
     -> pctf_desc:Class_type_field_desc.t
     -> t
+
+  val pctf_attributes : t -> Attributes.t
+  val pctf_loc : t -> Astlib.Location.t
+  val pctf_desc : t -> Class_type_field_desc.t
 end
 
 and Class_signature : sig
@@ -866,6 +931,9 @@ and Class_signature : sig
     pcsig_fields:Class_type_field.t list
     -> pcsig_self:Core_type.t
     -> t
+
+  val pcsig_fields : t -> Class_type_field.t list
+  val pcsig_self : t -> Core_type.t
 end
 
 and Class_type_desc : sig
@@ -922,6 +990,10 @@ and Class_type : sig
     -> pcty_loc:Astlib.Location.t
     -> pcty_desc:Class_type_desc.t
     -> t
+
+  val pcty_attributes : t -> Attributes.t
+  val pcty_loc : t -> Astlib.Location.t
+  val pcty_desc : t -> Class_type_desc.t
 end
 
 and Extension_constructor_kind : sig
@@ -964,6 +1036,11 @@ and Extension_constructor : sig
     -> pext_kind:Extension_constructor_kind.t
     -> pext_name:string Astlib.Loc.t
     -> t
+
+  val pext_attributes : t -> Attributes.t
+  val pext_loc : t -> Astlib.Location.t
+  val pext_kind : t -> Extension_constructor_kind.t
+  val pext_name : t -> string Astlib.Loc.t
 end
 
 and Type_extension : sig
@@ -988,6 +1065,12 @@ and Type_extension : sig
     -> ptyext_params:(Variance.t * Core_type.t) list
     -> ptyext_path:Longident_loc.t
     -> t
+
+  val ptyext_attributes : t -> Attributes.t
+  val ptyext_private : t -> Private_flag.t
+  val ptyext_constructors : t -> Extension_constructor.t list
+  val ptyext_params : t -> (Variance.t * Core_type.t) list
+  val ptyext_path : t -> Longident_loc.t
 end
 
 and Constructor_arguments : sig
@@ -1031,6 +1114,12 @@ and Constructor_declaration : sig
     -> pcd_args:Constructor_arguments.t
     -> pcd_name:string Astlib.Loc.t
     -> t
+
+  val pcd_attributes : t -> Attributes.t
+  val pcd_loc : t -> Astlib.Location.t
+  val pcd_res : t -> Core_type.t option
+  val pcd_args : t -> Constructor_arguments.t
+  val pcd_name : t -> string Astlib.Loc.t
 end
 
 and Label_declaration : sig
@@ -1055,6 +1144,12 @@ and Label_declaration : sig
     -> pld_mutable:Mutable_flag.t
     -> pld_name:string Astlib.Loc.t
     -> t
+
+  val pld_attributes : t -> Attributes.t
+  val pld_loc : t -> Astlib.Location.t
+  val pld_type : t -> Core_type.t
+  val pld_mutable : t -> Mutable_flag.t
+  val pld_name : t -> string Astlib.Loc.t
 end
 
 and Type_kind : sig
@@ -1108,6 +1203,15 @@ and Type_declaration : sig
     -> ptype_params:(Variance.t * Core_type.t) list
     -> ptype_name:string Astlib.Loc.t
     -> t
+
+  val ptype_loc : t -> Astlib.Location.t
+  val ptype_attributes : t -> Attributes.t
+  val ptype_manifest : t -> Core_type.t option
+  val ptype_private : t -> Private_flag.t
+  val ptype_kind : t -> Type_kind.t
+  val ptype_cstrs : t -> (Astlib.Location.t * Core_type.t * Core_type.t) list
+  val ptype_params : t -> (Variance.t * Core_type.t) list
+  val ptype_name : t -> string Astlib.Loc.t
 end
 
 and Value_description : sig
@@ -1132,6 +1236,12 @@ and Value_description : sig
     -> pval_type:Core_type.t
     -> pval_name:string Astlib.Loc.t
     -> t
+
+  val pval_loc : t -> Astlib.Location.t
+  val pval_attributes : t -> Attributes.t
+  val pval_prim : t -> string list
+  val pval_type : t -> Core_type.t
+  val pval_name : t -> string Astlib.Loc.t
 end
 
 and Case : sig
@@ -1152,6 +1262,10 @@ and Case : sig
     -> pc_guard:Expression.t option
     -> pc_lhs:Pattern.t
     -> t
+
+  val pc_rhs : t -> Expression.t
+  val pc_guard : t -> Expression.t option
+  val pc_lhs : t -> Pattern.t
 end
 
 and Expression_desc : sig
@@ -1359,6 +1473,10 @@ and Expression : sig
     -> pexp_loc:Astlib.Location.t
     -> pexp_desc:Expression_desc.t
     -> t
+
+  val pexp_attributes : t -> Attributes.t
+  val pexp_loc : t -> Astlib.Location.t
+  val pexp_desc : t -> Expression_desc.t
 end
 
 and Pattern_desc : sig
@@ -1468,6 +1586,10 @@ and Pattern : sig
     -> ppat_loc:Astlib.Location.t
     -> ppat_desc:Pattern_desc.t
     -> t
+
+  val ppat_attributes : t -> Attributes.t
+  val ppat_loc : t -> Astlib.Location.t
+  val ppat_desc : t -> Pattern_desc.t
 end
 
 and Object_field : sig
@@ -1609,6 +1731,10 @@ and Core_type : sig
     -> ptyp_loc:Astlib.Location.t
     -> ptyp_desc:Core_type_desc.t
     -> t
+
+  val ptyp_attributes : t -> Attributes.t
+  val ptyp_loc : t -> Astlib.Location.t
+  val ptyp_desc : t -> Core_type_desc.t
 end
 
 and Payload : sig

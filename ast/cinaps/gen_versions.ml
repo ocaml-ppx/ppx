@@ -66,6 +66,19 @@ module Signature = struct
                Ml.print_labelled_arrow record ~f:string_of_ty
                  (inst_node "t" ~tvars))))
 
+  let declare_accessors decl ~tvars =
+    let env = Poly_env.uninstantiated tvars in
+    let string_of_ty ty = Render.string_of_ty ~nodify:true (Poly_env.subst_ty ty ~env) in
+    match (decl : Astlib.Grammar.decl) with
+    | Ty _ -> ()
+    | Record record ->
+      Print.newline ();
+      List.iter record ~f:(fun (field, ty) ->
+        Ml.declare_val
+          field
+          (Line (Ml.arrow_type [inst_node "t" ~tvars; string_of_ty ty])))
+    | Variant _ -> ()
+
   let print decl ~name ~tvars =
     Ml.declare_type "t" ~tvars (Line (Ml.poly_type name ~tvars));
     Print.newline ();
@@ -90,7 +103,8 @@ module Signature = struct
             (inst_node "t" ~tvars)
             (inst_node "concrete" ~tvars)));
     Print.newline ();
-    declare_constructors decl ~tvars
+    declare_constructors decl ~tvars;
+    declare_accessors decl ~tvars
 end
 
 module Structure = struct
@@ -340,6 +354,16 @@ module Structure = struct
             Print.println "node = Unversioned.Private.transparent node;");
           Print.println "})")))
 
+  (* TODO: we can improve runtime performance by only converting the field we need *)
+  let define_accessors decl =
+    match (decl : Astlib.Grammar.decl) with
+    | Ty _ -> ()
+    | Record record ->
+      Print.newline ();
+      List.iter record ~f:(fun (field, _) ->
+        Print.println "let %s t = (to_concrete t).%s" (Ml.id field) (Ml.id field));
+    | Variant _ -> ()
+
   let print decl ~node_name ~tvars ~grammar =
       Ml.declare_type "t" ~tvars (Line (Ml.poly_type node_name ~tvars));
       Print.newline ();
@@ -351,7 +375,8 @@ module Structure = struct
       Print.newline ();
       define_to_concrete_opt decl ~node_name ~grammar;
       Print.newline ();
-      define_to_concrete ~node_name
+      define_to_concrete ~node_name;
+      define_accessors decl
 end
 
 module Unversioned = struct
