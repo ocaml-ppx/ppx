@@ -1,3 +1,4 @@
+open Unversioned.Types
 (*$ Ppx_ast_cinaps.print_virtual_traverse_ml (Astlib.Version.of_string "v4_07") *)
 open Versions.V4_07
 
@@ -652,37 +653,26 @@ class virtual map =
         | Pctf_extension x0 ->
           let x0 = self#extension x0 in
           Class_type_field_desc.of_concrete (Pctf_extension x0)
-    method class_infos_class_expr : Class_expr.t Class_infos.t -> Class_expr.t Class_infos.t  =
-      fun class_infos ->
+    method class_infos : 'a . ('a node -> 'a node) -> 'a node Class_infos.t -> 'a node Class_infos.t  =
+      fun fa class_infos ->
         let concrete = Class_infos.to_concrete class_infos in
-        let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_expr.t Class_infos.concrete = concrete in
+        let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : _ Class_infos.concrete = concrete in
         let pci_virt = self#virtual_flag pci_virt in
         let pci_params = self#list (fun (x0, x1) -> let x0 = self#core_type x0 in let x1 = self#variance x1 in (x0, x1)) pci_params in
         let pci_name = self#loc self#string pci_name in
-        let pci_expr = self#class_expr pci_expr in
-        let pci_loc = self#location pci_loc in
-        let pci_attributes = self#attributes pci_attributes in
-        Class_infos.of_concrete { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }
-    method class_infos_class_type : Class_type.t Class_infos.t -> Class_type.t Class_infos.t  =
-      fun class_infos ->
-        let concrete = Class_infos.to_concrete class_infos in
-        let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_type.t Class_infos.concrete = concrete in
-        let pci_virt = self#virtual_flag pci_virt in
-        let pci_params = self#list (fun (x0, x1) -> let x0 = self#core_type x0 in let x1 = self#variance x1 in (x0, x1)) pci_params in
-        let pci_name = self#loc self#string pci_name in
-        let pci_expr = self#class_type pci_expr in
+        let pci_expr = fa pci_expr in
         let pci_loc = self#location pci_loc in
         let pci_attributes = self#attributes pci_attributes in
         Class_infos.of_concrete { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }
     method class_description : Class_description.t -> Class_description.t  =
       fun class_description ->
         let concrete = Class_description.to_concrete class_description in
-        let concrete = self#class_infos_class_type concrete in
+        let concrete = self#class_infos self#class_type concrete in
         Class_description.of_concrete concrete
     method class_type_declaration : Class_type_declaration.t -> Class_type_declaration.t  =
       fun class_type_declaration ->
         let concrete = Class_type_declaration.to_concrete class_type_declaration in
-        let concrete = self#class_infos_class_type concrete in
+        let concrete = self#class_infos self#class_type concrete in
         Class_type_declaration.of_concrete concrete
     method class_expr : Class_expr.t -> Class_expr.t  =
       fun class_expr ->
@@ -786,7 +776,7 @@ class virtual map =
     method class_declaration : Class_declaration.t -> Class_declaration.t  =
       fun class_declaration ->
         let concrete = Class_declaration.to_concrete class_declaration in
-        let concrete = self#class_infos_class_expr concrete in
+        let concrete = self#class_infos self#class_expr concrete in
         Class_declaration.of_concrete concrete
     method module_type : Module_type.t -> Module_type.t  =
       fun module_type ->
@@ -908,31 +898,23 @@ class virtual map =
         let popen_loc = self#location popen_loc in
         let popen_attributes = self#attributes popen_attributes in
         Open_description.of_concrete { popen_lid; popen_override; popen_loc; popen_attributes }
-    method include_infos_module_expr : Module_expr.t Include_infos.t -> Module_expr.t Include_infos.t  =
-      fun include_infos ->
+    method include_infos : 'a . ('a node -> 'a node) -> 'a node Include_infos.t -> 'a node Include_infos.t  =
+      fun fa include_infos ->
         let concrete = Include_infos.to_concrete include_infos in
-        let { pincl_mod; pincl_loc; pincl_attributes } : Module_expr.t Include_infos.concrete = concrete in
-        let pincl_mod = self#module_expr pincl_mod in
-        let pincl_loc = self#location pincl_loc in
-        let pincl_attributes = self#attributes pincl_attributes in
-        Include_infos.of_concrete { pincl_mod; pincl_loc; pincl_attributes }
-    method include_infos_module_type : Module_type.t Include_infos.t -> Module_type.t Include_infos.t  =
-      fun include_infos ->
-        let concrete = Include_infos.to_concrete include_infos in
-        let { pincl_mod; pincl_loc; pincl_attributes } : Module_type.t Include_infos.concrete = concrete in
-        let pincl_mod = self#module_type pincl_mod in
+        let { pincl_mod; pincl_loc; pincl_attributes } : _ Include_infos.concrete = concrete in
+        let pincl_mod = fa pincl_mod in
         let pincl_loc = self#location pincl_loc in
         let pincl_attributes = self#attributes pincl_attributes in
         Include_infos.of_concrete { pincl_mod; pincl_loc; pincl_attributes }
     method include_description : Include_description.t -> Include_description.t  =
       fun include_description ->
         let concrete = Include_description.to_concrete include_description in
-        let concrete = self#include_infos_module_type concrete in
+        let concrete = self#include_infos self#module_type concrete in
         Include_description.of_concrete concrete
     method include_declaration : Include_declaration.t -> Include_declaration.t  =
       fun include_declaration ->
         let concrete = Include_declaration.to_concrete include_declaration in
-        let concrete = self#include_infos_module_expr concrete in
+        let concrete = self#include_infos self#module_expr concrete in
         Include_declaration.of_concrete concrete
     method with_constraint : With_constraint.t -> With_constraint.t  =
       fun with_constraint ->
@@ -1642,34 +1624,24 @@ class virtual iter =
           self#attribute x0
         | Pctf_extension x0 ->
           self#extension x0
-    method class_infos_class_expr : Class_expr.t Class_infos.t -> unit  =
-      fun class_infos ->
+    method class_infos : 'a . ('a node -> unit) -> 'a node Class_infos.t -> unit  =
+      fun fa class_infos ->
         let concrete = Class_infos.to_concrete class_infos in
-        let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_expr.t Class_infos.concrete = concrete in
+        let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : _ Class_infos.concrete = concrete in
         self#virtual_flag pci_virt;
         self#list (fun (x0, x1) -> self#core_type x0; self#variance x1) pci_params;
         self#loc self#string pci_name;
-        self#class_expr pci_expr;
-        self#location pci_loc;
-        self#attributes pci_attributes
-    method class_infos_class_type : Class_type.t Class_infos.t -> unit  =
-      fun class_infos ->
-        let concrete = Class_infos.to_concrete class_infos in
-        let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_type.t Class_infos.concrete = concrete in
-        self#virtual_flag pci_virt;
-        self#list (fun (x0, x1) -> self#core_type x0; self#variance x1) pci_params;
-        self#loc self#string pci_name;
-        self#class_type pci_expr;
+        fa pci_expr;
         self#location pci_loc;
         self#attributes pci_attributes
     method class_description : Class_description.t -> unit  =
       fun class_description ->
         let concrete = Class_description.to_concrete class_description in
-        self#class_infos_class_type concrete
+        self#class_infos self#class_type concrete
     method class_type_declaration : Class_type_declaration.t -> unit  =
       fun class_type_declaration ->
         let concrete = Class_type_declaration.to_concrete class_type_declaration in
-        self#class_infos_class_type concrete
+        self#class_infos self#class_type concrete
     method class_expr : Class_expr.t -> unit  =
       fun class_expr ->
         let concrete = Class_expr.to_concrete class_expr in
@@ -1752,7 +1724,7 @@ class virtual iter =
     method class_declaration : Class_declaration.t -> unit  =
       fun class_declaration ->
         let concrete = Class_declaration.to_concrete class_declaration in
-        self#class_infos_class_expr concrete
+        self#class_infos self#class_expr concrete
     method module_type : Module_type.t -> unit  =
       fun module_type ->
         let concrete = Module_type.to_concrete module_type in
@@ -1847,28 +1819,21 @@ class virtual iter =
         self#override_flag popen_override;
         self#location popen_loc;
         self#attributes popen_attributes
-    method include_infos_module_expr : Module_expr.t Include_infos.t -> unit  =
-      fun include_infos ->
+    method include_infos : 'a . ('a node -> unit) -> 'a node Include_infos.t -> unit  =
+      fun fa include_infos ->
         let concrete = Include_infos.to_concrete include_infos in
-        let { pincl_mod; pincl_loc; pincl_attributes } : Module_expr.t Include_infos.concrete = concrete in
-        self#module_expr pincl_mod;
-        self#location pincl_loc;
-        self#attributes pincl_attributes
-    method include_infos_module_type : Module_type.t Include_infos.t -> unit  =
-      fun include_infos ->
-        let concrete = Include_infos.to_concrete include_infos in
-        let { pincl_mod; pincl_loc; pincl_attributes } : Module_type.t Include_infos.concrete = concrete in
-        self#module_type pincl_mod;
+        let { pincl_mod; pincl_loc; pincl_attributes } : _ Include_infos.concrete = concrete in
+        fa pincl_mod;
         self#location pincl_loc;
         self#attributes pincl_attributes
     method include_description : Include_description.t -> unit  =
       fun include_description ->
         let concrete = Include_description.to_concrete include_description in
-        self#include_infos_module_type concrete
+        self#include_infos self#module_type concrete
     method include_declaration : Include_declaration.t -> unit  =
       fun include_declaration ->
         let concrete = Include_declaration.to_concrete include_declaration in
-        self#include_infos_module_expr concrete
+        self#include_infos self#module_expr concrete
     method with_constraint : With_constraint.t -> unit  =
       fun with_constraint ->
         let concrete = With_constraint.to_concrete with_constraint in
@@ -2655,37 +2620,26 @@ class virtual ['acc] fold =
         | Pctf_extension x0 ->
           let acc = self#extension x0 acc in
           acc
-    method class_infos_class_expr : Class_expr.t Class_infos.t -> 'acc -> 'acc  =
-      fun class_infos acc ->
+    method class_infos : 'a . ('a node -> 'acc -> 'acc) -> 'a node Class_infos.t -> 'acc -> 'acc  =
+      fun fa class_infos acc ->
         let concrete = Class_infos.to_concrete class_infos in
-        let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_expr.t Class_infos.concrete = concrete in
+        let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : _ Class_infos.concrete = concrete in
         let acc = self#virtual_flag pci_virt acc in
         let acc = self#list (fun (x0, x1) acc -> let acc = self#core_type x0 acc in let acc = self#variance x1 acc in acc) pci_params acc in
         let acc = self#loc self#string pci_name acc in
-        let acc = self#class_expr pci_expr acc in
-        let acc = self#location pci_loc acc in
-        let acc = self#attributes pci_attributes acc in
-        acc
-    method class_infos_class_type : Class_type.t Class_infos.t -> 'acc -> 'acc  =
-      fun class_infos acc ->
-        let concrete = Class_infos.to_concrete class_infos in
-        let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_type.t Class_infos.concrete = concrete in
-        let acc = self#virtual_flag pci_virt acc in
-        let acc = self#list (fun (x0, x1) acc -> let acc = self#core_type x0 acc in let acc = self#variance x1 acc in acc) pci_params acc in
-        let acc = self#loc self#string pci_name acc in
-        let acc = self#class_type pci_expr acc in
+        let acc = fa pci_expr acc in
         let acc = self#location pci_loc acc in
         let acc = self#attributes pci_attributes acc in
         acc
     method class_description : Class_description.t -> 'acc -> 'acc  =
       fun class_description acc ->
         let concrete = Class_description.to_concrete class_description in
-        let acc = self#class_infos_class_type concrete acc in
+        let acc = self#class_infos self#class_type concrete acc in
         acc
     method class_type_declaration : Class_type_declaration.t -> 'acc -> 'acc  =
       fun class_type_declaration acc ->
         let concrete = Class_type_declaration.to_concrete class_type_declaration in
-        let acc = self#class_infos_class_type concrete acc in
+        let acc = self#class_infos self#class_type concrete acc in
         acc
     method class_expr : Class_expr.t -> 'acc -> 'acc  =
       fun class_expr acc ->
@@ -2789,7 +2743,7 @@ class virtual ['acc] fold =
     method class_declaration : Class_declaration.t -> 'acc -> 'acc  =
       fun class_declaration acc ->
         let concrete = Class_declaration.to_concrete class_declaration in
-        let acc = self#class_infos_class_expr concrete acc in
+        let acc = self#class_infos self#class_expr concrete acc in
         acc
     method module_type : Module_type.t -> 'acc -> 'acc  =
       fun module_type acc ->
@@ -2911,31 +2865,23 @@ class virtual ['acc] fold =
         let acc = self#location popen_loc acc in
         let acc = self#attributes popen_attributes acc in
         acc
-    method include_infos_module_expr : Module_expr.t Include_infos.t -> 'acc -> 'acc  =
-      fun include_infos acc ->
+    method include_infos : 'a . ('a node -> 'acc -> 'acc) -> 'a node Include_infos.t -> 'acc -> 'acc  =
+      fun fa include_infos acc ->
         let concrete = Include_infos.to_concrete include_infos in
-        let { pincl_mod; pincl_loc; pincl_attributes } : Module_expr.t Include_infos.concrete = concrete in
-        let acc = self#module_expr pincl_mod acc in
-        let acc = self#location pincl_loc acc in
-        let acc = self#attributes pincl_attributes acc in
-        acc
-    method include_infos_module_type : Module_type.t Include_infos.t -> 'acc -> 'acc  =
-      fun include_infos acc ->
-        let concrete = Include_infos.to_concrete include_infos in
-        let { pincl_mod; pincl_loc; pincl_attributes } : Module_type.t Include_infos.concrete = concrete in
-        let acc = self#module_type pincl_mod acc in
+        let { pincl_mod; pincl_loc; pincl_attributes } : _ Include_infos.concrete = concrete in
+        let acc = fa pincl_mod acc in
         let acc = self#location pincl_loc acc in
         let acc = self#attributes pincl_attributes acc in
         acc
     method include_description : Include_description.t -> 'acc -> 'acc  =
       fun include_description acc ->
         let concrete = Include_description.to_concrete include_description in
-        let acc = self#include_infos_module_type concrete acc in
+        let acc = self#include_infos self#module_type concrete acc in
         acc
     method include_declaration : Include_declaration.t -> 'acc -> 'acc  =
       fun include_declaration acc ->
         let concrete = Include_declaration.to_concrete include_declaration in
-        let acc = self#include_infos_module_expr concrete acc in
+        let acc = self#include_infos self#module_expr concrete acc in
         acc
     method with_constraint : With_constraint.t -> 'acc -> 'acc  =
       fun with_constraint acc ->
@@ -3760,37 +3706,26 @@ class virtual ['acc] fold_map =
         | Pctf_extension x0 ->
           let (x0, acc) = self#extension x0 acc in
           (Class_type_field_desc.of_concrete (Pctf_extension x0), acc)
-    method class_infos_class_expr : Class_expr.t Class_infos.t -> 'acc -> (Class_expr.t Class_infos.t * 'acc)  =
-      fun class_infos acc ->
+    method class_infos : 'a . ('a node -> 'acc -> ('a node * 'acc)) -> 'a node Class_infos.t -> 'acc -> ('a node Class_infos.t * 'acc)  =
+      fun fa class_infos acc ->
         let concrete = Class_infos.to_concrete class_infos in
-        let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_expr.t Class_infos.concrete = concrete in
+        let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : _ Class_infos.concrete = concrete in
         let (pci_virt, acc) = self#virtual_flag pci_virt acc in
         let (pci_params, acc) = self#list (fun (x0, x1) acc -> let (x0, acc) = self#core_type x0 acc in let (x1, acc) = self#variance x1 acc in ((x0, x1), acc)) pci_params acc in
         let (pci_name, acc) = self#loc self#string pci_name acc in
-        let (pci_expr, acc) = self#class_expr pci_expr acc in
-        let (pci_loc, acc) = self#location pci_loc acc in
-        let (pci_attributes, acc) = self#attributes pci_attributes acc in
-        (Class_infos.of_concrete { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }, acc)
-    method class_infos_class_type : Class_type.t Class_infos.t -> 'acc -> (Class_type.t Class_infos.t * 'acc)  =
-      fun class_infos acc ->
-        let concrete = Class_infos.to_concrete class_infos in
-        let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_type.t Class_infos.concrete = concrete in
-        let (pci_virt, acc) = self#virtual_flag pci_virt acc in
-        let (pci_params, acc) = self#list (fun (x0, x1) acc -> let (x0, acc) = self#core_type x0 acc in let (x1, acc) = self#variance x1 acc in ((x0, x1), acc)) pci_params acc in
-        let (pci_name, acc) = self#loc self#string pci_name acc in
-        let (pci_expr, acc) = self#class_type pci_expr acc in
+        let (pci_expr, acc) = fa pci_expr acc in
         let (pci_loc, acc) = self#location pci_loc acc in
         let (pci_attributes, acc) = self#attributes pci_attributes acc in
         (Class_infos.of_concrete { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }, acc)
     method class_description : Class_description.t -> 'acc -> (Class_description.t * 'acc)  =
       fun class_description acc ->
         let concrete = Class_description.to_concrete class_description in
-        let (concrete, acc) = self#class_infos_class_type concrete acc in
+        let (concrete, acc) = self#class_infos self#class_type concrete acc in
         (Class_description.of_concrete concrete, acc)
     method class_type_declaration : Class_type_declaration.t -> 'acc -> (Class_type_declaration.t * 'acc)  =
       fun class_type_declaration acc ->
         let concrete = Class_type_declaration.to_concrete class_type_declaration in
-        let (concrete, acc) = self#class_infos_class_type concrete acc in
+        let (concrete, acc) = self#class_infos self#class_type concrete acc in
         (Class_type_declaration.of_concrete concrete, acc)
     method class_expr : Class_expr.t -> 'acc -> (Class_expr.t * 'acc)  =
       fun class_expr acc ->
@@ -3894,7 +3829,7 @@ class virtual ['acc] fold_map =
     method class_declaration : Class_declaration.t -> 'acc -> (Class_declaration.t * 'acc)  =
       fun class_declaration acc ->
         let concrete = Class_declaration.to_concrete class_declaration in
-        let (concrete, acc) = self#class_infos_class_expr concrete acc in
+        let (concrete, acc) = self#class_infos self#class_expr concrete acc in
         (Class_declaration.of_concrete concrete, acc)
     method module_type : Module_type.t -> 'acc -> (Module_type.t * 'acc)  =
       fun module_type acc ->
@@ -4016,31 +3951,23 @@ class virtual ['acc] fold_map =
         let (popen_loc, acc) = self#location popen_loc acc in
         let (popen_attributes, acc) = self#attributes popen_attributes acc in
         (Open_description.of_concrete { popen_lid; popen_override; popen_loc; popen_attributes }, acc)
-    method include_infos_module_expr : Module_expr.t Include_infos.t -> 'acc -> (Module_expr.t Include_infos.t * 'acc)  =
-      fun include_infos acc ->
+    method include_infos : 'a . ('a node -> 'acc -> ('a node * 'acc)) -> 'a node Include_infos.t -> 'acc -> ('a node Include_infos.t * 'acc)  =
+      fun fa include_infos acc ->
         let concrete = Include_infos.to_concrete include_infos in
-        let { pincl_mod; pincl_loc; pincl_attributes } : Module_expr.t Include_infos.concrete = concrete in
-        let (pincl_mod, acc) = self#module_expr pincl_mod acc in
-        let (pincl_loc, acc) = self#location pincl_loc acc in
-        let (pincl_attributes, acc) = self#attributes pincl_attributes acc in
-        (Include_infos.of_concrete { pincl_mod; pincl_loc; pincl_attributes }, acc)
-    method include_infos_module_type : Module_type.t Include_infos.t -> 'acc -> (Module_type.t Include_infos.t * 'acc)  =
-      fun include_infos acc ->
-        let concrete = Include_infos.to_concrete include_infos in
-        let { pincl_mod; pincl_loc; pincl_attributes } : Module_type.t Include_infos.concrete = concrete in
-        let (pincl_mod, acc) = self#module_type pincl_mod acc in
+        let { pincl_mod; pincl_loc; pincl_attributes } : _ Include_infos.concrete = concrete in
+        let (pincl_mod, acc) = fa pincl_mod acc in
         let (pincl_loc, acc) = self#location pincl_loc acc in
         let (pincl_attributes, acc) = self#attributes pincl_attributes acc in
         (Include_infos.of_concrete { pincl_mod; pincl_loc; pincl_attributes }, acc)
     method include_description : Include_description.t -> 'acc -> (Include_description.t * 'acc)  =
       fun include_description acc ->
         let concrete = Include_description.to_concrete include_description in
-        let (concrete, acc) = self#include_infos_module_type concrete acc in
+        let (concrete, acc) = self#include_infos self#module_type concrete acc in
         (Include_description.of_concrete concrete, acc)
     method include_declaration : Include_declaration.t -> 'acc -> (Include_declaration.t * 'acc)  =
       fun include_declaration acc ->
         let concrete = Include_declaration.to_concrete include_declaration in
-        let (concrete, acc) = self#include_infos_module_expr concrete acc in
+        let (concrete, acc) = self#include_infos self#module_expr concrete acc in
         (Include_declaration.of_concrete concrete, acc)
     method with_constraint : With_constraint.t -> 'acc -> (With_constraint.t * 'acc)  =
       fun with_constraint acc ->
@@ -4865,37 +4792,26 @@ class virtual ['ctx] map_with_context =
         | Pctf_extension x0 ->
           let x0 = self#extension _ctx x0 in
           Class_type_field_desc.of_concrete (Pctf_extension x0)
-    method class_infos_class_expr : 'ctx -> Class_expr.t Class_infos.t -> Class_expr.t Class_infos.t  =
-      fun _ctx class_infos ->
+    method class_infos : 'a . ('ctx -> 'a node -> 'a node) -> 'ctx -> 'a node Class_infos.t -> 'a node Class_infos.t  =
+      fun fa _ctx class_infos ->
         let concrete = Class_infos.to_concrete class_infos in
-        let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_expr.t Class_infos.concrete = concrete in
+        let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : _ Class_infos.concrete = concrete in
         let pci_virt = self#virtual_flag _ctx pci_virt in
         let pci_params = self#list (fun _ctx (x0, x1) -> let x0 = self#core_type _ctx x0 in let x1 = self#variance _ctx x1 in (x0, x1)) _ctx pci_params in
         let pci_name = self#loc self#string _ctx pci_name in
-        let pci_expr = self#class_expr _ctx pci_expr in
-        let pci_loc = self#location _ctx pci_loc in
-        let pci_attributes = self#attributes _ctx pci_attributes in
-        Class_infos.of_concrete { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }
-    method class_infos_class_type : 'ctx -> Class_type.t Class_infos.t -> Class_type.t Class_infos.t  =
-      fun _ctx class_infos ->
-        let concrete = Class_infos.to_concrete class_infos in
-        let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_type.t Class_infos.concrete = concrete in
-        let pci_virt = self#virtual_flag _ctx pci_virt in
-        let pci_params = self#list (fun _ctx (x0, x1) -> let x0 = self#core_type _ctx x0 in let x1 = self#variance _ctx x1 in (x0, x1)) _ctx pci_params in
-        let pci_name = self#loc self#string _ctx pci_name in
-        let pci_expr = self#class_type _ctx pci_expr in
+        let pci_expr = fa _ctx pci_expr in
         let pci_loc = self#location _ctx pci_loc in
         let pci_attributes = self#attributes _ctx pci_attributes in
         Class_infos.of_concrete { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes }
     method class_description : 'ctx -> Class_description.t -> Class_description.t  =
       fun _ctx class_description ->
         let concrete = Class_description.to_concrete class_description in
-        let concrete = self#class_infos_class_type _ctx concrete in
+        let concrete = self#class_infos self#class_type _ctx concrete in
         Class_description.of_concrete concrete
     method class_type_declaration : 'ctx -> Class_type_declaration.t -> Class_type_declaration.t  =
       fun _ctx class_type_declaration ->
         let concrete = Class_type_declaration.to_concrete class_type_declaration in
-        let concrete = self#class_infos_class_type _ctx concrete in
+        let concrete = self#class_infos self#class_type _ctx concrete in
         Class_type_declaration.of_concrete concrete
     method class_expr : 'ctx -> Class_expr.t -> Class_expr.t  =
       fun _ctx class_expr ->
@@ -4999,7 +4915,7 @@ class virtual ['ctx] map_with_context =
     method class_declaration : 'ctx -> Class_declaration.t -> Class_declaration.t  =
       fun _ctx class_declaration ->
         let concrete = Class_declaration.to_concrete class_declaration in
-        let concrete = self#class_infos_class_expr _ctx concrete in
+        let concrete = self#class_infos self#class_expr _ctx concrete in
         Class_declaration.of_concrete concrete
     method module_type : 'ctx -> Module_type.t -> Module_type.t  =
       fun _ctx module_type ->
@@ -5121,31 +5037,23 @@ class virtual ['ctx] map_with_context =
         let popen_loc = self#location _ctx popen_loc in
         let popen_attributes = self#attributes _ctx popen_attributes in
         Open_description.of_concrete { popen_lid; popen_override; popen_loc; popen_attributes }
-    method include_infos_module_expr : 'ctx -> Module_expr.t Include_infos.t -> Module_expr.t Include_infos.t  =
-      fun _ctx include_infos ->
+    method include_infos : 'a . ('ctx -> 'a node -> 'a node) -> 'ctx -> 'a node Include_infos.t -> 'a node Include_infos.t  =
+      fun fa _ctx include_infos ->
         let concrete = Include_infos.to_concrete include_infos in
-        let { pincl_mod; pincl_loc; pincl_attributes } : Module_expr.t Include_infos.concrete = concrete in
-        let pincl_mod = self#module_expr _ctx pincl_mod in
-        let pincl_loc = self#location _ctx pincl_loc in
-        let pincl_attributes = self#attributes _ctx pincl_attributes in
-        Include_infos.of_concrete { pincl_mod; pincl_loc; pincl_attributes }
-    method include_infos_module_type : 'ctx -> Module_type.t Include_infos.t -> Module_type.t Include_infos.t  =
-      fun _ctx include_infos ->
-        let concrete = Include_infos.to_concrete include_infos in
-        let { pincl_mod; pincl_loc; pincl_attributes } : Module_type.t Include_infos.concrete = concrete in
-        let pincl_mod = self#module_type _ctx pincl_mod in
+        let { pincl_mod; pincl_loc; pincl_attributes } : _ Include_infos.concrete = concrete in
+        let pincl_mod = fa _ctx pincl_mod in
         let pincl_loc = self#location _ctx pincl_loc in
         let pincl_attributes = self#attributes _ctx pincl_attributes in
         Include_infos.of_concrete { pincl_mod; pincl_loc; pincl_attributes }
     method include_description : 'ctx -> Include_description.t -> Include_description.t  =
       fun _ctx include_description ->
         let concrete = Include_description.to_concrete include_description in
-        let concrete = self#include_infos_module_type _ctx concrete in
+        let concrete = self#include_infos self#module_type _ctx concrete in
         Include_description.of_concrete concrete
     method include_declaration : 'ctx -> Include_declaration.t -> Include_declaration.t  =
       fun _ctx include_declaration ->
         let concrete = Include_declaration.to_concrete include_declaration in
-        let concrete = self#include_infos_module_expr _ctx concrete in
+        let concrete = self#include_infos self#module_expr _ctx concrete in
         Include_declaration.of_concrete concrete
     method with_constraint : 'ctx -> With_constraint.t -> With_constraint.t  =
       fun _ctx with_constraint ->
@@ -5974,37 +5882,26 @@ class virtual ['res] lift =
         | Pctf_extension x0 ->
           let x0 = self#extension x0 in
           self#constr (Some ("class_type_field_desc", 0)) "Pctf_extension" [x0]
-    method class_infos_class_expr : Class_expr.t Class_infos.t -> 'res  =
-      fun class_infos ->
+    method class_infos : 'a . ('a node -> 'res) -> 'a node Class_infos.t -> 'res  =
+      fun fa class_infos ->
         let concrete = Class_infos.to_concrete class_infos in
-        let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_expr.t Class_infos.concrete = concrete in
+        let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : _ Class_infos.concrete = concrete in
         let pci_virt = self#virtual_flag pci_virt in
         let pci_params = self#list (fun (x0, x1) -> let x0 = self#core_type x0 in let x1 = self#variance x1 in self#node None (self#tuple [x0; x1])) pci_params in
         let pci_name = self#loc self#string pci_name in
-        let pci_expr = self#class_expr pci_expr in
-        let pci_loc = self#location pci_loc in
-        let pci_attributes = self#attributes pci_attributes in
-        self#record (Some ("class_infos", 1)) [("pci_virt", pci_virt); ("pci_params", pci_params); ("pci_name", pci_name); ("pci_expr", pci_expr); ("pci_loc", pci_loc); ("pci_attributes", pci_attributes)]
-    method class_infos_class_type : Class_type.t Class_infos.t -> 'res  =
-      fun class_infos ->
-        let concrete = Class_infos.to_concrete class_infos in
-        let { pci_virt; pci_params; pci_name; pci_expr; pci_loc; pci_attributes } : Class_type.t Class_infos.concrete = concrete in
-        let pci_virt = self#virtual_flag pci_virt in
-        let pci_params = self#list (fun (x0, x1) -> let x0 = self#core_type x0 in let x1 = self#variance x1 in self#node None (self#tuple [x0; x1])) pci_params in
-        let pci_name = self#loc self#string pci_name in
-        let pci_expr = self#class_type pci_expr in
+        let pci_expr = fa pci_expr in
         let pci_loc = self#location pci_loc in
         let pci_attributes = self#attributes pci_attributes in
         self#record (Some ("class_infos", 1)) [("pci_virt", pci_virt); ("pci_params", pci_params); ("pci_name", pci_name); ("pci_expr", pci_expr); ("pci_loc", pci_loc); ("pci_attributes", pci_attributes)]
     method class_description : Class_description.t -> 'res  =
       fun class_description ->
         let concrete = Class_description.to_concrete class_description in
-        let concrete = self#class_infos_class_type concrete in
+        let concrete = self#class_infos self#class_type concrete in
         self#node (Some ("class_description", 0)) concrete
     method class_type_declaration : Class_type_declaration.t -> 'res  =
       fun class_type_declaration ->
         let concrete = Class_type_declaration.to_concrete class_type_declaration in
-        let concrete = self#class_infos_class_type concrete in
+        let concrete = self#class_infos self#class_type concrete in
         self#node (Some ("class_type_declaration", 0)) concrete
     method class_expr : Class_expr.t -> 'res  =
       fun class_expr ->
@@ -6108,7 +6005,7 @@ class virtual ['res] lift =
     method class_declaration : Class_declaration.t -> 'res  =
       fun class_declaration ->
         let concrete = Class_declaration.to_concrete class_declaration in
-        let concrete = self#class_infos_class_expr concrete in
+        let concrete = self#class_infos self#class_expr concrete in
         self#node (Some ("class_declaration", 0)) concrete
     method module_type : Module_type.t -> 'res  =
       fun module_type ->
@@ -6230,31 +6127,23 @@ class virtual ['res] lift =
         let popen_loc = self#location popen_loc in
         let popen_attributes = self#attributes popen_attributes in
         self#record (Some ("open_description", 0)) [("popen_lid", popen_lid); ("popen_override", popen_override); ("popen_loc", popen_loc); ("popen_attributes", popen_attributes)]
-    method include_infos_module_expr : Module_expr.t Include_infos.t -> 'res  =
-      fun include_infos ->
+    method include_infos : 'a . ('a node -> 'res) -> 'a node Include_infos.t -> 'res  =
+      fun fa include_infos ->
         let concrete = Include_infos.to_concrete include_infos in
-        let { pincl_mod; pincl_loc; pincl_attributes } : Module_expr.t Include_infos.concrete = concrete in
-        let pincl_mod = self#module_expr pincl_mod in
-        let pincl_loc = self#location pincl_loc in
-        let pincl_attributes = self#attributes pincl_attributes in
-        self#record (Some ("include_infos", 1)) [("pincl_mod", pincl_mod); ("pincl_loc", pincl_loc); ("pincl_attributes", pincl_attributes)]
-    method include_infos_module_type : Module_type.t Include_infos.t -> 'res  =
-      fun include_infos ->
-        let concrete = Include_infos.to_concrete include_infos in
-        let { pincl_mod; pincl_loc; pincl_attributes } : Module_type.t Include_infos.concrete = concrete in
-        let pincl_mod = self#module_type pincl_mod in
+        let { pincl_mod; pincl_loc; pincl_attributes } : _ Include_infos.concrete = concrete in
+        let pincl_mod = fa pincl_mod in
         let pincl_loc = self#location pincl_loc in
         let pincl_attributes = self#attributes pincl_attributes in
         self#record (Some ("include_infos", 1)) [("pincl_mod", pincl_mod); ("pincl_loc", pincl_loc); ("pincl_attributes", pincl_attributes)]
     method include_description : Include_description.t -> 'res  =
       fun include_description ->
         let concrete = Include_description.to_concrete include_description in
-        let concrete = self#include_infos_module_type concrete in
+        let concrete = self#include_infos self#module_type concrete in
         self#node (Some ("include_description", 0)) concrete
     method include_declaration : Include_declaration.t -> 'res  =
       fun include_declaration ->
         let concrete = Include_declaration.to_concrete include_declaration in
-        let concrete = self#include_infos_module_expr concrete in
+        let concrete = self#include_infos self#module_expr concrete in
         self#node (Some ("include_declaration", 0)) concrete
     method with_constraint : With_constraint.t -> 'res  =
       fun with_constraint ->

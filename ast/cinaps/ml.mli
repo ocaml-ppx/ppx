@@ -58,4 +58,4 @@ val define_object : ?bind_self: bool -> (unit -> unit) -> unit
 val declare_method : ?virtual_: bool -> name: string -> signature: string -> unit -> unit
 val define_method : ?signature: string -> string -> (unit -> unit) -> unit
 
-val define_anon_fun : args: string list -> (unit -> unit) -> unit
+val print_anon_fun : args: string list -> (unit -> unit) -> unit

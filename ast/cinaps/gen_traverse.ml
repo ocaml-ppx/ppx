@@ -1,41 +1,45 @@
 open Stdppx
 
-let string_of_targ targ = Grammar.string_of_targ ~internal:false targ
-
 let parens x = Printf.sprintf "(%s)" x
 
 type base_method =
   { method_name : string
-  ; params : string list
+  ; tvars : string list
   ; type_name : string
   }
 
 let base_methods =
-  [ {method_name = "bool"; params = []; type_name = "bool"}
-  ; {method_name = "char"; params = []; type_name = "char"}
-  ; {method_name = "int"; params = []; type_name = "int"}
-  ; {method_name = "list"; params = ["a"]; type_name = "list"}
-  ; {method_name = "option"; params = ["a"]; type_name = "option"}
-  ; {method_name = "string"; params = []; type_name = "string"}
-  ; {method_name = "location"; params = []; type_name = "Astlib.Location.t"}
-  ; {method_name = "loc"; params = ["a"]; type_name = "Astlib.Loc.t"}
+  [ {method_name = "bool"; tvars = []; type_name = "bool"}
+  ; {method_name = "char"; tvars = []; type_name = "char"}
+  ; {method_name = "int"; tvars = []; type_name = "int"}
+  ; {method_name = "list"; tvars = ["a"]; type_name = "list"}
+  ; {method_name = "option"; tvars = ["a"]; type_name = "option"}
+  ; {method_name = "string"; tvars = []; type_name = "string"}
+  ; {method_name = "location"; tvars = []; type_name = "Astlib.Location.t"}
+  ; {method_name = "loc"; tvars = ["a"]; type_name = "Astlib.Loc.t"}
   ]
 
-let poly_signature ~signature ~params ~type_name =
-  let poly_type = Ml.poly_type ~tvars:params type_name in
-  let poly_params = List.map ~f:Ml.tvar params in
-  let fun_pre_args = List.map ~f:(fun t -> parens (signature t)) poly_params in
+let poly_signature ~signature ~tvars ~nodify ~type_name =
+  let args =
+    List.map tvars ~f:(fun tvar ->
+      if nodify
+      then Ml.poly_inst "node" ~args:[Ml.tvar tvar]
+      else Ml.tvar tvar)
+  in
+  let poly_type = Ml.poly_inst ~args type_name in
+  let poly_tvars = List.map ~f:Ml.tvar tvars in
+  let fun_pre_args = List.map ~f:(fun arg -> parens (signature arg)) args in
   let fun_sig = Ml.arrow_type (fun_pre_args @ [signature poly_type]) in
-  let universal_quantifiers = String.concat ~sep:" " poly_params in
+  let universal_quantifiers = String.concat ~sep:" " poly_tvars in
   Printf.sprintf "%s . %s" universal_quantifiers fun_sig
 
-let base_method_signature ~signature ~params ~type_name =
-  match params with
+let method_signature ~signature ~tvars ~nodify ~type_name =
+  match tvars with
   | [] -> signature type_name
-  | params -> poly_signature ~signature ~params ~type_name
+  | tvars -> poly_signature ~signature ~tvars ~nodify ~type_name
 
-let declare_base_method ~signature {method_name; params; type_name} =
-  let signature = base_method_signature ~signature ~params ~type_name in
+let declare_base_method ~signature {method_name; tvars; type_name} =
+  let signature = method_signature ~signature ~tvars ~nodify:false ~type_name in
   Ml.declare_method ~virtual_:true ~signature ~name:method_name ()
 
 (* This type describes a variables bound when deconstructing a value.
@@ -72,7 +76,7 @@ type deconstructed =
 (** This type describes the kind of value we're trying to traverse.
     - [Ast_type {node_name; targs}] means we are traversing a named type of
     the AST. [node_name] is the name of the AST node we
-    want to traverse and [targs] are its type arguments if it is an
+    want to traverse and [arity] is the number of type arguments if it is an
     instance of a polymorphic AST type.
     - [Abstract] means we're inside an anonymous function and want
     to traverse something that isn't a named type of the AST.
@@ -82,7 +86,7 @@ type deconstructed =
     in an [of_concrete] call in the [Ast_type _] case.
     Other traversal classes can ignore the context. *)
 type value_kind =
-  | Ast_type of {node_name : string; targs : Astlib.Grammar.targ list}
+  | Ast_type of {node_name : string; arity : int}
   | Abstract
 
 (** The type used to describe the various traversal classes and how to generate
@@ -112,13 +116,10 @@ type traversal =
   ; recurse : value_kind: value_kind -> deconstructed: deconstructed -> string list
   }
 
-type type_ = Concrete | T
-
-let node_type ~type_ ~args node_name =
-  let type_name = match type_ with T -> "t" | Concrete -> "concrete" in
-  let node_type = Printf.sprintf "%s.%s" (Ml.module_name node_name) type_name in
-  let args = List.map args ~f:string_of_targ in
-  Ml.poly_inst node_type ~args
+let concrete_type ~tvars node_name =
+  let full_name = Printf.sprintf "%s.concrete" (Ml.module_name node_name) in
+  let args = List.map tvars ~f:(fun (_ : string) -> "_") in
+  Ml.poly_inst full_name ~args
 
 let fun_arg type_name = Ml.id (Printf.sprintf "f%s" type_name)
 
@@ -177,8 +178,13 @@ and recursive_call ?(nested=false) ~traversal (ty : Astlib.Grammar.ty) =
     let exprs = traversal.recurse ~value_kind:Abstract ~deconstructed in
     let args = String.concat ~sep:" " (traversal.args deconstructed.pattern) in
     Printf.sprintf "(fun %s -> %s)" args (String.concat ~sep:" " exprs)
-  | Instance (n, tyl) ->
-    Printf.sprintf "self#%s" (Name.make [n] tyl)
+  | Instance (n, targs) ->
+    Printf.sprintf "self#%s %s" (Name.make [n] [])
+      (String.concat ~sep:" "
+         (List.map targs ~f:(fun targ ->
+            match (targ : Astlib.Grammar.targ) with
+            | Tvar tvar -> fun_arg tvar
+            | Tname tname -> Printf.sprintf "self#%s" (Ml.id tname))))
   | Loc ty -> parens (Printf.sprintf "self#loc %s" (recursive_call ~nested:true ty))
   | Location -> "self#location"
 
@@ -200,22 +206,22 @@ let print_method_for_alias ~traversal ~value_kind ~var ty =
 
 let print_method_body
       ~traversal
-      ~targs
       ~node_name
+      ~tvars
       ~var
       (decl : Astlib.Grammar.decl)
   =
-  let value_kind = Ast_type {node_name; targs} in
+  let value_kind = Ast_type {node_name; arity = List.length tvars} in
   match decl with
   | Ty ty -> print_method_for_alias ~traversal ~value_kind ~var ty
   | Record fields ->
     let deconstructed = deconstruct_record ~traversal fields in
-    let concrete_type = (node_type ~type_:Concrete ~args:targs node_name) in
+    let concrete_type = concrete_type ~tvars node_name in
     let exprs = traversal.recurse ~value_kind ~deconstructed in
     Print.println "let %s : %s = %s in" deconstructed.pattern concrete_type var;
     List.iter exprs ~f:(Print.println "%s")
   | Variant variants ->
-    let concrete_type = (node_type ~type_:Concrete ~args:targs node_name) in
+    let concrete_type = concrete_type ~tvars node_name in
     Print.println "match (%s : %s) with" var concrete_type;
     List.iter variants
       ~f:(fun variant ->
@@ -245,7 +251,7 @@ module Map = struct
     let return =
       match value_kind with
       | Abstract -> pattern
-      | Ast_type {node_name; targs=_} ->
+      | Ast_type {node_name;arity=_} ->
         Printf.sprintf "%s.%s %s"
           (Ml.module_name node_name)
           "of_concrete"
@@ -337,7 +343,7 @@ module Fold_map = struct
     let return =
       match value_kind with
       | Abstract -> Ml.tuple [pattern; acc_var]
-      | Ast_type {node_name; targs=_} ->
+      | Ast_type {node_name;arity=_} ->
         let mapped =
           Printf.sprintf "%s.%s %s"
             (Ml.module_name node_name)
@@ -378,7 +384,7 @@ module Map_with_context = struct
     let return =
       match value_kind with
       | Abstract -> pattern
-      | Ast_type {node_name; targs=_} ->
+      | Ast_type {node_name;arity=_} ->
         Printf.sprintf "%s.%s %s"
           (Ml.module_name node_name)
           "of_concrete"
@@ -440,8 +446,8 @@ module Lift = struct
   let make_node_arg ~value_kind =
     match value_kind with
     | Abstract -> "None"
-    | Ast_type { node_name; targs } ->
-      sprintf "(Some (%S, %d))" node_name (List.length targs)
+    | Ast_type { node_name; arity } ->
+      sprintf "(Some (%S, %d))" node_name arity
 
   let recurse ~value_kind ~deconstructed =
     let {kind; vars; pattern} = deconstructed in
@@ -489,60 +495,54 @@ let print_to_concrete node_name =
     (Ml.module_name node_name)
     (Ml.id node_name)
 
-let print_method_value ~traversal ~targs ~node_name decl =
-  let args = traversal.args (Ml.id node_name) in
-  Ml.define_anon_fun ~args (fun () ->
+let print_method_value ~traversal ~node_name ~tvars decl =
+  let args = List.map tvars ~f:fun_arg @ traversal.args (Ml.id node_name) in
+  Ml.print_anon_fun ~args (fun () ->
     print_to_concrete node_name;
-    print_method_body ~traversal ~targs ~node_name ~var:"concrete" decl)
+    print_method_body ~traversal ~node_name ~tvars ~var:"concrete" decl)
 
-let declare_node_methods ~env_table ~signature (node_name, kind) =
-  match (kind : Astlib.Grammar.kind) with
-  | Mono _ ->
-    let name = Name.make [node_name] [] in
-    let signature = signature (node_type ~type_:T ~args:[] node_name) in
-    Ml.declare_method ~signature ~name ()
-  | Poly (_, _) ->
-    let envs = Poly_env.find env_table node_name in
-    List.iter envs ~f:(fun env ->
-      let args = Poly_env.args env in
-      let name = Name.make [node_name] args in
-      let signature = signature (node_type ~type_:T ~args node_name) in
-      Ml.declare_method ~signature ~name ())
+let declare_node_methods ~signature (node_name, kind) =
+  let tvars =
+    match (kind : Astlib.Grammar.kind) with
+    | Mono _ -> []
+    | Poly (tvars, _) -> tvars
+  in
+  let name = Name.make [node_name] [] in
+  let signature =
+    method_signature ~signature ~tvars ~nodify:true
+      ~type_name:(Ml.module_name node_name ^ ".t")
+  in
+  Ml.declare_method ~signature ~name ()
 
-let define_node_methods ~env_table ~traversal (node_name, kind) =
-  match (kind : Astlib.Grammar.kind) with
-  | Mono decl ->
-    let name = Name.make [node_name] [] in
-    let signature = traversal.signature (node_type ~type_:T ~args:[] node_name) in
-    Ml.define_method ~signature name (fun () ->
-      print_method_value ~traversal ~targs:[] ~node_name decl)
-  | Poly (_, decl) ->
-    let envs = Poly_env.find env_table node_name in
-    List.iter envs ~f:(fun env ->
-      let targs = Poly_env.args env in
-      let name = Name.make [node_name] targs in
-      let signature = traversal.signature (node_type ~type_:T ~args:targs node_name) in
-      let subst_decl = Poly_env.subst_decl ~env decl in
-      Ml.define_method ~signature name (fun () ->
-        print_method_value ~traversal ~targs ~node_name subst_decl))
+let define_node_methods ~traversal (node_name, kind) =
+  let tvars, decl =
+    match (kind : Astlib.Grammar.kind) with
+    | Mono decl -> [], decl
+    | Poly (tvars, decl) -> tvars, decl
+  in
+  let name = Name.make [node_name] [] in
+  let signature =
+    method_signature ~signature:traversal.signature ~tvars ~nodify:true
+      ~type_name:(Ml.module_name node_name ^ ".t")
+  in
+  Ml.define_method ~signature name (fun () ->
+    print_method_value ~traversal ~node_name ~tvars decl)
 
 let declare_virtual_traversal_class ~traversal grammar =
-  let env_table = Poly_env.env_table grammar in
   let {class_name; params; signature; extra_methods; _} = traversal in
   Ml.declare_class ~virtual_:true ?params class_name (fun () ->
     Ml.declare_object (fun () ->
       Option.iter extra_methods ~f:(fun f -> f ());
       List.iter base_methods ~f:(declare_base_method ~signature);
-      List.iter grammar ~f:(declare_node_methods ~env_table ~signature)))
+      List.iter grammar ~f:(declare_node_methods ~signature)))
 
 let define_virtual_traversal_class ~traversal grammar =
-  let env_table = Poly_env.env_table grammar in
   let {class_name; params; signature; extra_methods; _} = traversal in
   Ml.define_class ~virtual_:true ?params class_name (fun () ->
     Ml.define_object ~bind_self:true (fun () ->
       Option.iter extra_methods ~f:(fun f -> f ());
       List.iter base_methods ~f:(declare_base_method ~signature);
-      List.iter grammar ~f:(define_node_methods ~env_table ~traversal)))
+      List.iter grammar ~f:(define_node_methods ~traversal)))
 
 let declare_virtual_traversal_classes grammar =
   List.iter traversal_classes

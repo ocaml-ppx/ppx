@@ -1,8 +1,4 @@
 type env
-type env_table
-
-val env_table : Astlib.Grammar.t -> env_table
-val find : env_table -> string -> env list
 
 val create : vars:string list -> args:Astlib.Grammar.targ list -> env
 
