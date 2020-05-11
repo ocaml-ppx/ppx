@@ -319,21 +319,15 @@ val ast_to_class_type_field_desc :
   Versions.V4_07.Class_type_field_desc.t
   -> Compiler_types.class_type_field_desc
 
-val ast_of_class_infos_class_expr :
-  Compiler_types.class_expr Compiler_types.class_infos
-  -> Versions.V4_07.Class_expr.t Versions.V4_07.Class_infos.t
+val ast_of_class_infos :
+  ('a_ -> 'a Unversioned.Types.node)
+  -> 'a_ Compiler_types.class_infos
+  -> 'a Unversioned.Types.node Versions.V4_07.Class_infos.t
 
-val ast_to_class_infos_class_expr :
-  Versions.V4_07.Class_expr.t Versions.V4_07.Class_infos.t
-  -> Compiler_types.class_expr Compiler_types.class_infos
-
-val ast_of_class_infos_class_type :
-  Compiler_types.class_type Compiler_types.class_infos
-  -> Versions.V4_07.Class_type.t Versions.V4_07.Class_infos.t
-
-val ast_to_class_infos_class_type :
-  Versions.V4_07.Class_type.t Versions.V4_07.Class_infos.t
-  -> Compiler_types.class_type Compiler_types.class_infos
+val ast_to_class_infos :
+  ('a Unversioned.Types.node -> 'a_)
+  -> 'a Unversioned.Types.node Versions.V4_07.Class_infos.t
+  -> 'a_ Compiler_types.class_infos
 
 val ast_of_class_description :
   Compiler_types.class_description
@@ -471,21 +465,15 @@ val ast_to_open_description :
   Versions.V4_07.Open_description.t
   -> Compiler_types.open_description
 
-val ast_of_include_infos_module_expr :
-  Compiler_types.module_expr Compiler_types.include_infos
-  -> Versions.V4_07.Module_expr.t Versions.V4_07.Include_infos.t
+val ast_of_include_infos :
+  ('a_ -> 'a Unversioned.Types.node)
+  -> 'a_ Compiler_types.include_infos
+  -> 'a Unversioned.Types.node Versions.V4_07.Include_infos.t
 
-val ast_to_include_infos_module_expr :
-  Versions.V4_07.Module_expr.t Versions.V4_07.Include_infos.t
-  -> Compiler_types.module_expr Compiler_types.include_infos
-
-val ast_of_include_infos_module_type :
-  Compiler_types.module_type Compiler_types.include_infos
-  -> Versions.V4_07.Module_type.t Versions.V4_07.Include_infos.t
-
-val ast_to_include_infos_module_type :
-  Versions.V4_07.Module_type.t Versions.V4_07.Include_infos.t
-  -> Compiler_types.module_type Compiler_types.include_infos
+val ast_to_include_infos :
+  ('a Unversioned.Types.node -> 'a_)
+  -> 'a Unversioned.Types.node Versions.V4_07.Include_infos.t
+  -> 'a_ Compiler_types.include_infos
 
 val ast_of_include_description :
   Compiler_types.include_description

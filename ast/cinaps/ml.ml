@@ -161,7 +161,7 @@ let declare_method ?(virtual_=false) ~name ~signature () =
   let qualifier = if virtual_ then "virtual " else "" in
   Print.println "method %s%s : %s" qualifier name signature
 
-let define_anon_fun ~args f =
+let print_anon_fun ~args f =
   let args_str = String.concat ~sep:" " args in
   Print.println "fun %s ->" args_str;
   Print.indented f

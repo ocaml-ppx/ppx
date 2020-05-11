@@ -1,3 +1,4 @@
+open Unversioned.Types
 (*$ Ppx_ast_cinaps.print_virtual_traverse_mli (Astlib.Version.of_string "v4_07") *)
 open Versions.V4_07
 
@@ -51,8 +52,7 @@ class virtual map :
     method class_signature : Class_signature.t -> Class_signature.t
     method class_type_field : Class_type_field.t -> Class_type_field.t
     method class_type_field_desc : Class_type_field_desc.t -> Class_type_field_desc.t
-    method class_infos_class_expr : Class_expr.t Class_infos.t -> Class_expr.t Class_infos.t
-    method class_infos_class_type : Class_type.t Class_infos.t -> Class_type.t Class_infos.t
+    method class_infos : 'a . ('a node -> 'a node) -> 'a node Class_infos.t -> 'a node Class_infos.t
     method class_description : Class_description.t -> Class_description.t
     method class_type_declaration : Class_type_declaration.t -> Class_type_declaration.t
     method class_expr : Class_expr.t -> Class_expr.t
@@ -70,8 +70,7 @@ class virtual map :
     method module_declaration : Module_declaration.t -> Module_declaration.t
     method module_type_declaration : Module_type_declaration.t -> Module_type_declaration.t
     method open_description : Open_description.t -> Open_description.t
-    method include_infos_module_expr : Module_expr.t Include_infos.t -> Module_expr.t Include_infos.t
-    method include_infos_module_type : Module_type.t Include_infos.t -> Module_type.t Include_infos.t
+    method include_infos : 'a . ('a node -> 'a node) -> 'a node Include_infos.t -> 'a node Include_infos.t
     method include_description : Include_description.t -> Include_description.t
     method include_declaration : Include_declaration.t -> Include_declaration.t
     method with_constraint : With_constraint.t -> With_constraint.t
@@ -136,8 +135,7 @@ class virtual iter :
     method class_signature : Class_signature.t -> unit
     method class_type_field : Class_type_field.t -> unit
     method class_type_field_desc : Class_type_field_desc.t -> unit
-    method class_infos_class_expr : Class_expr.t Class_infos.t -> unit
-    method class_infos_class_type : Class_type.t Class_infos.t -> unit
+    method class_infos : 'a . ('a node -> unit) -> 'a node Class_infos.t -> unit
     method class_description : Class_description.t -> unit
     method class_type_declaration : Class_type_declaration.t -> unit
     method class_expr : Class_expr.t -> unit
@@ -155,8 +153,7 @@ class virtual iter :
     method module_declaration : Module_declaration.t -> unit
     method module_type_declaration : Module_type_declaration.t -> unit
     method open_description : Open_description.t -> unit
-    method include_infos_module_expr : Module_expr.t Include_infos.t -> unit
-    method include_infos_module_type : Module_type.t Include_infos.t -> unit
+    method include_infos : 'a . ('a node -> unit) -> 'a node Include_infos.t -> unit
     method include_description : Include_description.t -> unit
     method include_declaration : Include_declaration.t -> unit
     method with_constraint : With_constraint.t -> unit
@@ -221,8 +218,7 @@ class virtual ['acc] fold :
     method class_signature : Class_signature.t -> 'acc -> 'acc
     method class_type_field : Class_type_field.t -> 'acc -> 'acc
     method class_type_field_desc : Class_type_field_desc.t -> 'acc -> 'acc
-    method class_infos_class_expr : Class_expr.t Class_infos.t -> 'acc -> 'acc
-    method class_infos_class_type : Class_type.t Class_infos.t -> 'acc -> 'acc
+    method class_infos : 'a . ('a node -> 'acc -> 'acc) -> 'a node Class_infos.t -> 'acc -> 'acc
     method class_description : Class_description.t -> 'acc -> 'acc
     method class_type_declaration : Class_type_declaration.t -> 'acc -> 'acc
     method class_expr : Class_expr.t -> 'acc -> 'acc
@@ -240,8 +236,7 @@ class virtual ['acc] fold :
     method module_declaration : Module_declaration.t -> 'acc -> 'acc
     method module_type_declaration : Module_type_declaration.t -> 'acc -> 'acc
     method open_description : Open_description.t -> 'acc -> 'acc
-    method include_infos_module_expr : Module_expr.t Include_infos.t -> 'acc -> 'acc
-    method include_infos_module_type : Module_type.t Include_infos.t -> 'acc -> 'acc
+    method include_infos : 'a . ('a node -> 'acc -> 'acc) -> 'a node Include_infos.t -> 'acc -> 'acc
     method include_description : Include_description.t -> 'acc -> 'acc
     method include_declaration : Include_declaration.t -> 'acc -> 'acc
     method with_constraint : With_constraint.t -> 'acc -> 'acc
@@ -306,8 +301,7 @@ class virtual ['acc] fold_map :
     method class_signature : Class_signature.t -> 'acc -> (Class_signature.t * 'acc)
     method class_type_field : Class_type_field.t -> 'acc -> (Class_type_field.t * 'acc)
     method class_type_field_desc : Class_type_field_desc.t -> 'acc -> (Class_type_field_desc.t * 'acc)
-    method class_infos_class_expr : Class_expr.t Class_infos.t -> 'acc -> (Class_expr.t Class_infos.t * 'acc)
-    method class_infos_class_type : Class_type.t Class_infos.t -> 'acc -> (Class_type.t Class_infos.t * 'acc)
+    method class_infos : 'a . ('a node -> 'acc -> ('a node * 'acc)) -> 'a node Class_infos.t -> 'acc -> ('a node Class_infos.t * 'acc)
     method class_description : Class_description.t -> 'acc -> (Class_description.t * 'acc)
     method class_type_declaration : Class_type_declaration.t -> 'acc -> (Class_type_declaration.t * 'acc)
     method class_expr : Class_expr.t -> 'acc -> (Class_expr.t * 'acc)
@@ -325,8 +319,7 @@ class virtual ['acc] fold_map :
     method module_declaration : Module_declaration.t -> 'acc -> (Module_declaration.t * 'acc)
     method module_type_declaration : Module_type_declaration.t -> 'acc -> (Module_type_declaration.t * 'acc)
     method open_description : Open_description.t -> 'acc -> (Open_description.t * 'acc)
-    method include_infos_module_expr : Module_expr.t Include_infos.t -> 'acc -> (Module_expr.t Include_infos.t * 'acc)
-    method include_infos_module_type : Module_type.t Include_infos.t -> 'acc -> (Module_type.t Include_infos.t * 'acc)
+    method include_infos : 'a . ('a node -> 'acc -> ('a node * 'acc)) -> 'a node Include_infos.t -> 'acc -> ('a node Include_infos.t * 'acc)
     method include_description : Include_description.t -> 'acc -> (Include_description.t * 'acc)
     method include_declaration : Include_declaration.t -> 'acc -> (Include_declaration.t * 'acc)
     method with_constraint : With_constraint.t -> 'acc -> (With_constraint.t * 'acc)
@@ -391,8 +384,7 @@ class virtual ['ctx] map_with_context :
     method class_signature : 'ctx -> Class_signature.t -> Class_signature.t
     method class_type_field : 'ctx -> Class_type_field.t -> Class_type_field.t
     method class_type_field_desc : 'ctx -> Class_type_field_desc.t -> Class_type_field_desc.t
-    method class_infos_class_expr : 'ctx -> Class_expr.t Class_infos.t -> Class_expr.t Class_infos.t
-    method class_infos_class_type : 'ctx -> Class_type.t Class_infos.t -> Class_type.t Class_infos.t
+    method class_infos : 'a . ('ctx -> 'a node -> 'a node) -> 'ctx -> 'a node Class_infos.t -> 'a node Class_infos.t
     method class_description : 'ctx -> Class_description.t -> Class_description.t
     method class_type_declaration : 'ctx -> Class_type_declaration.t -> Class_type_declaration.t
     method class_expr : 'ctx -> Class_expr.t -> Class_expr.t
@@ -410,8 +402,7 @@ class virtual ['ctx] map_with_context :
     method module_declaration : 'ctx -> Module_declaration.t -> Module_declaration.t
     method module_type_declaration : 'ctx -> Module_type_declaration.t -> Module_type_declaration.t
     method open_description : 'ctx -> Open_description.t -> Open_description.t
-    method include_infos_module_expr : 'ctx -> Module_expr.t Include_infos.t -> Module_expr.t Include_infos.t
-    method include_infos_module_type : 'ctx -> Module_type.t Include_infos.t -> Module_type.t Include_infos.t
+    method include_infos : 'a . ('ctx -> 'a node -> 'a node) -> 'ctx -> 'a node Include_infos.t -> 'a node Include_infos.t
     method include_description : 'ctx -> Include_description.t -> Include_description.t
     method include_declaration : 'ctx -> Include_declaration.t -> Include_declaration.t
     method with_constraint : 'ctx -> With_constraint.t -> With_constraint.t
@@ -480,8 +471,7 @@ class virtual ['res] lift :
     method class_signature : Class_signature.t -> 'res
     method class_type_field : Class_type_field.t -> 'res
     method class_type_field_desc : Class_type_field_desc.t -> 'res
-    method class_infos_class_expr : Class_expr.t Class_infos.t -> 'res
-    method class_infos_class_type : Class_type.t Class_infos.t -> 'res
+    method class_infos : 'a . ('a node -> 'res) -> 'a node Class_infos.t -> 'res
     method class_description : Class_description.t -> 'res
     method class_type_declaration : Class_type_declaration.t -> 'res
     method class_expr : Class_expr.t -> 'res
@@ -499,8 +489,7 @@ class virtual ['res] lift :
     method module_declaration : Module_declaration.t -> 'res
     method module_type_declaration : Module_type_declaration.t -> 'res
     method open_description : Open_description.t -> 'res
-    method include_infos_module_expr : Module_expr.t Include_infos.t -> 'res
-    method include_infos_module_type : Module_type.t Include_infos.t -> 'res
+    method include_infos : 'a . ('a node -> 'res) -> 'a node Include_infos.t -> 'res
     method include_description : Include_description.t -> 'res
     method include_declaration : Include_declaration.t -> 'res
     method with_constraint : With_constraint.t -> 'res

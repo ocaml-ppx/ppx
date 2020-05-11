@@ -15,14 +15,24 @@ let type_name name ~view =
   | `parsetree ->
     Printf.sprintf "Compiler_types.%s" (Ml.id name)
 
-let string_of_targ ~view targ =
+let tvar var ~poly =
+  if poly
+  then Ml.id var
+  else Ml.tvar var
+
+let string_of_tvar var ~view ~poly =
+  match view with
+  | `ast | `concrete -> Ml.poly_inst "Unversioned.Types.node" ~args:[tvar var ~poly]
+  | `parsetree -> tvar (var ^ "_") ~poly
+
+let string_of_targ ~poly ~view targ =
   match (targ : Astlib.Grammar.targ) with
   | Tname name -> type_name name ~view
-  | Tvar var -> Ml.tvar var
+  | Tvar var -> string_of_tvar var ~view ~poly
 
-let rec string_of_ty ty ~view =
+let rec string_of_ty ty ~view ~poly =
   match (ty : Astlib.Grammar.ty) with
-  | Var var -> Ml.tvar var
+  | Var var -> string_of_tvar var ~view ~poly
   | Name name -> type_name name ~view
   | Bool -> "bool"
   | Char -> "char"
@@ -38,42 +48,51 @@ let rec string_of_ty ty ~view =
       | `ast | `concrete -> " Astlib.Loc.t"
       | `parsetree -> " Ocaml_common.Location.loc"
     in
-    string_of_ty ty ~view ^ suffix
-  | List ty -> string_of_ty ty ~view ^ " list"
-  | Option ty -> string_of_ty ty ~view ^ " option"
-  | Tuple tuple -> string_of_tuple tuple ~view
-  | Instance (poly, args) ->
+    string_of_ty ty ~view ~poly ^ suffix
+  | List ty -> string_of_ty ty ~view ~poly ^ " list"
+  | Option ty -> string_of_ty ty ~view ~poly ^ " option"
+  | Tuple tuple -> string_of_tuple tuple ~view ~poly
+  | Instance (name, args) ->
     let arg_view =
       match view with
       | `ast | `concrete -> `ast
       | `parsetree -> `parsetree
     in
     Ml.poly_inst
-      (type_name poly ~view)
-      ~args:(List.map args ~f:(string_of_targ ~view:arg_view))
+      (type_name name ~view)
+      ~args:(List.map args ~f:(string_of_targ ~view:arg_view ~poly))
 
-and string_of_tuple tuple ~view =
+and string_of_tuple tuple ~view ~poly =
   Printf.sprintf "(%s)"
-    (String.concat ~sep:" * " (List.map tuple ~f:(string_of_ty ~view)))
+    (String.concat ~sep:" * " (List.map tuple ~f:(string_of_ty ~view ~poly)))
 
-let ast_ty ty = string_of_ty ty ~view:`ast
-let concrete_ty ty = string_of_ty ty ~view:`concrete
-let parsetree_ty ty = string_of_ty ty ~view:`parsetree
+let ast_ty ty ~poly = string_of_ty ty ~view:`ast ~poly
+let concrete_ty ty ~poly = string_of_ty ty ~view:`concrete ~poly
+let parsetree_ty ty ~poly = string_of_ty ty ~view:`parsetree ~poly
 
-let node_ty ~node_name ~env =
-  if Poly_env.env_is_empty env
-  then Astlib.Grammar.Name node_name
-  else Astlib.Grammar.Instance (node_name, Poly_env.args env)
+let parsetree_to_ast_args ~poly ~tvars =
+  List.map tvars ~f:(fun tvar ->
+    "(" ^ Ml.arrow_type [parsetree_ty ~poly (Var tvar); ast_ty ~poly (Var tvar)] ^ ")")
 
-let print_conversion_intf ~node_name ~env =
-  let ty = node_ty ~node_name ~env in
-  let ast_ty = ast_ty ty in
-  let parsetree_ty = parsetree_ty ty in
-  Ml.declare_val (Name.make ["ast_of"; node_name] (Poly_env.args env)) (Block (fun () ->
-    Ml.print_arrow [parsetree_ty] ast_ty ~f:(fun x -> x)));
+let ast_to_parsetree_args ~poly ~tvars =
+  List.map tvars ~f:(fun tvar ->
+    "(" ^ Ml.arrow_type [ast_ty ~poly (Var tvar); parsetree_ty ~poly (Var tvar)] ^ ")")
+
+let print_conversion_intf ~node_name ~self_type ~tvars =
+  let poly = false in
+  let ast_ty = ast_ty self_type ~poly in
+  let parsetree_ty = parsetree_ty self_type ~poly in
+  Ml.declare_val (Name.make ["ast_of"; node_name] []) (Block (fun () ->
+    Ml.print_arrow
+      (parsetree_to_ast_args ~poly ~tvars @ [parsetree_ty])
+      ast_ty
+      ~f:(fun x -> x)));
   Print.newline ();
-  Ml.declare_val (Name.make ["ast_to"; node_name] (Poly_env.args env)) (Block (fun () ->
-    Ml.print_arrow [ast_ty] parsetree_ty ~f:(fun x -> x)))
+  Ml.declare_val (Name.make ["ast_to"; node_name] []) (Block (fun () ->
+    Ml.print_arrow
+      (ast_to_parsetree_args ~poly ~tvars @ [ast_ty])
+      parsetree_ty
+      ~f:(fun x -> x)))
 
 let fn_value option =
   match option with
@@ -89,6 +108,14 @@ let concrete_prefix ~conv =
   match conv with
   | `concrete_of -> "concrete_of"
   | `concrete_to -> "concrete_to"
+
+let conversion_var tvar ~conv =
+  Ml.id (conversion_prefix ~conv ^ "_" ^ tvar)
+
+let conversion_arg targ ~conv =
+  match (targ : Astlib.Grammar.targ) with
+  | Tvar tvar -> conversion_var tvar ~conv
+  | Tname name -> Ml.id (conversion_prefix ~conv ^ "_" ^ name)
 
 let rec ty_conversion ty ~conv =
   match (ty : Astlib.Grammar.ty) with
@@ -106,8 +133,11 @@ let rec ty_conversion ty ~conv =
     Option.map (ty_conversion ty ~conv)
       ~f:(Printf.sprintf "(Option.map ~f:%s)")
   | Tuple tuple -> tuple_conversion tuple ~conv
-  | Instance (poly, args) ->
-    Some (Name.make [conversion_prefix ~conv; poly] args)
+  | Instance (poly, targs) ->
+    Some (Printf.sprintf "(%s %s)"
+            (Name.make [conversion_prefix ~conv; poly] [])
+            (String.concat ~sep:" "
+               (List.map targs ~f:(conversion_arg ~conv))))
 
 and tuple_conversion tuple ~conv =
   let conversions = List.map tuple ~f:(ty_conversion ~conv) in
@@ -121,128 +151,172 @@ and tuple_conversion tuple ~conv =
             (List.mapi conversions ~f:(fun i option ->
                Printf.sprintf "~f%d:%s" (i + 1) (fn_value option)))))
 
-let input_ty ty ~conv =
+let input_ty ty ~conv ~poly =
   match conv with
-  | `concrete_of -> parsetree_ty ty
-  | `concrete_to -> concrete_ty ty
+  | `concrete_of | `ast_of -> parsetree_ty ty ~poly
+  | `concrete_to -> concrete_ty ty ~poly
+  | `ast_to -> ast_ty ty ~poly
 
-let output_ty ty ~conv =
+let output_ty ty ~conv ~poly =
   match conv with
-  | `concrete_of -> concrete_ty ty
-  | `concrete_to -> parsetree_ty ty
+  | `concrete_of -> concrete_ty ty ~poly
+  | `concrete_to | `ast_to -> parsetree_ty ty ~poly
+  | `ast_of -> ast_ty ty ~poly
 
 let tuple_var i = Ml.id (Printf.sprintf "x%d" (i + 1))
 
-let define_conversion decl ~node_name ~env ~conv =
-  let name = Name.make [concrete_prefix ~conv; node_name] (Poly_env.args env) in
-  let node_ty = node_ty ~node_name ~env in
-  match (decl : Astlib.Grammar.decl) with
-  | Ty ty ->
-    Print.println "and %s x =" name;
-    Print.indented (fun () ->
-      Print.println "%s x" (fn_value (ty_conversion ~conv (Poly_env.subst_ty ty ~env))))
-  | Record record ->
-    let fields =
-      String.concat ~sep:"; "
-        (List.map record ~f:(fun (field, _) -> Ml.id field))
+let conversion_vars ~tvars ~conv =
+  String.concat ~sep:""
+    (List.map tvars ~f:(fun tvar -> " " ^ conversion_var tvar ~conv))
+
+let poly_conversion_ty ~self_type ~tvars ~conv =
+  let for_all =
+    if List.is_empty tvars
+    then ""
+    else
+      Printf.sprintf "type %s ."
+        (String.concat ~sep:" "
+           (List.map tvars ~f:(fun tvar ->
+              Ml.id tvar ^ " " ^ Ml.id (tvar ^ "_"))))
+  in
+  let arrow =
+    let args =
+      List.map tvars ~f:(fun tvar ->
+        Printf.sprintf "(%s)"
+          (Ml.arrow_type
+             [ input_ty (Var tvar) ~poly:true ~conv
+             ; output_ty (Var tvar) ~poly:true ~conv
+             ]))
     in
-    Print.println "and %s" name;
-    Print.indented (fun () ->
-      Print.println "({ %s } : %s)" fields (input_ty ~conv node_ty));
-    Print.println "=";
-    Print.indented (fun () ->
-      List.iter record ~f:(fun (field, ty) ->
-        match ty_conversion ~conv (Poly_env.subst_ty ty ~env) with
-        | None -> ()
-        | Some fn -> Print.println "let %s = %s %s in" (Ml.id field) fn (Ml.id field));
-      Print.println "({ %s } : %s)" fields (output_ty ~conv node_ty))
-  | Variant variant ->
-    Print.println "and %s x : %s =" name (output_ty ~conv node_ty);
-    Print.indented (fun () ->
-      Print.println "match (x : %s) with" (input_ty ~conv node_ty);
-      List.iter variant ~f:(fun (tag, clause) ->
-        match (clause : Astlib.Grammar.clause) with
-        | Empty ->
-          Print.println "| %s -> %s" (Ml.tag tag) (Ml.tag tag)
-        | Tuple tuple ->
-          Print.println "| %s (%s) ->"
-            (Ml.tag tag)
-            (String.concat ~sep:", " (List.mapi tuple ~f:(fun i _ -> tuple_var i)));
-          Print.indented (fun () ->
-            List.iteri tuple ~f:(fun i ty ->
-              match ty_conversion (Poly_env.subst_ty ty ~env) ~conv with
-              | None -> ()
-              | Some fn ->
-                Print.println "let %s = %s %s in" (tuple_var i) fn (tuple_var i));
-            Print.println "%s (%s)"
+    Ml.arrow_type
+      (args @
+       [ input_ty self_type ~poly:true ~conv
+       ; output_ty self_type ~poly:true ~conv
+       ])
+  in
+  for_all ^ arrow
+
+let define_conversion decl ~node_name ~self_type ~tvars ~conv =
+  let name = Name.make [concrete_prefix ~conv; node_name] [] in
+  Print.println "and %s" name;
+  Print.indented (fun () ->
+    Print.println ": %s" (poly_conversion_ty ~self_type ~tvars ~conv);
+    match (decl : Astlib.Grammar.decl) with
+    | Ty ty ->
+      Print.println "= fun%s x ->"
+        (conversion_vars ~tvars ~conv);
+      Print.indented (fun () ->
+        Print.println "%s x" (fn_value (ty_conversion ~conv ty)))
+    | Record record ->
+      let fields =
+        String.concat ~sep:"; "
+          (List.map record ~f:(fun (field, _) -> Ml.id field))
+      in
+      Print.println "= fun%s { %s } ->" (conversion_vars ~tvars ~conv) fields;
+      Print.indented (fun () ->
+        Print.indented (fun () ->
+          List.iter record ~f:(fun (field, ty) ->
+            match ty_conversion ~conv ty with
+            | None -> ()
+            | Some fn -> Print.println "let %s = %s %s in" (Ml.id field) fn (Ml.id field));
+          Print.println "{ %s }" fields))
+    | Variant variant ->
+      Print.println "= fun%s x ->"
+        (conversion_vars ~tvars ~conv);
+      Print.indented (fun () ->
+        Print.println "match (x : %s) with" (input_ty ~conv ~poly:false self_type);
+        List.iter variant ~f:(fun (tag, clause) ->
+          match (clause : Astlib.Grammar.clause) with
+          | Empty ->
+            Print.println "| %s -> %s" (Ml.tag tag) (Ml.tag tag)
+          | Tuple tuple ->
+            Print.println "| %s (%s) ->"
               (Ml.tag tag)
-              (String.concat ~sep:", "
-                 (List.mapi tuple ~f:(fun i _ -> tuple_var i))))
-        | Record record ->
-          Print.println "| %s { %s } ->"
-            (Ml.tag tag)
-            (String.concat ~sep:"; "
-               (List.map record ~f:(fun (field, _) -> Ml.id field)));
-          Print.indented (fun () ->
-            List.iter record ~f:(fun (field, ty) ->
-              match ty_conversion (Poly_env.subst_ty ty ~env) ~conv with
-              | None -> ()
-              | Some fn ->
-                Print.println "let %s = %s %s in" (Ml.id field) fn (Ml.id field));
-            Print.println "%s { %s }"
+              (String.concat ~sep:", " (List.mapi tuple ~f:(fun i _ -> tuple_var i)));
+            Print.indented (fun () ->
+              List.iteri tuple ~f:(fun i ty ->
+                match ty_conversion ty ~conv with
+                | None -> ()
+                | Some fn ->
+                  Print.println "let %s = %s %s in" (tuple_var i) fn (tuple_var i));
+              Print.println "%s (%s)"
+                (Ml.tag tag)
+                (String.concat ~sep:", "
+                   (List.mapi tuple ~f:(fun i _ -> tuple_var i))))
+          | Record record ->
+            Print.println "| %s { %s } ->"
               (Ml.tag tag)
               (String.concat ~sep:"; "
-                 (List.map record ~f:(fun (field, _) -> Ml.id field))))))
+                 (List.map record ~f:(fun (field, _) -> Ml.id field)));
+            Print.indented (fun () ->
+              List.iter record ~f:(fun (field, ty) ->
+                match ty_conversion ty ~conv with
+                | None -> ()
+                | Some fn ->
+                  Print.println "let %s = %s %s in" (Ml.id field) fn (Ml.id field));
+              Print.println "%s { %s }"
+                (Ml.tag tag)
+                (String.concat ~sep:"; "
+                   (List.map record ~f:(fun (field, _) -> Ml.id field)))))))
 
-let print_conversion_impl decl ~node_name ~env ~is_initial =
+let print_conversion_impl decl ~node_name ~self_type ~tvars ~is_initial =
     Print.println
-      "%s %s x ="
+      "%s %s"
       (if is_initial then "let rec" else "and")
-      (Name.make ["ast_of"; node_name] (Poly_env.args env));
+      (Name.make ["ast_of"; node_name] []);
     Print.indented (fun () ->
-      Print.println "Versions.%s.%s.%s (%s x)"
-        (Ml.module_name (Astlib.Version.to_string version))
-        (Ml.module_name node_name)
-        "of_concrete"
-        (Name.make ["concrete_of"; node_name] (Poly_env.args env)));
+      Print.println ": %s" (poly_conversion_ty ~self_type ~tvars ~conv:`ast_of);
+      Print.println "= fun%s x ->"
+        (conversion_vars ~tvars ~conv:`concrete_of);
+      Print.indented (fun () ->
+        Print.println "Versions.%s.%s.%s (%s%s x)"
+          (Ml.module_name (Astlib.Version.to_string version))
+          (Ml.module_name node_name)
+          "of_concrete"
+          (Name.make ["concrete_of"; node_name] [])
+          (conversion_vars ~tvars ~conv:`concrete_of)));
     Print.newline ();
-    define_conversion decl ~node_name ~env ~conv:`concrete_of;
+    define_conversion decl ~node_name ~self_type ~tvars ~conv:`concrete_of;
     Print.newline ();
-    Print.println "and %s x =" (Name.make ["ast_to"; node_name] (Poly_env.args env));
+    Print.println "and %s" (Name.make ["ast_to"; node_name] []);
     Print.indented (fun () ->
-      Print.println "let concrete = Versions.%s.%s.to_concrete x in"
-        (Ml.module_name (Astlib.Version.to_string version))
-        (Ml.module_name node_name);
-      Print.println "%s concrete"
-        (Name.make ["concrete_to"; node_name] (Poly_env.args env)));
+      Print.println ": %s" (poly_conversion_ty ~self_type ~tvars ~conv:`ast_to);
+      Print.println "= fun%s x ->" (conversion_vars ~tvars ~conv:`concrete_to);
+      Print.indented (fun () ->
+        Print.println "let concrete = Versions.%s.%s.to_concrete x in"
+          (Ml.module_name (Astlib.Version.to_string version))
+          (Ml.module_name node_name);
+        Print.println "%s%s concrete"
+          (Name.make ["concrete_to"; node_name] [])
+          (conversion_vars ~tvars ~conv:`concrete_to)));
     Print.newline ();
-    define_conversion decl ~node_name ~env ~conv:`concrete_to
+    define_conversion decl ~node_name ~self_type ~tvars ~conv:`concrete_to
+
+let make_self_type ~node_name ~tvars : Astlib.Grammar.ty =
+  if List.is_empty tvars
+  then Name node_name
+  else Instance (node_name, List.map tvars ~f:(fun tvar -> Astlib.Grammar.Tvar tvar))
 
 let print_conversion_mli () =
   let grammar = Astlib.History.find_grammar Astlib.history ~version in
-  let env_table = Poly_env.env_table grammar in
   List.iter grammar ~f:(fun (node_name, kind) ->
-    match (kind : Astlib.Grammar.kind) with
-    | Mono _ ->
-      Print.newline ();
-      print_conversion_intf ~node_name ~env:Poly_env.empty_env
-    | Poly _ ->
-      List.iter (Poly_env.find env_table node_name) ~f:(fun env ->
-        Print.newline ();
-        print_conversion_intf ~node_name ~env))
+    let tvars =
+      match (kind : Astlib.Grammar.kind) with
+      | Mono _ -> []
+      | Poly (tvars, _) -> tvars
+    in
+    let self_type = make_self_type ~node_name ~tvars in
+    Print.newline ();
+    print_conversion_intf ~node_name ~self_type ~tvars)
 
 let print_conversion_ml () =
   let grammar = Astlib.History.find_grammar Astlib.history ~version in
-  let env_table = Poly_env.env_table grammar in
   List.iteri grammar ~f:(fun node_index (node_name, kind) ->
-    match (kind : Astlib.Grammar.kind) with
-    | Mono decl ->
-      Print.newline ();
-      print_conversion_impl decl ~node_name
-        ~env:Poly_env.empty_env
-        ~is_initial:(node_index = 0)
-    | Poly (_, decl) ->
-      List.iteri (Poly_env.find env_table node_name) ~f:(fun env_index env ->
-        Print.newline ();
-        let is_initial = node_index = 0 && env_index = 0 in
-        print_conversion_impl decl ~node_name ~env ~is_initial))
+    let tvars, decl =
+      match (kind : Astlib.Grammar.kind) with
+      | Mono decl -> [], decl
+      | Poly (tvars, decl) -> tvars, decl
+    in
+    let self_type = make_self_type ~node_name ~tvars in
+    Print.newline ();
+    print_conversion_impl decl ~node_name ~self_type ~tvars ~is_initial:(node_index = 0))
