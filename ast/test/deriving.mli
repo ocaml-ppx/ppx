@@ -101,8 +101,18 @@ module Row_field : sig
   [@@deriving equal, quickcheck, sexp_of]
 end
 
+module Row_field_desc : sig
+  type t = Compiler_types.row_field_desc
+  [@@deriving equal, quickcheck, sexp_of]
+end
+
 module Object_field : sig
   type t = Compiler_types.object_field
+  [@@deriving equal, quickcheck, sexp_of]
+end
+
+module Object_field_desc : sig
+  type t = Compiler_types.object_field_desc
   [@@deriving equal, quickcheck, sexp_of]
 end
 
@@ -128,6 +138,16 @@ end
 
 module Case : sig
   type t = Compiler_types.case
+  [@@deriving equal, quickcheck, sexp_of]
+end
+
+module Letop : sig
+  type t = Compiler_types.letop
+  [@@deriving equal, quickcheck, sexp_of]
+end
+
+module Binding_op : sig
+  type t = Compiler_types.binding_op
   [@@deriving equal, quickcheck, sexp_of]
 end
 
@@ -168,6 +188,11 @@ end
 
 module Extension_constructor : sig
   type t = Compiler_types.extension_constructor
+  [@@deriving equal, quickcheck, sexp_of]
+end
+
+module Type_exception : sig
+  type t = Compiler_types.type_exception
   [@@deriving equal, quickcheck, sexp_of]
 end
 
@@ -281,13 +306,28 @@ module Module_declaration : sig
   [@@deriving equal, quickcheck, sexp_of]
 end
 
+module Module_substitution : sig
+  type t = Compiler_types.module_substitution
+  [@@deriving equal, quickcheck, sexp_of]
+end
+
 module Module_type_declaration : sig
   type t = Compiler_types.module_type_declaration
   [@@deriving equal, quickcheck, sexp_of]
 end
 
+module Open_infos : sig
+  type 'a t = 'a Compiler_types.open_infos
+  [@@deriving equal, quickcheck, sexp_of]
+end
+
 module Open_description : sig
   type t = Compiler_types.open_description
+  [@@deriving equal, quickcheck, sexp_of]
+end
+
+module Open_declaration : sig
+  type t = Compiler_types.open_declaration
   [@@deriving equal, quickcheck, sexp_of]
 end
 
@@ -351,8 +391,18 @@ module Toplevel_phrase : sig
   [@@deriving equal, quickcheck, sexp_of]
 end
 
+module Toplevel_directive : sig
+  type t = Compiler_types.toplevel_directive
+  [@@deriving equal, quickcheck, sexp_of]
+end
+
 module Directive_argument : sig
   type t = Compiler_types.directive_argument
+  [@@deriving equal, quickcheck, sexp_of]
+end
+
+module Directive_argument_desc : sig
+  type t = Compiler_types.directive_argument_desc
   [@@deriving equal, quickcheck, sexp_of]
 end
 (*$*)

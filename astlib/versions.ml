@@ -1,11 +1,12 @@
 open StdLabels
 
-module Current = Version_4_07
+module Current = Version_4_08
 
 let current_version = Current.version
 
 let versions : (module Ast_version_intf.S) list =
   [ (module Unstable_for_testing)
+  ; (module Version_4_07)
   ; (module Current)
   ]
 

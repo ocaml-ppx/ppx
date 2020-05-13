@@ -15,7 +15,11 @@ let wrapper_types grammar =
       | _ -> acc)
 
 let shortcut_viewer_name ~shortcut cname =
-  let _, base_name = String.lsplit2_exn ~on:'_' cname in
+  let base_name =
+    match String.lsplit2 ~on:'_' cname with
+    | Some (_prefix, basename) -> basename
+    | None -> String.lowercase_ascii cname
+  in
   let prefix =
     match shortcut.Shortcut.outer_record with
     | "expression" -> "e"
@@ -29,6 +33,9 @@ let shortcut_viewer_name ~shortcut cname =
     | "class_expr" -> "ce"
     | "class_type" -> "ct"
     | "class_type_field" -> "ctf"
+    | "row_field" -> "rf"
+    | "object_field" -> "of"
+    | "directive_argument" -> "da"
     | s -> failwith "No prefix for shortcut: " ^ s
   in
   variant_viewer_name (prefix ^ base_name)

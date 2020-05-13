@@ -1,0 +1,6 @@
+(library
+ (name ppx_test_ast_migrations)
+ (libraries ppx_ast)
+ (flags (:standard -safe-string))
+ (inline_tests)
+ (preprocess (pps ppx_expect)))

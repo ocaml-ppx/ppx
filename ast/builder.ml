@@ -1,3 +1,8 @@
+module V4_08 = struct
+  include Builder_common
+  include Builder_v4_08
+end
+
 module V4_07 = struct
   include Builder_common
   include Builder_v4_07

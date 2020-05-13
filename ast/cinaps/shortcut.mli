@@ -5,6 +5,8 @@
     description
     - [loc_field] is the name of the field in the parent pointing to the
     location, if any
+    - [loc_stack_field] is the name of the field in the parent pointing to the
+    location stack, if any
     - [attr_field] is the name of the field in the parent pointing to the
     attributes, if any
     - [other_fields] is the list of the remaining fields of the parent *)
@@ -14,6 +16,7 @@ type t =
   ; desc_field : string
   ; attr_field : string option
   ; loc_field : string option
+  ; loc_stack_field : string option
   ; other_fields : (string * Astlib.Grammar.ty) list
   }
 

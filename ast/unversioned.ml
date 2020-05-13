@@ -5,6 +5,7 @@ module Types = struct
   type arg_label_
   type attribute_
   type attributes_
+  type binding_op_
   type case_
   type class_declaration_
   type class_description_
@@ -29,6 +30,7 @@ module Types = struct
   type core_type_desc_
   type direction_flag_
   type directive_argument_
+  type directive_argument_desc_
   type expression_
   type expression_desc_
   type extension_
@@ -38,18 +40,23 @@ module Types = struct
   type include_description_
   type 'a include_infos_
   type label_declaration_
+  type letop_
   type longident_
   type longident_loc_
   type module_binding_
   type module_declaration_
   type module_expr_
   type module_expr_desc_
+  type module_substitution_
   type module_type_
   type module_type_declaration_
   type module_type_desc_
   type mutable_flag_
   type object_field_
+  type object_field_desc_
+  type open_declaration_
   type open_description_
+  type 'a open_infos_
   type override_flag_
   type package_type_
   type pattern_
@@ -58,14 +65,17 @@ module Types = struct
   type private_flag_
   type rec_flag_
   type row_field_
+  type row_field_desc_
   type signature_
   type signature_item_
   type signature_item_desc_
   type structure_
   type structure_item_
   type structure_item_desc_
+  type toplevel_directive_
   type toplevel_phrase_
   type type_declaration_
+  type type_exception_
   type type_extension_
   type type_kind_
   type value_binding_
@@ -77,6 +87,7 @@ module Types = struct
   type arg_label = arg_label_ node
   type attribute = attribute_ node
   type attributes = attributes_ node
+  type binding_op = binding_op_ node
   type case = case_ node
   type class_declaration = class_declaration_ node
   type class_description = class_description_ node
@@ -101,6 +112,7 @@ module Types = struct
   type core_type_desc = core_type_desc_ node
   type direction_flag = direction_flag_ node
   type directive_argument = directive_argument_ node
+  type directive_argument_desc = directive_argument_desc_ node
   type expression = expression_ node
   type expression_desc = expression_desc_ node
   type extension = extension_ node
@@ -110,18 +122,23 @@ module Types = struct
   type include_description = include_description_ node
   type 'a include_infos = 'a include_infos_ node
   type label_declaration = label_declaration_ node
+  type letop = letop_ node
   type longident = longident_ node
   type longident_loc = longident_loc_ node
   type module_binding = module_binding_ node
   type module_declaration = module_declaration_ node
   type module_expr = module_expr_ node
   type module_expr_desc = module_expr_desc_ node
+  type module_substitution = module_substitution_ node
   type module_type = module_type_ node
   type module_type_declaration = module_type_declaration_ node
   type module_type_desc = module_type_desc_ node
   type mutable_flag = mutable_flag_ node
   type object_field = object_field_ node
+  type object_field_desc = object_field_desc_ node
+  type open_declaration = open_declaration_ node
   type open_description = open_description_ node
+  type 'a open_infos = 'a open_infos_ node
   type override_flag = override_flag_ node
   type package_type = package_type_ node
   type pattern = pattern_ node
@@ -130,14 +147,17 @@ module Types = struct
   type private_flag = private_flag_ node
   type rec_flag = rec_flag_ node
   type row_field = row_field_ node
+  type row_field_desc = row_field_desc_ node
   type signature = signature_ node
   type signature_item = signature_item_ node
   type signature_item_desc = signature_item_desc_ node
   type structure = structure_ node
   type structure_item = structure_item_ node
   type structure_item_desc = structure_item_desc_ node
+  type toplevel_directive = toplevel_directive_ node
   type toplevel_phrase = toplevel_phrase_ node
   type type_declaration = type_declaration_ node
+  type type_exception = type_exception_ node
   type type_extension = type_extension_ node
   type type_kind = type_kind_ node
   type value_binding = value_binding_ node

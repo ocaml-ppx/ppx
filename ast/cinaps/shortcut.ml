@@ -6,6 +6,7 @@ type t =
   ; desc_field : string
   ; attr_field : string option
   ; loc_field : string option
+  ; loc_stack_field : string option
   ; other_fields : (string * Astlib.Grammar.ty) list
   }
 
@@ -18,6 +19,7 @@ let find_field ~suffix record : (string * Astlib.Grammar.ty) option =
 let loc_suffix = "_loc"
 let desc_suffix = "_desc"
 let attr_suffix = "_attributes"
+let loc_stack_suffix = "_loc_stack"
 
 let desc_field record = find_field ~suffix:desc_suffix record
 
@@ -33,13 +35,20 @@ let loc_field record =
   | Some (loc_field, Location) -> Some loc_field
   | Some (_, _) -> assert false
 
+let loc_stack_field record =
+  match find_field ~suffix:loc_stack_suffix record with
+  | None -> None
+  | Some (loc_stack_field, List Location) -> Some loc_stack_field
+  | Some (_, _) -> assert false
+
 let other_fields record =
   List.filter record
     ~f:(fun (field_name, _) ->
       not
         ( String.is_suffix ~suffix:loc_suffix field_name
           || String.is_suffix ~suffix:desc_suffix field_name
-          || String.is_suffix ~suffix:attr_suffix field_name ))
+          || String.is_suffix ~suffix:attr_suffix field_name
+          || String.is_suffix ~suffix:loc_stack_suffix field_name))
 
 let from_record ~name record =
   match desc_field record with
@@ -47,10 +56,11 @@ let from_record ~name record =
   | Some (desc_field, Name inner_variant) ->
     let loc_field = loc_field record in
     let attr_field = attr_field record in
+    let loc_stack_field = loc_stack_field record in
     let other_fields = other_fields record in
     Some
       { outer_record = name; inner_variant
-      ; desc_field; loc_field; attr_field; other_fields }
+      ; desc_field; loc_field; attr_field; loc_stack_field; other_fields }
   | Some (_, _) ->
     assert false
 

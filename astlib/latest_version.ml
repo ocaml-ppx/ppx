@@ -1,4 +1,4 @@
-let version = Version.of_string "v4_07"
+let version = Version.of_string "v4_08"
 
 let conversions : History.conversion list = []
 
@@ -46,7 +46,11 @@ let grammar : Grammar.t =
               ; ("Pconst_string", Tuple [String; Option String])
               ; ("Pconst_float", Tuple [String; Option Char]) ]) )
   ; ( "attribute"
-    , Mono (Ty (Tuple [Loc String; Name "payload"])) )
+    , Mono
+        (Record
+              [ ("attr_name", Loc String)
+              ; ("attr_payload", Name "payload")
+              ; ("attr_loc", Location) ]))
   ; ( "extension"
     , Mono (Ty (Tuple [Loc String; Name "payload"])) )
   ; ("attributes", Mono (Ty (List (Name "attribute"))))
@@ -63,6 +67,7 @@ let grammar : Grammar.t =
         (Record
               [ ("ptyp_desc", Name "core_type_desc")
               ; ("ptyp_loc", Location)
+              ; ("ptyp_loc_stack", List Location)
               ; ("ptyp_attributes", Name "attributes") ]) )
   ; ( "core_type_desc"
     , Mono
@@ -97,27 +102,39 @@ let grammar : Grammar.t =
     )
   ; ( "row_field"
     , Mono
-        (Variant
-              [ ( "Rtag"
-                , Tuple
-                    [ Loc String
-                    ; Name "attributes"
-                    ; Bool
-                    ; List (Name "core_type") ] )
-              ; ("Rinherit", Tuple [Name "core_type"]) ]) )
-  ; ( "object_field"
+        (Record
+           [ ("prf_desc", Name "row_field_desc")
+           ; ("prf_loc", Location)
+           ; ("prf_attributes", Name "attributes") ]))
+  ; ( "row_field_desc"
     , Mono
         (Variant
-              [ ( "Otag"
-                , Tuple
-                    [Loc String; Name "attributes"; Name "core_type"]
+           [ ( "Rtag"
+             , Tuple
+                 [ Loc String
+                 ; Bool
+                 ; List (Name "core_type") ] )
+           ; ("Rinherit", Tuple [Name "core_type"]) ]) )
+  ; ( "object_field"
+    , Mono
+        (Record
+           [ ("pof_desc", Name "object_field_desc")
+           ; ("pof_loc", Location)
+           ; ("pof_attributes", Name "attributes") ]) )
+  ; ( "object_field_desc"
+    , Mono
+        (Variant
+           [ ( "Otag"
+             , Tuple
+                 [Loc String; Name "core_type"]
                 )
-              ; ("Oinherit", Tuple [Name "core_type"]) ]) )
+           ; ("Oinherit", Tuple [Name "core_type"]) ]) )
   ; ( "pattern"
     , Mono
         (Record
               [ ("ppat_desc", Name "pattern_desc")
               ; ("ppat_loc", Location)
+              ; ("ppat_loc_stack", List Location)
               ; ("ppat_attributes", Name "attributes") ]) )
   ; ( "pattern_desc"
     , Mono
@@ -150,6 +167,7 @@ let grammar : Grammar.t =
         (Record
               [ ("pexp_desc", Name "expression_desc")
               ; ("pexp_loc", Location)
+              ; ("pexp_loc_stack", List Location)
               ; ("pexp_attributes", Name "attributes") ]) )
   ; ( "expression_desc"
     , Mono
@@ -229,9 +247,9 @@ let grammar : Grammar.t =
               ; ("Pexp_pack", Tuple [Name "module_expr"])
               ; ( "Pexp_open"
                 , Tuple
-                    [ Name "override_flag"
-                    ; Name "longident_loc"
+                    [ Name "open_declaration"
                     ; Name "expression" ] )
+              ; ("Pexp_letop", Tuple [Name "letop"])
               ; ("Pexp_extension", Tuple [Name "extension"])
               ; ("Pexp_unreachable", Empty) ]) )
   ; ( "case"
@@ -240,6 +258,19 @@ let grammar : Grammar.t =
               [ ("pc_lhs", Name "pattern")
               ; ("pc_guard", Option (Name "expression"))
               ; ("pc_rhs", Name "expression") ]) )
+  ; ( "letop"
+    , Mono
+        (Record
+           [ ("let_", Name "binding_op")
+           ; ("ands", List (Name "binding_op"))
+           ; ("body", Name "expression") ]) )
+  ; ( "binding_op"
+    , Mono
+        (Record
+           [ ("pbop_op", Loc String)
+           ; ("pbop_pat", Name "pattern")
+           ; ("pbop_exp", Name "expression")
+           ; ("pbop_loc", Location) ]) )
   ; ( "value_description"
     , Mono
         (Record
@@ -299,6 +330,7 @@ let grammar : Grammar.t =
                 , List (Tuple [Name "core_type"; Name "variance"]) )
               ; ("ptyext_constructors", List (Name "extension_constructor"))
               ; ("ptyext_private", Name "private_flag")
+              ; ("ptyext_loc", Location)
               ; ("ptyext_attributes", Name "attributes") ]) )
   ; ( "extension_constructor"
     , Mono
@@ -307,6 +339,12 @@ let grammar : Grammar.t =
               ; ("pext_kind", Name "extension_constructor_kind")
               ; ("pext_loc", Location)
               ; ("pext_attributes", Name "attributes") ]) )
+  ; ( "type_exception"
+    , Mono
+        (Record
+           [ ("ptyexn_constructor", Name "extension_constructor")
+           ; ("ptyexn_loc", Location)
+           ; ("ptyexn_attributes", Name "attributes") ]) )
   ; ( "extension_constructor_kind"
     , Mono
         (Variant
@@ -333,8 +371,7 @@ let grammar : Grammar.t =
               ; ("Pcty_extension", Tuple [Name "extension"])
               ; ( "Pcty_open"
                 , Tuple
-                    [ Name "override_flag"
-                    ; Name "longident_loc"
+                    [ Name "open_description"
                     ; Name "class_type" ] ) ]) )
   ; ( "class_signature"
     , Mono
@@ -415,8 +452,7 @@ let grammar : Grammar.t =
               ; ("Pcl_extension", Tuple [Name "extension"])
               ; ( "Pcl_open"
                 , Tuple
-                    [ Name "override_flag"
-                    ; Name "longident_loc"
+                    [ Name "open_description"
                     ; Name "class_expr" ] ) ]) )
   ; ( "class_structure"
     , Mono
@@ -495,9 +531,11 @@ let grammar : Grammar.t =
               [ ("Psig_value", Tuple [Name "value_description"])
               ; ( "Psig_type"
                 , Tuple [Name "rec_flag"; List (Name "type_declaration")] )
+              ; ("Psig_typesubst", Tuple [List (Name "type_declaration")])
               ; ("Psig_typext", Tuple [Name "type_extension"])
-              ; ("Psig_exception", Tuple [Name "extension_constructor"])
+              ; ("Psig_exception", Tuple [Name "type_exception"])
               ; ("Psig_module", Tuple [Name "module_declaration"])
+              ; ("Psig_modsubst", Tuple [Name "module_substitution"])
               ; ("Psig_recmodule", Tuple [List (Name "module_declaration")])
               ; ("Psig_modtype", Tuple [Name "module_type_declaration"])
               ; ("Psig_open", Tuple [Name "open_description"])
@@ -515,6 +553,13 @@ let grammar : Grammar.t =
               ; ("pmd_type", Name "module_type")
               ; ("pmd_attributes", Name "attributes")
               ; ("pmd_loc", Location) ]) )
+  ; ( "module_substitution"
+    , Mono
+        (Record
+           [ ("pms_name", Loc String)
+           ; ("pms_manifest", Name "longident_loc")
+           ; ("pms_attributes", Name "attributes")
+           ; ("pms_loc", Location) ]) )
   ; ( "module_type_declaration"
     , Mono
         (Record
@@ -522,13 +567,18 @@ let grammar : Grammar.t =
               ; ("pmtd_type", Option (Name "module_type"))
               ; ("pmtd_attributes", Name "attributes")
               ; ("pmtd_loc", Location) ]) )
+  ; ( "open_infos"
+    , Poly
+        ( ["a"]
+        , Record
+            [ ("popen_expr", Var "a")
+            ; ("popen_override", Name "override_flag")
+            ; ("popen_loc", Location)
+            ; ("popen_attributes", Name "attributes") ] ) )
   ; ( "open_description"
-    , Mono
-        (Record
-              [ ("popen_lid", Name "longident_loc")
-              ; ("popen_override", Name "override_flag")
-              ; ("popen_loc", Location)
-              ; ("popen_attributes", Name "attributes") ]) )
+    , Mono (Ty (Instance ("open_infos", [Tname "longident_loc"]))) )
+  ; ( "open_declaration"
+    , Mono (Ty (Instance ("open_infos", [Tname "module_expr"]))) )
   ; ( "include_infos"
     , Poly
         ( ["a"]
@@ -588,18 +638,18 @@ let grammar : Grammar.t =
            ; ( "Pstr_type"
              , Tuple [Name "rec_flag"; List (Name "type_declaration")] )
            ; ("Pstr_typext", Tuple [Name "type_extension"])
-           ; ("Pstr_exception", Tuple [Name "extension_constructor"])
+           ; ("Pstr_exception", Tuple [Name "type_exception"])
            ; ("Pstr_module", Tuple [Name "module_binding"])
            ; ("Pstr_recmodule", Tuple [List (Name "module_binding")])
            ; ("Pstr_modtype", Tuple [Name "module_type_declaration"])
-           ; ("Pstr_open", Tuple [Name "open_description"])
+           ; ("Pstr_open", Tuple [Name "open_declaration"])
            ; ("Pstr_class", Tuple [List (Name "class_declaration")])
            ; ( "Pstr_class_type"
              , Tuple [List (Name "class_type_declaration")] )
            ; ("Pstr_include", Tuple [Name "include_declaration"])
            ; ("Pstr_attribute", Tuple [Name "attribute"])
-           ; ("Pstr_extension", Tuple [Name "extension"; Name "attributes"])
-           ]) )
+           ; ( "Pstr_extension"
+             , Tuple [Name "extension"; Name "attributes"] ) ]) )
   ; ( "value_binding"
     , Mono
         (Record
@@ -618,12 +668,22 @@ let grammar : Grammar.t =
     , Mono
         (Variant
            [ ("Ptop_def", Tuple [Name "structure"])
-           ; ("Ptop_dir", Tuple [String; Name "directive_argument"]) ]) )
+           ; ("Ptop_dir", Tuple [Name "toplevel_directive"]) ]) )
+  ; ( "toplevel_directive"
+    , Mono
+        (Record
+           [ ("pdir_name", Loc String)
+           ; ("pdir_arg", Option (Name "directive_argument"))
+           ; ("pdir_loc", Location) ]) )
   ; ( "directive_argument"
     , Mono
+        (Record
+           [ ("pdira_desc", Name "directive_argument_desc")
+           ; ("pdira_loc", Location) ]) )
+  ; ( "directive_argument_desc"
+    , Mono
         (Variant
-           [ ("Pdir_none", Empty)
-           ; ("Pdir_string", Tuple [String])
+           [ ("Pdir_string", Tuple [String])
            ; ("Pdir_int", Tuple [String; Option Char])
            ; ("Pdir_ident", Tuple [Name "longident"])
            ; ("Pdir_bool", Tuple [Bool]) ]) ) ]

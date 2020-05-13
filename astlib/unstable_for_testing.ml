@@ -2,7 +2,7 @@ open StdLabels
 
 let version = Version.of_string "unstable_for_testing"
 
-module Stable = Latest_version
+module Stable = Version_4_07
 
 let rec update_ty ty : Grammar.ty =
   match (ty : Grammar.ty) with

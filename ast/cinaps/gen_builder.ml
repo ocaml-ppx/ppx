@@ -164,12 +164,17 @@ module Builder = struct
     match (shortcut type_name : Shortcut.t option) with
     | None -> []
     | Some {other_fields = _::_; _} ->
-      (* There currently is only attr, loc and descr in records for which we
-         have shortcuts and the code here relies on it, if new fields or added
-         we'll need do deal with them.
-         Note that a [xxx_loc_stack] has been added in recent OCaml versions. *)
+      (* There currently is only attr, loc, loc_stack and descr in records for
+         which we have shortcuts and the code here relies on it, if new fields
+         are added we'll need do deal with them. *)
       assert false
-    | Some {outer_record; desc_field; loc_field; attr_field; other_fields = []; _} ->
+    | Some
+        { outer_record
+        ; desc_field
+        ; loc_field
+        ; attr_field
+        ; loc_stack_field
+        ; other_fields = []; _} ->
       let type_ = Astlib.Grammar.Name outer_record in
       List.map v ~f:(fun (cname, (constr : Astlib.Grammar.clause)) ->
         let arr =
@@ -206,6 +211,7 @@ module Builder = struct
             [ Some (Some desc_field, desc)
             ; (loc_field >>| fun fname -> (Some fname, Expr.Ident "loc"))
             ; (attr_field >>| fun fname -> (Some fname, empty_attributes))
+            ; (loc_stack_field >>| fun fname -> (Some fname, Expr.Const Nil))
             ]
             |> List.filter_opt
           in
