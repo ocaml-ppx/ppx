@@ -5,7 +5,6 @@
   ocaml-compiler-libs.common
   compiler-libs.common
   ocaml-compiler-libs.shadow
-  ocaml-migrate-parsetree
   ppx.ast_deprecated
   ppx.bootstrap
   ppx.print_diff
