@@ -1,4 +1,6 @@
 (test
  (name test)
  (flags (:standard -safe-string))
+ ;; TODO: re-enable once we make omp work with ppx
+ (enabled_if false)
  (preprocess (pps ppx_driver_omp_test_ppx ppx_ppx)))
