@@ -3,6 +3,16 @@ module Conversion = Conversion
 module Traverse_builtins = Traverse_builtins
 include Unversioned.Types
 
+module Unversioned : sig
+  module Private : sig
+    exception Cannot_interpret_ast of {
+      version : Astlib.Version.t;
+      node_name : string;
+      node : Node.t;
+    }
+  end
+end = Unversioned
+
 module V4_08 = struct
   include Versions.V4_08
   include Builder.V4_08

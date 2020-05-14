@@ -304,27 +304,28 @@ let print_test name ~version =
       Print.println "(module Deriving.%s)" (Ml.module_name name);
       Print.println "~f:(fun x ->";
       Print.indented (fun () ->
-        Print.println "require_equal [%%here] (module Deriving.%s) x"
-          (Ml.module_name name);
+        Print.println "try";
         Print.indented (fun () ->
-          Print.println
-            "(Conversion.ast_to_%s"
-            (Ml.id name);
+          Print.println "require_equal [%%here] (module Deriving.%s) x"
+            (Ml.module_name name);
           Print.indented (fun () ->
             Print.println
-              "((new %s.map)#%s"
-              (Ml.module_name (Astlib.Version.to_string version))
+              "(Conversion.ast_to_%s"
               (Ml.id name);
             Print.indented (fun () ->
               Print.println
-                "(Conversion.ast_of_%s x))));"
-                (Ml.id name))))));
+                "((new %s.map)#%s"
+                (Ml.module_name (Astlib.Version.to_string version))
+                (Ml.id name);
+              Print.indented (fun () ->
+                Print.println
+                  "(Conversion.ast_of_%s x)))"
+                  (Ml.id name)))));
+        Print.println "with Unversioned.Private.Cannot_interpret_ast _ -> ());"));
     Print.println "[%%expect {| |}]")
 
 let print_test_ml () =
   let alist = Astlib.History.versioned_grammars Astlib.history in
-  Print.newline ();
-  Print.println "let config = { Test.default_config with test_count = 1_000 }";
   List.iter alist ~f:(fun (version, grammar) ->
     Print.newline ();
     Ml.define_module (Astlib.Version.to_string version) (fun () ->
