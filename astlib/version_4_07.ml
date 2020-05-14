@@ -173,6 +173,8 @@ end
 module Node = struct
   open Ast
 
+  let ghost loc = Location.{ loc with loc_ghost = true }
+
   let empty_attr ~wrap =
     let data = List [] in
     Node (wrap {name = "attributes"; data})
@@ -413,6 +415,7 @@ module Node = struct
     let upgrade_attribute node =
       match node.data with
       | Tuple [| (Loc {loc; _})  as name ; payload |] ->
+        let loc = ghost loc in
         Some { node with data = Record [| name; payload; Location loc |] }
       | _ -> None
 
@@ -431,14 +434,17 @@ module Node = struct
           { tag = "Rtag" as tag
           ; args = [|Loc x as label; attributes; empty; args|] } ->
         let variant = Variant {tag; args = [|label; empty; args|]} in
-        let data =  Record [| desc variant; Location x.loc; attributes |] in
+        let loc = ghost x.loc in
+        let data =  Record [| desc variant; Location loc; attributes |] in
         Some { node with data }
       | Variant {tag = "Rinherit"; args = [| Node core_type |]} as variant ->
         ( match unwrap core_type with
           | Some
-              { name = "core_type" ; data = Record [| _desc; loc; _attr |] } ->
+              { name = "core_type"
+              ; data = Record [| _desc; Location loc; _attr |] } ->
+            let loc = ghost loc in
             let data =
-              Record [| desc variant; loc; empty_attr ~wrap |]
+              Record [| desc variant; Location loc; empty_attr ~wrap |]
             in
             Some { node with data }
           | _ -> None )
@@ -452,16 +458,19 @@ module Node = struct
       | Variant
           { tag = "Otag" as tag; args = [| Loc x as label; attr; args |] } ->
         let variant = Variant {tag; args = [| label; args |]} in
-        let data = Record [| desc variant; Location x.loc; attr |] in
+        let loc = ghost x.loc in
+        let data = Record [| desc variant; Location loc; attr |] in
         Some { node with data }
       | Variant { tag = "Oinherit"; args = [| Node core_type |] } as variant ->
         ( match unwrap core_type with
           | Some
-              { name = "core_type" ; data = Record [| _desc; loc; _attr |] } ->
+              { name = "core_type"
+              ; data = Record [| _desc; Location loc; _attr |] } ->
             let attributes =
               Node (wrap {name = "attributes"; data = List []})
             in
-            let data = Record [| desc variant; loc; attributes |] in
+            let loc = ghost loc in
+            let data = Record [| desc variant; Location loc; attributes |] in
             Some { node with data }
           | _ -> None )
       | _ -> None
@@ -470,12 +479,14 @@ module Node = struct
           ~wrap ~unwrap ~override ~lident_loc ?popen_loc ?popen_attr () =
       match unwrap lident_loc with
       | Some { name = "longident_loc"; data = (Loc {loc; _}) } ->
+        let loc = ghost loc in
+        let popen_loc = Option.map ghost popen_loc in
         let attr = empty_attr ~wrap in
         let data = Variant {tag = "Pmod_ident"; args = [|Node lident_loc|]} in
         let desc = wrap {name = "module_expr_desc"; data} in
         let data = Record [| Node desc; Location loc; attr |] in
         let mod_exp = wrap {name = "module_expr"; data} in
-        let popen_loc = Option.value ~default:(Location loc) popen_loc in
+        let popen_loc = Location (Option.value ~default:loc popen_loc) in
         let popen_attr = Option.value ~default:attr popen_attr in
         let data = Record [| Node mod_exp; override; popen_loc; popen_attr |] in
         let open_infos = wrap {name = "open_infos"; data} in
@@ -501,8 +512,9 @@ module Node = struct
       | Record [| Node li as path; params; ctors; private_; attr |] ->
         ( match unwrap li with
           | Some { name = "longident_loc"; data = Loc x } ->
+            let loc = ghost x.loc in
             let data =
-              Record [| path; params; ctors; private_; Location x.loc; attr |]
+              Record [| path; params; ctors; private_; Location loc; attr |]
             in
             Some { node with data }
           | _ -> None )
@@ -511,6 +523,7 @@ module Node = struct
     let open_desc ~wrap ~unwrap ~override ~lident_loc =
       match unwrap lident_loc with
       | Some { name = "longident_loc"; data = Loc {loc; _} } ->
+        let loc = ghost loc in
         let attr = empty_attr ~wrap in
         let data = Record [| Node lident_loc; override; Location loc; attr |] in
         let open_infos = wrap {name = "open_infos"; data} in
@@ -547,8 +560,9 @@ module Node = struct
       match unwrap ext_ctor with
       | Some
           { name = "extension_constructor";
-            data = Record [| _name; _kind; loc; _attr |] } ->
-        let data = Record [| Node ext_ctor; loc; empty_attr ~wrap |] in
+            data = Record [| _name; _kind; Location loc; _attr |] } ->
+        let loc = ghost loc in
+        let data = Record [| Node ext_ctor; Location loc; empty_attr ~wrap |] in
         Some (Node (wrap {name = "type_exception"; data}))
       | _ -> None
 
@@ -579,7 +593,10 @@ module Node = struct
               { name = "open_description"
               ; data =
                   Record
-                    [| Node lident_loc; override; popen_loc; popen_attr |] } ->
+                    [| Node lident_loc
+                     ; override
+                     ; Location popen_loc
+                     ; popen_attr |] } ->
             let open_decl =
               od_pmod_ident
                 ~wrap ~unwrap ~lident_loc ~override ~popen_loc ~popen_attr ()
@@ -600,7 +617,8 @@ module Node = struct
         Some (Option None)
       | Some dir_arg ->
         let desc = wrap {dir_arg with name = "directive_argument_desc"} in
-        let data = Record [| Node desc; Location Location.none |] in
+        let loc = ghost Location.none in
+        let data = Record [| Node desc; Location loc |] in
         Some (Option (Some (Node (wrap {name = "directive_argument"; data}))))
       | None -> None
 
@@ -609,8 +627,9 @@ module Node = struct
       | Variant { tag = "Ptop_dir" as tag; args = [| name; Node dir_arg |] } ->
         ( match pdir_arg ~wrap ~unwrap dir_arg with
           | Some pdir_arg ->
-            let pdir_loc = Location Location.none in
-            let pdir_name = Loc {txt = name; loc = Location.none } in
+            let loc = ghost Location.none in
+            let pdir_loc = Location loc in
+            let pdir_name = Loc {txt = name; loc} in
             let data = Record [| pdir_name; pdir_arg; pdir_loc |] in
             let tdir = wrap {name = "toplevel_directive"; data} in
             Some { node with data = Variant { tag; args = [| Node tdir |] } }

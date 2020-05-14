@@ -13,9 +13,14 @@ type position = Lexing.position =
 type location = Location.t =
   { loc_start : position
   ; loc_end : position
-  ; loc_ghost : bool
+  ; loc_ghost : bool [@quickcheck.generator Generator.return true]
   }
 [@@deriving equal, quickcheck, sexp_of]
+
+let equal_location l l' =
+  match l.loc_ghost, l'.loc_ghost with
+  | true, _ | _, true -> true
+  | _ -> equal_location l l'
 
 type 'a loc = 'a Location.loc = { txt : 'a; loc : location }
 [@@deriving equal, quickcheck, sexp_of]
