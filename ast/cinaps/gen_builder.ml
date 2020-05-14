@@ -47,9 +47,9 @@ module Arrow = struct
     }
 
   let print_sig { ret; args } =
-    Grammar.string_of_ty ~internal:false ret
+    Grammar.string_of_ty ~nodify:false ret
     |> Ml.print_arrow args ~f:(fun a ->
-      let typ = Grammar.string_of_ty ~internal:false a.typ in
+      let typ = Grammar.string_of_ty ~nodify:false a.typ in
       match a.label with
       | None -> typ
       | Some label -> Ml.id label ^ ":" ^ typ)
@@ -287,12 +287,11 @@ let print_builder_ml version =
 let print_builder_mli version =
   Print.newline ();
   let grammar = Astlib.History.find_grammar Astlib.history ~version in
-  let version = Ml.module_name (Astlib.Version.to_string version) in
   let shortcut =
     let m = lazy (Shortcut.Map.from_grammar grammar) in
     fun name -> Shortcut.Map.find (Lazy.force m) name
   in
-  Print.println "open Versions.%s" version;
+  Print.println "open Versions";
   List.iter grammar ~f:(fun (node_name, (kind : Astlib.Grammar.kind)) ->
     let builders = builders node_name kind shortcut in
     List.iter ~f:Builder.print_sig builders)

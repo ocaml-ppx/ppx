@@ -1,6 +1,6 @@
 open Stdppx
 
-let string_of_ty ty = Grammar.string_of_ty ~internal:false ty
+let string_of_ty ty = Grammar.string_of_ty ~nodify:false ty
 
 let variant_viewer_name cname =
   Ml.id (cname ^ "'const")
@@ -343,6 +343,5 @@ let print_viewer_mli version =
   let wrapper_types = wrapper_types grammar in
   let shortcuts = Shortcut.Map.from_grammar grammar in
   Print.println "open Versions";
-  Print.println "open %s" (Ml.module_name (Astlib.Version.to_string version));
   Print.println "include module type of Viewer_common";
   List.iter grammar ~f:(print_viewer ~what:`Intf ~shortcuts ~wrapper_types)
