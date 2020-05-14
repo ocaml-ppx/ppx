@@ -1,11 +1,10 @@
 open Stdppx
 
-module Render (Config : sig val internal : bool end) = struct
-  let string_of_ty ?nodify ty =
-    Grammar.string_of_ty ?nodify ~internal:Config.internal ty
+module Render = struct
+  let string_of_ty ?(nodify=false) ty = Grammar.string_of_ty ~nodify ty
 
-  let string_of_tuple_type ?(parens = true) tuple =
-    Grammar.string_of_tuple_type ~internal:Config.internal ~parens tuple
+  let string_of_tuple_type ?(nodify=false) ?(parens=true) tuple =
+    Grammar.string_of_tuple_type ~nodify ~parens tuple
 
   let print_record_type record =
     Ml.print_record_type record ~f:string_of_ty
@@ -27,8 +26,6 @@ module Render (Config : sig val internal : bool end) = struct
 end
 
 module Signature = struct
-  module Render = Render (struct let internal = false end)
-
   let inst_node ty ~tvars =
     Ml.poly_inst ty ~args:(List.map tvars ~f:(fun tvar ->
       Render.string_of_ty (Instance ("node", [Tvar tvar]))))
@@ -113,8 +110,6 @@ module Signature = struct
 end
 
 module Structure = struct
-  module Render = Render (struct let internal = true end)
-
   let rec ast_of_ty ~grammar ty =
     match (ty : Astlib.Grammar.ty) with
     | Var _

@@ -113,7 +113,7 @@ module Generate_ast_patterns = struct
             ~field_name:None
             ~on_clause)
 
-  let string_of_ty ty = Grammar.string_of_ty ~internal:false ty
+  let string_of_ty ty = Grammar.string_of_ty ~nodify:false ty
 
   let print_arrow inputs output =
     Ml.print_arrow inputs ~f:Fn.id output

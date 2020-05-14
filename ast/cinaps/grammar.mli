@@ -7,13 +7,12 @@
     [Versions] only accept polymorphic types instantiated with other AST
     types. *)
 
-val string_of_targ : ?nodify: bool -> internal: bool -> Astlib.Grammar.targ -> string
+val string_of_targ : nodify: bool -> Astlib.Grammar.targ -> string
 
-val string_of_ty : ?nodify: bool -> internal: bool -> Astlib.Grammar.ty -> string
+val string_of_ty : nodify: bool -> Astlib.Grammar.ty -> string
 
-val string_of_tuple_type :
-  ?nodify: bool ->
-  internal: bool ->
-  ?parens: bool ->
-  Astlib.Grammar.ty list ->
-  string
+val string_of_tuple_type
+  :  nodify: bool
+  -> parens: bool
+  -> Astlib.Grammar.ty list
+  -> string
