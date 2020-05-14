@@ -9,9 +9,7 @@ let extension =
     Ast_pattern.(single_expr_payload __)
     (fun ~ctxt payload ->
        let loc = Expansion_context.Extension.extension_point_loc ctxt in
-       Ppx_view_lib_deprecated.Expand.parsetree_payload ~loc
-         (Conversion.ast_to_expression payload)
-       |> Conversion.ast_of_expression)
+       Ppx_view_lib.Expand.payload ~loc payload)
 
 let rule = Context_free.Rule.extension extension
 
