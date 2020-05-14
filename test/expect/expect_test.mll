@@ -97,9 +97,7 @@ let apply_rewriters : (Parsetree.toplevel_phrase -> Parsetree.toplevel_phrase) =
   | Ptop_dir _ as x -> x
   | Ptop_def s ->
     let s = Ppx.Conversion.ast_of_structure s in
-    Ptop_def (Ppx.Driver.map_structure s
-              |> Migrate_parsetree.Driver.migrate_some_structure
-                   (module Migrate_parsetree.OCaml_current))
+    Ptop_def (Ppx.Driver.map_structure s |> Ppx.Conversion.ast_to_structure)
 ;;
 let main () =
   run_expect_test Sys.argv.(1) ~f:(fun file_contents lexbuf ->
