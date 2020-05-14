@@ -9,7 +9,7 @@ module Base : sig
       ocaml-mirgate-parsetree configuration.
   *)
   val top_level :
-    omp_config:Migrate_parsetree.Driver.config ->
+    tool_name:string ->
     file_path:string ->
     t
 
@@ -29,8 +29,10 @@ module Extension : sig
   (** Return the code path for the given context *)
   val code_path : t -> Code_path.t
 
-  (** Return the ocaml-migrate-parsetree configuration for the given expansion context *)
-  val omp_config : t -> Migrate_parsetree.Driver.config
+  (** Can be used within a ppx preprocessor to know which tool is
+      calling it ["ocamlc"], ["ocamlopt"], ["ocamldoc"], ["ocamldep"],
+      ["ocaml"], ... . *)
+  val tool_name : t -> string
 
   (** Wrap a [fun ~loc ~path] into a [fun ~ctxt] *)
   val with_loc_and_path : (loc:Location.t -> path:string -> 'a) -> (ctxt:t -> 'a)
@@ -53,7 +55,7 @@ module Deriver : sig
   val code_path : t -> Code_path.t
 
   (** Return the ocaml-migrate-parsetree configuration for the given expansion context *)
-  val omp_config : t -> Migrate_parsetree.Driver.config
+  val tool_name : t -> string
 
   (** Wrap a [fun ~loc ~path] into a [fun ~ctxt] *)
   val with_loc_and_path : (loc:Location.t -> path:string -> 'a) -> (ctxt:t -> 'a)
