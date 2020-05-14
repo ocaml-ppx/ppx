@@ -1,5 +1,6 @@
 open! Import
-include Ast
+include Ppx_ast
+include Current_ast
 
 let esequence ~loc el =
   match el with

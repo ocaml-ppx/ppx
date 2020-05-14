@@ -1,6 +1,6 @@
 open! Import
 
-val lident : string -> Longident.t
+val lident : string -> longident
 
 val core_type_of_type_declaration : type_declaration -> core_type
 
@@ -36,13 +36,13 @@ class type_is_recursive : rec_flag -> type_declaration list -> object
 
     method return_true : unit -> unit
 
-    method go : unit -> Rec_flag.t
+    method go : unit -> rec_flag
   end
 
 (** [really_recursive rec_flag tds = (new type_is_recursive rec_flag tds)#go ()] *)
 val really_recursive : rec_flag -> type_declaration list -> rec_flag
 
-val loc_of_payload   : _ Loc.t * Payload.t -> Location.t
+val loc_of_payload   : _ Loc.t * payload -> Location.t
 val loc_of_attribute : attribute -> Location.t
 
 (** convert multi-arg function applications into a cascade of 1-arg applications *)

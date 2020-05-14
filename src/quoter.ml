@@ -1,4 +1,5 @@
 open Import
+open Current_ast
 
 type t =
   { mutable next_id : int

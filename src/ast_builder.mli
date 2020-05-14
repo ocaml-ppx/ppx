@@ -1,5 +1,7 @@
 (** Helpers for build OCaml AST fragments *)
 
+(* TODO: remove in favor of Ppx_ast's versioned builders *)
+
 open! Import
 
 (** This module is similar to the [Ast_helper] module distrubuted with OCaml but uses
@@ -145,12 +147,12 @@ val nonrec_type_declaration :
       since type constructors are always applied. *)
 val unapplied_type_constr_conv :
   loc:Location.t
-  -> Longident.t Loc.t -> f:(string -> string) -> expression
+  -> longident Loc.t -> f:(string -> string) -> expression
 val type_constr_conv :
   loc:Location.t
-  -> Longident.t Loc.t -> f:(string -> string) -> expression list -> expression
+  -> longident Loc.t -> f:(string -> string) -> expression list -> expression
 
-val include_infos : loc:Location.t -> 'a node -> 'a node Include_infos.t
+val include_infos : loc:Location.t -> 'a node -> 'a node include_infos
 
 (** Tries to simplify [fun v1 v2 .. -> f v1 v2 ..] into [f]. Only works when [f] is a
       path, not an arbitrary expression as that would change the meaning of
@@ -184,7 +186,7 @@ module Located : sig
   val mk : loc:Location.t -> 'a -> 'a Loc.t
 
   val map        : 'a Loc.t -> f:('a -> 'b) -> 'b Loc.t
-  val map_lident : string Loc.t -> Longident_loc.t
+  val map_lident : string Loc.t -> longident_loc
 
-  val lident : loc:Location.t -> string -> Longident_loc.t
+  val lident : loc:Location.t -> string -> longident_loc
 end

@@ -21,6 +21,11 @@ let str_to_sig =
   fun s ->
     print_string (Str.global_substitute re map s)
 
+let define_current_ast () =
+  Print.newline ();
+  Print.println "module Current_ast = Ppx_ast.%s"
+    (Ml.module_name (Astlib.Version.to_string Astlib.current_version))
+
 module Generate_ast_patterns = struct
   let current_grammar () =
     Astlib.History.find_grammar Astlib.history ~version:Astlib.current_version

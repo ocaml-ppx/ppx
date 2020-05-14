@@ -1,12 +1,13 @@
 open! Import
+open Current_ast
 
 let mknoloc txt : _ Loc.t = { txt; loc = Location.none }
 
 let hide_attribute =
-  Ast.Attribute.create (mknoloc "merlin.hide", Payload.pStr (Structure.create []))
+  Attribute.create (mknoloc "merlin.hide", Payload.pStr (Structure.create []))
 
 let focus_attribute =
-  Ast.Attribute.create (mknoloc "merlin.focus", Payload.pStr (Structure.create []))
+  Attribute.create (mknoloc "merlin.focus", Payload.pStr (Structure.create []))
 
 let cons attr attributes =
   Attributes.create (attr :: Attributes.to_concrete attributes)

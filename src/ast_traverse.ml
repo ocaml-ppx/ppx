@@ -1,33 +1,34 @@
 open! Import
+open Current_ast
 
 class map = object
   inherit Traverse_builtins.map
-  inherit Ast.Virtual.map
+  inherit Virtual.map
 end
 
 class iter = object
   inherit Traverse_builtins.iter
-  inherit Ast.Virtual.iter
+  inherit Virtual.iter
 end
 
 class ['acc] fold = object
   inherit ['acc] Traverse_builtins.fold
-  inherit ['acc] Ast.Virtual.fold
+  inherit ['acc] Virtual.fold
 end
 
 class ['acc] fold_map = object
   inherit ['acc] Traverse_builtins.fold_map
-  inherit ['acc] Ast.Virtual.fold_map
+  inherit ['acc] Virtual.fold_map
 end
 
 class ['ctx] map_with_context = object
   inherit ['ctx] Traverse_builtins.map_with_context
-  inherit ['ctx] Ast.Virtual.map_with_context
+  inherit ['ctx] Virtual.map_with_context
 end
 
 class virtual ['res] lift = object
   inherit ['res] Traverse_builtins.lift
-  inherit ['res] Ast.Virtual.lift
+  inherit ['res] Virtual.lift
 end
 
 let enter name path = if String.is_empty path then name else path ^ "." ^ name
@@ -138,7 +139,7 @@ class map_with_expansion_context = object (self)
 end
 
 class sexp_of = object
-  inherit [Sexp.t] Ast.Virtual.lift
+  inherit [Sexp.t] Virtual.lift
 
   method int       = Sexp.Encoder.int
   method string    = Sexp.Encoder.string

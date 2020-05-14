@@ -1,6 +1,9 @@
 (** AST traversal classes *)
 
+(* TODO: remove in favor of Ppx_ast's versioned traversals *)
+
 open! Import
+open Current_ast
 
 (** To use these classes, inherit from them and override the methods corresponding to the
     types from [Parsetree] you want to process. For instance to collect all the string
@@ -29,27 +32,27 @@ open! Import
 
 class map : object
   inherit Traverse_builtins.map
-  inherit Ast.Virtual.map
+  inherit Virtual.map
 end
 
 class iter : object
   inherit Traverse_builtins.iter
-  inherit Ast.Virtual.iter
+  inherit Virtual.iter
 end
 
 class ['acc] fold : object
   inherit ['acc] Traverse_builtins.fold
-  inherit ['acc] Ast.Virtual.fold
+  inherit ['acc] Virtual.fold
 end
 
 class ['acc] fold_map : object
   inherit ['acc] Traverse_builtins.fold_map
-  inherit ['acc] Ast.Virtual.fold_map
+  inherit ['acc] Virtual.fold_map
 end
 
 class ['ctx] map_with_context : object
   inherit ['ctx] Traverse_builtins.map_with_context
-  inherit ['ctx] Ast.Virtual.map_with_context
+  inherit ['ctx] Virtual.map_with_context
 end
 
 class map_with_path : [string] map_with_context
@@ -58,12 +61,12 @@ class map_with_expansion_context : [Expansion_context.Base.t] map_with_context
 
 class virtual ['res] lift : object
   inherit ['res] Traverse_builtins.lift
-  inherit ['res] Ast.Virtual.lift
+  inherit ['res] Virtual.lift
 end
 
 class sexp_of : object
   inherit [Sexp.t] Traverse_builtins.std_lifters
-  inherit [Sexp.t] Ast.Virtual.lift
+  inherit [Sexp.t] Virtual.lift
 end
 
 val sexp_of : sexp_of

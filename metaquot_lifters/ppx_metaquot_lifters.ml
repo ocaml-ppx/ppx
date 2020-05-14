@@ -1,4 +1,5 @@
 open Stdppx
+open Ppx_ast
 open Ppx_ast.V4_07
 module Traverse_builtins = Ppx_ast.Traverse_builtins
 module Expr = Expression_desc

@@ -1,5 +1,6 @@
 (*$ open Ppxlib_cinaps_helpers $*)
 open! Import
+open Current_ast
 open Common
 
 module E  = Ext
