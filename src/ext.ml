@@ -1,4 +1,5 @@
 open! Import
+open Current_ast
 open Common
 
 type (_, _) equality = Eq : ('a, 'a) equality | Ne : (_, _) equality

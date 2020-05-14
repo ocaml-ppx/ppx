@@ -64,7 +64,7 @@ module Rule : sig
   type ('a, 'b, 'c, 'd) attr_group_inline =
     ('b, 'c) Attr.t
     -> (ctxt:Expansion_context.Deriver.t
-        -> Rec_flag.t
+        -> rec_flag
         -> 'b list
         -> 'c option list
         -> 'd)

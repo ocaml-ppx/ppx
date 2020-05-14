@@ -1,4 +1,5 @@
 open Ppx
+open V4_07
 
 (*
    [[@@deriving foo]] expands to:

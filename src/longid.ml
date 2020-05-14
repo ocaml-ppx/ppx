@@ -1,4 +1,5 @@
 open! Import
+open Current_ast
 
 module Concrete = struct
   type t =

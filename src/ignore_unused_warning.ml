@@ -1,4 +1,5 @@
 open Import
+open Current_ast
 open Ast_builder
 
 let underscore_binding exp =

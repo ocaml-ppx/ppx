@@ -1,4 +1,5 @@
 open! Import
+open Current_ast
 open Ast_builder
 
 let lident x = Longident.lident x
@@ -152,7 +153,7 @@ let assert_no_attributes_in = object
 end
 
 let attribute_of_warning loc s =
-  Ast.Attribute.create
+  Attribute.create
     ({ loc; txt = "ocaml.ppwarning" },
      Payload.pStr
        (Structure.create [pstr_eval ~loc (estring ~loc s) (Attributes.create [])]))

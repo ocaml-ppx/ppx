@@ -1,4 +1,5 @@
 open! Import
+open Current_ast
 
 let get_default_path (loc : Location.t) =
   let fname = loc.loc_start.pos_fname in

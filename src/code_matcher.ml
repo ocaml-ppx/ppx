@@ -1,4 +1,5 @@
 open! Import
+open Current_ast
 
 (* TODO: make the "deriving." depend on the matching attribute name. *)
 let end_marker_sig =

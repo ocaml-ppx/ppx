@@ -1,4 +1,5 @@
 open! Import
+open Current_ast
 
 include Ast_pattern0
 

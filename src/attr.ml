@@ -1,4 +1,5 @@
 open! Import
+open Current_ast
 
 let poly_equal a b =
   let module Poly = struct

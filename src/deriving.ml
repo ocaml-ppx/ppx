@@ -1,4 +1,5 @@
 open Import
+open Current_ast
 open Ast_builder
 
 (* [do_insert_unused_warning_attribute] -- If true, generated code

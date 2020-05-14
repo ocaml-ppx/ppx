@@ -1,4 +1,5 @@
 open! Import
+open Current_ast
 open Ast_pattern0
 
 (*$ Ppxlib_cinaps_helpers.generate_ast_pattern_impl () *)
