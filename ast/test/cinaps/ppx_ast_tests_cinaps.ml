@@ -125,6 +125,24 @@ let clause_is_recursive clause =
   | Tuple tuple -> List.exists tuple ~f:ty_is_recursive
   | Record record -> List.exists record ~f:(fun (_, ty) -> ty_is_recursive ty)
 
+let gen_id name = Ml.id ("gen_" ^ name)
+
+let print_fields_gen record =
+  List.iteri record ~f:(fun index (field, ty) ->
+    let id = gen_id field in
+    let generator_string =
+      let open Astlib.Grammar in
+      match field, ty with
+      | s, (List Location) when String.is_suffix ~suffix:"loc_stack" s ->
+        "Generator.return []"
+      | _ -> generator_string ty
+    in
+    Print.println "%s %s = %s"
+      (if index = 0 then "let" else "and")
+      id
+      generator_string);
+  Print.println "in"
+
 let print_quickcheck_generator decl ~index ~name ~tvars =
   if List.length tvars = 0
   then
@@ -148,18 +166,12 @@ let print_quickcheck_generator decl ~index ~name ~tvars =
            (List.map tvars ~f:(fun tvar ->
               Ml.id ("quickcheck_generator_" ^ tvar))))));
   Print.indented (fun () ->
-    let gen_id name = Ml.id ("gen_" ^ name) in
     match (decl : Astlib.Grammar.decl) with
     | Ty ty ->
       Print.println "let gen = %s in" (generator_string ty);
       Print.println "Generator.generate gen ~size ~random"
     | Record record ->
-      List.iteri record ~f:(fun index (field, ty) ->
-        Print.println "%s %s = %s"
-          (if index = 0 then "let" else "and")
-          (gen_id field)
-          (generator_string ty));
-      Print.println "in";
+      print_fields_gen record;
       List.iteri record ~f:(fun index (field, _) ->
         Print.println "%s %s = Generator.generate gen_%s ~size ~random"
           (if index = 0 then "{" else ";")

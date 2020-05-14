@@ -876,7 +876,7 @@ and generate_payload ~size ~random =
 and generate_core_type ~size ~random =
   let gen_ptyp_desc = (Generator.create generate_core_type_desc)
   and gen_ptyp_loc = quickcheck_generator_location
-  and gen_ptyp_loc_stack = (quickcheck_generator_list quickcheck_generator_location)
+  and gen_ptyp_loc_stack = Generator.return []
   and gen_ptyp_attributes = (Generator.create generate_attributes)
   in
   { ptyp_desc = Generator.generate gen_ptyp_desc ~size ~random
@@ -1060,7 +1060,7 @@ and generate_object_field_desc ~size ~random =
 and generate_pattern ~size ~random =
   let gen_ppat_desc = (Generator.create generate_pattern_desc)
   and gen_ppat_loc = quickcheck_generator_location
-  and gen_ppat_loc_stack = (quickcheck_generator_list quickcheck_generator_location)
+  and gen_ppat_loc_stack = Generator.return []
   and gen_ppat_attributes = (Generator.create generate_attributes)
   in
   { ppat_desc = Generator.generate gen_ppat_desc ~size ~random
@@ -1219,7 +1219,7 @@ and generate_pattern_desc ~size ~random =
 and generate_expression ~size ~random =
   let gen_pexp_desc = (Generator.create generate_expression_desc)
   and gen_pexp_loc = quickcheck_generator_location
-  and gen_pexp_loc_stack = (quickcheck_generator_list quickcheck_generator_location)
+  and gen_pexp_loc_stack = Generator.return []
   and gen_pexp_attributes = (Generator.create generate_attributes)
   in
   { pexp_desc = Generator.generate gen_pexp_desc ~size ~random
