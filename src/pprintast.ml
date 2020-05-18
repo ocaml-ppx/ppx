@@ -21,13 +21,15 @@
 (* Extensive Rewrite: Hongbo Zhang: University of Pennsylvania *)
 (* TODO more fine-grained precedence pretty-printing *)
 
-open Import
+[@@@warning "-9"]
+
+open Ppx_ast_deprecated.Import_for_core
 open Asttypes
 open Format
-open Location
-open Longident
+open Ocaml_common.Location
+open Ocaml_common.Longident
 open Parsetree
-open Ast_helper
+open Ppx_ast_deprecated.Ast_helper
 
 let prefix_symbols  = [ '!'; '?'; '~' ] ;;
 let infix_symbols = [ '='; '<'; '>'; '@'; '^'; '|'; '&'; '+'; '-'; '*'; '/';
