@@ -1,6 +1,5 @@
 open! Import
 open Utils
-module Pprintast = Ppx_ast_deprecated.Pprintast
 
 module Context = struct
   type 'a t =

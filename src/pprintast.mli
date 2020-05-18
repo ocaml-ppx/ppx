@@ -13,7 +13,7 @@
 (*                                                                        *)
 (**************************************************************************)
 
-open Import
+open Ppx_ast_deprecated.Import_for_core
 
 type space_formatter = (unit, Format.formatter, unit) format
 

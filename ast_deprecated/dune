@@ -16,7 +16,6 @@
   location_helper
   parse
   parser
-  pprintast
   ppx_ast_deprecated
   syntaxerr
   warn)
