@@ -1,7 +1,5 @@
 (library
  (name ppx_view_test_rewriter)
  (kind ppx_rewriter)
- (libraries
-  ppxlib
-  ppx_view_lib_deprecated)
+ (libraries ppxlib ppx_view_lib)
  (ppx_runtime_libraries viewlib))

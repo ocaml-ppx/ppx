@@ -2,8 +2,6 @@
  (name ppx_view_rewriter)
  (public_name ppx.ppx_view)
  (kind ppx_rewriter)
- (libraries
-  ppx
-  ppx_view_lib_deprecated)
+ (libraries ppx ppx_view_lib)
  (flags :standard -open Ocaml_shadow)
  (ppx_runtime_libraries ppx.ast viewlib))
