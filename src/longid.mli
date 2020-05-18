@@ -6,6 +6,8 @@ type t = longident
 
 include Comparable.S with type t := t
 
+val equal : t -> t -> bool
+
 val lident : string -> t
 val ldot : t -> string -> t
 val lapply : t -> t -> t

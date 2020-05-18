@@ -13,27 +13,27 @@
 (*                                                                        *)
 (**************************************************************************)
 
-open Ppx_ast_deprecated.Import_for_core
+open Import
 
 type space_formatter = (unit, Format.formatter, unit) format
 
-val toplevel_phrase : Format.formatter -> Parsetree.toplevel_phrase -> unit
-val expression : Format.formatter -> Parsetree.expression -> unit
-val string_of_expression : Parsetree.expression -> string
-val top_phrase: Format.formatter -> Parsetree.toplevel_phrase -> unit
-val core_type: Format.formatter -> Parsetree.core_type -> unit
-val pattern: Format.formatter -> Parsetree.pattern -> unit
-val signature: Format.formatter -> Parsetree.signature -> unit
-val structure: Format.formatter -> Parsetree.structure -> unit
-val string_of_structure: Parsetree.structure -> string
+val toplevel_phrase : Format.formatter -> toplevel_phrase -> unit
+val expression : Format.formatter -> expression -> unit
+val string_of_expression : expression -> string
+val top_phrase: Format.formatter -> toplevel_phrase -> unit
+val core_type: Format.formatter -> core_type -> unit
+val pattern: Format.formatter -> pattern -> unit
+val signature: Format.formatter -> signature -> unit
+val structure: Format.formatter -> structure -> unit
+val string_of_structure: structure -> string
 
 (* Added in the ppx copy *)
-val class_expr       : Format.formatter -> Parsetree.class_expr       -> unit
-val class_field      : Format.formatter -> Parsetree.class_field      -> unit
-val class_type       : Format.formatter -> Parsetree.class_type       -> unit
-val class_signature  : Format.formatter -> Parsetree.class_signature  -> unit
-val class_type_field : Format.formatter -> Parsetree.class_type_field -> unit
-val module_expr      : Format.formatter -> Parsetree.module_expr      -> unit
-val module_type      : Format.formatter -> Parsetree.module_type      -> unit
-val signature_item   : Format.formatter -> Parsetree.signature_item   -> unit
-val structure_item   : Format.formatter -> Parsetree.structure_item   -> unit
+val class_expr       : Format.formatter -> class_expr       -> unit
+val class_field      : Format.formatter -> class_field      -> unit
+val class_type       : Format.formatter -> class_type       -> unit
+val class_signature  : Format.formatter -> class_signature  -> unit
+val class_type_field : Format.formatter -> class_type_field -> unit
+val module_expr      : Format.formatter -> module_expr      -> unit
+val module_type      : Format.formatter -> module_type      -> unit
+val signature_item   : Format.formatter -> signature_item   -> unit
+val structure_item   : Format.formatter -> structure_item   -> unit
