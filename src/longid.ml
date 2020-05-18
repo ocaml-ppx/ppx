@@ -108,6 +108,8 @@ let compare a b =
     (to_concrete_result a)
     (to_concrete_result b)
 
+let equal a b = Ordering.is_eq (compare a b)
+
 let flatten_exn t = Concrete.flatten_exn (to_concrete t)
 let last_exn t = Concrete.last_exn (to_concrete t)
 let name t = Concrete.name (to_concrete t)
