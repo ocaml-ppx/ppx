@@ -535,17 +535,16 @@ let map_signature sg =
    +-----------------------------------------------------------------+ *)
 
 let mapper =
-  let module Js = Ppx_ast_deprecated.Selected_ast in
   (*$*)
   let structure _ st =
-    Js.of_ocaml Structure st
+    st
     |> Conversion.ast_of_structure
     |> map_structure
     |> Conversion.ast_to_structure
   in
   (*$ str_to_sig _last_text_block *)
   let signature _ sg =
-    Js.of_ocaml Signature sg
+    sg
     |> Conversion.ast_of_signature
     |> map_signature
     |> Conversion.ast_to_signature

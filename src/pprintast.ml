@@ -87,6 +87,65 @@ let protect_longident ppf print_longident longprefix txt =
     else "%a.(%s)" in
   fprintf ppf format print_longident longprefix txt
 
+let varify_constructors var_names t =
+  let check_variable vl loc v =
+    if List.mem v ~set:vl then
+      raise Ocaml_common.Syntaxerr.(Error(Variable_in_scope(loc,v)))
+  in
+  let var_names = List.map ~f:(fun v -> v.txt) var_names in
+  let rec loop t =
+    let ptyp_desc =
+      match%view Core_type.ptyp_desc t with
+      | Ptyp_any -> Core_type_desc.ptyp_any
+      | Ptyp_var x ->
+        check_variable var_names (Core_type.ptyp_loc t) x;
+        Core_type_desc.ptyp_var x
+      | Ptyp_arrow (label,core_type,core_type') ->
+        Core_type_desc.ptyp_arrow label (loop core_type) (loop core_type')
+      | Ptyp_tuple lst -> Core_type_desc.ptyp_tuple (List.map ~f:loop lst)
+      | Ptyp_constr(Longident_loc { txt = Lident s }, [])
+        when List.mem s ~set:var_names ->
+        Core_type_desc.ptyp_var s
+      | Ptyp_constr(longident, lst) ->
+        Core_type_desc.ptyp_constr longident (List.map ~f:loop lst)
+      | Ptyp_object (lst, o) ->
+        Core_type_desc.ptyp_object (List.map ~f:loop_object_field lst) o
+      | Ptyp_class (longident, lst) ->
+        Core_type_desc.ptyp_class longident (List.map ~f:loop lst)
+      | Ptyp_alias(core_type, string) ->
+        check_variable var_names (Core_type.ptyp_loc t) string;
+        Core_type_desc.ptyp_alias (loop core_type) string
+      | Ptyp_variant(row_field_list, flag, lbl_lst_option) ->
+        Core_type_desc.ptyp_variant
+          (List.map ~f:loop_row_field row_field_list)
+          flag lbl_lst_option
+      | Ptyp_poly(string_lst, core_type) ->
+        List.iter ~f:(fun v ->
+          check_variable var_names (Core_type.ptyp_loc t) v.txt) string_lst;
+        Core_type_desc.ptyp_poly string_lst (loop core_type)
+      | Ptyp_package (Package_type (longident,lst)) ->
+        Core_type_desc.ptyp_package
+          (Package_type.create
+             (longident, List.map ~f:(fun (n,typ) -> (n,loop typ)) lst))
+      | Ptyp_extension ext ->
+        Core_type_desc.ptyp_extension ext
+    in
+    Core_type.update t ~ptyp_desc
+  and loop_row_field x =
+    match%view x with
+    | Rtag (label,attrs,flag,lst) ->
+      Row_field.rtag label attrs flag (List.map ~f:loop lst)
+    | Rinherit t ->
+      Row_field.rinherit (loop t)
+  and loop_object_field x =
+    match%view x with
+    | Otag(label, attrs, t) ->
+      Object_field.otag label attrs (loop t)
+    | Oinherit t ->
+      Object_field.oinherit (loop t)
+  in
+  loop t
+
 type space_formatter = (unit, Format.formatter, unit) format
 
 let override = function%view
@@ -1271,12 +1330,7 @@ and binding ctxt f vb =
       match gadt_pattern, gadt_exp with
       | Some (p, pt_tyvars, pt_ct), Some (e_tyvars, e, e_ct)
         when List.equal String.equal (tyvars_str pt_tyvars) (tyvars_str e_tyvars) ->
-        let ety =
-          e_ct
-          |> Conversion.ast_to_core_type
-          |> Ppx_ast_deprecated.Ast_helper.Typ.varify_constructors e_tyvars
-          |> Conversion.ast_of_core_type
-        in
+        let ety = varify_constructors e_tyvars e_ct in
         if Stdlib.(=)
              (Conversion.ast_to_core_type ety)
              (Conversion.ast_to_core_type pt_ct)

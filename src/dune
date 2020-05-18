@@ -5,7 +5,6 @@
   ocaml-compiler-libs.common
   compiler-libs.common
   ocaml-compiler-libs.shadow
-  ppx.ast_deprecated
   ppx.bootstrap
   ppx.print_diff
   ppx_derivers
